@@ -264,7 +264,7 @@ public class Team { /** Author Return **/
 				Player coep = Team.getPlayer(Team.getTeamByID(player.getTeamID()), 1);
 				if (Team.getPlayer(Team.getTeamByID(player.getTeamID()), 1) == player)
 					coep = Team.getPlayer(Team.getTeamByID(player.getTeamID()), 2);
-				String status = coep.isOnline()?"En ligne":"Déconnecté";
+				String status = coep.isOnline()?"En ligne":"DÃ©connectÃ©";
 				player.send("003I" + coep.getName() + " ("+status+")" + "|"+ player.getWinArena() + "|" + player.getLoseArena()
 						+ "|" + Team.getTeamByID(player.getTeamID()).getCote()
 						+ "|" + "TOP 100"+ "|" + Team.getTeamByID(player.getTeamID()).getName());

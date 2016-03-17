@@ -51,7 +51,7 @@ public class dm {
 					level --;
 			}
 			SocketManager.GAME_SEND_MESSAGE(player, "<b>DeathMatch:</b> Inscription prise en compte !", AllColor.PINK);
-			SocketManager.GAME_SEND_MESSAGE_TO_ALL( "<b>DeathMatch:</b> "+(Config.DMMAX_PLAYER - 1)+" joueurs à l'appel de niveau "+(player.getLevel()-Config.DM_LEVEL)+" - "+(player.getLevel()+level)+" pour compléter une team !", AllColor.PINK);
+			SocketManager.GAME_SEND_MESSAGE_TO_ALL( "<b>DeathMatch:</b> "+(Config.DMMAX_PLAYER - 1)+" joueurs Ã  l'appel de niveau "+(player.getLevel()-Config.DM_LEVEL)+" - "+(player.getLevel()+level)+" pour complÃ©ter une team !", AllColor.PINK);
 			return;
 		}
 		
@@ -104,7 +104,7 @@ public class dm {
 				while(kLevel + level > 200)
 					level --;
 			}
-			SocketManager.GAME_SEND_MESSAGE_TO_ALL( "<b>DeathMatch:</b> "+Config.DMMAX_PLAYER+" joueurs manquants "+(kLevel-Config.DM_LEVEL)+" - "+(kLevel+level)+" pour débuter un nouveau match !", AllColor.PINK);
+			SocketManager.GAME_SEND_MESSAGE_TO_ALL( "<b>DeathMatch:</b> "+Config.DMMAX_PLAYER+" joueurs manquants "+(kLevel-Config.DM_LEVEL)+" - "+(kLevel+level)+" pour dÃ©buter un nouveau match !", AllColor.PINK);
 		}
 		return;
 	}
@@ -145,7 +145,7 @@ public class dm {
 					if (team.getkCharacters().size() == 0)
 						Team.koliTeams.remove(team);
 					player.setDeathMatch(-1);
-					SocketManager.GAME_SEND_MESSAGE(player, "<b>DeathMatch:</b> Désinscription acceptée !", AllColor.PINK);
+					SocketManager.GAME_SEND_MESSAGE(player, "<b>DeathMatch:</b> DÃ©sinscription acceptÃ©e !", AllColor.PINK);
 				}
 			}
 		}catch (Exception e){}
@@ -167,7 +167,7 @@ public class dm {
 				t.getkCharacters().remove(c);
 				if (t.getkCharacters().size() == 0)
 					Team.koliTeams.remove(t);
-				SocketManager.GAME_SEND_MESSAGE(c, "<b>DeathMatch:</b> Vous avez été désinscris du DeathMatch pour indisponibilité !", AllColor.PINK);
+				SocketManager.GAME_SEND_MESSAGE(c, "<b>DeathMatch:</b> Vous avez Ã©tÃ© dÃ©sinscris du DeathMatch pour indisponibilitÃ© !", AllColor.PINK);
 				return true;
 			}
 		}

@@ -9,25 +9,25 @@ import org.area.kernel.Config;
 
 
 public class IpCheck {
-	//Configuration de sécurité
+	//Configuration de sÃ©curitÃ©
 	//Realm
 	private final static int REALM_REFUSE_LIMIT = 2;//On autorise une tentative toutes les 5 secondes
-	private final static int REALM_DELAY = 60;//On remet le compteur à 0 au bout d'une minute d'inactivité
-	private final static int REALM_OVER_BAN = 500;//Si on fait plus de X connexions forcées à la suite on ban
+	private final static int REALM_DELAY = 60;//On remet le compteur Ã  0 au bout d'une minute d'inactivitÃ©
+	private final static int REALM_OVER_BAN = 500;//Si on fait plus de X connexions forcÃ©es Ã  la suite on ban
 	//Game
 	private final static int GAME_REFUSE_LIMIT = 2;//On autorise une tentative toutes les 5 secondes
-	private final static int GAME_DELAY = 60;//On remet le compteur à 0 au bout d'une minute d'inactivité
-	private final static int GAME_OVER_BAN = 500;//Si on fait plus de X connexions forcées à la suite on ban
+	private final static int GAME_DELAY = 60;//On remet le compteur Ã  0 au bout d'une minute d'inactivitÃ©
+	private final static int GAME_OVER_BAN = 500;//Si on fait plus de X connexions forcÃ©es Ã  la suite on ban
 	
 	
 	//Surverillance du nombre de packets
 	private final static int GAME_PACKET_PER_SECOND = 5000;//On autorise au maximum X packets par ip par secondes
-	private final static int GAME_PACKET_VERIF = 3;//On fait notre vérification sur X secondes
+	private final static int GAME_PACKET_VERIF = 3;//On fait notre vÃ©rification sur X secondes
 	private final static int GAME_PACKET_OVER_BAN = 500;//Au bout de X ban pour packets on banip
 	
 	private final static String[] GAME_PACKET_TO_IGNORE = {"BD","GT"};
 	
-	//Nombre de connexions simultanées max/ip
+	//Nombre de connexions simultanÃ©es max/ip
 	private final static int GAME_MAX_CONNECTION = 5000;
 	private final static int REALM_MAX_CONNECTION = 5000;
 
@@ -93,7 +93,7 @@ public class IpCheck {
 			}
 			if(_Realm_connexions >= REALM_MAX_CONNECTION)
 			{
-				//IpCheck.addToLog("Realm plus de "+REALM_MAX_CONNECTION+" connexions simultanées : "+_ip);
+				//IpCheck.addToLog("Realm plus de "+REALM_MAX_CONNECTION+" connexions simultanÃ©es : "+_ip);
 				return false;
 			}
 			boolean r = true;
@@ -101,7 +101,7 @@ public class IpCheck {
 			if(cur_t-_Realm_last > REALM_DELAY && _Realm_over > 0)
 			{
 				_Realm_over=0;
-				IpCheck.addToLog("RM Remise à 0 de l'ip "+_ip);
+				IpCheck.addToLog("RM Remise Ã  0 de l'ip "+_ip);
 			}
 
 			if(cur_t-_Realm_last <= REALM_REFUSE_LIMIT)
@@ -111,7 +111,7 @@ public class IpCheck {
 				IpCheck.addToLog("RM Non respect de l'interval pour l'ip : "+_ip);
 				if(_Realm_over >= REALM_OVER_BAN)
 				{
-					IpCheck.addToLog("RM Ban définitif pour l'ip : "+_ip);
+					IpCheck.addToLog("RM Ban dÃ©finitif pour l'ip : "+_ip);
 					_banned = true;
 				}
 			}
@@ -128,7 +128,7 @@ public class IpCheck {
 			}
 			if(_Game_connexions >= GAME_MAX_CONNECTION)
 			{
-				//IpCheck.addToLog("Game plus de "+GAME_MAX_CONNECTION+" connexions simultanées : "+_ip);
+				//IpCheck.addToLog("Game plus de "+GAME_MAX_CONNECTION+" connexions simultanÃ©es : "+_ip);
 				return false;
 			}
 			boolean r = true;
@@ -136,7 +136,7 @@ public class IpCheck {
 			if(cur_t-_Game_last > GAME_DELAY && _Realm_over > 0)
 			{
 				_Game_over=0;
-				IpCheck.addToLog("Game Remise à 0 de l'ip "+_ip);
+				IpCheck.addToLog("Game Remise Ã  0 de l'ip "+_ip);
 			}
 
 			if(cur_t-_Game_last <= GAME_REFUSE_LIMIT)
@@ -146,7 +146,7 @@ public class IpCheck {
 				IpCheck.addToLog("Game Non respect de l'interval pour l'ip : "+_ip);
 				if(_Game_over >= GAME_OVER_BAN)
 				{
-					IpCheck.addToLog("Game Ban définitif pour l'ip : "+_ip);
+					IpCheck.addToLog("Game Ban dÃ©finitif pour l'ip : "+_ip);
 					_banned = true;
 				}
 			}

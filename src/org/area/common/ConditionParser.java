@@ -24,7 +24,7 @@ public class ConditionParser
 			req = havePO(req, perso);
 		if(req.contains("PN"))
 			req = canPN(req, perso);
-	 	//TODO : Gérer PJ Pj
+	 	//TODO : GÃ©rer PJ Pj
 		try
 		{
 				//Stats stuff compris
@@ -263,7 +263,7 @@ public class ConditionParser
 		}
 		if(CutFinalLenght)
 		{
-			finalLength = (copyCond.length()-2);//On retire les deux derniers carractères (|| ou &&)
+			finalLength = (copyCond.length()-2);//On retire les deux derniers carractÃ¨res (|| ou &&)
 			copyCond = copyCond.substring(0, finalLength);
 		}
 		if(Config.DEBUG) GameServer.addToLog("Returned Cond : "+copyCond);

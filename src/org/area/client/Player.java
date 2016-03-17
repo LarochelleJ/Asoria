@@ -3,6 +3,7 @@ package org.area.client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -161,7 +162,7 @@ public class Player {
 	//Zaap
 	private boolean _isZaaping = false;
 	private ArrayList<Short> _zaaps = new ArrayList<Short>();
-	//Disponibilité
+	//DisponibilitÃ©
 	public boolean _isAbsent = false;
 	public boolean _isInvisible = false;
 	//Sort
@@ -175,7 +176,7 @@ public class Player {
 	private int _isOnPercepteurID = 0;
 	//Titre
 	private int _title = 0;
-	//Inactivité
+	//InactivitÃ©
 	protected long _lastPacketTime;
 	//Mariage
 	private int _wife = 0;
@@ -255,7 +256,7 @@ public class Player {
 	private int lang = 0;
 	private boolean godmode = false;
 	
-	//Más
+	//MÃ¡s
 	private int _scrollFuerza = 0;
 	private int _scrollInteligencia = 0;
 	private int _scrollAgilidad = 0;
@@ -267,20 +268,20 @@ public class Player {
 	private short lastMapID = 0;
 	private int lastCellID = 0;
 	
-	// PNJ échangeur boutique @Flow
+	// PNJ Ã©changeur boutique @Flow
     private boolean echangePNJBoutique = false;
     private static Map<Integer, Integer> _listeItem  = new HashMap<Integer, Integer>();
     private int offrePoints = 0;
     public List<Integer> itemBonusFM = new ArrayList<Integer>();
     
-    // Arbre sadida, renvoi de sort vérification @Flow
+    // Arbre sadida, renvoi de sort vÃ©rification @Flow
     public boolean arbreEnModeRenvoi = false;
     public Fighter arbreEnQuestion;
     
-    // Pour empêcher les relancements de combats trop rapide
+    // Pour empÃªcher les relancements de combats trop rapide
     private boolean combatBloque = false;
     
-    // Système Anti-mulage 
+    // SystÃ¨me Anti-mulage 
     private Map<Integer, Integer> aggroList = new HashMap<Integer, Integer>();
     private Map<Integer, Long> firstTimeAggroList = new HashMap<Integer, Long>();
     
@@ -509,14 +510,14 @@ public class Player {
 			{
 				//Si la stat n'existe pas dans l'autre map
 				if(other.getMap().get(entry.getKey()) == null)return false;
-				//Si la stat existe mais n'a pas la même valeur
+				//Si la stat existe mais n'a pas la mÃªme valeur
 				if(other.getMap().get(entry.getKey()) != entry.getValue())return false;	
 			}
 			for(Entry<Integer,Integer> entry : other.getMap().entrySet())
 			{
 				//Si la stat n'existe pas dans l'autre map
 				if(Effects.get(entry.getKey()) == null)return false;
-				//Si la stat existe mais n'a pas la même valeur
+				//Si la stat existe mais n'a pas la mÃªme valeur
 				if(Effects.get(entry.getKey()) != entry.getValue())return false;	
 			}
 			return true;
@@ -770,7 +771,7 @@ public class Player {
 			this._curCell = _curCarte.getCase(Config.START_CELL);
 		}else if (_curCarte == null && World.getCarte(Config.START_MAP) == null)
 		{
-			sendText("Mauvaise position de départ, contactez l'administrateur");
+			sendText("Mauvaise position de dÃ©part, contactez l'administrateur");
 		}
 		else if(_curCarte != null)
 		{
@@ -790,8 +791,8 @@ public class Player {
 		}
 		if(_curCarte == null || _curCell == null)
 		{
-			GameServer.addToLog("Map ou case de départ du personnage "+_name+" invalide");
-			GameServer.addToLog("Map ou case par défaut invalide");
+			GameServer.addToLog("Map ou case de dÃ©part du personnage "+_name+" invalide");
+			GameServer.addToLog("Map ou case par dÃ©faut invalide");
 			GameServer.addToLog("Le serveur ne peut se lancer");
 			try {
 				Thread.sleep(10000);
@@ -842,7 +843,7 @@ public class Player {
 				_storeItems.put(obj.getGuid(), price);
 			}
 		}
-		// add by tµ
+		// add by tÂµ
 		this._PDVMAX = (_lvl-1)*5+Constant.getBasePdv(_classe)+getTotalStats().getEffect(Constant.STATS_ADD_VITA)+getTotalStats().getEffect(Constant.STATS_ADD_VIE);
 		this._PDV = (_PDVMAX*pdvPer)/100;
 		parseSpells(spells);
@@ -857,7 +858,7 @@ public class Player {
 		
 		_exPdv = _PDV;
 		
-		//Chargement des métiers
+		//Chargement des mÃ©tiers
 		if(!jobs.equals(""))
 		{
 			for(String aJobData : jobs.split(";"))
@@ -899,7 +900,7 @@ public class Player {
 		synchronized (_items) {
 		this._items.putAll(objets);
 		}
-		// add by Tµ
+		// add by TÂµ
 		this._PDVMAX = (_lvl-1)*5+Constant.getBasePdv(_classe)+getTotalStats().getEffect(Constant.STATS_ADD_VITA)+getTotalStats().getEffect(Constant.STATS_ADD_VIE);
 		this._PDV = (_PDVMAX*pdvPer)/100;
 		
@@ -922,7 +923,7 @@ public class Player {
 		if(_curCarte == null)return;
 		//Pas de regen en combat
 		if(_fight != null)return;
-		//Déjà Full PDV
+		//DÃ©jÃ  Full PDV
 		if(_PDV == _PDVMAX)return;
 		_PDV++;
 	}
@@ -1530,7 +1531,7 @@ public class Player {
 			SocketManager.GAME_SEND_OS_PACKET(this, a);
 		}
 		
-		//envoie des données de métier
+		//envoie des donnÃ©es de mÃ©tier
 		if(_metiers.size() >0)
 		{
 			ArrayList<StatsMetier> list = new ArrayList<StatsMetier>();
@@ -1549,9 +1550,9 @@ public class Player {
 						SocketManager.GAME_SEND_OT_PACKET(_compte.getGameThread().getOut(),sm.getTemplate().getId());
 			}
 		}
-		//Fin métier
+		//Fin mÃ©tier
 		SocketManager.GAME_SEND_ALIGNEMENT(out, _align);
-		SocketManager.GAME_SEND_ADD_CANAL(out,_canaux+"^"+(_compte.getGmLevel()>0?"@¤":""));
+		SocketManager.GAME_SEND_ADD_CANAL(out,_canaux+"^"+(_compte.getGmLevel()>0?"@Â¤":""));
 		if(_guildMember != null)SocketManager.GAME_SEND_gS_PACKET(this,_guildMember);
 		SocketManager.GAME_SEND_ZONE_ALLIGN_STATUT(out);
 		SocketManager.GAME_SEND_SPELL_LIST(this);
@@ -1592,7 +1593,7 @@ public class Player {
 		//Actualisation dans la DB
 		SQLManager.UPDATE_LASTCONNECTION_INFO(_compte);
 		
-		if(!Config.CONFIG_MOTD.equals(""))//Si le motd est notifié
+		if(!Config.CONFIG_MOTD.equals(""))//Si le motd est notifiÃ©
 		{
 			String color = Config.CONFIG_MOTD_COLOR;
 			if(color.equals(""))color = "000000";//Noir
@@ -1601,9 +1602,9 @@ public class Player {
 		}
 		if(_fight == null)
 		{
-			//on démarre le Timer pour la Regen de Pdv
+			//on dÃ©marre le Timer pour la Regen de Pdv
 			_sitTimer.start();
-			//on le demarre coté org.area.client
+			//on le demarre cotÃ© org.area.client
 			SocketManager.GAME_SEND_ILS_PACKET(this, 2000);
 		}
 		Stalk.notifyToOwner(this, Stalk.CONNEXION);
@@ -1677,7 +1678,7 @@ public class Player {
 			str.append((_showWings?getGrade():"0")).append(",");
 			str.append(_lvl+_GUID);
 			if(_showWings && _deshonor > 0) str.append(",1");
-			str.append(";"); //Ne pas me demander qui est l'imbécile qui a eu la brillante idée d'ajouter l'ID...
+			str.append(";"); //Ne pas me demander qui est l'imbÃ©cile qui a eu la brillante idÃ©e d'ajouter l'ID...
 			str.append((_color1==-1?"-1":Integer.toHexString(_color1))).append(";");
 			str.append((_color2==-1?"-1":Integer.toHexString(_color2))).append(";");
 			str.append((_color3==-1?"-1":Integer.toHexString(_color3))).append(";");
@@ -1915,7 +1916,7 @@ public class Player {
 					template = i.getTemplate(false);
 				}
 				int panID = template.getPanopID();
-				//Si panoplie, et si l'effet de pano n'a pas encore été ajouté
+				//Si panoplie, et si l'effet de pano n'a pas encore Ã©tÃ© ajoutÃ©
 				if(panID>0 && !itemSetApplied.contains(panID))
 				{
 					itemSetApplied.add(panID);
@@ -2058,7 +2059,7 @@ public class Player {
 						total = Stats.cumulStat(total,_baseStats);
 						total = Stats.cumulStat(total,getStuffStats());
 						total = Stats.cumulStat(total,getDonsStats());
-						sendText("<b>Mode Hardcore:</b> Si vous gagner ce combat, les gains d'expériences seront doublés.");
+						sendText("<b>Mode Hardcore:</b> Si vous gagner ce combat, les gains d'expÃ©riences seront doublÃ©s.");
 						break;
 				}
 			}
@@ -2227,13 +2228,13 @@ public class Player {
 			{
 	    SocketManager.GAME_SEND_ILF_PACKET(this, diff);
 			}
-		//On envoie la modif du Timer de regenPdv coté org.area.client
+		//On envoie la modif du Timer de regenPdv cotÃ© org.area.client
 		SocketManager.GAME_SEND_ILS_PACKET(this, time);
 			
 		}
-		//on modifie le delay coté Serveur du timer de regenPDV
+		//on modifie le delay cotÃ© Serveur du timer de regenPDV
 		_sitTimer.setDelay(time);
-		//Si on se leve, on desactive l'émote
+		//Si on se leve, on desactive l'Ã©mote
 		if((_emoteActive == 1 || _emoteActive == 19) && b == false)_emoteActive = 0;
 	}
 
@@ -2311,7 +2312,7 @@ public class Player {
 	case 13://Chance
 	value = _baseStats.getEffect(Constant.STATS_ADD_CHAN);
 	break;
-	case 14://Agilité
+	case 14://AgilitÃ©
 	value = _baseStats.getEffect(Constant.STATS_ADD_AGIL);
 	break;
 	case 15://Intelligence
@@ -2338,7 +2339,7 @@ public class Player {
 	case 13://Chance
 	_baseStats.addOneStat(Constant.STATS_ADD_CHAN, 1);
 	break;
-	case 14://Agilité
+	case 14://AgilitÃ©
 	_baseStats.addOneStat(Constant.STATS_ADD_AGIL, 1);
 	break;
 	case 15://Intelligence
@@ -2373,7 +2374,7 @@ public class Player {
                             case 13://Chance
                                     value = _baseStats.getEffect(Constant.STATS_ADD_CHAN);
                             break;
-                            case 14://Agilité
+                            case 14://AgilitÃ©
                                     value = _baseStats.getEffect(Constant.STATS_ADD_AGIL);
                             break;
                             case 15://Intelligence
@@ -2399,7 +2400,7 @@ public class Player {
                                     case 13://Chance
                                             _baseStats.addOneStat(Constant.STATS_ADD_CHAN, 1);
                                     break;
-                                    case 14://Agilité
+                                    case 14://AgilitÃ©
                                             _baseStats.addOneStat(Constant.STATS_ADD_AGIL, 1);
                                     break;
                                     case 15://Intelligence
@@ -2451,9 +2452,9 @@ public class Player {
 				&& newObj.getTemplate(false).getType() != 85
 				&& obj.getPosition() == Constant.ITEM_POS_NO_EQUIPED
 				&& obj.getTemplate(false).getID() != 7010
-				&& obj.isSameEffects(newObj))//Si meme Template et Memes Stats et Objet non équipé
+				&& obj.isSameEffects(newObj))//Si meme Template et Memes Stats et Objet non Ã©quipÃ©
 			{
-				obj.setQuantity(obj.getQuantity()+newObj.getQuantity());//On ajoute QUA item a la quantité de l'objet existant
+				obj.setQuantity(obj.getQuantity()+newObj.getQuantity());//On ajoute QUA item a la quantitÃ© de l'objet existant
 				SQLManager.SAVE_ITEM(obj);
 				if(_isOnline){
 					SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(this,obj);
@@ -2613,7 +2614,7 @@ public class Player {
 				SQLManager.SAVE_PERSONNAGE_ITEM(this);
 				if(deleteFromWorld)
 					World.removeItem(obj.getGuid());
-				//on envoie le packet si connecté
+				//on envoie le packet si connectÃ©
 				if(send && _isOnline)
 					SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this, obj.getGuid());
 			}
@@ -2657,7 +2658,7 @@ public class Player {
 	public void refreshStats()
 	{
 		double actPdvPer = (100*(double)_PDV)/(double)_PDVMAX;
-		// add by Tµ
+		// add by TÂµ
 		set_PDVMAX((_lvl-1)*5+Constant.getBasePdv(_classe)+getTotalStats().getEffect(Constant.STATS_ADD_VITA)+getTotalStats().getEffect(Constant.STATS_ADD_VIE));
 		set_PDV((int) Math.round(_PDVMAX*actPdvPer/100));
 	}
@@ -2682,7 +2683,7 @@ public class Player {
 		
 		if(_lvl == World.getExpLevelSize())
 		{
-			SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau " + World.getExpLevelSize() , "D85F03");
+			SocketManager.GAME_SEND_MESSAGE_TO_ALL("FÃ©licitation Ã  " + _name + " qui vient d'atteindre le niveau " + World.getExpLevelSize() , "D85F03");
 		}
 		
 		if(send && _isOnline && _compte != null && _compte.getGameThread() != null)
@@ -2722,7 +2723,7 @@ public class Player {
 				&& obj.getStats().isSameStats(exObj.getStats())
 				&& obj.getGuid() != exObj.getGuid()
 				&& obj.getPosition() == Constant.ITEM_POS_NO_EQUIPED 
-				&& obj.getTemplate(false).getID() != 7010 // Pour le problèmes des pierres d'âmes
+				&& obj.getTemplate(false).getID() != 7010 // Pour le problÃ¨mes des pierres d'Ã¢mes
 				&& obj.isSameEffects(exObj)){ 
 			return obj;
 			}
@@ -2747,11 +2748,11 @@ public class Player {
 	{
 		for(Entry<Integer,StatsMetier> entry : _metiers.entrySet())
 		{
-			if(entry.getValue().getTemplate().getId() == m.getId())//Si le joueur a déjà le métier
+			if(entry.getValue().getTemplate().getId() == m.getId())//Si le joueur a dÃ©jÃ  le mÃ©tier
 				return -1;
 		}
 		int Msize = _metiers.size();
-		if(Msize == 6)//Si le joueur a déjà 6 métiers
+		if(Msize == 6)//Si le joueur a dÃ©jÃ  6 mÃ©tiers
 			return -1;
 		int pos = 0;
 		if(Constant.isMageJob(m.getId()))
@@ -2767,10 +2768,10 @@ public class Player {
 		}
 		
 		StatsMetier sm = new StatsMetier(pos,m,1,0);
-		_metiers.put(pos, sm);//On apprend le métier lvl 1 avec 0 xp
+		_metiers.put(pos, sm);//On apprend le mÃ©tier lvl 1 avec 0 xp
 		if(_isOnline)
 		{
-			//on créer la listes des statsMetier a envoyer (Seulement celle ci)
+			//on crÃ©er la listes des statsMetier a envoyer (Seulement celle ci)
 			ArrayList<StatsMetier> list = new ArrayList<StatsMetier>();
 			list.add(sm);
 			
@@ -2847,9 +2848,9 @@ public class Player {
 		synchronized (_items) {
 		for(Entry<Integer, Item> i : _items.entrySet())
 		{
-			//On ignore les objets non équipés
+			//On ignore les objets non Ã©quipÃ©s
 			if(i.getValue().getPosition() == Constant.ITEM_POS_NO_EQUIPED)continue;
-			//On prend que les items de la pano demandée, puis on augmente le nombre si besoin
+			//On prend que les items de la pano demandÃ©e, puis on augmente le nombre si besoin
 			if (i.getValue().getStats().getEffect(616161) > 0){
 				ObjTemplate template = World.getObjTemplate(i.getValue().getStats().getEffect(616161));
 				if (template.getPanopID() == panID)nb++;
@@ -2917,12 +2918,12 @@ public class Player {
 		_curCell = _curCarte.getCase(newCellID);
 		
 		if(_curCarte == null) {
-			this.sendText("Vous avez été téléporté à la zone de départ suite à une erreur.");
+			this.sendText("Vous avez Ã©tÃ© tÃ©lÃ©portÃ© Ã  la zone de dÃ©part suite Ã  une erreur.");
 			this.teleport(Config.START_MAP, Config.START_CELL);
 			return;
 		}
 		//Verification de la carte
-		//Verifier la validité du mountpark
+		//Verifier la validitÃ© du mountpark
 		if(_curCarte.getMountPark() != null && _curCarte.getMountPark().get_owner() > 0 && _curCarte.getMountPark().get_guild() != null
 				&& _curCarte.getMountPark().get_guild().get_id() != -1)
 		{
@@ -2932,7 +2933,7 @@ public class Player {
 				Maps.MountPark.removeMountPark(_curCarte.getMountPark().get_guild().get_id());
 			}
 		}
-		//Verifier la validité du percepteur
+		//Verifier la validitÃ© du percepteur
 		if(Collector.GetPercoByMapID(_curCarte.get_id()) != null)
 		{
 			if(World.getGuild(Collector.GetPercoByMapID(_curCarte.get_id()).get_guildID()) == null)//Ne devrait pas arriver
@@ -2941,9 +2942,9 @@ public class Player {
 				Collector.removePercepteur(Collector.GetPercoByMapID(_curCarte.get_id()).get_guildID());
 			}
 		}
-		// Objectif quÃªtes : DÃ©couvrir la carte x
+		// Objectif quÃƒÂªtes : DÃƒÂ©couvrir la carte x
 				this.confirmObjective(4, newMapID + "",null);
-				// Objectif quÃªtes : DÃ©couvrir la zone x
+				// Objectif quÃƒÂªtes : DÃƒÂ©couvrir la zone x
 				this.confirmObjective(5, _curCarte.getSubArea().getID() + "",null);
 		if(PW != null)
 		{
@@ -3044,11 +3045,11 @@ public class Player {
 		//Si le joueur n'a pas l'item dans son sac ...
 		if(_items.get(guid) == null)
 		{
-			GameServer.addToLog("Le joueur "+_name+" a tenté d'ajouter un objet en banque qu'il n'avait pas.");
+			GameServer.addToLog("Le joueur "+_name+" a tentÃ© d'ajouter un objet en banque qu'il n'avait pas.");
 			return;
 		}
 		if (_items.get(guid).getQuantity() >= qua){
-			//Si c'est un item équipé ...
+			//Si c'est un item Ã©quipÃ© ...
 			if(PersoObj.getPosition() != Constant.ITEM_POS_NO_EQUIPED)return;
 			
 			Item BankObj = getSimilarBankItem(PersoObj);
@@ -3060,7 +3061,7 @@ public class Player {
 				{
 					//On enleve l'objet du sac du joueur
 					removeItem(PersoObj.getGuid());
-					//On met l'objet du sac dans la banque, avec la meme quantité
+					//On met l'objet du sac dans la banque, avec la meme quantitÃ©
 					_compte.getBank().put(PersoObj.getGuid(), PersoObj);
 					String str = "O+"+PersoObj.getGuid()+"|"+PersoObj.getQuantity()+"|"+PersoObj.getTemplate().getID()+"|"+PersoObj.parseStatsString();
 					SocketManager.GAME_SEND_EsK_PACKET(this, str);
@@ -3069,7 +3070,7 @@ public class Player {
 				}
 				else//S'il reste des objets au joueur
 				{
-					//on modifie la quantité d'item du sac
+					//on modifie la quantitÃ© d'item du sac
 					PersoObj.setQuantity(newQua);
 					//On ajoute l'objet a la banque et au monde
 					BankObj = Item.getCloneObjet(PersoObj, qua);
@@ -3091,7 +3092,7 @@ public class Player {
 					removeItem(PersoObj.getGuid());
 					//On enleve l'objet du monde
 					World.removeItem(PersoObj.getGuid());
-					//On ajoute la quantité a l'objet en banque
+					//On ajoute la quantitÃ© a l'objet en banque
 					BankObj.setQuantity(BankObj.getQuantity() + PersoObj.getQuantity());
 					//on envoie l'ajout a la banque de l'objet
 					String str = "O+"+BankObj.getGuid()+"|"+BankObj.getQuantity()+"|"+BankObj.getTemplate().getID()+"|"+BankObj.parseStatsString();
@@ -3101,7 +3102,7 @@ public class Player {
 					
 				}else //S'il restait des objets
 				{
-					//on modifie la quantité d'item du sac
+					//on modifie la quantitÃ© d'item du sac
 					PersoObj.setQuantity(newQua);
 					BankObj.setQuantity(BankObj.getQuantity() + qua);
 					String str = "O+"+BankObj.getGuid()+"|"+BankObj.getQuantity()+"|"+BankObj.getTemplate().getID()+"|"+BankObj.parseStatsString();
@@ -3123,12 +3124,12 @@ public class Player {
 		synchronized (_items) {
 		if(_items.get(guid) == null)
 		{
-			GameServer.addToLog("Le joueur "+_name+" a tenté d'ajouter un objet en banque qu'il n'avait pas.");
+			GameServer.addToLog("Le joueur "+_name+" a tentÃ© d'ajouter un objet en banque qu'il n'avait pas.");
 			return;
 		}
 		}
 		if (_items.get(guid).getQuantity() >= qua){
-			//Si c'est un item équipé ...
+			//Si c'est un item Ã©quipÃ© ...
 			if(PersoObj.getPosition() != Constant.ITEM_POS_NO_EQUIPED)return;
 			
 			Item BankObj = getSimilarBankItem(PersoObj);
@@ -3140,7 +3141,7 @@ public class Player {
 				{
 					//On enleve l'objet du sac du joueur
 					removeItem(PersoObj.getGuid());
-					//On met l'objet du sac dans la banque, avec la meme quantité
+					//On met l'objet du sac dans la banque, avec la meme quantitÃ©
 					_compte.getBank().put(PersoObj.getGuid(), PersoObj);
 					String str = "O+"+PersoObj.getGuid()+"|"+PersoObj.getQuantity()+"|"+PersoObj.getTemplate(false).getID()+"|"+PersoObj.parseStatsString();
 					SocketManager.GAME_SEND_EsK_PACKET(this, str);
@@ -3149,7 +3150,7 @@ public class Player {
 				}
 				else//S'il reste des objets au joueur
 				{
-					//on modifie la quantité d'item du sac
+					//on modifie la quantitÃ© d'item du sac
 					PersoObj.setQuantity(newQua);
 					//On ajoute l'objet a la banque et au monde
 					BankObj = Item.getCloneObjet(PersoObj, qua);
@@ -3171,7 +3172,7 @@ public class Player {
 					removeItem(PersoObj.getGuid());
 					//On enleve l'objet du monde
 					World.removeItem(PersoObj.getGuid());
-					//On ajoute la quantité a l'objet en banque
+					//On ajoute la quantitÃ© a l'objet en banque
 					BankObj.setQuantity(BankObj.getQuantity() + PersoObj.getQuantity());
 					//on envoie l'ajout a la banque de l'objet
 					String str = "O+"+BankObj.getGuid()+"|"+BankObj.getQuantity()+"|"+BankObj.getTemplate(false).getID()+"|"+BankObj.parseStatsString();
@@ -3181,7 +3182,7 @@ public class Player {
 					
 				}else //S'il restait des objets
 				{
-					//on modifie la quantité d'item du sac
+					//on modifie la quantitÃ© d'item du sac
 					PersoObj.setQuantity(newQua);
 					BankObj.setQuantity(BankObj.getQuantity() + qua);
 					String str = "O+"+BankObj.getGuid()+"|"+BankObj.getQuantity()+"|"+BankObj.getTemplate(false).getID()+"|"+BankObj.parseStatsString();
@@ -3243,7 +3244,7 @@ public class Player {
 					
 				}else //S'il reste des objets en banque
 				{
-					//On crée une copy de l'item en banque
+					//On crÃ©e une copy de l'item en banque
 					PersoObj = Item.getCloneObjet(BankObj, qua);
 					//On l'ajoute au monde
 					World.addObjet(PersoObj, true);
@@ -3270,7 +3271,7 @@ public class Player {
 					//On retire l'item de la banque
 					_compte.getBank().remove(BankObj.getGuid());
 					World.removeItem(BankObj.getGuid());
-					//On Modifie la quantité de l'item du sac du joueur
+					//On Modifie la quantitÃ© de l'item du sac du joueur
 					PersoObj.setQuantity(PersoObj.getQuantity() + BankObj.getQuantity());
 					
 					//On envoie les packets
@@ -3389,7 +3390,7 @@ public class Player {
 					SQLManager.SAVE_PERSONNAGE_ITEM(this);
 					}
 					World.removeItem(obj.getGuid());
-					//on envoie le packet si connecté
+					//on envoie le packet si connectÃ©
 					if(_isOnline)
 						SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this, obj.getGuid());
 				}
@@ -3416,13 +3417,13 @@ public class Player {
 						SQLManager.SAVE_PERSONNAGE_ITEM(this);
 						}
 						World.removeItem(o.getGuid());
-						//on envoie le packet si connecté
+						//on envoie le packet si connectÃ©
 						if(_isOnline)
 							SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this, o.getGuid());
 					}
 				}else
 				{
-					// on réduit le compteur
+					// on rÃ©duit le compteur
 					tempCount -= obj.getQuantity();
 					remove.add(obj);
 				}
@@ -3466,7 +3467,7 @@ public class Player {
 
 		for(StatsMetier SM : _metiers.values())
 		{
-			// Si c'est un métier 'basic' :
+			// Si c'est un mÃ©tier 'basic' :
 			if(SM.getTemplate().getId() == 	2 || SM.getTemplate().getId() == 11 ||
 			   SM.getTemplate().getId() == 13 || SM.getTemplate().getId() == 14 ||
 			   SM.getTemplate().getId() == 15 || SM.getTemplate().getId() == 16 ||
@@ -3491,7 +3492,7 @@ public class Player {
 
 		for(StatsMetier SM : _metiers.values())
 		{
-			// Si c'est une spécialisation 'FM' :
+			// Si c'est une spÃ©cialisation 'FM' :
 			if(SM.getTemplate().getId() == 	43 || SM.getTemplate().getId() == 44 ||
 			   SM.getTemplate().getId() == 45 || SM.getTemplate().getId() == 46 ||
 			   SM.getTemplate().getId() == 47 || SM.getTemplate().getId() == 48 ||
@@ -3871,9 +3872,9 @@ public class Player {
 	{
 		if(!_isZaaping)return;//S'il n'a pas ouvert l'interface Zaap(hack?)
 		if(_fight != null) return;//Si il combat
-		if(!hasZaap(id))return;//S'il n'a pas le zaap demandé(ne devrais pas arriver)
+		if(!hasZaap(id))return;//S'il n'a pas le zaap demandÃ©(ne devrais pas arriver)
 		int cost = Formulas.calculZaapCost(_curCarte, World.getCarte(id));
-		if(_kamas < cost)return;//S'il n'a pas les kamas (verif coté org.area.client)
+		if(_kamas < cost)return;//S'il n'a pas les kamas (verif cotÃ© org.area.client)
 		short mapID = id;
 		int SubAreaID = _curCarte.getSubArea().getArea().getSuperArea().getID();
 		int cellID = World.getZaapCellIdByMapId(id);
@@ -4552,12 +4553,12 @@ public class Player {
 		synchronized (_items) {
 		if (_items.get(ObjID).getQuantity() < qua)
 		{
-			GameServer.addToLog("Le joueur "+_name+" a tenté d'ajouter une quantité d'objet en banque dont il ne possédait pas.");
-			SocketManager.GAME_SEND_MESSAGE(this, "Alors petit rigolo, ça marche plus ?", Config.CONFIG_MOTD_COLOR);
+			GameServer.addToLog("Le joueur "+_name+" a tentÃ© d'ajouter une quantitÃ© d'objet en banque dont il ne possÃ©dait pas.");
+			SocketManager.GAME_SEND_MESSAGE(this, "Alors petit rigolo, Ã§a marche plus ?", Config.CONFIG_MOTD_COLOR);
 			return;
 		}
 		}
-		//Si c'est un item équipé ...
+		//Si c'est un item Ã©quipÃ© ...
 		if(PersoObj.getPosition() != Constant.ITEM_POS_NO_EQUIPED)return;
 		
 		Item SimilarObj = getSimilarStoreItem(PersoObj);
@@ -4569,14 +4570,14 @@ public class Player {
 			{
 				//On enleve l'objet du sac du joueur
 				removeItem(PersoObj.getGuid());
-				//On met l'objet du sac dans le store, avec la meme quantité
+				//On met l'objet du sac dans le store, avec la meme quantitÃ©
 				_storeItems.put(PersoObj.getGuid(), price);
 				SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this, PersoObj.getGuid());
                 SocketManager.GAME_SEND_ITEM_LIST_PACKET_SELLER(this, this);
 			}
 			else//S'il reste des objets au joueur
 			{
-				//on modifie la quantité d'item du sac
+				//on modifie la quantitÃ© d'item du sac
 				PersoObj.setQuantity(newQua);
 				//On ajoute l'objet a la banque et au monde
 				SimilarObj = Item.getCloneObjet(PersoObj, qua);
@@ -4597,7 +4598,7 @@ public class Player {
 				removeItem(PersoObj.getGuid());
 				//On enleve l'objet du monde
 				World.removeItem(PersoObj.getGuid());
-				//On ajoute la quantité a l'objet en banque
+				//On ajoute la quantitÃ© a l'objet en banque
 				SimilarObj.setQuantity(SimilarObj.getQuantity() + PersoObj.getQuantity());
 				_storeItems.remove(SimilarObj.getGuid());
 				_storeItems.put(SimilarObj.getGuid(), price);
@@ -4607,7 +4608,7 @@ public class Player {
 				SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this, PersoObj.getGuid());
 			}else //S'il restait des objets
 			{
-				//on modifie la quantité d'item du sac
+				//on modifie la quantitÃ© d'item du sac
 				PersoObj.setQuantity(newQua);
 				SimilarObj.setQuantity(SimilarObj.getQuantity() + qua);
 				_storeItems.remove(SimilarObj.getGuid());
@@ -4675,7 +4676,7 @@ public class Player {
 				//On retire l'item de la banque
 				_storeItems.remove(SimilarObj.getGuid());
 				World.removeItem(SimilarObj.getGuid());
-				//On Modifie la quantité de l'item du sac du joueur
+				//On Modifie la quantitÃ© de l'item du sac du joueur
 				PersoObj.setQuantity(PersoObj.getQuantity() + SimilarObj.getQuantity());
 				
 				//On envoie les packets
@@ -4714,14 +4715,14 @@ public class Player {
 	public void set_savestat(int stat){
 	this.savestat = stat;
 	}
-	public void RejoindeWife(Player p) // Correcion téléportation mariage par Taparisse
+	public void RejoindeWife(Player p) // Correcion tÃ©lÃ©portation mariage par Taparisse
     {
         if(p == null)
         {
             return;
         }
         int dist = (_curCarte.getX() - p.getMap().getX()) * (_curCarte.getX() - p.getMap().getX()) + (_curCarte.getY() - p.getMap().getY()) * (_curCarte.getY() - p.getMap().getY());
-        if(dist > 10) // Distance max acceptée entre les deux amours.
+        if(dist > 10) // Distance max acceptÃ©e entre les deux amours.
         {
             SocketManager.GAME_SEND_MESSAGE(this, "Vous etes trop loin de votre amour. Impossible de vous y teleporter.", Config.CONFIG_MOTD_COLOR);
             return;
@@ -4780,7 +4781,7 @@ public class Player {
 	// @Flow - UNSTABLE version & USELESS
 	public void DeconnexionCombat()
 	{
-		//Quand tous les tours sont passés, bah on dois déconnecter le gars
+		//Quand tous les tours sont passÃ©s, bah on dois dÃ©connecter le gars
 		if(get_curExchange() != null)get_curExchange().cancel();
 		//Si en groupe
 		if(getGroup() != null)getGroup().leave(this);
@@ -4821,7 +4822,7 @@ public class Player {
 				if(obj.getPosition() == Constant.ITEM_POS_NO_EQUIPED) continue;
 				
 				if(!objT.getConditions().equalsIgnoreCase("") && !ConditionParser.validConditions(this,objT.getConditions())) {
-					// si le perso ne vérifie pas les conditions diverses
+					// si le perso ne vÃ©rifie pas les conditions diverses
 					this.DesequiperItem(obj);
 					deseq=true;
 					nb++;
@@ -4845,7 +4846,7 @@ public class Player {
     		SocketManager.GAME_SEND_SB_PACKET(this, item.getBoostSpellStats(), false);
     	}
 		Item obj2;
-		if((obj2 = getSimilarItem(item)) != null)//On le possède deja
+		if((obj2 = getSimilarItem(item)) != null)//On le possÃ¨de deja
 		{
 			obj2.setQuantity(obj2.getQuantity()+item.getQuantity());
 			SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(this, obj2);
@@ -4853,13 +4854,13 @@ public class Player {
 			removeItem(item.getGuid());
 			SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(this, item.getGuid());
 		}
-		else//On ne le possède pas
+		else//On ne le possÃ¨de pas
 		{
 			item.setPosition(Constant.ITEM_POS_NO_EQUIPED);
 			SocketManager.GAME_SEND_OBJET_MOVE_PACKET(this,item);
 		}
 		//Si objet de panoplie
-		// Verif si mimibiotés
+		// Verif si mimibiotÃ©s
 		ObjTemplate template = null;
 		if (item.getStats().getEffect(616161) > 0){
 			template = World.getObjTemplate(item.getStats().getEffect(616161));
@@ -5123,7 +5124,7 @@ public class Player {
 	
 	public void setCandy(int idCandy) {
 		if(this.candy_used != "") {
-			this.sendText("Un bonbon spécial est déjà utiliser.");
+			this.sendText("Un bonbon spÃ©cial est dÃ©jÃ  utiliser.");
 			return;
 		}
 		this.candy_used = idCandy + "|" + (System.currentTimeMillis() + ((86400 * 1000) * 3));
@@ -5148,7 +5149,7 @@ public class Player {
 			String[] decomposeCandy = this.candy_used.toString().split("\\|");
 			if(Long.parseLong(decomposeCandy[1]) <= System.currentTimeMillis()) {
 				this.candy_used = "";
-				this.sendText("Votre bonbon spécial est terminé !");
+				this.sendText("Votre bonbon spÃ©cial est terminÃ© !");
 				this.sendCandyUsed();
 				this.save(false);
 			}
@@ -5196,7 +5197,7 @@ public class Player {
 			SocketManager.GAME_SEND_STATS_PACKET(this);
 			SocketManager.GAME_SEND_SPELL_LIST(this);
 		} else {
-			this.sendText("Votre personnage a déjà un niveau supérieur à " + lvl + ".");
+			this.sendText("Votre personnage a dÃ©jÃ  un niveau supÃ©rieur Ã  " + lvl + ".");
 		}
 	}
 	public void upPrestige() {
@@ -5212,7 +5213,7 @@ public class Player {
 					}
 				}
 			} catch (Exception e) {
-				this.sendText("Une erreur est survenue lors du déséquipement de vos items... Essayer d'enlever tous vos équipements puis ré-essayer.");
+				this.sendText("Une erreur est survenue lors du dÃ©sÃ©quipement de vos items... Essayer d'enlever tous vos Ã©quipements puis rÃ©-essayer.");
 				return;
 			}
 			this.save(true);
@@ -5244,60 +5245,60 @@ public class Player {
 			SocketManager.GAME_SEND_STATS_PACKET(this);
 			SocketManager.GAME_SEND_SPELL_LIST(this);
 			if(getPrestige() == 2) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait gagner <b>1PM</b> et vos caractéristiques de base passent à <b>121 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait gagner <b>1PM</b> et vos caractÃ©ristiques de base passent Ã  <b>121 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			} else if(getPrestige() == 3) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractéristiques de base à <b>151 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractÃ©ristiques de base Ã  <b>151 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 4) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractéristiques de base à <b>171 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractÃ©ristiques de base Ã  <b>171 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 5) {
 				set_ornement(4);
 				save(false);
 	    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(getMap(), getGuid());
 	    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(getMap(), this);
-	    		sendText("Vous possèdez un nouvel ornement !");
+	    		sendText("Vous possÃ¨dez un nouvel ornement !");
 	    		addOrnement(4);
 	    		send("000A"+ getOrnementsStringData());
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait gagner <b>1PA</b> et vos caractéristiques de base passent à <b>201 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait gagner <b>1PA</b> et vos caractÃ©ristiques de base passent Ã  <b>201 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 6) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractéristiques de base à <b>221 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractÃ©ristiques de base Ã  <b>221 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 7) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractéristiques de base à <b>251 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractÃ©ristiques de base Ã  <b>251 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 8) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractéristiques de base à <b>271 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractÃ©ristiques de base Ã  <b>271 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 9) {
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractéristiques de base à <b>301 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait monter vos caractÃ©ristiques de base Ã  <b>301 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}else if(getPrestige() == 10) {
 				set_ornement(5);
 				save(false);
 	    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(getMap(), getGuid());
 	    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(getMap(), this);
-	    		sendText("Vous possèdez un nouvel ornement !");
+	    		sendText("Vous possÃ¨dez un nouvel ornement !");
 	    		addOrnement(5);
 	    		send("000A"+ getOrnementsStringData());
-				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait gagner <b>1PM</b> et vos caractéristiques de base passent à <b>351 pour chaque éléments</b>.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(this, "Votre nouveau prestige vous fait gagner <b>1PM</b> et vos caractÃ©ristiques de base passent Ã  <b>351 pour chaque Ã©lÃ©ments</b>.", Config.CONFIG_MOTD_COLOR);
 			}
 			else if(getPrestige() == 11){
-				sendText("Votre nouveau prestige vous fait gagner <b>20%</b> de dommages de base et <b>50</b> points de vitalité de base supplémentaire.");
+				sendText("Votre nouveau prestige vous fait gagner <b>20%</b> de dommages de base et <b>50</b> points de vitalitÃ© de base supplÃ©mentaire.");
 			}
 			else if(getPrestige() == 12){
-				sendText("Votre nouveau prestige vous fait gagner <b>1</b> au bonus de coup critique de base et <b>100</b> points de vitalité de base supplémentaire.");
+				sendText("Votre nouveau prestige vous fait gagner <b>1</b> au bonus de coup critique de base et <b>100</b> points de vitalitÃ© de base supplÃ©mentaire.");
 			}
 			else if(getPrestige() == 13){
 				learnSpell(212124, 6, true, true);
-				sendText("Votre nouveau prestige vous fait gagner <b>1</b> PO de base, <b>100</b> vitalité de base supplémentaire et <b>5</b> dommages de base supplémentaire.");
+				sendText("Votre nouveau prestige vous fait gagner <b>1</b> PO de base, <b>100</b> vitalitÃ© de base supplÃ©mentaire et <b>5</b> dommages de base supplÃ©mentaire.");
 			}
 			else if(getPrestige() == 14){
-				sendText("Votre nouveau prestige vous fait gagner <b>1%</b> de résistance dans tous les éléments et <b>100</b> points de vitalité de base supplémentaire.");
+				sendText("Votre nouveau prestige vous fait gagner <b>1%</b> de rÃ©sistance dans tous les Ã©lÃ©ments et <b>100</b> points de vitalitÃ© de base supplÃ©mentaire.");
 			}
 			else if(getPrestige() == 15){
 				set_ornement(6);
 				save(false);
 	    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(getMap(), getGuid());
 	    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(getMap(), this);
-	    		sendText("Vous possèdez un nouvel ornement !");
+	    		sendText("Vous possÃ¨dez un nouvel ornement !");
 	    		addOrnement(6);
 	    		send("000A"+ getOrnementsStringData());
-				sendText("Votre nouveau prestige vous fait gagner <b>15</b> dommages de base et <b>150</b> points de vitalité de base supplémentaire.");
+				sendText("Votre nouveau prestige vous fait gagner <b>15</b> dommages de base et <b>150</b> points de vitalitÃ© de base supplÃ©mentaire.");
 			}
 		}
 		int levelUp = 6;
@@ -5340,16 +5341,16 @@ public class Player {
 	public void learnToolSpells() {
 		/*
 		this.learnSpell(350, 6, true, true); //Flamiche
-		this.learnSpell(368, 6, true, true); //Libération
+		this.learnSpell(368, 6, true, true); //LibÃ©ration
 		this.learnSpell(369, 6, true, true); //Foudroiement
 		this.learnSpell(366, 6, true, true); //Marteau du moon
 		this.learnSpell(364, 6, true, true); //Boomrang Perfide
 		this.learnSpell(370, 6, true, true); //Invocation arakne
 		this.learnSpell(373, 6, true, true); //Invocation chaferfou
 		
-		switch (get_classe()) //Sorts spéciaux de classe
+		switch (get_classe()) //Sorts spÃ©ciaux de classe
 		{
-			case 1: //Féca
+			case 1: //FÃ©ca
 				this.learnSpell(422, 6, true, true);
 				break;
 			case 2: //Osamodas
@@ -5389,7 +5390,7 @@ public class Player {
 				break;
 		}
 		
-		//Maîtrises
+		//MaÃ®trises
 		this.learnSpell(392, 6, true, true); //Arc
 		this.learnSpell(391, 6, true, true); //Epee
 		this.learnSpell(390, 6, true, true); //Baton
@@ -5521,7 +5522,7 @@ public class Player {
 	 			if(questTarget == null)
 	 				return false;
 	 			
-	 			if(stepId != -1 && stepId != Integer.parseInt(questTarget.get("curStep"))) // Une étape précise est renseignée
+	 			if(stepId != -1 && stepId != Integer.parseInt(questTarget.get("curStep"))) // Une Ã©tape prÃ©cise est renseignÃ©e
 	 				return false;
 	 			
 	 			return true;
@@ -5565,8 +5566,8 @@ public class Player {
 	 				
 	 			for(Entry<Integer, Map<String, String>> entry : _quests.entrySet())
 	 			{
-	 				quests += entry.getKey()  + ":"; // Id quÃªte
-	 				if(entry.getValue().get("curStep").equals("-1"))  // QuÃªte finie
+	 				quests += entry.getKey()  + ":"; // Id quÃƒÂªte
+	 				if(entry.getValue().get("curStep").equals("-1"))  // QuÃƒÂªte finie
 	 				{
 	 					quests += "-1";
 	 				} else // Quete en cours
@@ -5613,20 +5614,20 @@ public class Player {
 	 			Map<String, String> questPerso = _quests.get(questId);
 	 			if(questPerso == null) 
 	 			{
-	 				return ""; // On a pas la quÃªte demandÃ©e
+	 				return ""; // On a pas la quÃƒÂªte demandÃƒÂ©e
 	 			}
 	 				
 	 			Map<String, String> questDetails = World.getQuest(questId);
 	 			if(questDetails == null)
 	 			{
 	 				GameServer.addToLog("Game: Error >> Quete " + questId + " inexistante ");
-	 				return ""; // La quÃªte demandÃ©e n'existe pas
+	 				return ""; // La quÃƒÂªte demandÃƒÂ©e n'existe pas
 	 			}
 	 			String packet = "QS" + questId + "|";
 	 				
-	 			String questSteps = questDetails.get("steps"); // Etapes de la quÃªte split par ;
+	 			String questSteps = questDetails.get("steps"); // Etapes de la quÃƒÂªte split par ;
 	 			String curStep = questPerso.get("curStep");
-	 			if(curStep.equals("-1")) // QuÃªte finie : on prend la derniÃ¨re Ã©tape
+	 			if(curStep.equals("-1")) // QuÃƒÂªte finie : on prend la derniÃƒÂ¨re ÃƒÂ©tape
 	 			{
 	 				String[] splitSteps = questSteps.split(";");
 	 				String lastStep = splitSteps[splitSteps.length - 1];
@@ -5637,7 +5638,7 @@ public class Player {
 	 			Map<String, String> stepDetails = World.getStep(Integer.parseInt(curStep));
 	 			String[] allObjectives = stepDetails.get("objectives").split(";");
 	 				
-	 			for(String curObj : allObjectives) // Chaque objectif de l'Ã©tape actuelle
+	 			for(String curObj : allObjectives) // Chaque objectif de l'ÃƒÂ©tape actuelle
 	 			{
 	 				packet += curObj + ",";
 	 				if(!questPerso.get("objectivesToDo").contains(curObj)) // Objectif fait ? 
@@ -5649,7 +5650,7 @@ public class Player {
 	 				}
 	 					
 	 			}				
-	 			packet = packet.substring(0,packet.length() - 1) + "|"; // EnlÃ¨ve le dernier ; en trop
+	 			packet = packet.substring(0,packet.length() - 1) + "|"; // EnlÃƒÂ¨ve le dernier ; en trop
 	 				
 	 			int index = questSteps.indexOf(curStep);
 	 			if(index > 0) index -= 1;
@@ -5676,9 +5677,9 @@ public class Player {
 		    }
 	 		public String confirmObjective(int type,String args,String args2)
 	 		{	
-	 			for (Entry<Integer,Map<String,String>> entry : _quests.entrySet()) // Chaque quÃªte 
+	 			for (Entry<Integer,Map<String,String>> entry : _quests.entrySet()) // Chaque quÃƒÂªte 
 	 			{
-	 				if(!entry.getValue().get("curStep").equals("-1")) // Si non terminÃ©e
+	 				if(!entry.getValue().get("curStep").equals("-1")) // Si non terminÃƒÂ©e
 	 				{
 	 					String objectivesToDo = entry.getValue().get("objectivesToDo");
 	 					String[] splitObjectives = objectivesToDo.split(",");
@@ -5689,7 +5690,7 @@ public class Player {
 	 						Map<String, String> obj = World.getObjective(Integer.parseInt(toDo));
 	 						if(obj == null) return ""; // Objectif inexistant
 	 							
-	 						if(type == 1 || type == 2 || type == 4 || type == 8 || type == 5) // Objectifs simple : "Aller voir PNJ" OU "Montrer Nbre Item Ã  Pnj" OU "DÃ©couvrir carte MAPID" OU "Utiliser objet X"
+	 						if(type == 1 || type == 2 || type == 4 || type == 8 || type == 5) // Objectifs simple : "Aller voir PNJ" OU "Montrer Nbre Item ÃƒÂ  Pnj" OU "DÃƒÂ©couvrir carte MAPID" OU "Utiliser objet X"
 	 						{
 	 							if(obj.get("type").equals(type + "") && obj.get("args").equals(args))
 	 							{
@@ -5700,11 +5701,11 @@ public class Player {
 	 								_quests.get(entry.getKey()).put("objectivesToDo", objectivesToDo);
 	 								SocketManager.GAME_SEND_Im_PACKET(this, "055;" + entry.getKey()); // Quete MaJ
 	 							}
-	 						}else if(type == 3) // "Ramener Ã  PNJ NBRE ITEMS"
+	 						}else if(type == 3) // "Ramener ÃƒÂ  PNJ NBRE ITEMS"
 	 						{ // Args = ItemId,Quantite
 	 							if(obj.get("type").equals(type + "") && obj.get("args").equals(args))
 	 							{
-	 								// On retire l'item demandÃ©
+	 								// On retire l'item demandÃƒÂ©
 	 								int itemId = 0;
 	 								int q = 1;
 	 									
@@ -5729,7 +5730,7 @@ public class Player {
 	 							}
 	 						}else if(type == 6)
 	 						{
-	 							for(String curMob : args.split(";")) // DiffÃ©rents mobs vaincus
+	 							for(String curMob : args.split(";")) // DiffÃƒÂ©rents mobs vaincus
 	 							{
 	 								if(curMob == null || (curMob != null && curMob.isEmpty()))
 	 									return "";
@@ -5765,7 +5766,7 @@ public class Player {
 	 		public boolean canDoObjective(int type, String args) // Le perso peut-il faire cet objectif ? 
 	 		{ 
 	 				
-	 			if(type == 3) // "Ramener Ã  PNJ NBRE ITEMS"
+	 			if(type == 3) // "Ramener ÃƒÂ  PNJ NBRE ITEMS"
 	 			{ // Args = ItemId,Quantite
 	 				int itemId = 0;
 	 				int q = 1;
@@ -5798,18 +5799,18 @@ public class Player {
 	 			}
 	 			if(_quests.get(questId) != null && questDetails.get("unique").equals("1")) // Perso a deja la quete
 	 			{
-	 				SocketManager.GAME_SEND_MESSAGE(this, "Vous avez déjà cette quéte !", "FF0000");
+	 				SocketManager.GAME_SEND_MESSAGE(this, "Vous avez dÃ©jÃ  cette quÃ©te !", "FF0000");
 	 				return;
 	 			}
 	 			if(_lvl < Integer.parseInt(questDetails.get("minLvl"))) // Niveau minimum
 	 			{
-	 				//SocketManager.GAME_SEND_MESSAGE(this, "Vous devez avoir le niveau minimum de " + questDetails.get("minLvl") + " pour faire cette quÃªte !", "FF0000");
+	 				//SocketManager.GAME_SEND_MESSAGE(this, "Vous devez avoir le niveau minimum de " + questDetails.get("minLvl") + " pour faire cette quÃƒÂªte !", "FF0000");
 	 				SocketManager.GAME_SEND_Im_PACKET(this,  "13");
 	 				return;
 	 			}
 	 			if(!questDetails.get("questRequired").equals("0")) // Il faut avoir fait une quete
 	 			{
-	 				SocketManager.GAME_SEND_MESSAGE(this, "Cette quéte nécessite de faire une autre quéte.", "FF0000");
+	 				SocketManager.GAME_SEND_MESSAGE(this, "Cette quÃ©te nÃ©cessite de faire une autre quÃ©te.", "FF0000");
 	 				return;
 	 			}
 	 				
@@ -5830,7 +5831,7 @@ public class Player {
 	 			SocketManager.GAME_SEND_Im_PACKET(this, "054;" + questId); // New quete
 	 		}
 	 		
-	 		public void upgradeQuest(int questId) // Monte prochaine Ã©tape ou termine quete
+	 		public void upgradeQuest(int questId) // Monte prochaine ÃƒÂ©tape ou termine quete
 	 		{
 	 		
 	 			Map<String, String> questDetails = World.getQuest(questId);
@@ -5860,7 +5861,7 @@ public class Player {
 	 			{
 	 				nextSteps = questSteps.substring(questSteps.indexOf(curStep) + curStep.length() + 1);
 	 			}
-	 				// RÃ©compenses
+	 				// RÃƒÂ©compenses
 	 				Map<String,String> stepDetails = World.getStep(Integer.parseInt(curStep));
 	 					
 	 				if(!stepDetails.get("gainKamas").equals("0")) // Gain de Kamas
@@ -5868,7 +5869,7 @@ public class Player {
 	 					_kamas += Integer.parseInt(stepDetails.get("gainKamas"));
 	 						
 	 					SocketManager.GAME_SEND_STATS_PACKET(this);
-	 					SocketManager.GAME_SEND_Im_PACKET(this, "045;" + stepDetails.get("gainKamas")); // Tu as gÂ² x Kamas
+	 					SocketManager.GAME_SEND_Im_PACKET(this, "045;" + stepDetails.get("gainKamas")); // Tu as gÃ‚Â² x Kamas
 	 				}
 	 					
 	 				if(!stepDetails.get("gainExp").equals("0")) // Gain d'exp
@@ -5877,12 +5878,12 @@ public class Player {
 	 					addXp(gain);
 	 						
 	 					SocketManager.GAME_SEND_STATS_PACKET(this);
-	 					SocketManager.GAME_SEND_Im_PACKET(this, "08;" + stepDetails.get("gainExp")); // Tu as gÂ² x XP
+	 					SocketManager.GAME_SEND_Im_PACKET(this, "08;" + stepDetails.get("gainExp")); // Tu as gÃ‚Â² x XP
 	 				}
 	 					
 	 				if(stepDetails.get("gainItems") != null) // Gain d'Items
 	 				{
-	 					for(String item : stepDetails.get("gainItems").split(";")) // DiffÃ©rents items
+	 					for(String item : stepDetails.get("gainItems").split(";")) // DiffÃƒÂ©rents items
 	 					{
 	 						if(item == null) 
 	 							return;
@@ -5901,7 +5902,7 @@ public class Player {
 	 						SocketManager.GAME_SEND_Im_PACKET(this, "021;" + count + "~" + tID);
 	 					}	
 	 				}
-	 				  // Fin rÃ©compenses
+	 				  // Fin rÃƒÂ©compenses
 	 					
 	 			if(nextSteps.isEmpty()) // Quete terminee
 	 			{
@@ -5936,7 +5937,7 @@ public class Player {
 		}
 		return total;
 	}
-			// PNJ échangeur @Flow
+			// PNJ Ã©changeur @Flow
 			public int getItemQuantity(int Obj)
 			{
 				if (_listeItem.containsKey(Obj) == true){

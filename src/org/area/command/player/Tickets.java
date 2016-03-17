@@ -64,7 +64,7 @@ public class Tickets {
 	{
 		String info = "";
 		
-		info += "Ticket écrit par : "+this.joueur+" - Message : \n"+this.message;
+		info += "Ticket Ã©crit par : "+this.joueur+" - Message : \n"+this.message;
 		
 		return info;
 	

@@ -77,7 +77,7 @@ public class FmCac {
 		SocketManager.GAME_SEND_STATS_PACKET(player);
 		player.sendMess(Lang.LANG_110);
 		
-		// Add retrait de pts by Tµ
+		// Add retrait de pts by TÂµ
 		int points = Util.loadPointsByAccount(player.getAccount());
 		int newPoints = points - 10;
 		Util.updatePointsByAccount(player.getAccount(), newPoints);

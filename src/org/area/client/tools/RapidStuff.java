@@ -90,7 +90,7 @@ public class RapidStuff { /** Author: Return **/
 			p.execute();
 			SQLManager.closePreparedStatement(p);
 		} catch (SQLException e) {
-			return false; //Useless tout ça mais osef xD Flemme de changer
+			return false; //Useless tout Ã§a mais osef xD Flemme de changer
 		}
 		rapidStuffs.remove(id);
 		return true;

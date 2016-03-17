@@ -42,7 +42,7 @@ public class FloodCheck {
 		
 		if (acc.getFloodGrade() >= 40)
 		{
-			SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Attention ! Vous êtes à "+acc.getFloodGrade()+"/50 floods possibles ! Restez sans parler quelques temps pour baisser votre quotas.", Config.CONFIG_MOTD_COLOR);
+			SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Attention ! Vous Ãªtes Ã  "+acc.getFloodGrade()+"/50 floods possibles ! Restez sans parler quelques temps pour baisser votre quotas.", Config.CONFIG_MOTD_COLOR);
 		}
 		if (actualTime - perso.getLastMess() > 60000*5)
 		{
@@ -60,8 +60,8 @@ public class FloodCheck {
 		if (acc.getFloodGrade() >= 50 && acc.isAFlooder() != true)
 		{
 			acc.setAFlooder(true);
-			SocketManager.GAME_SEND_MESSAGE_TO_ALL("<b>AntiFlood:</b> Le joueur <b>"+perso.getName()+"</b> est désormais soumis à l'antiflood du serveur ! Applaudissements !", Config.CONFIG_MOTD_COLOR);
-			SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Restez muet pendant 5 minutes pour désactiver l'antiflood", Config.CONFIG_MOTD_COLOR);
+			SocketManager.GAME_SEND_MESSAGE_TO_ALL("<b>AntiFlood:</b> Le joueur <b>"+perso.getName()+"</b> est dÃ©sormais soumis Ã  l'antiflood du serveur ! Applaudissements !", Config.CONFIG_MOTD_COLOR);
+			SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Restez muet pendant 5 minutes pour dÃ©sactiver l'antiflood", Config.CONFIG_MOTD_COLOR);
 	    }
 		if (actualTime - perso.getLastMess() < 1000)
 		{
@@ -81,7 +81,7 @@ public class FloodCheck {
 		{
 			if (perso.getAccount().isAFlooder())
 			{
-				SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Le message est semblable au précédent !", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Le message est semblable au prÃ©cÃ©dent !", Config.CONFIG_MOTD_COLOR);
 				updateFloodInfos(perso, mess);
 				return true;
 			}
@@ -100,7 +100,7 @@ public class FloodCheck {
 			{
 				if (perso.getAverto() != 2)
 				{
-					SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Vous avez envoyé plus de 12 messages en moins de 15 secondes ! Encore 1 tentative avant votre perte de parole temporaire...", Config.CONFIG_MOTD_COLOR);
+					SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Vous avez envoyÃ© plus de 12 messages en moins de 15 secondes ! Encore 1 tentative avant votre perte de parole temporaire...", Config.CONFIG_MOTD_COLOR);
 					perso.setAverto(2);
 					updateFloodInfos(perso, mess);
 					return true;
@@ -123,7 +123,7 @@ public class FloodCheck {
 					{
 						if (perso.getAccount().isAFlooder())
 						{
-							SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Votre message a été détecté comme flood ! Il vous reste <b>"+(14-perso.getLastFloodTime())+" tentatives</b> possibles avant votre bannissement temporaire...", Config.CONFIG_MOTD_COLOR);
+							SocketManager.GAME_SEND_MESSAGE(perso, "<b>AntiFlood:</b> Votre message a Ã©tÃ© dÃ©tectÃ© comme flood ! Il vous reste <b>"+(14-perso.getLastFloodTime())+" tentatives</b> possibles avant votre bannissement temporaire...", Config.CONFIG_MOTD_COLOR);
 							perso.setLastFloodTime(perso.getLastFloodTime()+1);
 							updateFloodInfos(perso, mess);
 							return true;
@@ -139,7 +139,7 @@ public class FloodCheck {
 						perso.getAccount().ban(3600, false);
 						if (perso.getAccount().getGameThread() != null) 
 							perso.getAccount().getGameThread().kick();
-						SocketManager.GAME_SEND_MESSAGE_TO_ALL("Le joueur "+perso.getName()+" a été banni <b>1 heure</b> par <b>l'AntiFlood</b> automatique du serveur !", Config.CONFIG_MOTD_COLOR);
+						SocketManager.GAME_SEND_MESSAGE_TO_ALL("Le joueur "+perso.getName()+" a Ã©tÃ© banni <b>1 heure</b> par <b>l'AntiFlood</b> automatique du serveur !", Config.CONFIG_MOTD_COLOR);
 						return true;
 					}
 				}

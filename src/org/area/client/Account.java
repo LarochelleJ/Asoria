@@ -48,7 +48,7 @@ public class Account {
 	public boolean _isD = false;
 	public int _position = -1;//Position du joueur
 	private Map<Integer,ArrayList<HdvEntry>> _hdvsItems;// Contient les items des HDV format : <hdvID,<cheapestID>>
-	private int _cadeau; //Cadeau à la connexion
+	private int _cadeau; //Cadeau Ã  la connexion
 	
 	private Map<Integer, Player> players = new TreeMap<Integer, Player>();
 	private Map<Integer, Long> WhenHasLeftKolizeum = new HashMap<Integer, Long>();
@@ -360,7 +360,7 @@ public class Account {
 				P.set_Online(false);
 				//Reset des vars du perso
 				/**
-				 * TODO : ici ont refais la déco à la masse!
+				 * TODO : ici ont refais la dÃ©co Ã  la masse!
 				P.resetVars();
 				if(save) SQLManager.SAVE_PERSONNAGE(P,true);
 				World.unloadPerso(P.get_GUID());
@@ -380,7 +380,7 @@ public class Account {
 			Account C = World.getCompte(i);
 			if(C == null)continue;
 			str.append("|").append(C.getPseudo());
-			//on s'arrete la si aucun perso n'est connecté
+			//on s'arrete la si aucun perso n'est connectÃ©
 			if(!C.isOnline())continue;
 			Player P = C.getCurPlayer();
 			if(P == null)continue;
@@ -488,7 +488,7 @@ public class Account {
 			Account C = World.getCompte(i);
 			if(C == null)continue;
 			str.append("|").append(C.getPseudo());
-			//on s'arrete la si aucun perso n'est connecté
+			//on s'arrete la si aucun perso n'est connectÃ©
 			if(!C.isOnline())continue;
 			Player P = C.getCurPlayer();
 			if(P == null)continue;
@@ -516,10 +516,10 @@ public class Account {
 		if(currentPlayer.get_isTradingWith() >= 0)
 			return false;
 		
-		int hdvID = Math.abs(currentPlayer.get_isTradingWith());//Récupère l'ID de l'HDV
+		int hdvID = Math.abs(currentPlayer.get_isTradingWith());//RÃ©cupÃ¨re l'ID de l'HDV
 		
 		HdvEntry entry = null;
-		for(HdvEntry tempEntry : _hdvsItems.get(hdvID))//Boucle dans la liste d'entry de l'HDV pour trouver un entry avec le meme cheapestID que spécifié
+		for(HdvEntry tempEntry : _hdvsItems.get(hdvID))//Boucle dans la liste d'entry de l'HDV pour trouver un entry avec le meme cheapestID que spÃ©cifiÃ©
 		{
 			if(tempEntry.getLigneID() == ligneID)//Si la boucle trouve un objet avec le meme cheapestID, arrete la boucle
 			{
@@ -531,7 +531,7 @@ public class Account {
 				break;
 			}
 		}
-		if(entry == null)//Si entry == null cela veut dire que la boucle s'est effectué sans trouver d'item avec le meme cheapestID
+		if(entry == null)//Si entry == null cela veut dire que la boucle s'est effectuÃ© sans trouver d'item avec le meme cheapestID
 			return false;
 		
 		_hdvsItems.get(hdvID).remove(entry);//Retire l'item de la liste des objets a vendre du compte
@@ -573,7 +573,7 @@ public class Account {
 		return _hdvsItems.get(hdvID).size();
 	}
 	
-	//Bannissement temporisé
+	//Bannissement temporisÃ©
 	public void ban(long time, boolean isEndTime)
 	{
 		if(time == 0) return;
@@ -667,7 +667,7 @@ public class Account {
 	{
 		if(_mute_time == 0) return false;
 		if(_mute_time >= (long) System.currentTimeMillis()/1000)return true;
-		//On le démute
+		//On le dÃ©mute
 		_mute_time = 0;
 		_mute_raison = "";
 		_mute_pseudo = "";

@@ -11,23 +11,23 @@ public class Security {
 		boolean banned = false;
 		boolean exploit = false;
 
-		// suceptible d'être faillé
+		// suceptible d'Ãªtre faillÃ©
 		switch (packet.substring(0, 2)) {
-		case "AA": // Création de perso
+		case "AA": // CrÃ©ation de perso
 			break;
 
-		case "DR": // Dialogue Réponse
+		case "DR": // Dialogue RÃ©ponse
 			switch (packet.substring(3)) {
 			case "DR677|605": // Chacha + tp
 				if (character.getMap().get_id() != 2084)
 					exploit = true;
 				break;
 
-			case "DR3234|2874": // kamas + oeuf de tofu obèse
+			case "DR3234|2874": // kamas + oeuf de tofu obÃ¨se
 				exploit = true;
 				break;
 
-			case "DR333|414": // Dofus cawotte TODO : à corriger des
+			case "DR333|414": // Dofus cawotte TODO : Ã  corriger des
 								// l'implantation en jeux!
 				exploit = true;
 				break;
@@ -43,12 +43,12 @@ public class Security {
 			break;
 
 		case "OD": // Objet au sol
-		case "Od": // Objet Détruire
+		case "Od": // Objet DÃ©truire
 			if (packet.contains("-"))
 				exploit = true;
 			break;
 
-		default: // Valeur négative
+		default: // Valeur nÃ©gative
 			if (packet.contains("-"))
 				exploit = true;
 		}
@@ -60,7 +60,7 @@ public class Security {
 
 			try {
 				// kick du serveur de jeu
-				/** TODO : à changer lors du passage sous Mina du serveur de jeu **/
+				/** TODO : Ã  changer lors du passage sous Mina du serveur de jeu **/
 				if (account.getGameThread() != null)
 					account.getGameThread().kick();
 			} catch (Exception e) {
@@ -71,7 +71,7 @@ public class Security {
 	}
 
 	public static boolean estTitreValide(String titre) {
-		String[] chainesInterdites = { "*", "-", ".", "modo", "Admin", "[", "]", ";", ",", "/", "µ", "%", "$", "€", "|", "#", "¤", "<", ">", "~" };
+		String[] chainesInterdites = { "*", "-", ".", "modo", "Admin", "[", "]", ";", ",", "/", "Âµ", "%", "$", "â‚¬", "|", "#", "Â¤", "<", ">", "~" };
 		for (int i = 0; i < chainesInterdites.length; i++) {
 			if (titre.toLowerCase().contains(chainesInterdites[i]))
 				return false;
