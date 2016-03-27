@@ -498,7 +498,7 @@ public class ParseTool {
 					player.save(false);
 		    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
 		    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
-		    		player.sendText("Vous possèdez un nouvel ornement !");
+		    		player.sendText("Vous possÃ¨dez un nouvel ornement !");
 		    		player.addOrnement(4);
 		    		player.send("000A"+ player.getOrnementsStringData());
 	            }
@@ -507,7 +507,7 @@ public class ParseTool {
 					player.save(false);
 		    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
 		    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
-		    		player.sendText("Vous possèdez un nouvel ornement !");
+		    		player.sendText("Vous possÃ¨dez un nouvel ornement !");
 		    		player.addOrnement(5);
 		    		player.send("000A"+ player.getOrnementsStringData());
 	            }
@@ -516,7 +516,7 @@ public class ParseTool {
 					player.save(false);
 		    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
 		    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
-		    		player.sendText("Vous possèdez un nouvel ornement !");
+		    		player.sendText("Vous possÃ¨dez un nouvel ornement !");
 		    		player.addOrnement(6);
 		    		player.send("000A"+ player.getOrnementsStringData());
 	            }
@@ -539,10 +539,10 @@ public class ParseTool {
 				break;
 			case "FMCAC": /** FM the cac **/
 				//FmCac.exec(player, params[1]);
-				player.sendText("Veuillez utiliser la commande .fmcac. Celle-ci coûte 10 points.");
+				player.sendText("Veuillez utiliser la commande .fmcac. Celle-ci coÃ»te 10 points.");
 				break;
 			case "RESTAT": /** Reset stats **/
-				player.sendText("Veuillez utiliser la commande .restat. Celle-ci coûte 50 points.");
+				player.sendText("Veuillez utiliser la commande .restat. Celle-ci coÃ»te 50 points.");
 				/*try {
 			        player.get_baseStats().addOneStat(125, -player.get_baseStats().getEffect(125));
 			        player.get_baseStats().addOneStat(124, -player.get_baseStats().getEffect(124));
@@ -643,14 +643,14 @@ public class ParseTool {
 			case "BUY": /** Buy an ornement **/
 				int ornement = Integer.parseInt(params[1]);
 				if (player.haveOrnement(ornement)){
-					player.sendText("Vous avez déjà cet ornement !");
+					player.sendText("Vous avez dÃ©jÃ  cet ornement !");
 				}
 				else {
 				if (ornement > 0 && ornement <= 46){
 				int pointsJoueur = Util.loadPointsByAccount(player.getAccount());
 				int prixOrnement = World.obtenirPrixOrnement(ornement);
 				if (prixOrnement == 0){
-					player.sendText("Cet ornement est disponible gratuitement en jeu d'une manière méritoire.");
+					player.sendText("Cet ornement est disponible gratuitement en jeu d'une maniÃ¨re mÃ©ritoire.");
 				}
 				else{
 				if (pointsJoueur >= prixOrnement){
@@ -658,7 +658,7 @@ public class ParseTool {
 				player.save(false);
 	    		SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
 	    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
-	    		player.sendText("Vous possèdez un nouvel ornement !");
+	    		player.sendText("Vous possÃ¨dez un nouvel ornement !");
 	    		Util.updatePointsByAccount(player.getAccount(), pointsJoueur-prixOrnement);
 	    		player.send("000C"+(pointsJoueur-prixOrnement));
 	    		player.addOrnement(ornement);
@@ -681,7 +681,7 @@ public class ParseTool {
 		    		player.sendText("Nouvel ornement mis en place !");
 				}
 				else {
-					player.sendText("Vous ne possèdez pas cette ornement.");
+					player.sendText("Vous ne possÃ¨dez pas cette ornement.");
 				}
 				break;
 			case "LIST": /** Show player's ornements **/
@@ -700,7 +700,7 @@ public class ParseTool {
 				player.set_ornement(0);
 				SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
 	    		SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
-	    		player.sendText("Ornement retiré !");
+	    		player.sendText("Ornement retirÃ© !");
 				break;
 			default:
 				break;

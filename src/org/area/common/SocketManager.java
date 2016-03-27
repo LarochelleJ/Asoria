@@ -2069,7 +2069,7 @@ public class SocketManager {
 				//Pour chaque objet de la pano
 				for(ObjTemplate OT : IS.getItemTemplates())
 				{
-					//Si le joueur l'a ÈquipÈ
+					//Si le joueur l'a √©quip√©
 					if(perso.hasEquiped(OT.getID()))
 					{
 						//On l'ajoute au packet
@@ -2503,7 +2503,7 @@ public class SocketManager {
 		if (Config.DEBUG)
 			GameServer.addToSockLog("Game: Send>>" + packet);
 	}
-	public static void GAME_SEND_EHP_PACKET(Player out, int templateID)	//Packet d'envoie du prix moyen du template (En rÈponse a un packet EHP)
+	public static void GAME_SEND_EHP_PACKET(Player out, int templateID)	//Packet d'envoie du prix moyen du template (En r√©ponse a un packet EHP)
 	{
 		
 		String packet = "EHP"+templateID+"|"+World.getObjTemplate(templateID).getAvgPrice();
@@ -2519,7 +2519,7 @@ public class SocketManager {
 		if (Config.DEBUG)
 			GameServer.addToSockLog("Game: Send>>" + packet);
 	}
-	public static void GAME_SEND_EHL_PACKET(Player out, int categ, String templates)	//Packet de listage des templates dans une catÈgorie (En rÈponse au packet EHT)
+	public static void GAME_SEND_EHL_PACKET(Player out, int categ, String templates)	//Packet de listage des templates dans une cat√©gorie (En r√©ponse au packet EHT)
 	{
 		String packet = "EHL"+categ+"|"+templates;
 		
@@ -2538,7 +2538,7 @@ public class SocketManager {
 	public static void GAME_SEND_HDVITEM_SELLING(Player perso)
 	{
 		String packet = "EL";
-		HdvEntry[] entries = perso.getAccount().getHdvItems(Math.abs(perso.get_isTradingWith()));	//RÈcupËre un tableau de tout les items que le personnage ‡ en vente dans l'HDV o˘ il est
+		HdvEntry[] entries = perso.getAccount().getHdvItems(Math.abs(perso.get_isTradingWith()));	//R√©cup√®re un tableau de tout les items que le personnage √† en vente dans l'HDV o√π il est
 		boolean isFirst = true;
 		for(HdvEntry curEntry : entries)
 		{
@@ -2570,7 +2570,7 @@ public class SocketManager {
 		if (Config.DEBUG)
 			GameServer.addToSockLog("Game: Send>>" + packet);
 	} 
-    public static void GAME_SEND_MERCHANT_LIST(Player P, short mapID) // @Flow - SÈrieux... Il y a un problËme ici.
+    public static void GAME_SEND_MERCHANT_LIST(Player P, short mapID) // @Flow - S√©rieux... Il y a un probl√®me ici.
     {
     	StringBuilder packet = new StringBuilder();
     	packet.append("GM|"); // anciennement GM|~
@@ -2616,7 +2616,7 @@ public class SocketManager {
 			GameServer.addToSockLog("Game: Fight : Send>>"+packet);
 	}
 	
-	public static void GAME_SEND_CIN_Packet(Player perso, String num) { // Jouer une cinÈmatique
+	public static void GAME_SEND_CIN_Packet(Player perso, String num) { // Jouer une cin√©matique
 		send(perso,"GA;2;" + perso.getGuid() + ";" + num);
 	}
 	
@@ -2647,7 +2647,7 @@ public class SocketManager {
 		send(perso, packet);
 	}
 	
-	public static void GAME_SEND_EJ_PACKET(Player perso, int metid, int pid, StatsMetier sm) { //Regarder un livre de mÈtier
+	public static void GAME_SEND_EJ_PACKET(Player perso, int metid, int pid, StatsMetier sm) { //Regarder un livre de m√©tier
 		Player p = World.getPlayer(pid);
 		if(p == null)return;
 		String a = p.parse_tojobbook(metid);
@@ -2655,16 +2655,16 @@ public class SocketManager {
 		send(perso, "EJ+"+metid+";"+pid+";"+a);
 	}
 	
-	public static void GAME_SEND_Ag_PACKET(GameSendThread out, int idObjeto, String codObjeto) { //Cadeau ‡ la connexion
+	public static void GAME_SEND_Ag_PACKET(GameSendThread out, int idObjeto, String codObjeto) { //Cadeau √† la connexion
 		String packet = "Ag1|" + idObjeto
-		+ "|Cadeau Dofus| Voil‡ un joli cadeau pour vous ! "
-		+ "Un jeune aventurier comme vous sera sans servir de la meilleur faÁon ! "
+		+ "|Cadeau Dofus| Voil√† un joli cadeau pour vous ! "
+		+ "Un jeune aventurier comme vous sera sans servir de la meilleur fa√ßon ! "
 		+ "Bonne continuation avec ceci ! |DOFUS|"
 		+ codObjeto;
 		send(out, packet);
 	}
 	
-	public static void GAME_SEND_AGK_PACKET(GameSendThread out) { //Cadeau ‡ la connexion
+	public static void GAME_SEND_AGK_PACKET(GameSendThread out) { //Cadeau √† la connexion
 		String packet = "AGK";
 		send(out, packet);
 	}

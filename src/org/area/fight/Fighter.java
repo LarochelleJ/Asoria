@@ -52,7 +52,7 @@ public class Fighter
 	private int _LifeLoose = 0;
 	Prism _Prisme = null;
 	private String _defenseurs = "";
-	// Piège répulsif
+	// PiÃ¨ge rÃ©pulsif
 	public int nbRepulsion = 0;
 	public void setDefenseurs(String str) {
 		_defenseurs = str;
@@ -394,7 +394,7 @@ public class Fighter
 				str.append(G.get_lvl()).append(";");
 				str.append("1;");//FIXME
 				str.append("2;4;");//FIXME
-				str.append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";");//Résistances
+				str.append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";").append((int)Math.floor(G.get_lvl()/2)).append(";");//RÃ©sistances
 				str.append(_team);
 			break;
 			case 7:// Prisme
@@ -485,12 +485,12 @@ public class Fighter
 	
 	public void decrementStates()
 	{
-		//Copie pour évident les modif concurrentes
+		//Copie pour Ã©vident les modif concurrentes
 		ArrayList<Entry<Integer,Integer>> entries = new ArrayList<Entry<Integer, Integer>>();
 		entries.addAll(_state.entrySet());
 		for(Entry<Integer,Integer> e : entries)
 		{
-			//Si la valeur est négative, on y touche pas
+			//Si la valeur est nÃ©gative, on y touche pas
 			if(e.getKey() < 0)continue;
 			
 			_state.remove(e.getKey());
@@ -498,7 +498,7 @@ public class Fighter
 			//Si 0 on ne remet pas la valeur dans le tableau
 			if(nVal == 0)//ne pas mettre plus petit, -1 = infinie
 			{
-				//on envoie au org.area.client la desactivation de l'état
+				//on envoie au org.area.client la desactivation de l'Ã©tat
 				SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(_fight, 7, 950, getGUID()+"", getGUID()+","+e.getKey()+",0");
 				continue;
 			}
@@ -536,7 +536,7 @@ public class Fighter
 		{
 			for(int effectID : Constant.BEGIN_TURN_BUFF)
 			{
-				//On évite les modifications concurrentes
+				//On Ã©vite les modifications concurrentes
 				ArrayList<SpellEffect> buffs = new ArrayList<SpellEffect>();
 				buffs.addAll(_fightBuffs);
 				for(SpellEffect entry : buffs)
@@ -640,7 +640,7 @@ public class Fighter
 						}
 					break;
 				
-					case 150://Invisibilité
+					case 150://InvisibilitÃ©
 						SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(_fight, 7, 150, entry.getCaster().getGUID()+"",getGUID()+",0");
 					break;
 					
@@ -683,11 +683,11 @@ public class Fighter
 		   spellID == 704
 		   )
 		{
-			//Trêve
+			//TrÃªve
 			//Immu
-			//Prévention
+			//PrÃ©vention
 			//Momification
-			//Dévouement
+			//DÃ©vouement
 			//Mot stimulant
 			//Odorat
 			//Ronce Apaisante
@@ -696,8 +696,8 @@ public class Fighter
 			//Armure Terrestre
 			//Armure Venteuse
 			//Armure Aqueuse
-			//Bouclier Féca
-			//Accélération Poupesque
+			//Bouclier FÃ©ca
+			//AccÃ©lÃ©ration Poupesque
 			//Puissance Sylvestre
 			//Pandanlku
 			/*debuff = true;
@@ -716,7 +716,7 @@ public class Fighter
 					debuff = false;
 			}
 		}
-		//Si c'est le jouer actif qui s'autoBuff, on ajoute 1 a la durée
+		//Si c'est le jouer actif qui s'autoBuff, on ajoute 1 a la durÃ©e
 		if(id == 781)
 		{
 			if(caster.getGUID() == this.getGUID())
@@ -735,7 +735,7 @@ public class Fighter
 				SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(_fight, 7, id, getGUID(), -1, val+"", "10", "", duration, spellID);
 			break;
 			
-			case 79://Chance éca
+			case 79://Chance Ã©ca
 				val = Integer.parseInt(args.split(";")[0]);
 				String valMax = args.split(";")[1];
 				String chance = args.split(";")[2];
@@ -751,10 +751,10 @@ public class Fighter
 			break;
 
 			case 98://Poison insidieux
-			case 107://Mot d'épine (2à3), Contre(3)
-			case 100://Flèche Empoisonnée, Tout ou rien
-			case 108://Mot de Régénération, Tout ou rien
-			case 165://Maîtrises
+			case 107://Mot d'Ã©pine (2Ã 3), Contre(3)
+			case 100://FlÃ¨che EmpoisonnÃ©e, Tout ou rien
+			case 108://Mot de RÃ©gÃ©nÃ©ration, Tout ou rien
+			case 165://MaÃ®trises
 				val = Integer.parseInt(args.split(";")[0]);
 				String valMax1 = args.split(";")[1];
 				if(valMax1.compareTo("-1") == 0 || spellID == 82 || spellID == 94)
@@ -968,7 +968,7 @@ public class Fighter
 	public void debuff()
 	{
 		ArrayList<SpellEffect> newBuffs = new ArrayList<SpellEffect>();
-		//on vérifie chaque buff en cours, si pas débuffable, on l'ajout a la nouvelle liste
+		//on vÃ©rifie chaque buff en cours, si pas dÃ©buffable, on l'ajout a la nouvelle liste
 		for(SpellEffect SE : _fightBuffs)
 		{
 			if(!SE.isDebuffabe())newBuffs.add(SE);
@@ -1131,7 +1131,7 @@ public class Fighter
 						}
 					break;
 				
-					case 150://Invisibilité
+					case 150://InvisibilitÃ©
 						SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(_fight, 7, 150, entry.getCaster().getGUID()+"",getGUID()+",0");
 					break;
 					
@@ -1168,7 +1168,7 @@ public class Fighter
 		if(_SpellBoost == null) return 0;
 		return _SpellBoost.getStat(spellID, statID);
 	}
-	//Déconnexion en combat
+	//DÃ©connexion en combat
 	public void Deconnect()
 	{
 		if(_isDeconnected) return;

@@ -24,6 +24,7 @@ import org.area.fight.object.Monster.MobGroup;
 import org.area.game.GameServer;
 import org.area.game.tools.ParseTool;
 import org.area.kernel.Config;
+import org.area.kolizeum.Kolizeum;
 import org.area.object.NpcTemplate.NPC;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.Item.ObjTemplate;

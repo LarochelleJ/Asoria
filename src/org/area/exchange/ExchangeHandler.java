@@ -17,6 +17,7 @@ public class ExchangeHandler extends IoHandlerAdapter {
 	@Override
     public void sessionCreated(IoSession arg0) throws Exception {
 		Console.println("connection oppened", Color.GREEN);
+		ExchangeClient.myActiveSession = arg0;
     }
 	
     @Override
@@ -39,7 +40,7 @@ public class ExchangeHandler extends IoHandlerAdapter {
     public void sessionClosed(IoSession arg0) throws Exception {
     	Console.println("connection closed", Color.GREEN);
     	Console.println("connection lost with the login server", Color.RED);
-    	
+		ExchangeClient.myActiveSession = null;
     	Main.exchangeClient.restart();
     }
     
