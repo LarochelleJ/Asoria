@@ -226,11 +226,11 @@ public class PlayerCommand {
                                     } else if (World.getOnlinePlayers().get(i).getAccID() == 6465) {
                                         staff += "Administrateur / Développeur)";
                                     } else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 1)
-                                        staff += "Apprenti animateur)";
-                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 2)
                                         staff += "Animateur)";
-                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 3)
+                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 2)
                                         staff += "Modérateur)";
+                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 3)
+                                        staff += "Community manager)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 4)
                                         staff += "Administrateur)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 5)
@@ -277,8 +277,8 @@ public class PlayerCommand {
                             if (_perso.getFight() != null)
                                 break;
                             int nombrePoints = Util.loadPointsByAccount(_perso.getAccount());
-                            if (nombrePoints <= 25) {
-                                _perso.sendText("Il vous manque " + (25 - nombrePoints) + " points !");
+                            if (nombrePoints <= 15) {
+                                _perso.sendText("Il vous manque " + (15 - nombrePoints) + " points !");
                                 return true;
                             }
                             int nbreElement = 0;
@@ -321,8 +321,8 @@ public class PlayerCommand {
                                 SocketManager.GAME_SEND_Im_PACKET(_perso, "116;<i>Serveur: </i>Vous êtes déjà  parchotté dans tous les éléments !");
                             } else {
                                 SocketManager.GAME_SEND_STATS_PACKET(_perso);
-                                Util.updatePointsByAccount(_perso.getAccount(), nombrePoints - 25);
-                                _perso.sendText("Le parchotage vous a coûté 25 points !");
+                                Util.updatePointsByAccount(_perso.getAccount(), nombrePoints - 15);
+                                _perso.sendText("Le parchotage vous a coûté 15 points !");
                                 _perso.send("000C" + Util.loadPointsByAccount(_perso.getAccount()));
                             }
                             break;

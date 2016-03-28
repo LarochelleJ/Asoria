@@ -18,7 +18,7 @@ public class ExchangeClient {
 
     public static int port, i;
     public static String ip;
-    public static IoSession myActiveSession;
+    public IoSession myActiveSession;
     private Timer timer = new Timer();
     public boolean pong;
     private boolean ping = false;
@@ -28,12 +28,22 @@ public class ExchangeClient {
 
     public ExchangeClient() {
         ioConnector.setHandler(new ExchangeHandler());
+        Main.exchangeClient = this;
     }
 
-    public boolean start() {
+    public void start() {
         GameServer.state = 0;
         System.out.println("aaa?");
-        connectFuture = ioConnector.connect(new InetSocketAddress(ip, port));
+        try {
+            connectFuture = ioConnector.connect(new InetSocketAddress(ip, port));
+        } catch (Exception e) {
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e2) {
+            }
+            this.restart();
+            return;
+        }
         //connectFuture.awaitUninterruptibly(); // On attend que la connecton soit établie
         System.out.println("dd?");
         try {
@@ -42,16 +52,16 @@ public class ExchangeClient {
         }
 
         if (!ioConnector.isActive()) {
-            if (!Main.isRunning) return false;
+            if (!Main.isRunning) return;
 
             Console.println("try to connect...", Color.RED);
 
-            restart();
-            return ioConnector.isActive();
+            this.restart();
+            return;
         }
         verifConnection();
         Console.println("exchange client connected", Color.GREEN);
-        return !ioConnector.isActive();
+        return;
     }
 
     public void verifConnection() {
@@ -64,12 +74,15 @@ public class ExchangeClient {
                             Main.exchangeClient.send("PING", myActiveSession);
                             Console.println("- PING SENT -");
                         } catch (Exception e) {
+                            restart();
+                            return;
                         }
                         ping = true;
                         pong = false;
                     } else {
                         if (!pong) {
                             restart();
+                            return;
                         }
                         ping = false;
                     }
@@ -83,18 +96,24 @@ public class ExchangeClient {
         if (!Main.isRunning) return;
 
         Console.println("login server not found", Color.RED);
-        ioConnector.dispose();
-        connectFuture.cancel();
-        timer.cancel();
-        //ioConnector = new NioSocketConnector();
-        Main.exchangeClient = new ExchangeClient();
+        ((ExchangeHandler) ioConnector.getHandler()).close();
+        this.stop();
+        connectFuture = null;
+        ioConnector = new NioSocketConnector();
+        ioConnector.setHandler(new ExchangeHandler());
+        this.start();
 
-        while (Main.exchangeClient.start()) ;
+        //Main.exchangeClient = new ExchangeClient();
+        //while (Main.exchangeClient.start()) ;
     }
 
     public void stop() {
         ioConnector.dispose();
         connectFuture.cancel();
+        try {
+            timer.cancel();
+        } catch (Exception e) {
+        }
         Console.println("exchange server stopped", Color.RED);
     }
 

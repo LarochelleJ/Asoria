@@ -1176,7 +1176,7 @@ public class SQLManager {
                 "`sSabiduria`= ?," +
                 "`ornement`= ?," +
                 "`quest`= ?" +
-                " WHERE `personnages`.`guid` = ? LIMIT 1 ;";
+                " WHERE `personnages`.`guid` = ? AND `personnages`.`server` = ? LIMIT 1 ;";
 
         PreparedStatement p = null;
 
@@ -1239,6 +1239,7 @@ public class SQLManager {
             p.setInt(55, _perso.get_ornement());
             p.setString(56, _perso.questsToString());
             p.setInt(57, _perso.getGuid());
+            p.setInt(58, GameServer.id);
 
             p.executeUpdate();
 
@@ -1309,22 +1310,24 @@ public class SQLManager {
         closePreparedStatement(p);
     }
 
-    public static void SAVE_PERSONNAGE_ITEM(Player _perso) {
+    public static boolean SAVE_PERSONNAGE_ITEM(Player _perso) {
         String baseQuery = "UPDATE `personnages` SET " +
                 "`objets`= ?," +
                 "`storeObjets`= ?" +
-                " WHERE `personnages`.`guid` = ? LIMIT 1 ;";
+                " WHERE `personnages`.`guid` = ? AND `personnages`.`server` = ? LIMIT 1 ;";
 
         PreparedStatement p = null;
-
+        boolean fine = true;
         try {
             p = newTransact(baseQuery, Connection(true));
             p.setString(1, _perso.parseObjetsToDB());
             p.setString(2, _perso.parseStoreItemstoBD());
             p.setInt(3, _perso.getGuid());
+            p.setInt(4, GameServer.id);
 
             p.executeUpdate();
         } catch (Exception e) {
+            fine = false;
             Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
             Console.println("Requete: " + baseQuery);
             Console.println("Le personnage n'a pas ete sauvegarde");
@@ -1332,6 +1335,7 @@ public class SQLManager {
         ;
 
         closePreparedStatement(p);
+        return fine;
     }
 
     public static void LOAD_SORTS() {

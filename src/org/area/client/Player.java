@@ -4161,6 +4161,7 @@ public class Player {
             _storeItems.remove(ObjID);
             _storeItems.put(ObjID, price);
             SocketManager.GAME_SEND_ITEM_LIST_PACKET_SELLER(this, this);
+            SQLManager.SAVE_PERSONNAGE_ITEM(this);
             return;
         }
         synchronized (_items) {
@@ -4234,7 +4235,7 @@ public class Player {
             }
         }
         SocketManager.GAME_SEND_Ow_PACKET(this);
-        SQLManager.SAVE_PERSONNAGE(this, true);
+        SQLManager.SAVE_PERSONNAGE_ITEM(this);
     }
 
     private Item getSimilarStoreItem(Item obj) {
@@ -4293,7 +4294,9 @@ public class Player {
             }
         }
         SocketManager.GAME_SEND_Ow_PACKET(this);
-        SQLManager.SAVE_PERSONNAGE(this, true);
+        for (int i = 0; i < 3; i++){
+            if(SQLManager.SAVE_PERSONNAGE_ITEM(this)) break;
+        }
     }
 
     public void removeStoreItem(int guid) {

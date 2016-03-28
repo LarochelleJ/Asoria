@@ -4497,52 +4497,34 @@ public class GameThread implements Runnable {
                 if (itemStore == null)
                     return;
 
-                if (qua > itemStore.getQuantity())
+                if (qua > itemStore.getQuantity()) {
                     qua = itemStore.getQuantity();
-                if (qua == itemStore.getQuantity()) {
+                }
+                int prixTotal = Math.abs(qua * price);
+                if (player.get_kamas() < prixTotal) {
+                    SocketManager.GAME_SEND_BUY_ERROR_PACKET(out);
+                    return;
+                }
+                if (qua == itemStore.getQuantity()) { // si il achète tous les items du même template
                     seller.getStoreItems().remove(itemStore.getGuid());
                     player.addObjet(itemStore, true);
-                } else // si l'échange peut se faire
+                } else
                 {
-                    seller.getStoreItems().remove(itemStore.getGuid()); // on
-                    // enlève
-                    // entièrement
-                    // l'objet
-                    // en
-                    // vente
-                    itemStore.setQuantity(itemStore.getQuantity() - qua); // on
-                    // modifie
-                    // la
-                    // quantité
-                    // dans
-                    // le
-                    // magasin
-                    SQLManager.SAVE_ITEM(itemStore); // on sauvegarde le magasin
-                    seller.addStoreItem(itemStore.getGuid(), price); // on remet
-                    // dans
-                    // le
-                    // magasin
+                    seller.getStoreItems().remove(itemStore.getGuid());
+                    itemStore.setQuantity(itemStore.getQuantity() - qua);
+                    SQLManager.SAVE_ITEM(itemStore);
+                    seller.addStoreItem(itemStore.getGuid(), price);
 
-                    Item clone = Item.getCloneObjet(itemStore, qua); // on clone
-                    // l'objet
-                    // acheté
-                    World.addObjet(clone, true); // On ajoute au monde pour éviter l'obligation d'un reboot
-                    SQLManager.SAVE_NEW_ITEM(clone); // on sauvegarde celui-ci
-                    player.addObjet(clone, true); // et on le donne au joueur
+                    Item clone = Item.getCloneObjet(itemStore, qua);
+                    World.addObjet(clone, true);
+                    SQLManager.SAVE_NEW_ITEM(clone);
+                    player.addObjet(clone, true);
                 }
 
-                //int perso_pts = Util.loadPointsByAccount(player.getAccount()) - (price * qua);
-                // int seller_pts = Util.loadPointsByAccount(seller.getAccount()) + (price * qua);
-                //remove kamas
-                player.addKamas(-price * qua);
-                // Util.updatePointsByAccount(player.getAccount(), perso_pts);
-                // SocketManager.GAME_SEND_MESSAGE(player, "Vous avez perdu " + (price * qua) + " points.", Config.CONFIG_MOTD_COLOR);
-                //add seller kamas
-                seller.addKamas(price * qua);
-                // Util.updatePointsByAccount(seller.getAccount(), seller_pts);
+                player.addKamas(-1*(prixTotal));
+                seller.addKamas(prixTotal);
                 SQLManager.SAVE_PERSONNAGE(seller, true);
                 SQLManager.SAVE_PERSONNAGE(player, true);
-                // send packets
                 SocketManager.GAME_SEND_STATS_PACKET(player);
                 SocketManager.GAME_SEND_ITEM_LIST_PACKET_SELLER(seller, player);
                 SocketManager.GAME_SEND_BUY_OK_PACKET(out);
@@ -4556,6 +4538,9 @@ public class GameThread implements Runnable {
                                 seller.getMap(), seller.getGuid());
                         Exchange_finish_buy();
                     }
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (SQLManager.SAVE_PERSONNAGE_ITEM(seller)) break;
                 }
             }
             return;

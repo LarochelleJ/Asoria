@@ -1601,7 +1601,6 @@ public class Maps {
         for (int i = 0; i < values.size(); i++) {
             if (!values.get(i).getValue().isFightStarted()){
                 _fights.remove(values.get(i).getKey());
-                SocketManager.GAME_SEND_MESSAGE_TO_ALL("Un combat d'enlevé !", Config.CONFIG_MOTD_COLOR);
             }
         }
     }

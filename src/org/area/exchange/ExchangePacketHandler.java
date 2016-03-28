@@ -12,7 +12,7 @@ import org.area.kernel.Reboot;
 
 public class ExchangePacketHandler {
 
-    ExchangeClient exchangeClient;
+    //ExchangeClient exchangeClient;
     public static GameServer gameServer = Main.gameServer;
 
     public static void parser(String packet, IoSession ioSession) {

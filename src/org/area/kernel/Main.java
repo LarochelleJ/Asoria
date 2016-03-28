@@ -62,8 +62,9 @@ public class Main {
 		Console.println("GameServer on port " + Config.CONFIG_GAME_PORT, Color.GREEN); 
 		
 		Console.setTitle("Exchange");
-		exchangeClient = new ExchangeClient();
-		exchangeClient.start();
+		/*exchangeClient = new ExchangeClient();
+		exchangeClient.start();*/
+		new ExchangeClient().start();
 		Event.scheduleEvents();
 		
 		Console.setTitle("Area - GameServer "+GameServer.id);
