@@ -21,7 +21,7 @@ public class ExchangeClient {
     public IoSession myActiveSession;
     private Timer timer = new Timer();
     public boolean pong;
-    private boolean ping = false;
+    private boolean ping;
 
     private IoConnector ioConnector = new NioSocketConnector();
     public ConnectFuture connectFuture;
@@ -65,6 +65,7 @@ public class ExchangeClient {
     }
 
     public void verifConnection() {
+        ping = false;
         TimerTask myTask = new TimerTask() {
             @Override
             public void run() {

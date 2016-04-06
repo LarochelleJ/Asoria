@@ -198,12 +198,12 @@ public class GmCommand {
             return true;
         }
         /*else if (command.equalsIgnoreCase("VITALITE")) {
-			_perso.get_baseStats().addOneStat(Constant.STATS_ADD_VITA, 100000000);
+            _perso.get_baseStats().addOneStat(Constant.STATS_ADD_VITA, 100000000);
 			_perso.refreshStats();
 			return true;
 		}*/
-		/*else if (command.equalsIgnoreCase("ANTIFLOOD"))
-		{
+        /*else if (command.equalsIgnoreCase("ANTIFLOOD"))
+        {
 			if (infos[1] == null)
 			{
 				SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Syntax ERROR: ANTIFLOOD + PLAYER");
@@ -251,6 +251,18 @@ public class GmCommand {
             mess = "==========";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
             return true;
+        } else if (command.equalsIgnoreCase("COMBATSACTIFS")) {
+            int nombreCombats = 0;
+            for (GameThread GT : Main.gameServer.getClients()) {
+                try {
+                    Player p = GT.getPlayer();
+                    if (p.getFight() != null) {
+                        nombreCombats++;
+                    }
+                } catch (Exception e) {
+                }
+            }
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Nombre de combats: " + nombreCombats);
         } else if (command.equalsIgnoreCase("WHO")) {
             String mess = "==========\n" + "Liste des joueurs en ligne:";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
@@ -758,7 +770,7 @@ public class GmCommand {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
             } else {
                 //String temps_str = time+" minute" + ((time > 1)?"s":"");
-				/*SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1242;"
+                /*SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1242;"
 						+ perso.getName() + "~" + _perso.getName() + "~" + temps_str + "~"
 						+ message);*/
 
