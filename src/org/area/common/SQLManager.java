@@ -2657,6 +2657,12 @@ public class SQLManager {
             GameServer.addToLog("SQL ERROR: " + e.getMessage());
             e.printStackTrace();
         }
+        if (guildId >= 0) {
+            if (!World.guildExist(guildId)){
+                guildId = -1;
+                DEL_GUILDMEMBER(guid);
+            }
+        }
 
         return guildId;
     }

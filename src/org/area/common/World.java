@@ -1929,6 +1929,10 @@ public class World {
 		return getGuildes().get(i);
 	}
 
+	public static boolean guildExist(int i) {
+		return getGuildes().containsKey(i);
+	}
+
 	public static long getGuildXpMax(int _lvl) {
 		if (_lvl >= 200)
 			_lvl = 199;

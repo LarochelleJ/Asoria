@@ -1,14 +1,7 @@
 package org.area.fight;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.TreeMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -374,7 +367,7 @@ public class Fight {
         SocketManager.GAME_SEND_FIGHT_GJK_PACKET_TO_FIGHT(this, 1, 2, 0, 1, 0, Config.FIGHT_START_TIME, _type);
         scheduleTimer(60, false);
         /*Random teams = new Random();
-		if(teams.nextBoolean())
+        if(teams.nextBoolean())
 		{*/
         _start0 = parsePlaces(0);
         _start1 = parsePlaces(1);
@@ -2584,6 +2577,23 @@ public class Fight {
         } else {
             TEAM1.addAll(_team1.values());
             TEAM2.addAll(_team0.values());
+        }
+        // Triages des équipes
+        for (int i = 0; i < TEAM1.size(); i++) {
+            Fighter f = TEAM1.get(i);
+            if (f.getPersonnage() != null) {
+                if (f.getPersonnage().getFight() != this) {
+                    TEAM1.remove(i);
+                }
+            }
+        }
+        for (int i = 0; i < TEAM2.size(); i++) {
+            Fighter f = TEAM2.get(i);
+            if (f.getPersonnage() != null) {
+                if (f.getPersonnage().getFight() != this) {
+                    TEAM2.remove(i);
+                }
+            }
         }
         //Calculs des niveaux de groupes
         //int TEAM1lvl = 0;
@@ -4797,6 +4807,25 @@ public class Fight {
             perso.setSitted(false);
             perso.set_fight(null);
             perso.set_away(false);
+        }
+        if (T != null && fightIsStarted) {
+            try {
+                Set<Entry<Integer, Fighter>> copy0 = _team0.entrySet();
+                Set<Entry<Integer, Fighter>> copy1 = _team0.entrySet();
+                for (Entry<Integer, Fighter> en : copy0) {
+                    if (en.getValue().equals(F)) {
+                        _team0.remove(en.getKey());
+                        break;
+                    }
+                }
+                for (Entry<Integer, Fighter> en : copy1) {
+                    if (en.getValue().equals(F)) {
+                        _team1.remove(en.getKey());
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+            }
         }
     }
 
