@@ -589,7 +589,7 @@ public class AuctionHouse {
 			}
 			toBuy = null;
 		}
-		catch(NullPointerException e)
+		catch(Exception e)
 		{
 			toReturn = false;
 		}
