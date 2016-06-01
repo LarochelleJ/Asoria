@@ -471,7 +471,7 @@ public class Config {
 				Log_Chat.flush();
 			}
 		} catch (IOException e) {
-			/* On créer les dossiers */
+			/* On crÃ©er les dossiers */
 			System.out.println("create the logs file");
 			new File("logs").mkdir();
 			new File("logs/Shop_logs").mkdir();

@@ -876,7 +876,7 @@ public class SQLManager {
                         RS.getInt("sSabiduria"),
                         RS.getInt("ornement")
                 );
-                //VÈrifications prÈ-connexion
+                //V√©rifications pr√©-connexion
                 perso.VerifAndChangeItemPlace();
                 World.addPersonnage(perso);
                 int guildId = isPersoInGuild(RS.getInt("guid"));
@@ -1898,7 +1898,7 @@ public class SQLManager {
             PreparedStatement p = newTransact(baseQuery, Connection(true));
 
             while (RS.next()) {
-                //Si le compte est dÈj‡ connectÈ, on zap
+                //Si le compte est d√©j√† connect√©, on zap
                 if (World.getCompte(RS.getInt("guid")) != null)
                     if (World.getCompte(RS.getInt("guid")).isOnline()) continue;
 
@@ -2068,7 +2068,7 @@ public class SQLManager {
                         RS.getInt("sSabiduria"),
                         RS.getInt("ornement")
                 );
-                //VÈrifications prÈ-connexion
+                //V√©rifications pr√©-connexion
                 player.VerifAndChangeItemPlace();
                 World.addPersonnage(player);
                 int guildId = isPersoInGuild(RS.getInt("guid"));
@@ -2171,7 +2171,7 @@ public class SQLManager {
                         RS.getInt("sSabiduria"),
                         RS.getInt("ornement")
                 );
-                //VÈrifications prÈ-connexion
+                //V√©rifications pr√©-connexion
                 player.VerifAndChangeItemPlace();
                 World.addPersonnage(player);
                 int guildId = isPersoInGuild(RS.getInt("guid"));
@@ -2979,7 +2979,7 @@ public class SQLManager {
     }
 
     public static int GetNewIDPercepteur() {
-        int i = -50;//Pour Èviter les conflits avec touts autre NPC
+        int i = -50;//Pour √©viter les conflits avec touts autre NPC
         try {
             String query = "SELECT `guid` FROM `percepteurs` ORDER BY `guid` ASC LIMIT 0 , 1;";
 
@@ -3426,7 +3426,7 @@ public class SQLManager {
                         String query = "UPDATE pack_actions SET done=1 WHERE id=" + id + ";";
                         pe = newTransact(query, Connection(false));
                         pe.execute();
-                        Console.println("CommandePack " + id + " livrÈe avec succËs.");
+                        Console.println("CommandePack " + id + " livr√©e avec succ√®s.");
                     } catch (SQLException e) {
                         GameServer.addToLog("SQL ERROR: " + e.getMessage());
                         Console.println("Error Delete From: " + e.getMessage(), Color.RED);
@@ -3689,7 +3689,7 @@ public class SQLManager {
 
     public static String listeticket() {
         String ticket = "";
-        ticket = "liste des tickets non traitÈ : \n";
+        ticket = "liste des tickets non trait√© : \n";
         try {
             ResultSet RS;
             for (RS = executeQuery("SELECT * from ticketigs WHERE valid = '0';", false); RS.next(); )
@@ -3703,7 +3703,7 @@ public class SQLManager {
         try {
             ResultSet RS;
             for (RS = executeQuery("SELECT * from ticketigs WHERE valid = '1';", false); RS.next(); )
-                ticket += "traitÈ par " + RS.getString("maitrejeu") + "| joueur : " + RS.getString("joueur") + " : " + RS.getString("message") + "\n";
+                ticket += "trait√© par " + RS.getString("maitrejeu") + "| joueur : " + RS.getString("joueur") + " : " + RS.getString("message") + "\n";
             closeResultSet(RS);
         } catch (SQLException e) {
             GameServer.addToLog((new StringBuilder("SQL ERROR: ")).append(e.getMessage()).toString());
@@ -3923,7 +3923,7 @@ public class SQLManager {
             GameServer.addToLog("Guilde no guerre inserted for : " + name);
         } catch (SQLException e) {
             e.printStackTrace();
-            GameServer.addToLog("Erreur ‡ la crÈaton des stats : " + e.getMessage());
+            GameServer.addToLog("Erreur √† la cr√©aton des stats : " + e.getMessage());
         }
     }
 
@@ -3938,7 +3938,7 @@ public class SQLManager {
             GameServer.addToLog("Guilde created for the target : " + target);
         } catch (SQLException e) {
             e.printStackTrace();
-            GameServer.addToLog("Erreur ‡ la crÈaton des stats : " + e.getMessage());
+            GameServer.addToLog("Erreur √† la cr√©aton des stats : " + e.getMessage());
         }
     }
 
@@ -4009,7 +4009,7 @@ public class SQLManager {
             GameServer.addToLog("Guilde no guerre inserted for : " + name);
         } catch (SQLException e) {
             e.printStackTrace();
-            GameServer.addToLog("Erreur ‡ la crÈaton des stats : " + e.getMessage());
+            GameServer.addToLog("Erreur √† la cr√©aton des stats : " + e.getMessage());
         }
     }
 
@@ -4198,8 +4198,8 @@ public class SQLManager {
             perso = World.getPlayer(idJoueur);
             points = Util.loadPointsByAccount(perso.getAccount());
             if (points < 60) {
-                perso.sendText("Un membre du Staff a tentÈ de valider l'un de vos titres en attente, cependant vous n'aviez pas assez de points."
-                        + " Votre titre restera en attente pendant encore une semaine, il sera supprimÈ par la suite");
+                perso.sendText("Un membre du Staff a tent√© de valider l'un de vos titres en attente, cependant vous n'aviez pas assez de points."
+                        + " Votre titre restera en attente pendant encore une semaine, il sera supprim√© par la suite");
                 return 2;
             }
             int tempTitre = VERIFIER_TITRE_UTILISE_ID(titre);
@@ -4230,7 +4230,7 @@ public class SQLManager {
             SAVE_PERSONNAGE(perso, false);
             if (perso.isOnline()) {
                 perso.send("000C" + nouvelleSomme);
-                perso.sendText("Votre titre a ÈtÈ validÈ !");
+                perso.sendText("Votre titre a √©t√© valid√© !");
                 try {
                     Thread.sleep(750);
                 } catch (Exception e) {
@@ -4293,7 +4293,7 @@ public class SQLManager {
                 }
             }
             SUPPRIMER_TITRE_EN_ATTENTE(idValidation);
-            perso.sendText("Votre titre a ÈtÈ refusÈ pour le motif suivant :" + motif);
+            perso.sendText("Votre titre a √©t√© refus√© pour le motif suivant :" + motif);
         } catch (SQLException e) {
             GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
             e.printStackTrace();

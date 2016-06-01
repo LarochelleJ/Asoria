@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.sun.javafx.image.IntPixelGetter;
+//import com.sun.javafx.image.IntPixelGetter;
 import com.sun.org.omg.CORBA.ExcDescriptionSeqHelper;
 import org.area.client.Player;
 import org.area.client.Player.Stats;

@@ -189,88 +189,7 @@ public class GameThread implements Runnable {
         }
     }
 
-    /*public void run() {
-        try {
-			String packet = "";
-			char charCur[] = new char[1];
-			SocketManager.GAME_SEND_HELLOGAME_PACKET(out);
-			int result;
 
-			synchronized (in) {
-				result = in.read(charCur, 0, 1);
-			}
-			while (result != -1 && Main.isRunning) {
-				if (Thread.interrupted()) {
-					try {
-						throw new InterruptedException();
-					} catch (InterruptedException ie) {
-						Logs.addToDebug("GameThread interrompu ");
-					}
-				}
-
-				if (charCur[0] != '\u0000' && charCur[0] != '\n'
-						&& charCur[0] != '\r')
-					packet += charCur[0];
-				else if (!packet.isEmpty()) {
-					// packet = SlowBase64.decode(packet);
-					packet = CryptManager.toUnicode(packet);
-					// String [] array = packet.split("\\[data\\]\\=");
-					// packet = array[0];
-					// String key = array[1];
-					try
-					{
-					GameServer.addToSockLog("Game: Recv << " + packet, account.getName());
-					} catch(Exception e){GameServer.addToSockLog("Game: Recv << " + packet);}
-					if (!IpCheck.onGamePacket(socket.getInetAddress()
-							.getHostAddress(), packet))// || !checked(packet,
-														// key))
-						socket.close();
-					ParseTool.parsePacket(packet, player);
-					parsePacket(packet);
-
-					packet = "";
-				}
-				synchronized (in) {
-					result = in.read(charCur, 0, 1);
-				}
-			}
-
-		} catch (IOException e) {
-			try {
-				GameServer.addToLog(e.getMessage());
-				in.close();
-				out.close();
-				out = null;
-				in = null;
-
-				if (account != null) {
-					account.setCurPerso(null);
-					account.setGameThread(null);
-				}
-				if (!socket.isClosed())
-					socket.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			;
-		} catch (Exception e) {
-			e.printStackTrace();
-			GameServer.addToLog(e.getMessage());
-		} finally {
-			try {
-				if (out != null)
-					out.close();
-				if (socket != null && !socket.isClosed())
-					socket.close();
-				in = null;
-				out = null;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			kick();
-		}
-	}
-*/
     @SuppressWarnings("unused")
     private boolean checked(String packet, String keyToCheck) {
         String key;
@@ -2198,6 +2117,7 @@ public class GameThread implements Runnable {
                 try {
                     Object_move(player, out, qua, guid, pos);
                 } catch (Exception e) {
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("", 0, "@", e.toString());
                 }
                 break;
             case 'U':// Utiliser un objet (potions)
@@ -2327,11 +2247,24 @@ public class GameThread implements Runnable {
         player.confirmObjective(8, T.getID() + "", null);
     }
 
+    /**
+     * TODO Trouvé et corrigé problème !
+     * @param _perso
+     * @param _out
+     * @param qua
+     * @param guid
+     * @param pos
+     */
     public static synchronized void Object_move(Player _perso,
                                                 GameSendThread _out, int qua, int guid, int pos) {
         try {
             boolean ignore = false; //@Flow
-            Item obj = World.getObjet(guid);
+            Item obj = null;
+            try {
+                obj = World.getObjet(guid);
+            } catch (Exception e) {
+                SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("", 0, "@", e.toString());
+            }
             // LES VERIFS
             if (!_perso.hasItemGuid(guid) || obj == null) // item n'existe pas
                 // ou perso n'a pas
@@ -2359,6 +2292,9 @@ public class GameThread implements Runnable {
                             _perso.sendText("Pour équiper cet item mimibioté, vous devez être niveau " + verif_level + " !");
                             return;
                         }
+                    }
+                    if (number > 1000000200) {
+                        break;
                     }
                     number++;
                 }
@@ -4185,7 +4121,8 @@ public class GameThread implements Runnable {
                 case 'G':// Kamas
                     long kamas = 0;
                     try {
-                        kamas = Integer.parseInt(packet.substring(3));
+                        //kamas = Integer.parseInt(packet.substring(3));
+                        kamas = Long.valueOf(packet.substring(3)).longValue();
                     } catch (Exception e) {
                     }
                     ;
@@ -4197,8 +4134,8 @@ public class GameThread implements Runnable {
                         // Echange impossible ! Bouleto, packet.contains("-"), il y
                         // en aura toujours !
 
-                        if (player.get_kamas() < kamas)
-                            kamas = player.get_kamas();
+                        if ((player.get_kamas()-Config.START_KAMAS) < kamas)
+                            kamas = (player.get_kamas()-Config.START_KAMAS);
                         player.setBankKamas(player.getBankKamas() + kamas);// On
                         // ajoute
                         // les
@@ -4431,12 +4368,11 @@ public class GameThread implements Runnable {
             case 'G':// Kamas
                 try {
                     long numb = Long.valueOf(packet.substring(3)).longValue(); // @Flow - Algatron = dumb, convertir un string en int pour le déclarer en long ? What about high value ? #Fixé
-                    if (player.get_kamas() < numb)
+                    if ((player.get_kamas()-Config.START_KAMAS) < numb)
                         numb = player.get_kamas();
                     player.get_curExchange().setKamas(player.getGuid(), numb);
                 } catch (NumberFormatException e) {
                 }
-                ;
                 break;
         }
     }

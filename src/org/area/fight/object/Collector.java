@@ -347,7 +347,7 @@ public class Collector
 		for(Entry<Integer, Fight> F : World.getCarte(mapid).get_fights().entrySet())
 		{
 			//Je boucle les combats de la map bien qu'inutile :/
-			//Mais cela évite le bug F.getValue().getFighters(1) == null
+			//Mais cela Ã©vite le bug F.getValue().getFighters(1) == null
 				if(F.getValue().get_id() == fightid)
 				{
 					for(Fighter f : F.getValue().getFighters(1))//Attaquants
@@ -372,7 +372,7 @@ public class Collector
 		for(Entry<Integer, Fight> F : World.getCarte(mapid).get_fights().entrySet())
 		{
 			//Je boucle les combats de la map bien qu'inutile :/
-			//Mais cela évite le bug F.getValue().getFighters(2) == null
+			//Mais cela Ã©vite le bug F.getValue().getFighters(2) == null
 				if(F.getValue().get_id() == fightid)
 				{
 					for(Fighter f : F.getValue().getFighters(2))//Defenseurs
@@ -442,7 +442,7 @@ public class Collector
 				
 			}else //S'il reste des objets
 			{
-				//On crée une copy de l'item
+				//On crÃ©e une copy de l'item
 				PersoObj = Item.getCloneObjet(PercoObj, qua);
 				//On l'ajoute au monde
 				World.addObjet(PersoObj, true);
@@ -466,7 +466,7 @@ public class Collector
 				//On retire l'item
 				this.removeObjet(guid);
 				World.removeItem(PercoObj.getGuid());
-				//On Modifie la quantité de l'item du sac du joueur
+				//On Modifie la quantitÃ© de l'item du sac du joueur
 				PersoObj.setQuantity(PersoObj.getQuantity() + PercoObj.getQuantity());
 				
 				//On envoie les packets

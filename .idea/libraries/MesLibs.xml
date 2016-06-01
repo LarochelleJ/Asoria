@@ -1,0 +1,27 @@
+<component name="libraryTable">
+  <library name="MesLibs">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-codec-1.8.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-collections-3.2.1.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-configuration-1.6.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-dbcp-1.4.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-lang-2.6.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/commons-pool-1.5.6.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/jansi-1.7.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/jep.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/joda-time-2.4.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/mina-core-2.0.10.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/mina-core-2.0.7.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/mina-core-2.0.9.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/mysql.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/properties-manager-01.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/simplyfilter.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/slf4j-api-1.6.1.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/slf4j-api-1.7.13.jar!/" />
+      <root url="jar://$USER_HOME$/Bureau/Libs/slf4j-jdk14-1.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

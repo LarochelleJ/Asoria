@@ -98,7 +98,7 @@ public class World {
 	public static Map<Integer, StatsMetier> upT = new TreeMap<Integer, StatsMetier>();
 	public static Map<Integer, StatsMetier> upP = new TreeMap<Integer, StatsMetier>();
 	public static Map<Integer, StatsMetier> upFH = new TreeMap<Integer, StatsMetier>();
-	public static Map<Integer, StatsMetier> upFPc = new TreeMap<Integer, StatsMetier>(); // Pêcheurman...
+	public static Map<Integer, StatsMetier> upFPc = new TreeMap<Integer, StatsMetier>(); // PÃªcheurman...
 																							// 42..
 																							// Sydney...
 																							// avenue
@@ -127,10 +127,10 @@ public class World {
 	// Liste des objets boutiques
 	private static Map<Integer, Integer> _listeEchangeItem = new HashMap<Integer, Integer>();
 	
-	private static int nextHdvID; // Contient le derniere ID utilisé pour crée
-									// un HDV, pour obtenir un ID non utilisé il
-									// faut impérativement l'incrémenter
-	private static int nextLigneID; // Contient le derniere ID utilisé pour crée
+	private static int nextHdvID; // Contient le derniere ID utilisÃ© pour crÃ©e
+									// un HDV, pour obtenir un ID non utilisÃ© il
+									// faut impÃ©rativement l'incrÃ©menter
+	private static int nextLigneID; // Contient le derniere ID utilisÃ© pour crÃ©e
 									// une ligne dans un HDV
 
 	private static int saveTry = 1;
@@ -142,7 +142,7 @@ public class World {
 
 	private static byte _GmAccess = 0;
 
-	private static int nextObjetID; // Contient le derniere ID utilisé pour crée
+	private static int nextObjetID; // Contient le derniere ID utilisÃ© pour crÃ©e
 									// un Objet
 
 	public static class Drop {
@@ -205,7 +205,7 @@ public class World {
 			// parse bonuses String
 			for (String str : bonuses.split(";")) {
 				Stats S = new Stats();
-				// séparation des bonus pour un même nombre d'item
+				// sÃ©paration des bonus pour un mÃªme nombre d'item
 				for (String str2 : str.split(",")) {
 					try {
 						String[] infos = str2.split(":");
@@ -594,14 +594,14 @@ public class World {
 														// l'item (Ne devrait
 														// pas arriver)
 				{
-					couple.second = 0;// On met la quantité a 0 pour éviter les
+					couple.second = 0;// On met la quantitÃ© a 0 pour Ã©viter les
 										// problemes
 					continue;
 				}
 				Item obj = World.getObjet(couple.first);
 				if ((obj.getQuantity() - couple.second) < 1)// S'il ne reste
 															// plus d'item apres
-															// l'échange
+															// l'Ã©change
 				{
 					perso1.removeItem(couple.first);
 					couple.second = obj.getQuantity();
@@ -628,14 +628,14 @@ public class World {
 														// l'item (Ne devrait
 														// pas arriver)
 				{
-					couple.second = 0;// On met la quantité a 0 pour éviter les
+					couple.second = 0;// On met la quantitÃ© a 0 pour Ã©viter les
 										// problemes
 					continue;
 				}
 				Item obj = World.getObjet(couple.first);
 				if ((obj.getQuantity() - couple.second) < 1)// S'il ne reste
 															// plus d'item apres
-															// l'échange
+															// l'Ã©change
 				{
 					perso2.removeItem(couple.first);
 					couple.second = obj.getQuantity();
@@ -883,11 +883,11 @@ public class World {
 	                if(couple.second == 0)continue;
 	                if(!perso.hasItemGuid(couple.first))//Si le perso n'a pas l'item (Ne devrait pas arriver)
 	                {
-	                    couple.second = 0;//On met la quantité a 0 pour éviter les problemes
+	                    couple.second = 0;//On met la quantitÃ© a 0 pour Ã©viter les problemes
 	                    continue;
 	                }    
 	                Item obj = World.getObjet(couple.first);
-	                if((obj.getQuantity() - couple.second) <1)//S'il ne reste plus d'item apres l'échange
+	                if((obj.getQuantity() - couple.second) <1)//S'il ne reste plus d'item apres l'Ã©change
 	                {
 	                    perso.removeItem(couple.first);
 	                    couple.second = obj.getQuantity();
@@ -1292,19 +1292,19 @@ public class World {
 				toReturn.append(";");
 			isGood = true;
 			cond = Integer.parseInt(chal.split(",")[4]);
-			// Nécessite plusieurs ennemis
+			// NÃ©cessite plusieurs ennemis
 			if (((cond & 1) == 1) && !sevEnn)
 				isGood = false;
-			// Nécessite plusieurs alliés
+			// NÃ©cessite plusieurs alliÃ©s
 			if ((((cond >> 1) & 1) == 1) && !sevAll)
 				isGood = false;
-			// Nécessite les deux sexes
+			// NÃ©cessite les deux sexes
 			if ((((cond >> 2) & 1) == 1) && !sevAll)
 				isGood = false;
-			// Nécessite un nombre pair d'ennemis
+			// NÃ©cessite un nombre pair d'ennemis
 			if ((((cond >> 3) & 1) == 1) && !sevAll)
 				isGood = false;
-			// Nécessite plus d'ennemis que d'alliés
+			// NÃ©cessite plus d'ennemis que d'alliÃ©s
 			if ((((cond >> 4) & 1) == 1) && !sevAll)
 				isGood = false;
 			// Jardinier
@@ -1332,19 +1332,19 @@ public class World {
 	public static ArrayList<String> getRandomChallenge(int nombreChal,
 			String challenges) {
 		String MovingChals = ";1;2;8;36;37;39;40;"; // Challenges de
-													// déplacements
+													// dÃ©placements
 													// incompatibles
 		boolean hasMovingChal = false;
 		String TargetChals = ";3;4;10;25;31;32;34;35;38;42;"; // ceux qui
 																// ciblent
 		boolean hasTargetChal = false;
-		String SpellChals = ";5;6;9;11;19;20;24;41;"; // ceux qui obligent à
-														// caster spécialement
+		String SpellChals = ";5;6;9;11;19;20;24;41;"; // ceux qui obligent Ã 
+														// caster spÃ©cialement
 		boolean hasSpellChal = false;
 		String KillerChals = ";28;29;30;44;45;46;48;"; // ceux qui disent qui
 														// doit tuer
 		boolean hasKillerChal = false;
-		String HealChals = ";18;43;"; // ceux qui empêchent de soigner
+		String HealChals = ";18;43;"; // ceux qui empÃªchent de soigner
 		boolean hasHealChal = false;
 
 		int compteur = 0, i = 0;
@@ -1357,15 +1357,15 @@ public class World {
 			chal = challenges.split(";")[i - 1]; // challenge au hasard dans la
 													// liste
 
-			if (!toReturn.contains(chal)) {// si le challenge n'y était pas
+			if (!toReturn.contains(chal)) {// si le challenge n'y Ã©tait pas
 											// encore
 				if (MovingChals.contains(";" + chal.split(",")[0] + ";")) // s'il
 																			// appartient
-																			// à
+																			// Ã 
 																			// une
 																			// liste
-					if (!hasMovingChal) { // et qu'aucun de la liste n'a été
-											// choisi déjà
+					if (!hasMovingChal) { // et qu'aucun de la liste n'a Ã©tÃ©
+											// choisi dÃ©jÃ 
 						hasMovingChal = true;
 						toReturn.add(chal);
 						continue;
@@ -1399,7 +1399,7 @@ public class World {
 						continue;
 					} else
 						continue;
-				toReturn.add(chal); // s'il n'appartient à aucune liste
+				toReturn.add(chal); // s'il n'appartient Ã  aucune liste
 
 			}
 			compteur++;
@@ -1595,7 +1595,7 @@ public class World {
 			Console.print("\nSauvegarde en cours...\n", Color.RED);
 			Config.IS_SAVING = true;
 			SQLManager.commitTransacts();
-			SQLManager.TIMER(false);// Arrête le timer d'enregistrement SQL
+			SQLManager.TIMER(false);// ArrÃªte le timer d'enregistrement SQL
 
 			// Thread.sleep(10000);
 
@@ -1705,7 +1705,7 @@ public class World {
 			e.printStackTrace();
 		} finally {
 			SQLManager.commitTransacts();
-			SQLManager.TIMER(true); // Redémarre le timer d'enregistrement SQL
+			SQLManager.TIMER(true); // RedÃ©marre le timer d'enregistrement SQL
 			Config.IS_SAVING = false;
 			saveTry = 1;
 		}
@@ -1764,7 +1764,7 @@ public class World {
 				continue;
 			boolean ok = true;
 			for (Couple<Integer, Integer> c : craft) {
-				// si ingredient non présent ou mauvaise quantité
+				// si ingredient non prÃ©sent ou mauvaise quantitÃ©
 				if (ingredients.get(c.first) != c.second)
 					ok = false;
 			}
@@ -2086,7 +2086,7 @@ public class World {
 			get_hdvsItems().put(compteID,
 					new HashMap<Integer, ArrayList<HdvEntry>>()); // Ajout du
 																	// compte
-																	// clé:compteID
+																	// clÃ©:compteID
 																	// et un
 																	// nouveau
 																	// map<hdvID,items<>>
@@ -2127,7 +2127,7 @@ public class World {
 			get_hdvsItems().put(compteID,
 					new HashMap<Integer, ArrayList<HdvEntry>>());// Ajout du
 																	// compte
-																	// clé:compteID
+																	// clÃ©:compteID
 																	// et un
 																	// nouveau
 																	// map<hdvID,items
@@ -2139,7 +2139,7 @@ public class World {
 		return ObjTemplates.values();
 	}
 
-	// PNJ Échangeur boutique @Flow
+	// PNJ Ã‰changeur boutique @Flow
 	private static void updateListeEchangeItem(){
 		_listeEchangeItem.put(22241, 27);
 		_listeEchangeItem.put(22242, 27);
@@ -2231,7 +2231,7 @@ public class World {
 			return;
 		}
 		SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(perso.getMap(), "", -1,
-				"Prêtre", perso.getName() + " acceptez-vous d'épouser "
+				"PrÃªtre", perso.getName() + " acceptez-vous d'Ã©pouser "
 						+ getMarried((perso.get_sexe() == 1 ? 0 : 1)).getName()
 						+ " ?");
 		SocketManager.GAME_SEND_WEDDING(carte, 617,
@@ -2242,9 +2242,9 @@ public class World {
 	public static void Wedding(Player Homme, Player Femme, int isOK) {
 		if (isOK > 0) {
 			SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(Homme.getMap(), "", -1,
-					"Prêtre",
-					"Je déclare " + Homme.getName() + " et " + Femme.getName()
-							+ " unis par les liens sacrés du mariage.");
+					"PrÃªtre",
+					"Je dÃ©clare " + Homme.getName() + " et " + Femme.getName()
+							+ " unis par les liens sacrÃ©s du mariage.");
 			Homme.MarryTo(Femme);
 			Femme.MarryTo(Homme);
 		} else {
@@ -2355,7 +2355,7 @@ public class World {
 			PersoID.add(p.getGuid());
 			Seller.remove(p.getMap().get_id());
 			Seller.put(p.getMap().get_id(), PersoID);
-			//SocketManager.GAME_SEND_MESSAGE_TO_ALL2((new StringBuilder("<b> ")).append("DEBUG").append("</b> : ").append("Un nouveau marchand a été ajouté. Est-ce que le client a bien traité le packet ?").toString(), "0BF9B7");
+			//SocketManager.GAME_SEND_MESSAGE_TO_ALL2((new StringBuilder("<b> ")).append("DEBUG").append("</b> : ").append("Un nouveau marchand a Ã©tÃ© ajoutÃ©. Est-ce que le client a bien traitÃ© le packet ?").toString(), "0BF9B7");
 		}
 	}
 
@@ -2583,10 +2583,6 @@ public class World {
 
 	public static Map<Integer, Item> getObjets() {
 		return Objets;
-	}
-
-	public static void setObjets(Map<Integer, Item> objets) {
-		Objets = objets;
 	}
 
 	public static Map<Integer, ExpLevel> getExpLevels() {

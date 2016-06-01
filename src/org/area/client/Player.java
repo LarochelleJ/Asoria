@@ -498,126 +498,130 @@ public class Player {
         }
 
         public int getEffect(int id) {
-            int val;
-            if (Effects.get(id) == null)
-                val = 0;
-            else
-                val = Effects.get(id);
-            switch (id)//Bonus/Malus TODO
-            {
-                case Constant.STATS_ADD_AFLEE:
-                    if (Effects.get(Constant.STATS_REM_AFLEE) != null)
-                        val -= (int) (getEffect(Constant.STATS_REM_AFLEE));
-                    if (Effects.get(Constant.STATS_ADD_SAGE) != null)
-                        val += (int) (getEffect(Constant.STATS_ADD_SAGE) / 4);
-                    break;
-                case Constant.STATS_ADD_MFLEE:
-                    if (Effects.get(Constant.STATS_REM_MFLEE) != null)
-                        val -= (int) (getEffect(Constant.STATS_REM_MFLEE));
-                    if (Effects.get(Constant.STATS_ADD_SAGE) != null)
-                        val += (int) (getEffect(Constant.STATS_ADD_SAGE) / 4);
-                    break;
-                case Constant.STATS_ADD_INIT:
-                    if (Effects.get(Constant.STATS_REM_INIT) != null)
-                        val -= Effects.get(Constant.STATS_REM_INIT);
-                    break;
-                case Constant.STATS_ADD_AGIL:
-                    if (Effects.get(Constant.STATS_REM_AGIL) != null)
-                        val -= Effects.get(Constant.STATS_REM_AGIL);
-                    break;
-                case Constant.STATS_ADD_FORC:
-                    if (Effects.get(Constant.STATS_REM_FORC) != null)
-                        val -= Effects.get(Constant.STATS_REM_FORC);
-                    break;
-                case Constant.STATS_ADD_CHAN:
-                    if (Effects.get(Constant.STATS_REM_CHAN) != null)
-                        val -= Effects.get(Constant.STATS_REM_CHAN);
-                    break;
-                case Constant.STATS_ADD_INTE:
-                    if (Effects.get(Constant.STATS_REM_INTE) != null)
-                        val -= Effects.get(Constant.STATS_REM_INTE);
-                    break;
-                case Constant.STATS_ADD_PA:
-                    if (Effects.get(Constant.STATS_ADD_PA2) != null)
-                        val += Effects.get(Constant.STATS_ADD_PA2);
-                    if (Effects.get(Constant.STATS_REM_PA) != null)
-                        val -= Effects.get(Constant.STATS_REM_PA);
-                    if (Effects.get(Constant.STATS_REM_PA2) != null)//Non esquivable
-                        val -= Effects.get(Constant.STATS_REM_PA2);
-                    break;
-                case Constant.STATS_ADD_PM:
-                    if (Effects.get(Constant.STATS_ADD_PM2) != null)
-                        val += Effects.get(Constant.STATS_ADD_PM2);
-                    if (Effects.get(Constant.STATS_REM_PM) != null)
-                        val -= Effects.get(Constant.STATS_REM_PM);
-                    if (Effects.get(Constant.STATS_REM_PM2) != null)//Non esquivable
-                        val -= Effects.get(Constant.STATS_REM_PM2);
-                    break;
-                case Constant.STATS_ADD_PO:
-                    if (Effects.get(Constant.STATS_REM_PO) != null)
-                        val -= Effects.get(Constant.STATS_REM_PO);
-                    break;
-                case Constant.STATS_ADD_VITA:
-                    if (Effects.get(Constant.STATS_REM_VITA) != null)
-                        val -= Effects.get(Constant.STATS_REM_VITA);
-                    break;
-                case Constant.STATS_ADD_DOMA:
-                    if (Effects.get(Constant.STATS_REM_DOMA) != null)
-                        val -= Effects.get(Constant.STATS_REM_DOMA);
-                    break;
-                case Constant.STATS_ADD_PODS:
-                    if (Effects.get(Constant.STATS_REM_PODS) != null)
-                        val -= Effects.get(Constant.STATS_REM_PODS);
-                    break;
-                case Constant.STATS_ADD_PROS:
-                    if (Effects.get(Constant.STATS_REM_PROS) != null)
-                        val -= Effects.get(Constant.STATS_REM_PROS);
-                    break;
-                case Constant.STATS_ADD_R_TER:
-                    if (Effects.get(Constant.STATS_REM_R_TER) != null)
-                        val -= Effects.get(Constant.STATS_REM_R_TER);
-                    break;
-                case Constant.STATS_ADD_R_EAU:
-                    if (Effects.get(Constant.STATS_REM_R_EAU) != null)
-                        val -= Effects.get(Constant.STATS_REM_R_EAU);
-                    break;
-                case Constant.STATS_ADD_R_AIR:
-                    if (Effects.get(Constant.STATS_REM_R_AIR) != null)
-                        val -= Effects.get(Constant.STATS_REM_R_AIR);
-                    break;
-                case Constant.STATS_ADD_R_FEU:
-                    if (Effects.get(Constant.STATS_REM_R_FEU) != null)
-                        val -= Effects.get(Constant.STATS_REM_R_FEU);
-                    break;
-                case Constant.STATS_ADD_R_NEU:
-                    if (Effects.get(Constant.STATS_REM_R_NEU) != null)
-                        val -= Effects.get(Constant.STATS_REM_R_NEU);
-                    break;
-                case Constant.STATS_ADD_RP_TER:
-                    if (Effects.get(Constant.STATS_REM_RP_TER) != null)
-                        val -= Effects.get(Constant.STATS_REM_RP_TER);
-                    break;
-                case Constant.STATS_ADD_RP_EAU:
-                    if (Effects.get(Constant.STATS_REM_RP_EAU) != null)
-                        val -= Effects.get(Constant.STATS_REM_RP_EAU);
-                    break;
-                case Constant.STATS_ADD_RP_AIR:
-                    if (Effects.get(Constant.STATS_REM_RP_AIR) != null)
-                        val -= Effects.get(Constant.STATS_REM_RP_AIR);
-                    break;
-                case Constant.STATS_ADD_RP_FEU:
-                    if (Effects.get(Constant.STATS_REM_RP_FEU) != null)
-                        val -= Effects.get(Constant.STATS_REM_RP_FEU);
-                    break;
-                case Constant.STATS_ADD_RP_NEU:
-                    if (Effects.get(Constant.STATS_REM_RP_NEU) != null)
-                        val -= Effects.get(Constant.STATS_REM_RP_NEU);
-                    break;
-                case Constant.STATS_ADD_MAITRISE:
-                    if (Effects.get(Constant.STATS_ADD_MAITRISE) != null)
-                        val = Effects.get(Constant.STATS_ADD_MAITRISE);
-                    break;
-            }
+            int val = 0;
+            if (Effects != null) {
+                if (Effects.get(id) != null) {
+                    val = Effects.get(id);
+                }
+                if (id < 500) {
+                    switch (id)//Bonus/Malus TODO
+                    {
+                        case Constant.STATS_ADD_AFLEE:
+                            if (Effects.get(Constant.STATS_REM_AFLEE) != null)
+                                val -= (int) (getEffect(Constant.STATS_REM_AFLEE));
+                            if (Effects.get(Constant.STATS_ADD_SAGE) != null)
+                                val += (int) (getEffect(Constant.STATS_ADD_SAGE) / 4);
+                            break;
+                        case Constant.STATS_ADD_MFLEE:
+                            if (Effects.get(Constant.STATS_REM_MFLEE) != null)
+                                val -= (int) (getEffect(Constant.STATS_REM_MFLEE));
+                            if (Effects.get(Constant.STATS_ADD_SAGE) != null)
+                                val += (int) (getEffect(Constant.STATS_ADD_SAGE) / 4);
+                            break;
+                        case Constant.STATS_ADD_INIT:
+                            if (Effects.get(Constant.STATS_REM_INIT) != null)
+                                val -= Effects.get(Constant.STATS_REM_INIT);
+                            break;
+                        case Constant.STATS_ADD_AGIL:
+                            if (Effects.get(Constant.STATS_REM_AGIL) != null)
+                                val -= Effects.get(Constant.STATS_REM_AGIL);
+                            break;
+                        case Constant.STATS_ADD_FORC:
+                            if (Effects.get(Constant.STATS_REM_FORC) != null)
+                                val -= Effects.get(Constant.STATS_REM_FORC);
+                            break;
+                        case Constant.STATS_ADD_CHAN:
+                            if (Effects.get(Constant.STATS_REM_CHAN) != null)
+                                val -= Effects.get(Constant.STATS_REM_CHAN);
+                            break;
+                        case Constant.STATS_ADD_INTE:
+                            if (Effects.get(Constant.STATS_REM_INTE) != null)
+                                val -= Effects.get(Constant.STATS_REM_INTE);
+                            break;
+                        case Constant.STATS_ADD_PA:
+                            if (Effects.get(Constant.STATS_ADD_PA2) != null)
+                                val += Effects.get(Constant.STATS_ADD_PA2);
+                            if (Effects.get(Constant.STATS_REM_PA) != null)
+                                val -= Effects.get(Constant.STATS_REM_PA);
+                            if (Effects.get(Constant.STATS_REM_PA2) != null)//Non esquivable
+                                val -= Effects.get(Constant.STATS_REM_PA2);
+                            break;
+                        case Constant.STATS_ADD_PM:
+                            if (Effects.get(Constant.STATS_ADD_PM2) != null)
+                                val += Effects.get(Constant.STATS_ADD_PM2);
+                            if (Effects.get(Constant.STATS_REM_PM) != null)
+                                val -= Effects.get(Constant.STATS_REM_PM);
+                            if (Effects.get(Constant.STATS_REM_PM2) != null)//Non esquivable
+                                val -= Effects.get(Constant.STATS_REM_PM2);
+                            break;
+                        case Constant.STATS_ADD_PO:
+                            if (Effects.get(Constant.STATS_REM_PO) != null)
+                                val -= Effects.get(Constant.STATS_REM_PO);
+                            break;
+                        case Constant.STATS_ADD_VITA:
+                            if (Effects.get(Constant.STATS_REM_VITA) != null)
+                                val -= Effects.get(Constant.STATS_REM_VITA);
+                            break;
+                        case Constant.STATS_ADD_DOMA:
+                            if (Effects.get(Constant.STATS_REM_DOMA) != null)
+                                val -= Effects.get(Constant.STATS_REM_DOMA);
+                            break;
+                        case Constant.STATS_ADD_PODS:
+                            if (Effects.get(Constant.STATS_REM_PODS) != null)
+                                val -= Effects.get(Constant.STATS_REM_PODS);
+                            break;
+                        case Constant.STATS_ADD_PROS:
+                            if (Effects.get(Constant.STATS_REM_PROS) != null)
+                                val -= Effects.get(Constant.STATS_REM_PROS);
+                            break;
+                        case Constant.STATS_ADD_R_TER:
+                            if (Effects.get(Constant.STATS_REM_R_TER) != null)
+                                val -= Effects.get(Constant.STATS_REM_R_TER);
+                            break;
+                        case Constant.STATS_ADD_R_EAU:
+                            if (Effects.get(Constant.STATS_REM_R_EAU) != null)
+                                val -= Effects.get(Constant.STATS_REM_R_EAU);
+                            break;
+                        case Constant.STATS_ADD_R_AIR:
+                            if (Effects.get(Constant.STATS_REM_R_AIR) != null)
+                                val -= Effects.get(Constant.STATS_REM_R_AIR);
+                            break;
+                        case Constant.STATS_ADD_R_FEU:
+                            if (Effects.get(Constant.STATS_REM_R_FEU) != null)
+                                val -= Effects.get(Constant.STATS_REM_R_FEU);
+                            break;
+                        case Constant.STATS_ADD_R_NEU:
+                            if (Effects.get(Constant.STATS_REM_R_NEU) != null)
+                                val -= Effects.get(Constant.STATS_REM_R_NEU);
+                            break;
+                        case Constant.STATS_ADD_RP_TER:
+                            if (Effects.get(Constant.STATS_REM_RP_TER) != null)
+                                val -= Effects.get(Constant.STATS_REM_RP_TER);
+                            break;
+                        case Constant.STATS_ADD_RP_EAU:
+                            if (Effects.get(Constant.STATS_REM_RP_EAU) != null)
+                                val -= Effects.get(Constant.STATS_REM_RP_EAU);
+                            break;
+                        case Constant.STATS_ADD_RP_AIR:
+                            if (Effects.get(Constant.STATS_REM_RP_AIR) != null)
+                                val -= Effects.get(Constant.STATS_REM_RP_AIR);
+                            break;
+                        case Constant.STATS_ADD_RP_FEU:
+                            if (Effects.get(Constant.STATS_REM_RP_FEU) != null)
+                                val -= Effects.get(Constant.STATS_REM_RP_FEU);
+                            break;
+                        case Constant.STATS_ADD_RP_NEU:
+                            if (Effects.get(Constant.STATS_REM_RP_NEU) != null)
+                                val -= Effects.get(Constant.STATS_REM_RP_NEU);
+                            break;
+                        case Constant.STATS_ADD_MAITRISE:
+                            if (Effects.get(Constant.STATS_ADD_MAITRISE) != null)
+                                val = Effects.get(Constant.STATS_ADD_MAITRISE);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             /*if(_fightStatic != null)
 			{
 				if(_fightStatic.get_type() == Constant.FIGHT_TYPE_AGRESSION || _fightStatic.get_type() == Constant.FIGHT_TYPE_PVT || _fightStatic.get_type() == Constant.FIGHT_TYPE_CHALLENGE || _fightStatic.get_type() == Constant.FIGHT_TYPE_CONQUETE)
@@ -628,6 +632,7 @@ public class Player {
 					if(val > 6)
 						val = 6;
 			}*/
+            }
             return val;
         }
 
