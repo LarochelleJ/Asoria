@@ -770,14 +770,14 @@ public class GameThread implements Runnable {
         if (player.getDeshonor() >= 2) {
             SocketManager.GAME_SEND_Im_PACKET(player, "183");
             return;
+        } else if(!player.usePrisme(packet)) {
+            player.sendText("Téléportation étrange ? Un chausson aux pommes avec ça ?");
         }
-        player.usePrisme(packet);
     }
 
     private void Zaapi_use(String packet) {
         if (player.getDeshonor() >= 2) {
             SocketManager.GAME_SEND_Im_PACKET(player, "183");
-            return;
         }
         player.Zaapi_use(packet);
     }
@@ -900,16 +900,13 @@ public class GameThread implements Runnable {
     }
 
     private void guild_perco_join_fight(String packet) {
-        String PercoID = Integer.toString(
-                Integer.parseInt(packet.substring(1)), 36);
-
+        String PercoID = Integer.toString(Integer.parseInt(packet.substring(1)), 36);
 
         int TiD = -1;
         try {
             TiD = Integer.parseInt(PercoID);
         } catch (Exception e) {
         }
-        ;
 
         Collector perco = World.getPerco(TiD);
         if (perco == null)
@@ -921,33 +918,36 @@ public class GameThread implements Runnable {
                     FightID = perco.get_inFightID();
                 } catch (Exception e) {
                 }
-                ;
 
                 short MapID = -1;
                 try {
-                    MapID = World.getCarte((short) perco.get_mapID()).getFight(FightID).get_map().get_id();
+                    MapID = perco.get_mapID();
                 } catch (Exception e) {
                 }
-                ;
 
                 int CellID = -1;
                 try {
                     CellID = perco.get_cellID();
                 } catch (Exception e) {
                 }
-                ;
-                if (Config.DEBUG)
+
+                if (Config.DEBUG) {
                     GameServer.addToLog("[DEBUG] Percepteur INFORMATIONS : TiD:"
                             + TiD + ", FightID:" + FightID + ", MapID:" + MapID
                             + ", CellID" + CellID);
-                if (TiD == -1 || FightID == -1 || MapID == -1 || CellID == -1)
+                }
+                if (TiD == -1 || FightID == -1 || MapID == -1 || CellID == -1) {
                     return;
+                }
                 if (player.getFight() == null && !player.is_away()) {
                     player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
+                    Fight combat = World.getCarte(MapID).getFight(FightID); // FIXME getFight lorsqu'on tente de re-défendre retourne null
+                    if (combat != null) {
+                        combat.joinPercepteurFight(player, player.getGuid(), TiD);
+                    }
                     if (player.getMap().get_id() != MapID) {
                         player.teleport(MapID, CellID);
                     }
-                    World.getCarte(MapID).getFight(FightID).joinPercepteurFight(player, player.getGuid(), TiD);
                 }
                 break;
         }
@@ -2249,6 +2249,7 @@ public class GameThread implements Runnable {
 
     /**
      * TODO Trouvé et corrigé problème !
+     *
      * @param _perso
      * @param _out
      * @param qua
@@ -3617,7 +3618,7 @@ public class GameThread implements Runnable {
             return;
         }
         /*// Dragodinde (inventaire) @Flow - Useless et source de failles + bug.
-		if (player.isInDinde()) {
+        if (player.isInDinde()) {
 			Mount drago = player.getMount();
 			if (drago == null)
 				return;
@@ -3633,8 +3634,8 @@ public class GameThread implements Runnable {
 					/** if(Security.isCompromised(packet, _perso)) return; **/
         // Echange impossible ! Bouleto, packet.contains("-"), il y
         // en aura toujours !
-				/*
-				} catch (Exception e) {
+                /*
+                } catch (Exception e) {
 					e.printStackTrace();
 				}
 				if (id < 0 || qua <= 0)
@@ -3970,7 +3971,7 @@ public class GameThread implements Runnable {
         }
 
 		/*// Metier
-		if (player.getCurJobAction() != null) {
+        if (player.getCurJobAction() != null) {
 			// Si pas action de craft, on s'arrete la
 			if (!player.getCurJobAction().isCraft()) {
 				SocketManager.GAME_SEND_MESSAGE(player,
@@ -3996,7 +3997,7 @@ public class GameThread implements Runnable {
         // Echange impossible ! Bouleto, packet.contains("-"),
         // il y en aura toujours !
 /*
-						if (!player.hasItemGuid(guid)) {
+                        if (!player.hasItemGuid(guid)) {
 							return;
 						}
 						Item obj = World.getObjet(guid);
@@ -4134,8 +4135,8 @@ public class GameThread implements Runnable {
                         // Echange impossible ! Bouleto, packet.contains("-"), il y
                         // en aura toujours !
 
-                        if ((player.get_kamas()-Config.START_KAMAS) < kamas)
-                            kamas = (player.get_kamas()-Config.START_KAMAS);
+                        if ((player.get_kamas() - Config.START_KAMAS) < kamas)
+                            kamas = (player.get_kamas() - Config.START_KAMAS);
                         player.setBankKamas(player.getBankKamas() + kamas);// On
                         // ajoute
                         // les
@@ -4368,7 +4369,7 @@ public class GameThread implements Runnable {
             case 'G':// Kamas
                 try {
                     long numb = Long.valueOf(packet.substring(3)).longValue(); // @Flow - Algatron = dumb, convertir un string en int pour le déclarer en long ? What about high value ? #Fixé
-                    if ((player.get_kamas()-Config.START_KAMAS) < numb)
+                    if ((player.get_kamas() - Config.START_KAMAS) < numb)
                         numb = player.get_kamas();
                     player.get_curExchange().setKamas(player.getGuid(), numb);
                 } catch (NumberFormatException e) {
@@ -4444,8 +4445,7 @@ public class GameThread implements Runnable {
                 if (qua == itemStore.getQuantity()) { // si il achète tous les items du même template
                     seller.getStoreItems().remove(itemStore.getGuid());
                     player.addObjet(itemStore, true);
-                } else
-                {
+                } else {
                     seller.getStoreItems().remove(itemStore.getGuid());
                     itemStore.setQuantity(itemStore.getQuantity() - qua);
                     SQLManager.SAVE_ITEM(itemStore);
@@ -4457,7 +4457,7 @@ public class GameThread implements Runnable {
                     player.addObjet(clone, true);
                 }
 
-                player.addKamas(-1*(prixTotal));
+                player.addKamas(-1 * (prixTotal));
                 seller.addKamas(prixTotal);
                 SQLManager.SAVE_PERSONNAGE(seller, true);
                 SQLManager.SAVE_PERSONNAGE(player, true);
@@ -6022,7 +6022,7 @@ public class GameThread implements Runnable {
             }
 
 			/*
-			 * 	Possibilité d'aggro.
+             * 	Possibilité d'aggro.
 			 */
             Integer calcDifLevel = 0;
             Integer calcDifPrestige = 0;
@@ -6132,7 +6132,7 @@ public class GameThread implements Runnable {
     }
 
 	/*private synchronized void game_tryCastSpell(String packet) {
-		try {
+        try {
 			String[] splt = packet.split(";");
 			int spellID = Integer.parseInt(splt[0].substring(5));
 			int caseID = Integer.parseInt(splt[1]);

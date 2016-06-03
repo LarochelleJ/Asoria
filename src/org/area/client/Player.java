@@ -623,7 +623,7 @@ public class Player {
                     }
                 }
             /*if(_fightStatic != null)
-			{
+            {
 				if(_fightStatic.get_type() == Constant.FIGHT_TYPE_AGRESSION || _fightStatic.get_type() == Constant.FIGHT_TYPE_PVT || _fightStatic.get_type() == Constant.FIGHT_TYPE_CHALLENGE || _fightStatic.get_type() == Constant.FIGHT_TYPE_CONQUETE)
 					if(id == Constant.STATS_ADD_PA)
 					if(val > 12)
@@ -1632,7 +1632,7 @@ public class Player {
     }
 
     public String parseToMerchant() {
-    	/*StringBuilder str = new StringBuilder();
+        /*StringBuilder str = new StringBuilder();
     	str.append(_curCell.getID()).append(";");
     	str.append(_orientation).append(";");
     	str.append("0").append(";");
@@ -2740,8 +2740,7 @@ public class Player {
             this.sendText("Vous avez été téléporté à la zone de départ suite à une erreur.");
             this.teleport(Config.START_MAP, Config.START_CELL);
             return;
-        }
-        else {
+        } else {
             _curCarte.verifEndedFight();
         }
         //Verification de la carte
@@ -3594,17 +3593,34 @@ public class Player {
         }
     }
 
-    public void usePrisme(String packet) {
-        int celdaID = 340;
-        for (Prism Prisme : World.AllPrisme()) {
-            if (Prisme.getCarte() == Short.valueOf(packet.substring(2))) {
-                celdaID = Prisme.getCell();
+    public boolean usePrisme(String packet) {
+        boolean valide = true;
+        int mapID = Integer.valueOf(packet.substring(2));
+        for (Integer i : Constant.DONJONS_TELEPORTATION_INTERDITE) {
+            if (mapID == i) {
+                valide = false;
                 break;
             }
         }
-        SocketManager.GAME_SEND_STATS_PACKET(this);
-        this.teleport(Short.valueOf(packet.substring(2)), celdaID);
-        SocketManager.SEND_Ww_CLOSE_Prisme(this);
+        if (valide) {
+            int cellID = -1;
+                for (Prism Prisme : World.AllPrisme()) {
+                    if (Prisme.getCarte() == Short.valueOf(packet.substring(2))) {
+                        if (Prisme.getalignement() == _align) {
+                            cellID = Prisme.getCell();
+                        }
+                        break;
+                    }
+                }
+            if (cellID != -1) {
+                SocketManager.GAME_SEND_STATS_PACKET(this);
+                this.teleport(Short.valueOf(packet.substring(2)), cellID);
+                SocketManager.SEND_Ww_CLOSE_Prisme(this);
+            } else {
+                valide = false;
+            }
+        }
+        return valide;
     }
 
     public void useZaap(short id) {
@@ -3676,7 +3692,6 @@ public class Player {
 
     public void Zaapi_use(String packet) {
         Maps map = World.getCarte(Short.valueOf(packet.substring(2)));
-
         short idcelula = 100;
         if (map != null) {
             for (Entry<Integer, Case> entry : map.GetCases().entrySet()) {
@@ -3687,15 +3702,15 @@ public class Player {
                     }
                 }
             }
-        }
-        if (map.getSubArea().getArea().getID() == 7 || map.getSubArea().getArea().getID() == 11) {
-            int price = 20;
-            if (this.get_align() == 1 || this.get_align() == 2)
-                price = 10;
-            _kamas -= price;
-            SocketManager.GAME_SEND_STATS_PACKET(this);
-            this.teleport(Short.valueOf(packet.substring(2)), idcelula);
-            SocketManager.GAME_SEND_CLOSE_ZAAPI_PACKET(this);
+            if (map.getSubArea().getArea().getID() == 7 || map.getSubArea().getArea().getID() == 11) {
+                int price = 20;
+                if (this.get_align() == 1 || this.get_align() == 2)
+                    price = 10;
+                _kamas -= price;
+                SocketManager.GAME_SEND_STATS_PACKET(this);
+                this.teleport(Short.valueOf(packet.substring(2)), idcelula);
+                SocketManager.GAME_SEND_CLOSE_ZAAPI_PACKET(this);
+            }
         }
     }
 
@@ -4299,8 +4314,8 @@ public class Player {
             }
         }
         SocketManager.GAME_SEND_Ow_PACKET(this);
-        for (int i = 0; i < 3; i++){
-            if(SQLManager.SAVE_PERSONNAGE_ITEM(this)) break;
+        for (int i = 0; i < 3; i++) {
+            if (SQLManager.SAVE_PERSONNAGE_ITEM(this)) break;
         }
     }
 
@@ -5646,7 +5661,11 @@ public class Player {
         return lastCellID;
     }
 
-    public void setWantToStartNow(boolean b) { wantToStartNow = b; }
+    public void setWantToStartNow(boolean b) {
+        wantToStartNow = b;
+    }
 
-    public boolean startNow() { return wantToStartNow; }
+    public boolean startNow() {
+        return wantToStartNow;
+    }
 }

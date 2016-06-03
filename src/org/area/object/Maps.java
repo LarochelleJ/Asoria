@@ -1522,13 +1522,22 @@ public class Maps {
             return "";
         }
         String str = "";
+        Prism prisme = trouverPrisme();
+        if (prisme != null) {
+            str = prisme.getGMPrisme();
+        }
+        return str;
+    }
+
+    public Prism trouverPrisme() {
+        Prism prisme = null;
         for (Prism Prisme : World.AllPrisme()) {
             if (Prisme.getCarte() == _id) {
-                str = Prisme.getGMPrisme();
+                prisme = Prisme;
                 break;
             }
         }
-        return str;
+        return prisme;
     }
 
     public String getNpcsGMsPackets() {
