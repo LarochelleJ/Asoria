@@ -3001,7 +3001,7 @@ public class GameThread implements Runnable {
                 Exchange_start(packet);
                 break;
             case 'S':// Vente
-                Exchange_onSellItem(packet);
+                /** Exchange_onSellItem(packet); **/ // On laisse ça ainsi, on ne remet plus jamais cette fonctionnalité.
                 break;
 
             case 'V':// Fin de l'échange
@@ -4369,8 +4369,9 @@ public class GameThread implements Runnable {
             case 'G':// Kamas
                 try {
                     long numb = Long.valueOf(packet.substring(3)).longValue(); // @Flow - Algatron = dumb, convertir un string en int pour le déclarer en long ? What about high value ? #Fixé
-                    if ((player.get_kamas() - Config.START_KAMAS) < numb)
+                    if (player.get_kamas() < numb) {
                         numb = player.get_kamas();
+                    }
                     player.get_curExchange().setKamas(player.getGuid(), numb);
                 } catch (NumberFormatException e) {
                 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.area.kernel.Main;
 import org.area.kernel.Reboot;
 
 import com.mysql.jdbc.PreparedStatement;
+import org.joda.time.DateTime;
 
 public class GameServer implements Runnable{
 
@@ -47,7 +49,9 @@ public class GameServer implements Runnable{
 	private static long timeShutdown;
 	public GameServer() {
 		try {
-			
+
+			/** @Automatic reboot ** TODO /
+
 			/** @Automatic save **/
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
@@ -102,7 +106,7 @@ public class GameServer implements Runnable{
 			}, 5, 5, TimeUnit.HOURS);
 			
 			/** Clear Garbage collector @Flow
-			 * L'utilisation du System.gc n'est pas conseillé ! **/
+			 * L'utilisation du System.gc n'est pas conseill? ! **/
 			/*
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
@@ -203,7 +207,7 @@ public class GameServer implements Runnable{
 
 	public void restartGameServer() {
 		if(!thread.isAlive()) {
-			Logs.addToDebug("GameServer planté, tentative de le redémarer.");
+			Logs.addToDebug("GameServer plant?, tentative de le red?marer.");
 			thread.start();
 		}
 	}
@@ -310,9 +314,9 @@ public class GameServer implements Runnable{
 				}
 				long time = (timeShutdown*-1 - System.currentTimeMillis())/1000;
 				for (Player player: World.getOnlinePlayers()) {
-					player.sendText("<b>Redémarrage automatique:</b> "+time+" secondes restantes");
+					player.sendText("<b>Red?marrage automatique:</b> "+time+" secondes restantes");
 					if (box)
-						player.sendBox("Serveur "+GameServer.key, "Reboot Automatique\nRedémarrage du serveur dans 1 minute");
+						player.sendBox("Serveur "+GameServer.key, "Reboot Automatique\nRed?marrage du serveur dans 1 minute");
 				}
 				if (time <= 0)
 					Reboot.reboot();
@@ -352,7 +356,7 @@ public class GameServer implements Runnable{
 		GameServer.ip = ip;
 	}
 
-	public static void addToSockLog(String str, String name) { // Pour les packets reçus @Flow
+	public static void addToSockLog(String str, String name) { // Pour les packets re?us @Flow
 		if(Config.DEBUG)System.out.println(str);
 		if(Config.LOGS) {
 			try {

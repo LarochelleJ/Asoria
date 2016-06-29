@@ -473,7 +473,7 @@ public class Constant
 	public static final int STATS_ADD_R_PVP_FEU		=	263;
 	public static final int STATS_ADD_R_PVP_NEU		=	264;
 	public static final int STATS_ADD_R_PVP_NEUTRES =   265;
-	public static final int STATS_ADD_R_INFLUENCE   =   266;    
+	public static final int STATS_ADD_R_INFLUENCE   =   266;
 	// Effets de classe
 	public static final int STATS_ADD_PO_SPELL		=	281;
 	public static final int STATS_MK_POM_SPELL		=	282; // PO modifiable
@@ -756,7 +756,13 @@ public class Constant
 			8311,
 			8314,
 			8313,
-			15145
+			15145,
+			10813,
+			15155,
+			15156,
+			15157,
+			15158,
+			18034
 			);
 	
 	// Verifs resistances pvp

@@ -2772,6 +2772,7 @@ public class Player {
                     _curCarte.get_date(),
                     _curCarte.get_key());
             _curCarte.addPlayer(this);
+            Fight.FightStateAddFlag(_curCarte, this);
         }
         this.setSitted(false);
         synchronized (_Follower) {

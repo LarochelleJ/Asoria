@@ -1608,7 +1608,8 @@ public class Maps {
     public void verifEndedFight() {
         List<Entry<Integer, Fight>> values = new ArrayList<Entry<Integer, Fight>>(_fights.entrySet());
         for (int i = 0; i < values.size(); i++) {
-            if (!values.get(i).getValue().isFightStarted()){
+            Fight f = values.get(i).getValue();
+            if (!f.isFightStarted() && f.get_state() != Constant.FIGHT_STATE_PLACE){
                 _fights.remove(values.get(i).getKey());
             }
         }

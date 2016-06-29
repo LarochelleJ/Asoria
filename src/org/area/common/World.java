@@ -585,8 +585,16 @@ public class World {
 
 		synchronized public void apply() {
 			// Gestion des Kamas
-			perso1.addKamas((-kamas1 + kamas2));
-			perso2.addKamas((-kamas2 + kamas1));
+			boolean echangeKamasOK = false;
+			if ((perso2.get_kamas() >= kamas2) && (perso1.get_kamas() >= kamas1)) {
+				perso1.addKamas(kamas2);
+				perso2.addKamas(kamas1);
+				echangeKamasOK = true;
+			}
+			if (echangeKamasOK) {
+				perso1.addKamas(-kamas1);
+				perso2.addKamas(-kamas2);
+			}
 			for (Couple<Integer, Integer> couple : items1) {
 				if (couple.second == 0)
 					continue;
