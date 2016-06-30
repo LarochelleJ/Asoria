@@ -295,6 +295,9 @@ public class Player {
     // Koli 2 vs 2
     private boolean wantToStartNow = false;
 
+    // Anti-crash prototype
+    public boolean noCrash = false;
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;
@@ -2513,6 +2516,7 @@ public class Player {
 
     public void levelUp(boolean send, boolean addXp) {
         if (_lvl == World.getExpLevelSize()) return;
+        if (_lvl + 1 > 200 && prestige < 20) return;
         _lvl++;
         _capital += 5;
         _spellPts++;
@@ -2527,7 +2531,11 @@ public class Player {
             getGuildMember().setLevel(_lvl);
         }
 
-        if (_lvl == World.getExpLevelSize()) {
+        if (_lvl == 200) {
+            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau 200", "D85F03");
+        }
+
+        if (_lvl == World.getExpLevelSize() && prestige == 20) {
             SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau " + World.getExpLevelSize(), "D85F03");
         }
 
@@ -2552,7 +2560,11 @@ public class Player {
     }
 
     public void addKamas(long l) {
-        _kamas += l;
+        if (_kamas + l < 0 ) {
+            _kamas = 0;
+        } else {
+            _kamas += l;
+        }
     }
 
     public Item getSimilarItem(Item exObj) {

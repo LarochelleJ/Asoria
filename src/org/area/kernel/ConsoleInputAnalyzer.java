@@ -139,7 +139,9 @@ public class ConsoleInputAnalyzer implements Runnable{
 			sendEcho("Chargement des item actions : Ok");
 			SQLManager.LOAD_SORTS();
 			sendEcho("Chargement des sorts : Ok");
-			sendEcho("Chargement des données terminée, Good :)");
+			SQLManager.LOAD_GMCOMMANDS();
+			sendEcho("Chargement des commandes GM : Ok");
+			sendEcho("Chargement des donnÃ©es terminÃ©e, Good :)");
 				
 		} else if(fct.equals("?")||command.equals("HELP")) {
 			

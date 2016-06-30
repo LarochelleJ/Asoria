@@ -1107,6 +1107,9 @@ public class SQLManager {
         try {
             String query = "SELECT * from gmcommands;";
             ResultSet RS = executeQuery(query, true);
+            if (!GmCommand.gmCommands.isEmpty()) {
+                GmCommand.gmCommands.clear();
+            }
             while (RS.next()) {
                 GmCommand.gmCommands.put(RS.getString("command").toLowerCase(),
                         RS.getInt("gmlevel"));

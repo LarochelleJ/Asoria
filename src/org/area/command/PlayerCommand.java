@@ -1873,6 +1873,14 @@ public class PlayerCommand {
                                 }
                             }
                             break;
+                        case 2121:
+                            _perso.noCrash = !_perso.noCrash;
+                            if (_perso.noCrash) {
+                                _perso.sendText("Le mode anti-crash est maintenant activé, celui-ci est un prototype.");
+                            } else {
+                                _perso.sendText("Le mode anti-crash est maintenant désactivé.");
+                            }
+                            break;
                         case 55: //Guerre de Guilde
 
                             String Target = null;

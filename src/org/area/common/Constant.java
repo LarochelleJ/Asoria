@@ -764,7 +764,32 @@ public class Constant
 			15158,
 			18034
 			);
-	
+
+	// Taux supression prestiges
+	public static final int obtenir_taux_xp_prestige(int prestige) {
+		int taux = 0;
+		switch (prestige) {
+			case 16:
+				taux = 30;
+				break;
+			case 17:
+				taux = 45;
+				break;
+			case 18:
+				taux = 55;
+				break;
+			case 19:
+				taux = 70;
+				break;
+			case 20:
+				taux = 80;
+				break;
+			default:
+				break;
+		}
+		return taux;
+	}
+
 	// Verifs resistances pvp
 	public static final String STATS_VERIF_R_PVP = ""+ STATS_ADD_R_PVP_NEUTRES*STATS_ADD_R_INFLUENCE +"";
 	public static boolean COMBAT_BLOQUE = false;

@@ -3064,6 +3064,11 @@ public class Fight {
             if (type == Constant.FIGHT_TYPE_CHALLENGE) {
                 if (i.isInvocation() && i.getMob() != null && i.getMob().getTemplate().getID() != 285) continue;
                 long winxp = Formulas.getXpWinPvm2(i, TEAM1, TEAM2, totalXP);
+                // Taux suppresion xp dû au prestiges @Flow
+                int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
+                if (tauxDiminution != 0) {
+                    winxp -= (tauxDiminution * winxp / 100);
+                }
                 AtomicReference<Long> XP = new AtomicReference<Long>();
                 XP.set(winxp);
                 long guildxp = Formulas.getGuildXpWin(i, XP);

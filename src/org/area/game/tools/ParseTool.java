@@ -189,12 +189,15 @@ public class ParseTool {
     private static void parsePrestige(Player player, String packet, String[] params) {
         switch (packet) {
             case "UP": /** Up your prestige **/
-                if (player.getFight() != null)
+                if (player.getFight() != null) {
                     player.sendMess(Lang.LANG_50);
-                else if (player.getLevel() != World.getExpLevelSize())
+                }
+                else if (player.getLevel() != 200) { // World.getExpLevelSize()
                     player.sendMess(Lang.LANG_39);
-                else if (player.getPrestige() == 15)
+                }
+                else if (player.getPrestige() == 20) {
                     player.sendMess(Lang.LANG_40);
+                }
                 else {
                     player.upPrestige();
                     player.sendMess(Lang.LANG_41, "", " " + player.getPrestige() + ".");

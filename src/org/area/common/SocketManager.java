@@ -1223,7 +1223,9 @@ public class SocketManager {
 			catch(Exception e){}
 					if(!f.hasLeft() && f.getPersonnage() != null 
 							&& f.getPersonnage().isOnline()){*/
-						send(f.getPersonnage(),packet);
+			if (!f.getPersonnage().noCrash) {
+				send(f.getPersonnage(), packet);
+			}
 					/*}
 		}
 		try{

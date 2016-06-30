@@ -6189,7 +6189,6 @@ public class GameThread implements Runnable {
             } catch (Exception e) {
                 return;
             }
-            ;
         } else {
             try {
                 int guid = Integer.parseInt(infos[1]);
@@ -6214,12 +6213,16 @@ public class GameThread implements Runnable {
                     }
                     return;
                 }
-                World.getPlayer(guid).getFight().joinFight(player, guid);
+                Fight combat = World.getPlayer(guid).getFight();
+                if (combat.get_map().get_id() == player.getMap().get_id()) {
+                    combat.joinFight(player, guid);
+                } else {
+                    player.sendText("Nice try Wpe...");
+                }
 
             } catch (Exception e) {
                 return;
             }
-            ;
         }
     }
 

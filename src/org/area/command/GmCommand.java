@@ -2023,31 +2023,33 @@ public class GmCommand {
             for (Player player : World.getOnlinePlayers())
                 player.send(ParseTool.parseShop());
         } else if (command.equalsIgnoreCase("SETADMIN")) {
-            int gmLvl = -100;
-            try {
-                gmLvl = Integer.parseInt(infos[1]);
-            } catch (Exception e) {
-            }
-            ;
-            if (gmLvl == -100) {
-                String str = "Valeur incorrecte";
-                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
-                return true;
-            }
-            Player target = _perso;
-            if (infos.length > 2)// Si un nom de perso est spÃ©cifiÃ©
-            {
-                target = World.getPersoByName(infos[2]);
-                if (target == null) {
-                    String str = "Le personnage n'a pas ete trouve";
+            if (_perso.getAccount().getGmLevel() == 5) {
+                int gmLvl = -100;
+                try {
+                    gmLvl = Integer.parseInt(infos[1]);
+                } catch (Exception e) {
+                }
+                ;
+                if (gmLvl == -100) {
+                    String str = "Valeur incorrecte";
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
                     return true;
                 }
+                Player target = _perso;
+                if (infos.length > 2)// Si un nom de perso est spÃ©cifiÃ©
+                {
+                    target = World.getPersoByName(infos[2]);
+                    if (target == null) {
+                        String str = "Le personnage n'a pas ete trouve";
+                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                        return true;
+                    }
+                }
+                target.getAccount().setGmLvl(gmLvl);
+                SQLManager.UPDATE_ACCOUNT_DATA(target.getAccount());
+                String str = "Le niveau GM du joueur a ete modifie";
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
             }
-            target.getAccount().setGmLvl(gmLvl);
-            SQLManager.UPDATE_ACCOUNT_DATA(target.getAccount());
-            String str = "Le niveau GM du joueur a ete modifie";
-            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
         } else if (command.equalsIgnoreCase("BLOQUER")) {
             try {
                 for (Player perso : World.getOnlinePlayers()) {
