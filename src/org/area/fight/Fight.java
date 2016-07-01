@@ -2908,7 +2908,7 @@ public class Fight {
                             continue;
                         }
 
-                        int captChance = Formulas.totalAppriChance(5, f.getPersonnage()); // Je suis un canard rouge
+                        int captChance = Formulas.totalAppriChance(5, f.getPersonnage()); // Je suis un canard brun
 
                         if (Formulas.getRandomValue(1, 100) <= captChance)//Si le joueur obtiens la capture
                         {
