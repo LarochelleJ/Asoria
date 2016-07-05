@@ -2908,9 +2908,9 @@ public class Fight {
                             continue;
                         }
 
-                        int captChance = Formulas.totalAppriChance(5, f.getPersonnage()); // Je suis un canard brun
+                        int captChance = Formulas.totalAppriChance(5, f.getPersonnage()); // Je suis un canard orange
 
-                        if (Formulas.getRandomValue(1, 100) <= captChance)//Si le joueur obtiens la capture
+                        if (Formulas.getRandomValue(1, 100) <= captChance)//Si le joueur obtiens la capture tengu
                         {
                             //Retire la pierre vide au personnage et lui envoie ce changement
                             int pierreVide = f.getPersonnage().getObjetByPos(Constant.ITEM_POS_ARME).getGuid();

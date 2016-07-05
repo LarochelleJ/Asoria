@@ -113,18 +113,18 @@ public class IA {
 					case 0:// Ne rien faire
 						apply_type0(_fighter, _fight);
 						break;
-					case 1:// Attaque, Buff soi-même, Buff Alliés, Avancer
+					case 1:// Attaque, Buff soi-mï¿½me, Buff Alliï¿½s, Avancer
 							// vers ennemis.
 						apply_type1(_fighter, _fight);
 						break;
 					case 2:// Soutien
 						apply_type2(_fighter, _fight);
 						break;
-					case 3:// Avancer vers Alliés, Buff Alliés, Buff sois
-							// même
+					case 3:// Avancer vers Alliï¿½s, Buff Alliï¿½s, Buff sois
+							// mï¿½me
 						apply_type3(_fighter, _fight);
 						break;
-					case 4:// Attaque, Fuite, Buff Alliés, Buff sois même
+					case 4:// Attaque, Fuite, Buff Alliï¿½s, Buff sois mï¿½me
 						apply_type4(_fighter, _fight);
 						break;
 					case 5:// Avancer vers ennemis
@@ -220,10 +220,10 @@ public class IA {
 							if (!buffIfPossible(fight, F, F))// auto-buff
 							{
 								if (!HealIfPossible(fight, F, false))// soin
-																		// allié
+																		// alliï¿½
 								{
 									if (!buffIfPossible(fight, F, T2))// buff
-																		// allié
+																		// alliï¿½
 									{
 										if (!moveNearIfPossible(fight, F, T))// avancer
 										{
@@ -248,10 +248,10 @@ public class IA {
 							if (!buffIfPossible(fight, F, F))// auto-buff
 							{
 								if (!HealIfPossible(fight, F, false))// soin
-																		// allié
+																		// alliï¿½
 								{
 									if (!buffIfPossible(fight, F, T2))// buff
-																		// allié
+																		// alliï¿½
 									{
 										if (!invocIfPossible(fight, F)) {
 											if (!moveFarIfPossible(fight, F))// fuite
@@ -336,7 +336,7 @@ public class IA {
 	               
 	            if (!invocIfPossible(fight, F))//invoquer
                 {
-	                	if (!buffIfPossible(fight, F, T2))//buff allié
+	                	if (!buffIfPossible(fight, F, T2))//buff alliï¿½
                         {
 	                		 if (!moveFarIfPossible(fight, F)) // fuite
 	                         {
@@ -430,7 +430,7 @@ public class IA {
 		                    	stop = true;
 		                     }
 		                    }
-		                    else{ // a combatu on s'enfuit plus rien à faire
+		                    else{ // a combatu on s'enfuit plus rien ï¿½ faire
 			                	if (!moveFarIfPossible(fight, F))
 								{
 			                		stop = true;
@@ -657,9 +657,9 @@ public class IA {
 					if (E == null || E.isDead()) {
 						E = getBestEnnemy(fight, F);
 					}
-					if (!HealIfPossible(fight, F, false))// soin allié
+					if (!HealIfPossible(fight, F, false))// soin alliï¿½
 					{
-						if (!buffIfPossible(fight, F, T))// buff allié
+						if (!buffIfPossible(fight, F, T))// buff alliï¿½
 						{
 							if (!HealIfPossible(fight, F, true))// auto-soin
 							{
@@ -687,12 +687,12 @@ public class IA {
 
 				} else {
 					T = getNearestFriend(fight, F);
-					if (!HealIfPossible(fight, F, false))// soin allié
+					if (!HealIfPossible(fight, F, false))// soin alliï¿½
 					{
-						if (!buffIfPossible(fight, F, T))// buff allié
+						if (!buffIfPossible(fight, F, T))// buff alliï¿½
 						{
 							if (!moveNearIfPossible(fight, F, T))// Avancer vers
-																	// allié
+																	// alliï¿½
 							{
 								if (!HealIfPossible(fight, F, true))// auto-soin
 								{
@@ -737,11 +737,11 @@ public class IA {
 		private static void apply_type3(Fighter F, Fight fight) {
 			while (!stop && F.canPlay()) {
 				Fighter T = getNearestFriend(fight, F);
-				if (!moveNearIfPossible(fight, F, T))// Avancer vers allié
+				if (!moveNearIfPossible(fight, F, T))// Avancer vers alliï¿½
 				{
-					if (!HealIfPossible(fight, F, false))// soin allié
+					if (!HealIfPossible(fight, F, false))// soin alliï¿½
 					{
-						if (!buffIfPossible(fight, F, T))// buff allié
+						if (!buffIfPossible(fight, F, T))// buff alliï¿½
 						{
 							if (!HealIfPossible(fight, F, true))// auto-soin
 							{
@@ -772,9 +772,9 @@ public class IA {
 						stop = true;// EC
 					if (!moveFarIfPossible(fight, F))// fuite
 					{
-						if (!HealIfPossible(fight, F, false))// soin allié
+						if (!HealIfPossible(fight, F, false))// soin alliï¿½
 						{
-							if (!buffIfPossible(fight, F, T))// buff allié
+							if (!buffIfPossible(fight, F, T))// buff alliï¿½
 							{
 								if (!HealIfPossible(fight, F, true))// auto-soin
 								{
@@ -793,7 +793,7 @@ public class IA {
 		}
 
 		private static void apply_type5(Fighter F, Fight fight) // IA propre aux
-																// énus
+																// ï¿½nus
 		{
 			while (!stop && F.canPlay()) {
 				Fighter T = getNearestEnnemy(fight, F);
@@ -811,11 +811,11 @@ public class IA {
 			while (!stop && F.canPlay()) {
 				if (!invocIfPossible(fight, F)) {
 					Fighter T = getNearestFriend(fight, F);
-					if (!HealIfPossible(fight, F, false))// soin allié
+					if (!HealIfPossible(fight, F, false))// soin alliï¿½
 					{
-						if (!buffIfPossible(fight, F, T))// buff allié
+						if (!buffIfPossible(fight, F, T))// buff alliï¿½
 						{
-							if (!buffIfPossible(fight, F, F))// buff allié
+							if (!buffIfPossible(fight, F, F))// buff alliï¿½
 							{
 								if (!HealIfPossible(fight, F, true)) {
 									int attack = attackIfPossible(fight, F);
@@ -911,10 +911,10 @@ public class IA {
 						if (!moveFarIfPossible(fight, F))// fuite
 						{
 							if (!HealIfPossiblePerco(fight, F, false))// soin
-																		// allié
+																		// alliï¿½
 							{
 								if (!buffIfPossiblePerco(fight, F, T))// buff
-																		// allié
+																		// alliï¿½
 								{
 									if (!HealIfPossiblePerco(fight, F, true))// auto-soin
 									{
@@ -1083,7 +1083,7 @@ public class IA {
 			}
 			if (curCaseID != F.get_fightCell().getID())
 				pathstr += CryptManager.cellID_To_Code(curCaseID);
-			// Création d'une GameAction
+			// Crï¿½ation d'une GameAction
 			GameAction GA = new GameAction(0, 1, "");
 			GA._args = pathstr;
 			boolean result = fight.fighterDeplace(F, GA);
@@ -1272,8 +1272,8 @@ public class IA {
 
 		        return result;
 		    }
-		 // @Flow - À réviser
-		 private static boolean testCotes(int cell1, int cell2)//Bord, hors zone. Cell 2 = Cellule où on va et cell1 = Cellule où nous sommes
+		 // @Flow - ï¿½ rï¿½viser
+		 private static boolean testCotes(int cell1, int cell2)//Bord, hors zone. Cell 2 = Cellule oï¿½ on va et cell1 = Cellule oï¿½ nous sommes
 		    {
 		        if (cell1 == 15 || cell1 == 44 || cell1 == 73
 		                || cell1 == 102 || cell1 == 131 || cell1 == 160
@@ -1343,7 +1343,7 @@ public class IA {
 
 		private static boolean HealIfPossible(Fight fight, Fighter f,
 				boolean autoSoin)// boolean pour choisir entre auto-soin ou soin
-									// allié
+									// alliï¿½
 		{
 			if (autoSoin && (f.getPDV() * 100) / f.getPDVMAX() > 95)
 				return false;
@@ -1352,7 +1352,7 @@ public class IA {
 			if (autoSoin) {
 				target = f;
 				SS = getHealSpell(fight, f, target);
-			} else// sélection joueur ayant le moins de pv
+			} else// sï¿½lection joueur ayant le moins de pv
 			{
 				Fighter curF = null;
 				int PDVPERmin = 100;
@@ -1405,7 +1405,7 @@ public class IA {
 
 		private static boolean HealIfPossiblePerco(Fight fight, Fighter f,
 				boolean autoSoin)// boolean pour choisir entre auto-soin ou soin
-									// allié
+									// alliï¿½
 		{
 			if (autoSoin && (f.getPDV() * 100) / f.getPDVMAX() > 95)
 				return false;
@@ -1414,7 +1414,7 @@ public class IA {
 			if (autoSoin) {
 				target = f;
 				SS = getHealSpell(fight, f, target);
-			} else// sélection joueur ayant le moins de pv
+			} else// sï¿½lection joueur ayant le moins de pv
 			{
 				Fighter curF = null;
 				int PDVPERmin = 100;
@@ -1625,7 +1625,7 @@ public class IA {
 			}
 			if (curCaseID != F.get_fightCell().getID())
 				pathstr += CryptManager.cellID_To_Code(curCaseID);
-			// Création d'une GameAction
+			// Crï¿½ation d'une GameAction
 			GameAction GA = new GameAction(0, 1, "");
 			GA._args = pathstr;
 			boolean result = fight.fighterDeplace(F, GA);
@@ -1650,7 +1650,10 @@ public class IA {
 						boolean rejet = false;
 						for(Fighter X : tacle){
 							if (X == Z) continue;
-							if(X.getPDV() < Z.getPDV()) rejet = true;
+							if (Z.getMob() != null && X.getMob() == null) rejet = true;
+							if (Z.getMob() == null && X.getMob() == null) {
+								if(X.getPDV() < Z.getPDV()) rejet = true;
+							}
 						}
 						if(!rejet) return Z;
 					}
@@ -1928,24 +1931,40 @@ public class IA {
 					ennemy.put(f.getPDV(), f);
 				}
 			}
-			int i = 0, i2 = ennemy.size();
+			int n = 0;
 			int curHP = 10000;
+			boolean addMobs = false;
+			while (n < 2) { //@Poupou le premier tour place les joueurs et les mobs au deuxiÃ¨me tour. Permet Ã  la IA de prioriser les joueurs.
+				int i = 0, i2 = ennemy.size();
+				while (i < i2) {
+					curHP = 200000;
+					Fighter test = null;
+					for (Entry<Integer, Fighter> t : ennemy.entrySet()) {
+						if (!addMobs) {
+							if (t.getValue().getMob() == null) {
+								if (t.getValue().getPDV() < curHP) {
+									curHP = t.getValue().getPDV();
+									test = t.getValue();
+								}
+							}
+						}
+						else {
+							if (t.getValue().getPDV() < curHP) {
+								curHP = t.getValue().getPDV();
+								test = t.getValue();
+							}
+						}
 
-			while (i < i2) {
-				curHP = 200000;
-				Fighter test = null;
-				for (Entry<Integer, Fighter> t : ennemy.entrySet()) {
-					if (t.getValue().getPDV() < curHP) {
-						curHP = t.getValue().getPDV();
-						test = t.getValue();
 					}
-				}
 
-				if (test == null)
-					break;
-				list.put(test.getGUID(), test);
-				ennemy.remove(test.getGUID());
-				i++;
+					if (test == null)
+						break;
+					list.put(test.getGUID(), test);
+					ennemy.remove(test.getGUID());
+					i++;
+				}
+				addMobs = true;
+				n++;
 			}
 			return list;
 		}
@@ -1992,8 +2011,8 @@ return list;
 	    {
 			/**
 			 * @Flow
-			 * Cette fonction tiens compte des personnages invisibles, elle va attaquer aléatoire
-			 * Malheuresement cette version n'est pas très efficace avec tous les mobs
+			 * Cette fonction tiens compte des personnages invisibles, elle va attaquer alï¿½atoire
+			 * Malheuresement cette version n'est pas trï¿½s efficace avec tous les mobs
 			 */
 	        try {
 	            if (fight == null || fighter == null) {
@@ -2006,10 +2025,10 @@ return list;
 	            if(ennemyList != null && !ennemyList.isEmpty()){
 	                for (Entry<Integer, Fighter> t : ennemyList.entrySet()) // pour chaque ennemi on cherche le meilleur sort
 	                {
-	                	//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Recherche ennemie... pour "+ t.getValue() +"", "0BF9B7");
+	                	//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Recherche ennemi... pour "+ t.getValue() +"", "0BF9B7");
 	                	SS = getBestSpellForTarget(fight, fighter, t.getValue());
-	                	//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Sort trouvé !", "0BF9B7");
-	                	//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Nom du personnage sélectionné: "+ t.getValue().getPersonnage().getName() +"", "0BF9B7");
+	                	//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Sort trouvï¿½ !", "0BF9B7");
+	                	//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Nom du personnage sï¿½lectionnï¿½: "+ t.getValue().getPersonnage().getName() +"", "0BF9B7");
 	                    if(t.getValue().isHide())
 	                    { //si invisible, on passe
 	                        invisible = true;
@@ -2022,7 +2041,7 @@ return list;
 	                    	{*/
 	                    		target = t.getValue();
 	                    		//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("La cible est valide !", "0BF9B7");
-	                    		//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Le joueur"+ target.getPersonnage().getName() +" a été sélectionné comme cible.", "0BF9B7");
+	                    		//SocketManager.GAME_SEND_MESSAGE_TO_ALL2("Le joueur"+ target.getPersonnage().getName() +" a ï¿½tï¿½ sï¿½lectionnï¿½ comme cible.", "0BF9B7");
 		                  break;
 	                    	/*}
 	                    	else
@@ -2048,7 +2067,7 @@ return list;
 	            SortStats SS2 = null;
 	            for (Entry<Integer, SortStats> S : fighter.getMob().getSpells().entrySet()) // pour chaque sort du mob
 	            {
-	                int targetVal = getBestTargetZone(fight, fighter, S.getValue(), fighter.get_fightCell().getID()); // on détermine le meilleur
+	                int targetVal = getBestTargetZone(fight, fighter, S.getValue(), fighter.get_fightCell().getID()); // on dï¿½termine le meilleur
 	                if (targetVal == -1 || targetVal == 0) // endroit pour lancer le sort de zone (ou non)
 	                {
 	                    continue;
@@ -2061,7 +2080,7 @@ return list;
 	                    SS2 = S.getValue();
 	                }
 	            }
-	            if (curTarget > 0 && cell > 0 && cell < 480 && SS2 != null) // si la case sélectionnée est valide et qu'il y a au moins une cible
+	            if (curTarget > 0 && cell > 0 && cell < 480 && SS2 != null) // si la case sï¿½lectionnï¿½e est valide et qu'il y a au moins une cible
 	            {
 	                int attack = fight.tryCastSpell(fighter, SS2, cell);
 	                if (attack != 0) {
@@ -2118,7 +2137,7 @@ return list;
 	                                        /**if(possibleCell.getFirstFighter() != null && possibleCell.getFirstFighter().getTeam2() == fighter.getTeam2()){
 	                                            continue; 
 	                                            @Flow
-	                                            Cette condition empêche les sorts qui attaques ses alliers, j'ai remarqué que ça cause un énorme problème
+	                                            Cette condition empï¿½che les sorts qui attaques ses alliers, j'ai remarquï¿½ que ï¿½a cause un ï¿½norme problï¿½me
 	                                            Certain mob n'ont pas d'autres sorts.
 	                                        }**/
 	                                        if(!fight.CanCastSpell(fighter, SS3, fight.get_map().getCase(possibleCell.getID()), -1)){ //vÃ©rifie si il est lanÃ§able
@@ -2153,7 +2172,7 @@ return list;
 	    }
 		/**
 		 * @Flow
-		 * Les invocations sont maintenants gérées.
+		 * Les invocations sont maintenants gï¿½rï¿½es.
 		 */
 		private static int attackIfPossible(Fight fight, Fighter fighter)// 
 		{
@@ -2217,7 +2236,7 @@ return list;
 					.entrySet()) // pour chaque sort du mob
 			{
 				int targetVal = getBestTargetZone(fight, fighter, S.getValue(),
-						fighter.get_fightCell().getID()); // on détermine le
+						fighter.get_fightCell().getID()); // on dï¿½termine le
 															// meilleur
 				if (targetVal == -1 || targetVal == 0) // endroit pour lancer le
 														// sort de zone (ou non)
@@ -2293,7 +2312,7 @@ return list;
                                 area = curArea;
                                 cellTarget = possibleCell.getID();
                                 if(Config.DEBUG){
-                                    System.out.println("Sort " + SS.getSpellID() + " sélectionné");
+                                    System.out.println("Sort " + SS.getSpellID() + " sï¿½lectionnï¿½");
                                 }
                                 break;
                             }
@@ -2599,7 +2618,7 @@ return list;
 				allies = 0;
 				ennemies = 0;
 				POnum = 2 * num;
-				/** Détermine à qui s'applique l'effet **/
+				/** Dï¿½termine ï¿½ qui s'applique l'effet **/
 				ArrayList<Case> cells = Pathfinding.getCellListFromAreaString(
 						fight.get_map(), T.get_fightCell().getID(), C
 								.get_fightCell().getID(), ss.getPorteeType(),
@@ -2618,7 +2637,7 @@ return list;
 					Fighter F = C1.getFirstFighter();
 					if (F == null)
 						continue;
-					// Ne touche pas les alliés
+					// Ne touche pas les alliï¿½s
 					if (((TE & 1) == 1) && (F.getTeam() == C.getTeam()))
 						continue;
 					// Ne touche pas le lanceur
@@ -2653,8 +2672,8 @@ return list;
 						ennemies++;
 				}
 				num++;
-				/** Fin de la détermination **/
-				// System.out.println("SpellEffect : "+SE.getEffectID()+"   Nbr ennemis : "+ennemies+"   Nbr alliés : "+allies);
+				/** Fin de la dï¿½termination **/
+				// System.out.println("SpellEffect : "+SE.getEffectID()+"   Nbr ennemis : "+ennemies+"   Nbr alliï¿½s : "+allies);
 				int inf = 0;
 				switch (SE.getEffectID()) {
 				case 5:// repousse de X cases
@@ -2721,13 +2740,13 @@ return list;
 				case 131:// poison X pdv par PA
 					inf = 300 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 132:// désenvoute
+				case 132:// dï¿½senvoute
 					inf = 6000;
 					break;
 				case 138:// + %Dom
 					inf = -150 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 150:// invisibilité
+				case 150:// invisibilitï¿½
 					inf = -5000;
 					break;
 				case 168:// retrait PA non esquivable
@@ -2736,19 +2755,19 @@ return list;
 				case 169:// retrait PM non esquivable
 					inf = 8000 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 210:// résistance
+				case 210:// rï¿½sistance
 					inf = -100 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 211:// résistance
+				case 211:// rï¿½sistance
 					inf = -100 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 212:// résistance
+				case 212:// rï¿½sistance
 					inf = -100 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 213:// résistance
+				case 213:// rï¿½sistance
 					inf = -100 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 214:// résistance
+				case 214:// rï¿½sistance
 					inf = -100 * Formulas.getMiddleJet(SE.getJet());
 					break;
 				case 215:// faiblesse
@@ -2766,7 +2785,7 @@ return list;
 				case 219:// faiblesse
 					inf = 100 * Formulas.getMiddleJet(SE.getJet());
 					break;
-				case 265:// réduction dommage
+				case 265:// rï¿½duction dommage
 					inf = -250 * Formulas.getMiddleJet(SE.getJet());
 					break;
 				case 786:// Arbre de vie
@@ -2804,7 +2823,7 @@ return list;
 			{
 				if (Thread.interrupted())throw new InterruptedException();
 				int targetVal = getBestTargetZone(fight, fighter, S.getValue(),
-						fighter.get_fightCell().getID()); // on détermine le
+						fighter.get_fightCell().getID()); // on dï¿½termine le
 															// meilleur
 				if (targetVal == -1 || targetVal == 0) // endroit pour lancer le
 														// sort de zone (ou non)
@@ -2956,7 +2975,7 @@ return list;
 			}
 		}
 
-		private static SortStats getBestSpellForTarget2(Fight fight, Fighter F,	Fighter T) {//Version optimisée
+		private static SortStats getBestSpellForTarget2(Fight fight, Fighter F,	Fighter T) {//Version optimisï¿½e
 			int inflMax = 0;
 			SortStats ss = null;
 			int curInfl = 0;
