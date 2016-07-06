@@ -784,6 +784,7 @@ public class Action {
                             if (donnes.length == 4) {
                                 perso.teleport(Short.parseShort(donnes[2]), Integer.parseInt(donnes[3]));
                             }
+                            perso.sendText("Vous avez reçu " + qtaVoulue + " [");
                         }
                         else {
                             perso.sendText("Vous ne possèdez pas les objets requis.");

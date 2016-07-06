@@ -115,6 +115,9 @@ public class Config {
 	/** Ornement **/
 	public static boolean ORNEMENT = false;
 	public static String ORNEMENT_EXCLUS = "";
+
+	/** Prestiges **/
+	public static int MAX_PRESTIGES = 15;
 	
 	/** Traques **/
 	public static int CONFIG_TRAQUE_DIFFERENCE = 15;
@@ -353,6 +356,8 @@ public class Config {
 					ORNEMENT = value.equalsIgnoreCase("true");
 				else if (param.equalsIgnoreCase("ORNEMENT_EXCLUS"))
 					ORNEMENT_EXCLUS = value;
+				else if (param.equalsIgnoreCase("MAX_PRESTIGES"))
+					MAX_PRESTIGES = Integer.parseInt(value);
 				else if (param.equalsIgnoreCase("CELL_JAIL"))
 					CONFIG_CELL_JAIL = Integer.parseInt(value);
 

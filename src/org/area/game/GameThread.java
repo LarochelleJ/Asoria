@@ -13,6 +13,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.common.math.LongMath;
+import com.google.common.primitives.Ints;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.area.check.FloodCheck;
 import org.area.check.Security;
@@ -4135,8 +4137,8 @@ public class GameThread implements Runnable {
                         // Echange impossible ! Bouleto, packet.contains("-"), il y
                         // en aura toujours !
 
-                        if ((player.get_kamas() - Config.START_KAMAS) < kamas)
-                            kamas = (player.get_kamas() - Config.START_KAMAS);
+                        if (player.get_kamas() < kamas)
+                            kamas = player.get_kamas();
                         player.setBankKamas(player.getBankKamas() + kamas);// On
                         // ajoute
                         // les
@@ -4517,15 +4519,17 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_BUY_ERROR_PACKET(out);
                 return;
             }
+            long prix = LongMath.checkedMultiply(template.getPrix(), qua); // ArithmeticException en cas d'erreur, donc échec achat
+            //int prix = Math.abs(template.getPrix() * qua); // Va recommencer à Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
 
-            int prix = Math.abs(template.getPrix() * qua);
             if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) {
-                if (!player.hasItemTemplate(470001, prix)) {
+                int prixPierres = Ints.checkedCast(prix); // Cas d'erreur: IllegalArgumentException
+                if (!player.hasItemTemplate(470001, prixPierres)) {
                     player.sendText("Vous n'avez pas assez de pierres précieuses pour effectuer cet achat !");
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
-                    player.removeByTemplateID(470001, prix);
+                    player.removeByTemplateID(470001, prixPierres);
                     if (player.addObjet(newObj, true))
                         World.addObjet(newObj, true);
                     SocketManager.GAME_SEND_BUY_OK_PACKET(out);
@@ -4534,12 +4538,13 @@ public class GameThread implements Runnable {
                     return;
                 }
             } else if (idPnj == 50029) {
-                if (!player.hasItemTemplate(11022, prix)) {
+                int prixKoli = Ints.checkedCast(prix);
+                if (!player.hasItemTemplate(11022, prixKoli)) {
                     player.sendText("Vous n'avez pas assez de Kolizeton pour effectuer cet achat !");
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
-                    player.removeByTemplateID(11022, prix);
+                    player.removeByTemplateID(11022, prixKoli);
                     if (player.addObjet(newObj, true))
                         World.addObjet(newObj, true);
                     SocketManager.GAME_SEND_BUY_OK_PACKET(out);
@@ -4570,7 +4575,6 @@ public class GameThread implements Runnable {
             SocketManager.GAME_SEND_BUY_ERROR_PACKET(out);
             return;
         }
-        ;
     }
 
     private void Exchange_finish_buy() {

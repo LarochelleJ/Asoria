@@ -195,7 +195,7 @@ public class ParseTool {
                 else if (player.getLevel() != 200) { // World.getExpLevelSize()
                     player.sendMess(Lang.LANG_39);
                 }
-                else if (player.getPrestige() == 20) {
+                else if (player.getPrestige() == Config.MAX_PRESTIGES) {
                     player.sendMess(Lang.LANG_40);
                 }
                 else {

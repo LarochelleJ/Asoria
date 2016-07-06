@@ -1179,15 +1179,14 @@ public class GmCommand {
             int guid = perso.getGuid();
             SocketManager.MEOW(name, guid, perso);
         } else if (command.equalsIgnoreCase("KAMAS")) {
-            int count = 0;
+            long count = 0;
             try {
-                count = Integer.parseInt(infos[1]);
+                count = Long.parseLong(infos[1]);
             } catch (Exception e) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out,
                         "Valeur incorecte");
                 return true;
             }
-            ;
             if (count == 0)
                 return true;
 
@@ -1199,13 +1198,7 @@ public class GmCommand {
                 if (perso == null)
                     perso = _perso;
             }
-            long curKamas = perso.get_kamas();
-            long newKamas = curKamas + count;
-            if (newKamas < 0)
-                newKamas = 0;
-            if (newKamas > 1000000000)
-                newKamas = 1000000000;
-            perso.set_kamas(newKamas);
+            perso.addKamas(count);
             if (perso.isOnline())
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
             String mess = "Vous avez ";
