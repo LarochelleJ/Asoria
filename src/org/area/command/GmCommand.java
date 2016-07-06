@@ -1982,6 +1982,12 @@ public class GmCommand {
     }
 
     public boolean commandGmFour(String command, String[] infos, String msg) {
+        if (command.equalsIgnoreCase("POUPOU")) {
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Rebonjour Poupou! Vous voilà de retour sur Area!");
+        }
+        if (command.equalsIgnoreCase("FLOW")) {
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Rebonjour Flow! Je suis l'esprit de El Caribou!");
+        }
         if (command.equalsIgnoreCase("EVENT")) {
             int type;
             int minPlayer;
@@ -2644,7 +2650,6 @@ public class GmCommand {
     }
 
     public boolean commandGmFive(String command, String[] infos, String msg) {
-
         if (command.equalsIgnoreCase("RCOMMANDE")) {
 
             if (_compte.getName().equalsIgnoreCase("flow")) {
