@@ -790,6 +790,51 @@ public class Constant
 		return taux;
 	}
 
+	// Poids par puissance unitaire d'un effets
+	private static HashMap<Integer, Double> tableauPoidsParPuissance = new HashMap<Integer, Double>();
+	public static void initialiserTableauPoidsParPuissance() {
+		tableauPoidsParPuissance.put(STATS_ADD_VITA, 0.33);
+		tableauPoidsParPuissance.put(STATS_ADD_SAGE, 3D);
+		tableauPoidsParPuissance.put(STATS_ADD_AGIL, 1D);
+		tableauPoidsParPuissance.put(STATS_ADD_FORC, 1D);
+		tableauPoidsParPuissance.put(STATS_ADD_CHAN, 1D);
+		tableauPoidsParPuissance.put(STATS_ADD_INTE, 1D);
+		tableauPoidsParPuissance.put(STATS_ADD_PROS, 3D);
+
+		tableauPoidsParPuissance.put(STATS_ADD_R_AIR, 4D);
+		tableauPoidsParPuissance.put(STATS_ADD_R_NEU, 4D);
+		tableauPoidsParPuissance.put(STATS_ADD_R_TER, 4D);
+		tableauPoidsParPuissance.put(STATS_ADD_R_FEU, 4D);
+		tableauPoidsParPuissance.put(STATS_ADD_R_EAU, 4D);
+
+		tableauPoidsParPuissance.put(STATS_ADD_RP_AIR, 5D);
+		tableauPoidsParPuissance.put(STATS_ADD_RP_NEU, 5D);
+		tableauPoidsParPuissance.put(STATS_ADD_RP_TER, 5D);
+		tableauPoidsParPuissance.put(STATS_ADD_RP_FEU, 5D);
+		tableauPoidsParPuissance.put(STATS_ADD_RP_EAU, 5D);
+
+		tableauPoidsParPuissance.put(STATS_ADD_INIT, 0.10);
+		tableauPoidsParPuissance.put(STATS_ADD_DOMA, 20D);
+		tableauPoidsParPuissance.put(STATS_ADD_PERDOM, 2D);
+		tableauPoidsParPuissance.put(STATS_TRAPDOM, 15D);
+		tableauPoidsParPuissance.put(STATS_TRAPPER, 2D);
+		tableauPoidsParPuissance.put(STATS_RETDOM, 30D);
+		tableauPoidsParPuissance.put(STATS_ADD_SOIN, 20D);
+		tableauPoidsParPuissance.put(STATS_CREATURE, 30D);
+		tableauPoidsParPuissance.put(STATS_ADD_CC, 30D);
+		tableauPoidsParPuissance.put(STATS_ADD_PO, 50D);
+		tableauPoidsParPuissance.put(STATS_ADD_PM, 90D);
+		tableauPoidsParPuissance.put(STATS_ADD_PA, 100D);
+	}
+
+	public static double obtenirPoidsPuissance(int idEffet) {
+		double poid = -1;
+		if (tableauPoidsParPuissance.containsKey(idEffet)) {
+			poid = tableauPoidsParPuissance.get(idEffet);
+		}
+		return poid;
+	}
+
 	// Verifs resistances pvp
 	public static final String STATS_VERIF_R_PVP = ""+ STATS_ADD_R_PVP_NEUTRES*STATS_ADD_R_INFLUENCE +"";
 	public static boolean COMBAT_BLOQUE = false;

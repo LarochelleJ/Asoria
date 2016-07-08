@@ -2976,7 +2976,8 @@ public class GameThread implements Runnable {
                 break;
 
             case 'Q'://Mode marchand (Si valider après la taxe)
-                int Apayer2 = player.storeAllBuy() / 1000;
+                player.sendText("Le mode marchand est temporairement désactivé, vous pouvez utilisez l'HDV et retirer les items de votre mode marchand.");
+                /*int Apayer2 = player.storeAllBuy() / 1000;
 
                 if (player.get_kamas() < Apayer2) {
                     SocketManager.GAME_SEND_Im_PACKET(player, "176");
@@ -2993,7 +2994,7 @@ public class GameThread implements Runnable {
                 for (Player z : map.getPersos()) {
                     if (z != null && z.isOnline())
                         SocketManager.GAME_SEND_MERCHANT_LIST(z, z.getMap().get_id());
-                }
+                }*/
                 break;
             case 'r':// Rides => Monture
                 Exchange_mountPark(packet);
@@ -3672,13 +3673,14 @@ public class GameThread implements Runnable {
             switch (packet.charAt(2)) {
                 case 'O':// Objets
                     if (packet.charAt(3) == '+') {
-                        String[] infos = packet.substring(4).split("\\|");
+                        player.sendText("Le mode marchand est temporairement désactivé, vous pouvez utilisez l'HDV et retirer les items de votre mode marchand.");
+                       /* String[] infos = packet.substring(4).split("\\|");
                         try {
                             // verification des failles
                             /** if(Security.isCompromised(packet, _perso)) return; **/
                             // Echange impossible ! Bouleto, packet.contains("-"),
                             // il y en aura toujours !
-
+/*
                             int guid = Integer.parseInt(infos[0]);
                             int qua = Integer.parseInt(infos[1]);
                             int price = Integer.parseInt(infos[2]);
@@ -3700,7 +3702,7 @@ public class GameThread implements Runnable {
 
                         } catch (NumberFormatException e) {
                         }
-                        ;
+                        */
                     } else {
                         String[] infos = packet.substring(4).split("\\|");
                         try {

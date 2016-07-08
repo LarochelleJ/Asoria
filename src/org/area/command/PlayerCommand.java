@@ -1220,7 +1220,7 @@ public class PlayerCommand {
                             } else {
                                 items.getStats().addOneStat(111, 1);
                                 SocketManager.GAME_SEND_STATS_PACKET(_perso);
-                                _perso.sendText("Votre " + ((Item) items).getTemplate(false).getName() + " donne désormais +1 PA en plus de ses jets habituels !");
+                                _perso.sendText("Votre " + (items).getTemplate(false).getName() + " donne désormais +1 PA en plus de ses jets habituels !");
                             }
                             break;
 

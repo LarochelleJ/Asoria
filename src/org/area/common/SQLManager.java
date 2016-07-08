@@ -33,23 +33,14 @@ import org.area.kernel.Config;
 import org.area.kernel.Console;
 import org.area.kernel.Console.Color;
 import org.area.kernel.Reboot;
-import org.area.object.Action;
-import org.area.object.AuctionHouse;
+import org.area.object.*;
 import org.area.object.AuctionHouse.HdvEntry;
-import org.area.object.Guild;
 import org.area.object.Guild.GuildMember;
-import org.area.object.Houses;
-import org.area.object.Hustle;
-import org.area.object.Item;
 import org.area.object.Item.ObjTemplate;
-import org.area.object.Maps;
 import org.area.object.Maps.MountPark;
-import org.area.object.Mount;
-import org.area.object.NpcTemplate;
 import org.area.object.NpcTemplate.NPC_Exchange;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
-import org.area.object.Trunk;
 import org.area.object.job.Job;
 import org.area.spell.Spell;
 import org.area.spell.Spell.SortStats;
@@ -3049,6 +3040,21 @@ public class SQLManager {
             e.printStackTrace();
         }
         return i;
+    }
+
+    public static HashMap<Integer, Rune> LOAD_RUNES() {
+        HashMap<Integer, Rune> runes = new HashMap<Integer, Rune>();
+        try (ResultSet RS = SQLManager.executeQuery("SELECT * FROM runes;", false)) {
+            while (RS.next()) {
+                int id = RS.getInt("idRune");
+                runes.put(id, new Rune(id, RS.getInt("poids"), RS.getInt("puissance"), RS.getInt("idEffet")));
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return runes;
     }
 
     public static int getNextObjetID() {

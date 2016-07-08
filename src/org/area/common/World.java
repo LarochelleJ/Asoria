@@ -25,18 +25,9 @@ import org.area.kernel.Console;
 import org.area.kernel.Logs;
 import org.area.kernel.Console.Color;
 import org.area.kernel.Reboot;
-import org.area.object.AuctionHouse;
-import org.area.object.Guild;
-import org.area.object.Houses;
-import org.area.object.Hustle;
-import org.area.object.Maps;
-import org.area.object.Mount;
-import org.area.object.NpcTemplate;
-import org.area.object.Item;
+import org.area.object.*;
 import org.area.object.NpcTemplate.NPC;
 import org.area.object.NpcTemplate.NPC_Exchange;
-import org.area.object.SoulStone;
-import org.area.object.Trunk;
 import org.area.object.AuctionHouse.HdvEntry;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
@@ -126,6 +117,9 @@ public class World {
 	
 	// Liste des objets boutiques
 	private static Map<Integer, Integer> _listeEchangeItem = new HashMap<Integer, Integer>();
+
+	// Liste des runes avec id
+	private static HashMap<Integer, Rune> runes;
 	
 	private static int nextHdvID; // Contient le derniere ID utilisé pour crée
 									// un HDV, pour obtenir un ID non utilisé il
@@ -1167,6 +1161,8 @@ public class World {
 		SQLManager.RESET_MOUNTPARKS();
 		//nextObjetID = SQLManager.getNextObjetID()+1;
 	    updateListeEchangeItem(); // @Flow
+		Constant.initialiserTableauPoidsParPuissance();
+		runes = SQLManager.LOAD_RUNES();
 	    SQLManager.LOAD_ORNEMENTS_PRICE();
 	}
 
@@ -2176,6 +2172,14 @@ public class World {
 		_listeEchangeItem.put(21582, 56);
 		_listeEchangeItem.put(12051, 105);
 		_listeEchangeItem.put(11625, 243);
+	}
+
+	public static Rune obtenirRune(int idRune) {
+		Rune rune = null;
+		if (runes.containsKey(idRune)) {
+			rune = runes.get(idRune);
+		}
+		return rune;
 	}
 
 	public static int EchangeItemValue(int guid){
