@@ -64,7 +64,7 @@ public class Lang {
             LANG_50 = {"Action impossible, vous êtes en combat.","Not possible, you are in combat.","No es posible, usted está en combate.","Não é possível, você está em combate."},
             LANG_51 = {"Vous avez perdu","You lost","Perdiste","Você perdeu"},
             LANG_52 = {"Il vous en reste","It will remain","Se mantendrá","Ele permanecerá"};
-	
+
 	public static final String[] LANG_54 = {"Félicitation, vous venez de remporter","Congratulations, you just won","Felicidades, usted acaba de ganar","Parabéns, você acaba de ganhar"},
             LANG_55 = {"points de quote.","points share.","puntos de acción.","pontos de share."},
             LANG_56 = {"Vous venez de perdre","You just lost","Usted acaba de perder","Você acabou de perder"},
@@ -138,7 +138,8 @@ public class Lang {
             LANG_124 = {"Impossible d'abandonner un match en arène !","Can not drop a game in arena!","No se puede quitar un juego en el estadio!","Não é possível descartar um jogo na Arena!"},
             LANG_125 = {"L'adversaire reste immobile suite à l'état enraciné","The opponent is still rooted after the state","El oponente está todavía arraigado después del estado","O adversário ainda está enraizada após o estado"},
             LANG_126 = {"Vous dépassez les limites autorisées. Vos statistiques sont désormais bridées à 12Pa, 6pm, 9po","You exceed the limits. Your statistics are now clamped to 12PA, 6pm, 9in","Excede los límites. Sus estadísticas están sujetados a 12PA, 18:00, 9 pulgadas","Você exceder os limites. Suas estatísticas são agora fixados a 12pa 18pm 9in"},
-			LANG_127 = {"","","",""};
+			LANG_127 = {"","","",""},
+			LANG_128 = {"Vous n'avez pas le nombre de kamas requis pour augmenter de prestige. Il vous manque","You do not have enough Kamas. You miss","No es necesario que el número de Kamas requerida para aumentar el prestigio. Se olvida dea de ganar","Non è necessario il numero di Kamas necessario per aumentare il prestigio . Ti manca"};
 	public static String text(String[] lang) {
 		return lang[GameServer.lang];
 	}

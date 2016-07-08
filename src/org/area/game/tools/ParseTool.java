@@ -189,6 +189,27 @@ public class ParseTool {
     private static void parsePrestige(Player player, String packet, String[] params) {
         switch (packet) {
             case "UP": /** Up your prestige **/
+                int prix = 0;
+                switch  (player.getPrestige()) { //@Poupou Coût des prestiges
+                    case 15 :
+                        prix = 100000000;
+                        break;
+                    case 16 :
+                        prix = 250000000;
+                        break;
+                    case 17 :
+                        prix = 500000000;
+                        break;
+                    case 18 :
+                        prix = 750000000;
+                        break;
+                    case 19 :
+                        prix =  1000000000;
+                        break;
+                    default:
+                        prix = 0;
+                        break;
+                }
                 if (player.getFight() != null) {
                     player.sendMess(Lang.LANG_50);
                 }
@@ -198,7 +219,13 @@ public class ParseTool {
                 else if (player.getPrestige() == Config.MAX_PRESTIGES) {
                     player.sendMess(Lang.LANG_40);
                 }
+
+                else if (player.get_kamas() < prix) {
+                    long montantManquant = prix - player.get_kamas();
+                    player.sendMess(Lang.LANG_128, "", " " + montantManquant + " Kamas");
+                }
                 else {
+                    player.addKamas(-prix);
                     player.upPrestige();
                     player.sendMess(Lang.LANG_41, "", " " + player.getPrestige() + ".");
                     player.send("002P" + player.getPrestige());
