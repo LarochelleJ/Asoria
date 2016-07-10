@@ -1564,7 +1564,11 @@ public class World {
 	}
 
 	public static Item getObjet(int guid) {
-		return getObjets().get(guid);
+		if (getObjets().containsKey(guid)) {
+			return getObjets().get(guid);
+		} else {
+			return null;
+		}
 	}
 
 	public static void removeItem(int guid) {

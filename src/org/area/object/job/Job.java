@@ -23,6 +23,7 @@ import org.area.object.Item;
 import org.area.object.Maps.Case;
 import org.area.object.Maps.InteractiveObject;
 import org.area.object.Item.ObjTemplate;
+import org.area.object.Rune;
 import org.area.spell.SpellEffect;
 
 
@@ -1266,26 +1267,63 @@ public class Job {
             Logs.addToFmLog("Personnage " + _P.getName() + ": End fm to '" + objectFm.getTemplate(false).getName() + "' sucessfully !");
         }
 
-        public static void doFMCraftJr() { // TODO @Flow
+        public void doFMCraftJr() { // TODO @Flow
             // Vérifications, validations de l'outil, du métier et des ingrédients
+            Item objet = null, runeObjet = null;
+            boolean runeSignature = false;
 
-            // Calculs des probabilités du SC, SN et EC
+            for (Integer itemId : _ingredients.keySet()) {
+                Item tempItem = World.getObjet(itemId);
+                if (tempItem != null) {
+                    if (World.obtenirRune(tempItem.getTemplate(false).getID()) != null) {
+                        runeObjet = tempItem;
+                    } else if (tempItem.getTemplate(false).getID() == 7508) {
+                        runeSignature = true;
+                    } else {
+                        objet = tempItem;
+                    }
+                }
+            }
 
-            // En cas de perte (SN ou EC)
-            // Probabilité de perdre un jet (%) = (PoidsRune * 100) / poidDuJetSélectionné
-            // Échec critique, perte = poid de la rune, pas plus ni moins
+            boolean fmValide = false;
+            if (objet != null && runeObjet != null) {
+                if (_P.hasItemGuid(objet.getGuid()) && _P.hasItemGuid(runeObjet.getGuid())) {
+                    int type = objet.getTemplate(false).getType();
+                    if ((type >= 1 && type <= 11) || (type >= 16 && type <= 22) || type == 81 || type == 102 || type == 114
+                            || objet.getTemplate(false).getPACost() > 0) {
+                        fmValide = true;
+                        // Calculs des probabilités du SC, SN et EC
+                        int pbSC = 0, pbSN = 0, pbEC = 0;
+                        Rune rune = World.obtenirRune(runeObjet.getTemplate(false).getID());
+                        if (objet.getStats().getEffect(rune.getIdEffet()) == 0) { // Exo
+                            pbSC = 1;
+                            pbEC = 99;
+                        } else {
 
-            // Succès Neutre, perte > 0
-            // Si il y a un puits, encaissement des pertes par le puits, puits négatifs = pertes non encaissées
+                        }
+                        // En cas de perte (SN ou EC)
+                        // Probabilité de perdre un jet (%) = (PoidsRune * 100) / poidDuJetSélectionné
+                        // Échec critique, perte = poid de la rune, pas plus ni moins
 
-            // Application des pertes à l'item
+                        // Succès Neutre, perte > 0
+                        // Si il y a un puits, encaissement des pertes par le puits, puits négatifs = pertes non encaissées
 
-            // On applique la rune si succès
+                        // Application des pertes à l'item
 
-            // Calculs du nouveau puit
-            // Si pas existant, nouveauPuit = perte - poid de la rune
-            // Si existant(> 0), nouveauPuit = (puitRestant + perte) - poid de la rune
+                        // On applique la rune si succès
 
+                        // Calculs du nouveau puit
+                        // Si pas existant, nouveauPuit = perte - poid de la rune
+                        // Si existant(> 0), nouveauPuit = (puitRestant + perte) - poid de la rune
+                    }
+                }
+            }
+
+            if (!fmValide) {
+                SocketManager.GAME_SEND_Ec_PACKET(_P, "EI");
+                SocketManager.GAME_SEND_IO_PACKET_TO_MAP(_P.getMap(), _P.getGuid(), "-");
+                _ingredients.clear();
+            }
         }
 
         public static int getStatBaseMaxs(ObjTemplate objMod, String statsModif) {

@@ -310,7 +310,7 @@ public class Maps {
         //private ArrayList<Action> _onItemOnCell;
         private ArrayList<Action> _onCellStop;// = new ArrayList<Action>();
         private InteractiveObject _object;
-        private Item _droppedItem;
+        public Item _droppedItem;
 
         public Case(Maps a_map, int id, boolean _walk, boolean LoS, int objID) {
             _map = a_map.get_id();
@@ -1728,13 +1728,15 @@ public class Maps {
 
     public void onPlayerArriveOnCell(Player perso, int caseID) {
         if (_cases.get(caseID) == null) return;
-        Item obj = _cases.get(caseID).getDroppedItem();
+        Item obj = _cases.get(caseID)._droppedItem;
         if (obj != null) {
-            if (perso.addObjet(obj, true))
-                World.addObjet(obj, true);
-            SocketManager.GAME_SEND_GDO_PACKET_TO_MAP(this, '-', caseID, 0, 0);
-            SocketManager.GAME_SEND_Ow_PACKET(perso);
-            _cases.get(caseID).clearDroppedItem();
+            synchronized (obj) {
+                if (perso.addObjet(obj, true))
+                    World.addObjet(obj, true);
+                SocketManager.GAME_SEND_GDO_PACKET_TO_MAP(this, '-', caseID, 0, 0);
+                SocketManager.GAME_SEND_Ow_PACKET(perso);
+                _cases.get(caseID).clearDroppedItem();
+            }
         }
         _cases.get(caseID).applyOnCellStopActions(perso);
         if (perso.getHasEndFight()) {

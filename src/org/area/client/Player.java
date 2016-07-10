@@ -1803,25 +1803,29 @@ public class Player {
     public Stats getStuffStats() {
         Stats stats = new Stats(false, null);
         ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
+        List<Integer> positionCalculee = new ArrayList<Integer>();
         synchronized (_items) {
             for (Item i : _items.values()) {
                 if (i.getPosition() != Constant.ITEM_POS_NO_EQUIPED) {
-                    stats = Stats.cumulStat(stats, i.getStats());
-                    ObjTemplate template = null;
-                    if (i.getStats().getEffect(616161) > 0) {
-                        template = World.getObjTemplate(i.getStats().getEffect(616161));
-                    } else {
-                        template = i.getTemplate(false);
-                    }
-                    int panID = template.getPanopID();
-                    //Si panoplie, et si l'effet de pano n'a pas encore été ajouté
-                    if (panID > 0 && !itemSetApplied.contains(panID)) {
-                        itemSetApplied.add(panID);
-                        ItemSet IS = World.getItemSet(panID);
-                        //Si la pano existe
-                        if (IS != null) {
-                            //on ajoute le bonus de pano en fonction du nombre d'item
-                            stats = Stats.cumulStat(stats, IS.getBonusStatByItemNumb(this.getNumbEquipedItemOfPanoplie(panID)));
+                    if (!positionCalculee.contains(i.getPosition())) {
+                        positionCalculee.add(i.getPosition());
+                        stats = Stats.cumulStat(stats, i.getStats());
+                        ObjTemplate template = null;
+                        if (i.getStats().getEffect(616161) > 0) {
+                            template = World.getObjTemplate(i.getStats().getEffect(616161));
+                        } else {
+                            template = i.getTemplate(false);
+                        }
+                        int panID = template.getPanopID();
+                        //Si panoplie, et si l'effet de pano n'a pas encore été ajouté
+                        if (panID > 0 && !itemSetApplied.contains(panID)) {
+                            itemSetApplied.add(panID);
+                            ItemSet IS = World.getItemSet(panID);
+                            //Si la pano existe
+                            if (IS != null) {
+                                //on ajoute le bonus de pano en fonction du nombre d'item
+                                stats = Stats.cumulStat(stats, IS.getBonusStatByItemNumb(this.getNumbEquipedItemOfPanoplie(panID)));
+                            }
                         }
                     }
                 }
