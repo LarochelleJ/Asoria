@@ -241,7 +241,7 @@ public class Item {
 				for(int a : Constant.ARMES_EFFECT_IDS)//Si c'est un Effet Actif
 					if(a == statID)
 						follow = false;
-				if(!follow)continue;//Si c'était un effet Actif d'arme
+				if(!follow)continue;//Si c'ï¿½tait un effet Actif d'arme
 				
 				String jet = "";
 				int value  = 1;
@@ -264,6 +264,27 @@ public class Item {
 				itemStats.addOneStat(statID, value);
 			}
 			return itemStats;
+		}
+
+		public int obtenirJetMaximum(int elementId) {
+			int maxJet = 0;
+			String[] statsTemplate = StrTemplate.split(",");
+			for (String stat : statsTemplate) {
+				String[] statsInfos = stat.split("#");
+				try {
+					if (Integer.parseInt(statsInfos[0], 16) == elementId) {
+						int min = Integer.parseInt(statsInfos[1], 16);
+						int max = Integer.parseInt(statsInfos[2], 16);
+						if (max != 0) {
+							maxJet = max;
+						} else {
+							maxJet = min;
+						}
+						break;
+					}
+				} catch (Exception e) {}
+			}
+			return maxJet;
 		}
 		
 		public ArrayList<SpellEffect> getEffectTemplate(String statsTemplate)
@@ -292,7 +313,7 @@ public class Item {
 			return Effets;
 		}
 		
-		public Stats generateNewStatsFromTemplate2(String statsTemplate,boolean useMax) //@Flow - Était private avant
+		public Stats generateNewStatsFromTemplate2(String statsTemplate,boolean useMax) //@Flow - ï¿½tait private avant
 		{
 			Stats itemStats = new Stats(false, null);
 			//Si stats Vides
@@ -464,7 +485,7 @@ public class Item {
 					SpellStats.addStat(Integer.parseInt(stats[1],16), statID, Integer.parseInt(stats[3],16));
 					continue;
 				}
-				//Stats spécials
+				//Stats spï¿½cials
 				if(statID == 997 || statID == 996)
 				{
 					txtStats.put(statID, stats[4]);
@@ -491,7 +512,7 @@ public class Item {
 						follow = false;
 					}
 				}
-				if(!follow)continue;//Si c'était un effet Actif d'arme ou une signature
+				if(!follow)continue;//Si c'ï¿½tait un effet Actif d'arme ou une signature
 				
 				int value;
 				try {
@@ -541,7 +562,7 @@ public class Item {
 		}
 		return null;
 	}
-	// Clone objet / Création nouvel objet
+	// Clone objet / Crï¿½ation nouvel objet
 	public Item(int Guid, int template, int qua, int pos,	Stats stats,ArrayList<SpellEffect> effects, BoostSpellStats sp, int prestige)
 	{
 		if (World.getObjets().containsKey(Guid)){
@@ -559,7 +580,7 @@ public class Item {
 		this.obvijevan = 0;
 	    this.obvijevanLook = 0;
 	    this.prestige = prestige;
-	    // 3 tentatives de création
+	    // 3 tentatives de crï¿½ation
 	    for (int i = 0; i <= 3; i++) {
 	    	if (SQLManager.INSERT_NEW_ITEM(this)){
 	    		break;
@@ -676,7 +697,7 @@ public class Item {
 	}
 	public String parseStatsString()
 	{
-		if(getTemplate(false).getType() == 83)	//Si c'est une pierre d'âme vide
+		if(getTemplate(false).getType() == 83)	//Si c'est une pierre d'ï¿½me vide
 			return getTemplate(false).getStrTemplate();
 		
 		StringBuilder stats = new StringBuilder();
@@ -761,7 +782,7 @@ public class Item {
 	}
 	public String parseStatsStringSansUserObvi(boolean isObj)
 	{
-		if(getTemplate(false).getType() == 83)	//Si c'est une pierre d'âme vide
+		if(getTemplate(false).getType() == 83)	//Si c'est une pierre d'ï¿½me vide
 			return getTemplate(false).getStrTemplate();
 		
 		StringBuilder stats = new StringBuilder();
@@ -848,15 +869,15 @@ public class Item {
 			return;
 		for (Entry<Integer, Integer> entry : Stats.getMap().entrySet())
 		{
-			if (entry.getKey().intValue() != 974) // on ne boost que la stat de l'expérience de l'obvi
+			if (entry.getKey().intValue() != 974) // on ne boost que la stat de l'expï¿½rience de l'obvi
 				continue;
-			if (entry.getValue().intValue() > 500) // si le boost a une valeur supérieure à 500 (irréaliste)
+			if (entry.getValue().intValue() > 500) // si le boost a une valeur supï¿½rieure ï¿½ 500 (irrï¿½aliste)
 				return;
 			entry.setValue(10000); // valeur d'origine + ObjLvl / 32
-			// s'il mange un obvi, on récupère son expérience
+			// s'il mange un obvi, on rï¿½cupï¿½re son expï¿½rience
 			/*if (obj.getTemplate().getID() == getTemplate().getID()) {
 				for(Map.Entry<Integer, Integer> ent : obj.getStats().getMap().entrySet()) {
-					if (entry.getKey().intValue() != 974) // on ne considère que la stat de l'expérience de l'obvi
+					if (entry.getKey().intValue() != 974) // on ne considï¿½re que la stat de l'expï¿½rience de l'obvi
 						continue; 
 					entry.setValue(Integer.valueOf(entry.getValue().intValue() + Integer.valueOf(ent.getValue().intValue())));
 				}
@@ -1310,7 +1331,7 @@ public class Item {
 				if(max < min) max = min;
 				String jet = "1d"+(max-min+1)+"+"+(min-1);
 				//exCode: String newArgs = Integer.toHexString(min)+";"+Integer.toHexString(max)+";-1;-1;0;"+jet;
-				//osef du minMax, vu qu'on se sert du jet pour calculer les dégats
+				//osef du minMax, vu qu'on se sert du jet pour calculer les dï¿½gats
 				String newArgs = "0;0;0;-1;0;"+jet;
 				effets.add(new SpellEffect(SE.getEffectID(),newArgs,0,-1));
 			}catch(Exception e){continue;};

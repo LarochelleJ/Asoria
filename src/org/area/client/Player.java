@@ -475,11 +475,17 @@ public class Player {
         }
 
         public int addOneStat(int id, int val) {
-            if (Effects.get(id) == null || Effects.get(id) == 0)
-                Effects.put(id, val);
-            else {
+            if (Effects.get(id) == null || Effects.get(id) == 0) {
+                if (val > 0) {
+                    Effects.put(id, val);
+                }
+            } else {
                 int newVal = (Effects.get(id) + val);
-                Effects.put(id, newVal);
+                if (newVal <= 0) {
+                    Effects.remove(id);
+                } else {
+                    Effects.put(id, newVal);
+                }
             }
             return Effects.get(id);
         }

@@ -828,7 +828,7 @@ public class Constant
 	}
 
 	public static double obtenirPoidsPuissance(int idEffet) {
-		double poid = -1;
+		double poid = 0;
 		if (tableauPoidsParPuissance.containsKey(idEffet)) {
 			poid = tableauPoidsParPuissance.get(idEffet);
 		}
