@@ -1363,7 +1363,7 @@ public class Job {
                                 }
                                 for (Entry<Integer, Integer> statsPerdues : pertes.entrySet()) {
                                     int perteEnPoid = (int) (statsPerdues.getValue() * Constant.obtenirPoidsPuissance(statsPerdues.getKey()));
-                                    if (casObtenu == pbSN && puit > 0) {
+                                    if (casObtenu == pbSN && puitValide && puit > 0) {
                                         perteEnPoid -= puit;
                                         puit -= perteEnPoid;
                                     }
@@ -1373,7 +1373,7 @@ public class Job {
                                 }
 
                                 // Calcul du nouveau puit
-                                if (puit < 0) puit = 0;
+                                if (puit < 0 || !puitValide) puit = 0;
                                 objet.getStats().addOneStat(2323, ((objet.getStats().getEffect(2323) - puit) + vraiePerteTotaleEnPoid) - rune.getPoid());
                                 objet.getStats().addOneStat(2324, -objet.getStats().getEffect(2324) + _P.getGuid()); // On enlève l'ancien propriétaire du puit et on applique le nouveau
                             }
