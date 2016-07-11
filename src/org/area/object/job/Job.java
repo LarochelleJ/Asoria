@@ -1288,109 +1288,115 @@ public class Job {
 
             boolean fmValide = false;
             if (objet != null && runeObjet != null) {
-                if (_P.hasItemGuid(objet.getGuid()) && _P.hasItemGuid(runeObjet.getGuid())) {
-                    int type = objet.getTemplate(estMimibiote).getType();
-                    if ((type >= 1 && type <= 11) || (type >= 16 && type <= 22) || type == 81 || type == 102 || type == 114
-                            || objet.getTemplate(estMimibiote).getPACost() > 0) {
-                        fmValide = true;
-                        // Calculs des probabilités du SC, SN et EC
-                        int pbSC = 0, pbSN = 0, pbEC = 0;
-                        Rune rune = World.obtenirRune(runeObjet.getTemplate(false).getID());
-                        int puissanceObjet = objet.getStats().getEffect(rune.getIdEffet());
-                        final double poidParPuissanceElement = Constant.obtenirPoidsPuissance(rune.getIdEffet());
-                        double coefficientEffetPoid = puissanceObjet * poidParPuissanceElement / poidParPuissanceElement;
-                        if (puissanceObjet == 0) { // Exo
-                            pbSC = 1;
-                            pbEC = 99;
-                        } else if (coefficientEffetPoid > 20) {
-                            if (coefficientEffetPoid > 25) {
-                                pbSC = 15;
-                                pbSN = 50;
-                                pbEC = 35;
-                            } else {
-                                pbSC = 43;
-                                pbSN = 50;
-                                pbEC = 7;
+                synchronized (objet) { /** On lock l'objet de la référence pour empêcher toutes autres interactions avec l'objet pendant le FM **/
+                    if (_P.hasItemGuid(objet.getGuid()) && _P.hasItemGuid(runeObjet.getGuid())) {
+                        int type = objet.getTemplate(estMimibiote).getType();
+                        if ((type >= 1 && type <= 11) || (type >= 16 && type <= 22) || type == 81 || type == 102 || type == 114
+                                || objet.getTemplate(estMimibiote).getPACost() > 0) {
+                            fmValide = true;
+                            // Calculs des probabilités du SC, SN et EC
+                            int pbSC = 0, pbSN = 0, pbEC = 0;
+                            Rune rune = World.obtenirRune(runeObjet.getTemplate(false).getID());
+                            int puissanceObjet = objet.getStats().getEffect(rune.getIdEffet());
+                            final double poidParPuissanceElement = Constant.obtenirPoidsPuissance(rune.getIdEffet());
+                            double coefficientEffetPoid = puissanceObjet * poidParPuissanceElement / poidParPuissanceElement;
+                            if (puissanceObjet == 0) { // Exo
+                                pbSC = 1;
+                                pbEC = 99;
+                            } else if (coefficientEffetPoid > 20) {
+                                if (coefficientEffetPoid > 25) {
+                                    pbSC = 15;
+                                    pbSN = 50;
+                                    pbEC = 35;
+                                } else {
+                                    pbSC = 43;
+                                    pbSN = 50;
+                                    pbEC = 7;
+                                }
                             }
-                        }
 
-                        if (pbEC != 99) {
-                            int jetMaximum = objet.getTemplate(estMimibiote).obtenirJetMaximum(rune.getIdEffet());
-                            if (puissanceObjet > (0.8D * jetMaximum)) {
-                                pbSC -= 15;
-                                pbEC += 15;
-                            } else if (pbSN == 0) {
-                                pbSC = 66;
-                                pbSN = 34;
+                            if (pbEC != 99) {
+                                int jetMaximum = objet.getTemplate(estMimibiote).obtenirJetMaximum(rune.getIdEffet());
+                                if (puissanceObjet > (0.8D * jetMaximum)) {
+                                    pbSC -= 15;
+                                    pbEC += 15;
+                                } else if (pbSN == 0) {
+                                    pbSC = 66;
+                                    pbSN = 34;
+                                }
                             }
-                        }
-                        int[] probabilites = {pbSC, pbSN, pbEC};
-                        Arrays.sort(probabilites); // On classe en ordre croissant
-                        final double probabiliteObtenue = Math.random() * 100;
-                        int casObtenu;
-                        if (probabiliteObtenue < probabilites[2]) { // Plus grosse probabilité
-                            casObtenu = probabilites[2];
-                        } else if (probabiliteObtenue < probabilites[2] + probabilites[1]) { // 2ème plus grosse
-                            casObtenu = probabilites[1];
-                        } else { // plus petite
-                            casObtenu = probabilites[0];
-                        }
+                            int[] probabilites = {pbSC, pbSN, pbEC};
+                            Arrays.sort(probabilites); // On classe en ordre croissant
+                            final double probabiliteObtenue = Math.random() * 100;
+                            int casObtenu;
+                            if (probabiliteObtenue < probabilites[2]) { // Plus grosse probabilité
+                                casObtenu = probabilites[2];
+                            } else if (probabiliteObtenue < probabilites[2] + probabilites[1]) { // 2ème plus grosse
+                                casObtenu = probabilites[1];
+                            } else { // plus petite
+                                casObtenu = probabilites[0];
+                            }
 
-                        // En cas de perte (SN ou EC)
-                        if (casObtenu != pbSC) {
-                            LinkedHashMap<Integer, Integer> pertes = new LinkedHashMap<Integer, Integer>();
-                            int perteTotaleEnPoid = 0;
-                            for (Entry<Integer, Integer> stats : objet.getStats().getMap().entrySet()) {
-                                double poidDuJet = (Constant.obtenirPoidsPuissance(stats.getKey()) * (double) stats.getValue());
-                                double probabiliteDePerdre = (rune.getPoid() * 100) / poidDuJet;
-                                if (Math.random() * 100 < probabiliteDePerdre) { // Perte
-                                    if (casObtenu == pbEC && perteTotaleEnPoid + poidDuJet > rune.getPoid()) {
-                                        int maximumRestantEnPoidPourPerte = rune.getPoid() - perteTotaleEnPoid;
-                                        pertes.put(stats.getKey(), (int) (maximumRestantEnPoidPourPerte / Constant.obtenirPoidsPuissance(stats.getKey())));
-                                        perteTotaleEnPoid = rune.getPoid();
-                                    } else {
-                                        pertes.put(stats.getKey(), stats.getValue());
-                                        perteTotaleEnPoid += poidDuJet;
+                            // En cas de perte (SN ou EC)
+                            if (casObtenu != pbSC) {
+                                LinkedHashMap<Integer, Integer> pertes = new LinkedHashMap<Integer, Integer>();
+                                int perteTotaleEnPoid = 0;
+                                for (Entry<Integer, Integer> stats : objet.getStats().getMap().entrySet()) {
+                                    double poidDuJet = (Constant.obtenirPoidsPuissance(stats.getKey()) * (double) stats.getValue());
+                                    double probabiliteDePerdre = (rune.getPoid() * 100) / poidDuJet;
+                                    if (Math.random() * 100 < probabiliteDePerdre) { // Perte
+                                        if (casObtenu == pbEC && perteTotaleEnPoid + poidDuJet > rune.getPoid()) {
+                                            int maximumRestantEnPoidPourPerte = rune.getPoid() - perteTotaleEnPoid;
+                                            pertes.put(stats.getKey(), (int) (maximumRestantEnPoidPourPerte / Constant.obtenirPoidsPuissance(stats.getKey())));
+                                            perteTotaleEnPoid = rune.getPoid();
+                                        } else {
+                                            pertes.put(stats.getKey(), stats.getValue());
+                                            perteTotaleEnPoid += poidDuJet;
+                                        }
                                     }
                                 }
-                            }
 
-                            int puit = objet.getStats().getEffect(2323);
-                            int vraiePerteTotaleEnPoid = 0;
-                            for (Entry<Integer, Integer> statsPerdues : pertes.entrySet()) {
-                                int perteEnPoid = (int) (statsPerdues.getValue() * Constant.obtenirPoidsPuissance(statsPerdues.getKey()));
-                                if (casObtenu == pbSN && puit > 0) {
-                                    perteEnPoid -= puit;
-                                    puit -= perteEnPoid;
+                                int puit = objet.getStats().getEffect(2323), guidProprietairePuit = objet.getStats().getEffect(2324), vraiePerteTotaleEnPoid = 0;
+                                boolean puitValide = false;
+                                if (_P.getGuid() == guidProprietairePuit) {
+                                    puitValide = true;
                                 }
-                                vraiePerteTotaleEnPoid += perteEnPoid;
-                                int statAffectePerdue = (int) (perteEnPoid / Constant.obtenirPoidsPuissance(statsPerdues.getKey()));
-                                objet.getStats().addOneStat(statsPerdues.getKey(), -statAffectePerdue);
+                                for (Entry<Integer, Integer> statsPerdues : pertes.entrySet()) {
+                                    int perteEnPoid = (int) (statsPerdues.getValue() * Constant.obtenirPoidsPuissance(statsPerdues.getKey()));
+                                    if (casObtenu == pbSN && puit > 0) {
+                                        perteEnPoid -= puit;
+                                        puit -= perteEnPoid;
+                                    }
+                                    vraiePerteTotaleEnPoid += perteEnPoid;
+                                    int statAffectePerdue = (int) (perteEnPoid / Constant.obtenirPoidsPuissance(statsPerdues.getKey()));
+                                    objet.getStats().addOneStat(statsPerdues.getKey(), -statAffectePerdue);
+                                }
+
+                                // Calcul du nouveau puit
+                                if (puit < 0) puit = 0;
+                                objet.getStats().addOneStat(2323, ((objet.getStats().getEffect(2323) - puit) + vraiePerteTotaleEnPoid) - rune.getPoid());
+                                objet.getStats().addOneStat(2324, -objet.getStats().getEffect(2324) + _P.getGuid()); // On enlève l'ancien propriétaire du puit et on applique le nouveau
                             }
 
-                            // Calcul du nouveau puit
-                            if (puit < 0) puit = 0;
-                            objet.getStats().addOneStat(2323, ((objet.getStats().getEffect(2323) - puit) + vraiePerteTotaleEnPoid) - rune.getPoid());
-                        }
-
-                        // On applique la rune
-                        if (casObtenu != pbEC) {
-                            if (Constant.obtenirPoidsPuissance(rune.getIdEffet()) * (objet.getStats().getEffect(rune.getIdEffet()) + rune.getPuissance()) < 101) {
-                                objet.getStats().addOneStat(rune.getIdEffet(), rune.getPuissance());
+                            // On applique la rune
+                            if (casObtenu != pbEC) {
+                                if (Constant.obtenirPoidsPuissance(rune.getIdEffet()) * (objet.getStats().getEffect(rune.getIdEffet()) + rune.getPuissance()) < 101) {
+                                    objet.getStats().addOneStat(rune.getIdEffet(), rune.getPuissance());
+                                }
+                                if (runeSignature) {
+                                    objet.addTxtStat(985, _P.getName());
+                                    _P.removeItem(runeSignatureObjet.getGuid(), 1, true, true);
+                                }
                             }
-                            if (runeSignature) {
-                                objet.addTxtStat(985, _P.getName());
-                                _P.removeItem(runeSignatureObjet.getGuid(), 1, true, true);
-                            }
-                        }
 
-                        StatsMetier job = _P.getMetierBySkill(_skID);
-                        if (job != null) {
-                            job.addXp(_P, (int) (Config.RATE_METIER + 9.0 / 10.0) * 10);
+                            StatsMetier job = _P.getMetierBySkill(_skID);
+                            if (job != null) {
+                                job.addXp(_P, (int) (Config.RATE_METIER + 9.0 / 10.0) * 10);
+                            }
+                            _P.removeItem(runeObjet.getGuid(), 1, true, true);
+                            _P.save(true);
+                            _ingredients.clear();
                         }
-                        _P.removeItem(runeObjet.getGuid(), 1, true, true);
-                        _P.save(true);
-                        _ingredients.clear();
                     }
                 }
             }
