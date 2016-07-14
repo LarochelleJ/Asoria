@@ -481,13 +481,19 @@ public class Player {
                 }
             } else {
                 int newVal = (Effects.get(id) + val);
-                if (newVal <= 0) {
-                    Effects.remove(id);
-                } else {
+                Effects.remove(id);
+                if (newVal > 0) {
                     Effects.put(id, newVal);
                 }
             }
-            return Effects.get(id);
+            return Effects.containsKey(id) ? Effects.get(id) : 0;
+        }
+
+        public void setOneStat(int id, int val) {
+            if (Effects.containsKey(id)) {
+                Effects.remove(id);
+            }
+            Effects.put(id, val);
         }
 
         public boolean isSameStats(Stats other) {

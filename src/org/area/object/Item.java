@@ -532,6 +532,13 @@ public class Item {
 	{
 		txtStats.put(i, s);
 	}
+
+	public void setTxtStat(int i, String s) {
+		if (txtStats.containsKey(i)) {
+			txtStats.remove(i);
+		}
+		txtStats.put(i, s);
+	}
 	public String getTxtStat(int i)
     {
         String stat = "";

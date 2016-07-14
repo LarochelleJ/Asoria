@@ -363,7 +363,7 @@ public class Job {
                     || _skID == 119
                     || _skID == 120
                     || (_skID >= 163 && _skID <= 169)) {
-                doFmCraft();
+                doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
                 return;
             } else {
                 try {
@@ -1043,8 +1043,9 @@ public class Job {
             if (objectFm.getStats().getEffect(616161) > 0) { // Si mimibiot�
                 int idMimiItem = objectFm.getStats().getEffect(616161);
                 objTemplate = World.getObjTemplate(idMimiItem);
+            } else {
+                objTemplate = objectFm.getTemplate(false);
             }
-            objTemplate = objectFm.getTemplate(false);
             int chance = 0;
             int lvlJob = job.get_lvl();
             int objTemaplateID = objTemplate.getID();
@@ -1279,6 +1280,13 @@ public class Job {
                         runeSignatureObjet = tempItem;
                     } else {
                         objet = tempItem;
+                        if (objet.getQuantity() > 1) {
+                            int quantiteRestante = objet.getQuantity() - 1;
+                            objet.setQuantity(1);
+                            Item objetsRestants = Item.getCloneObjet(objet, quantiteRestante);
+                            World.addObjet(objetsRestants, true);
+                            _P.addObjet(objetsRestants, false);
+                        }
                         if (objet.getStats().getEffect(616161) > 0) {
                             estMimibiote = true;
                         }
@@ -1374,25 +1382,38 @@ public class Job {
 
                                 // Calcul du nouveau puit
                                 if (puit < 0 || !puitValide) puit = 0;
-                                objet.getStats().addOneStat(2323, ((objet.getStats().getEffect(2323) - puit) + vraiePerteTotaleEnPoid) - rune.getPoid());
-                                objet.getStats().addOneStat(2324, -objet.getStats().getEffect(2324) + _P.getGuid()); // On enlève l'ancien propriétaire du puit et on applique le nouveau
+                                objet.getStats().setOneStat(2323, (puit + vraiePerteTotaleEnPoid) - rune.getPoid());
+                                objet.getStats().setOneStat(2324, _P.getGuid()); // On enlève l'ancien propriétaire du puit et on applique le nouveau
                             }
 
                             // On applique la rune
+                            int objTemaplateID = objet.getTemplate(estMimibiote).getID();
                             if (casObtenu != pbEC) {
                                 if (Constant.obtenirPoidsPuissance(rune.getIdEffet()) * (objet.getStats().getEffect(rune.getIdEffet()) + rune.getPuissance()) < 101) {
                                     objet.getStats().addOneStat(rune.getIdEffet(), rune.getPuissance());
                                 }
                                 if (runeSignature) {
-                                    objet.addTxtStat(985, _P.getName());
+                                    objet.setTxtStat(985, _P.getName());
                                     _P.removeItem(runeSignatureObjet.getGuid(), 1, true, true);
                                 }
+                                SocketManager.GAME_SEND_IO_PACKET_TO_MAP(_P.getMap(), _P.getGuid(), "+" + objTemaplateID);
+                                SocketManager.GAME_SEND_Ec_PACKET(_P, "K;" + objTemaplateID);
+                            } else {
+                                SocketManager.GAME_SEND_IO_PACKET_TO_MAP(_P.getMap(), _P.getGuid(), "-" + objTemaplateID);
+                                SocketManager.GAME_SEND_Ec_PACKET(_P, "EF");
+                                SocketManager.GAME_SEND_Im_PACKET(_P, "0183");
                             }
 
+                            // On ajoute l'expérience du métier
                             StatsMetier job = _P.getMetierBySkill(_skID);
                             if (job != null) {
                                 job.addXp(_P, (int) (Config.RATE_METIER + 9.0 / 10.0) * 10);
                             }
+
+                            // On finalise la fm en enlevant les ingrédiants sélectionné et on sauvegarde le joueur, actualise les stats de l'item
+                            SocketManager.GAME_SEND_EXCHANGE_MOVE_OK(_P, 'O', "-", objet.getGuid() + "");
+                            SocketManager.GAME_SEND_OCO_PACKET(_P, objet);
+                            SocketManager.GAME_SEND_STATS_PACKET(_P);
                             _P.removeItem(runeObjet.getGuid(), 1, true, true);
                             _P.save(true);
                             _ingredients.clear();
