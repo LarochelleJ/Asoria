@@ -1275,9 +1275,17 @@ public class Job {
                 if (tempItem != null) {
                     if (World.obtenirRune(tempItem.getTemplate(false).getID()) != null) {
                         runeObjet = tempItem;
+                        if (runeObjet.getQuantity() > 1) {
+                            int qtaRestante = runeObjet.getQuantity() - 2;
+                            SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "-", runeObjet.getGuid() + "|" + qtaRestante);
+                        }
                     } else if (tempItem.getTemplate(false).getID() == 7508) {
                         runeSignature = true;
                         runeSignatureObjet = tempItem;
+                        if (runeSignatureObjet.getQuantity() > 1) {
+                            int qtaRestante = runeSignatureObjet.getQuantity() - 2;
+                            SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "-", runeSignatureObjet.getGuid() + "|" + qtaRestante);
+                        }
                     } else {
                         objet = tempItem;
                         if (objet.getQuantity() > 1) {
@@ -1290,6 +1298,7 @@ public class Job {
                         if (objet.getStats().getEffect(616161) > 0) {
                             estMimibiote = true;
                         }
+                        SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "+", objet.getGuid() + "|" + 1);
                     }
                 }
             }
@@ -1307,12 +1316,11 @@ public class Job {
                             Rune rune = World.obtenirRune(runeObjet.getTemplate(false).getID());
                             int puissanceObjet = objet.getStats().getEffect(rune.getIdEffet());
                             final double poidParPuissanceElement = Constant.obtenirPoidsPuissance(rune.getIdEffet());
-                            double coefficientEffetPoid = puissanceObjet * poidParPuissanceElement / poidParPuissanceElement;
                             if (puissanceObjet == 0) { // Exo
                                 pbSC = 1;
                                 pbEC = 99;
-                            } else if (coefficientEffetPoid > 20) {
-                                if (coefficientEffetPoid > 25) {
+                            } else if (puissanceObjet > 35) {
+                                if (puissanceObjet > 50) {
                                     pbSC = 15;
                                     pbSN = 50;
                                     pbEC = 35;
@@ -1365,6 +1373,8 @@ public class Job {
                                 }
 
                                 int puit = objet.getStats().getEffect(2323), guidProprietairePuit = objet.getStats().getEffect(2324), vraiePerteTotaleEnPoid = 0;
+                                int puitMaximumExploitable = objet.getTemplate(estMimibiote).obtenirPuitMaximumExploitable();
+                                if (puit > puitMaximumExploitable) puit = puitMaximumExploitable;
                                 boolean puitValide = false;
                                 if (_P.getGuid() == guidProprietairePuit) {
                                     puitValide = true;
@@ -1389,11 +1399,11 @@ public class Job {
                             // On applique la rune
                             int objTemaplateID = objet.getTemplate(estMimibiote).getID();
                             if (casObtenu != pbEC) {
-                                if (Constant.obtenirPoidsPuissance(rune.getIdEffet()) * (objet.getStats().getEffect(rune.getIdEffet()) + rune.getPuissance()) < 101) {
+                                if (Constant.obtenirPoidsPuissance(rune.getIdEffet()) * (objet.getStats().getEffect(rune.getIdEffet()) + rune.getPuissance()) < 150) {
                                     objet.getStats().addOneStat(rune.getIdEffet(), rune.getPuissance());
                                 }
                                 if (runeSignature) {
-                                    objet.setTxtStat(985, _P.getName());
+                                    objet.addTxtStat(985, _P.getName());
                                     _P.removeItem(runeSignatureObjet.getGuid(), 1, true, true);
                                 }
                                 SocketManager.GAME_SEND_IO_PACKET_TO_MAP(_P.getMap(), _P.getGuid(), "+" + objTemaplateID);
@@ -1411,10 +1421,16 @@ public class Job {
                             }
 
                             // On finalise la fm en enlevant les ingrédiants sélectionné et on sauvegarde le joueur, actualise les stats de l'item
-                            SocketManager.GAME_SEND_EXCHANGE_MOVE_OK(_P, 'O', "-", objet.getGuid() + "");
-                            SocketManager.GAME_SEND_OCO_PACKET(_P, objet);
-                            SocketManager.GAME_SEND_STATS_PACKET(_P);
+                            // On clone l'objet pour avoir un nouveau guid et forcer l'actualisation de l'item fm dans l'inventaire atelier
+                            Item clone = Item.getCloneObjet(objet, 1);
+                            World.addObjet(clone, true);
+                            _P.addObjet(clone);
+                            SocketManager.GAME_SEND_OAKO_PACKET(_P, clone);
+                            SocketManager.GAME_SEND_Ow_PACKET(_P);
+                            String data = clone.getGuid() + "|1|" + clone.getTemplate(false).getID() + "|" + clone.parseStatsString();
+                            SocketManager.GAME_SEND_EXCHANGE_MOVE_OK_FM(_P, 'O', "+", data);
                             _P.removeItem(runeObjet.getGuid(), 1, true, true);
+                            _P.removeItem(objet.getGuid(), 1, true, true);
                             _P.save(true);
                             _ingredients.clear();
                         }
