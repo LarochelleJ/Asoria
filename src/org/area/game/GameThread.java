@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.math.LongMath;
@@ -154,10 +155,17 @@ public class GameThread implements Runnable {
                     packet = CryptManager.toUnicode(packet);
                     /*if(!IpCheck.onGamePacket(_s.getInetAddress().getHostAddress(), packet))
                         _s.close();*/
-                    GameServer.addToSockLog("Game: Recv << " + packet);
-                    ParseTool.parsePacket(packet, player);
-                    parsePacket(packet);
-                    packet = "";
+                    GameServer.addToSockLog("Game: Recu << " + packet);
+                    if (Main.gameServer.encryptPacketKey != "0") {
+                        try {
+                            String packetTest = CryptManager.decryptPacket(packet);
+                            GameServer.addToSockLog("Game: Packet decrypté: " + packetTest);
+                        } catch (Exception e) {
+                        }
+                        ParseTool.parsePacket(packet, player);
+                        parsePacket(packet);
+                        packet = "";
+                    }
                 }
             }
         } catch (IOException e) {
@@ -4111,10 +4119,10 @@ public class GameThread implements Runnable {
             } else if (packet.charAt(2) == 'R') {
                 try {
                     int c = Integer.parseInt(packet.substring(3));
-                    player.getCurJobAction().repeat(c, player);
+                    //player.getCurJobAction().repeat(c, player);
+                    player.getCurJobAction().repeatCraft(c, player);
                 } catch (Exception e) {
                 }
-                ;
             }
             return;
         }

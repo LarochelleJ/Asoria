@@ -814,7 +814,7 @@ public class Constant
 		tableauPoidsParPuissance.put(STATS_ADD_RP_EAU, 5D);
 
 		tableauPoidsParPuissance.put(STATS_ADD_INIT, 0.10);
-		tableauPoidsParPuissance.put(STATS_ADD_DOMA, 20D);
+		tableauPoidsParPuissance.put(STATS_ADD_DOMA, 7D);
 		tableauPoidsParPuissance.put(STATS_ADD_PERDOM, 2D);
 		tableauPoidsParPuissance.put(STATS_TRAPDOM, 15D);
 		tableauPoidsParPuissance.put(STATS_TRAPPER, 2D);

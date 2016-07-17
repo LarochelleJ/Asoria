@@ -42,6 +42,7 @@ public class GameServer implements Runnable{
 	/** Exchange **/
 	public static int id, state = 0;
 	public static String key;
+	public static String encryptPacketKey = "0";
 	/** Waiting accounts & players in the game **/
 	private ArrayList<GameThread> clients = new ArrayList<GameThread>();
 	private int maxClients;
