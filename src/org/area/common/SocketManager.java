@@ -89,10 +89,9 @@ public class SocketManager {
 			GameServer.addToSockLog("Game: Send>>"+packet);
 	}
 	
-	public static void GAME_SEND_ATTRIBUTE_SUCCESS(GameSendThread out) // TODO TESTING HASH METHOD @Flow
+	public static void GAME_SEND_ATTRIBUTE_SUCCESS(GameSendThread out)
 	{
-		String packet = "ATK";
-		packet += Main.gameServer.encryptPacketKey;
+		String packet = "ATK0";
 		send(out,packet);
 		if(Config.DEBUG)
 			GameServer.addToSockLog("Game: Send>>"+packet);
