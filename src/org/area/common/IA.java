@@ -308,9 +308,9 @@ public class IA {
                     //if (!moveToAttackIfPossible(fight, F,null)) {
                     if (!buffIfPossible(fight, F, F))//auto-buff
                     {
-                        if (!HealIfPossible(fight, F, false))//soin alliï¿½
+                        if (!HealIfPossible(fight, F, false))//soin alli
                         {
-                            if (!buffIfPossible(fight, F, T2))//buff alliï¿½
+                            if (!buffIfPossible(fight, F, T2))//buff allié
                             {
                                 if (T == null || !moveNearIfPossible(fight, F, T))//avancer
                                 {
@@ -587,21 +587,33 @@ public class IA {
 
             ArrayList<SortStats> finalSorts = new ArrayList<SortStats>();
             Map<Integer, SortStats> copie = new TreeMap<Integer, SortStats>();
+
             for (SortStats S : sorts) {
                 copie.put(S.getSpellID(), S);
             }
 
             int curInfl = 0;
             int curID = 0;
+            char type;
 
             while (copie.size() > 0) {
                 curInfl = 0;
                 curID = 0;
+                type = '9';
                 for (Entry<Integer, SortStats> S : copie.entrySet()) {
                     int infl = -calculInfluence(fight, S.getValue(), fighter, fighter);
-                    if (infl > curInfl) {
-                        curID = S.getValue().getSpellID();
-                        curInfl = infl;
+                    if (S.getValue().getPorteeType().charAt(0) == 'C' || type != 'C') {
+                        if (S.getValue().getPorteeType().charAt(0) != 'C' && type != 'C' || (S.getValue().getPorteeType().charAt(0) == 'C' && type == 'C')) {
+                            if (infl > curInfl) {
+                                curID = S.getValue().getSpellID();
+                                curInfl = infl;
+                            }
+                        }
+                        else if (S.getValue().getPorteeType().charAt(0) == 'C' && type != 'C') {
+                            curID = S.getValue().getSpellID();
+                            curInfl = infl;
+                            type = 'C';
+                        }
                     }
                 }
                 if (curID == 0 || curInfl == 0) {
@@ -647,8 +659,11 @@ public class IA {
                 boolean modeAttack = false;
                 Fighter T = getNearestFriend(fight, F);
                 Fighter E = null;
+                if (E == null || E.isDead()) {
+                    E = getBestEnnemy(fight, F);
+                }
                 if (Pathfinding.getDistanceBetween(fight.get_map(), F
-                        .get_fightCell().getID(), T.get_fightCell().getID()) < 4)
+                        .get_fightCell().getID(), T.get_fightCell().getID()) < 4 || E.isHide())
                     modeAttack = true;
                 while (must_stop < 2 && F.canPlay()) {
                     if (Thread.interrupted()) throw new InterruptedException();
@@ -692,7 +707,7 @@ public class IA {
                             if (!buffIfPossible(fight, F, T))// buff alliï¿½
                             {
                                 if (!moveNearIfPossible(fight, F, T))// Avancer vers
-                                // alliï¿½
+                                // allié
                                 {
                                     if (!HealIfPossible(fight, F, true))// auto-soin
                                     {
@@ -702,6 +717,8 @@ public class IA {
                                                 T = getBestEnnemy(fight, F);
                                                 int attack = attackIfPossible(
                                                         fight, F);
+                                                //int attack = attackTargetIfPossible(
+                                                        //fight, F, T);
                                                 if (attack != 0)// Attaque
                                                 {
                                                     if (attack == 5)
@@ -1917,6 +1934,23 @@ public class IA {
                     }
                 }
             }
+            if (curF == null) {
+                for (Fighter f : fight.getFighters(3)) {
+                    if (f.isDead())
+                        continue;
+                    if (f.getTeam2() != fighter.getTeam2())// Si c'est un ennemis
+                    {
+                        int d = Pathfinding.getDistanceBetween(fight.get_map(),
+                                fighter.get_fightCell().getID(), f.get_fightCell()
+                                        .getID());
+
+                        if (d < dist) {
+                            dist = d;
+                            curF = f;
+                        }
+                    }
+                }
+            }
             return curF;
         }
 
@@ -1938,7 +1972,7 @@ public class IA {
             int n = 0;
             int curHP = 10000;
             boolean addMobs = false;
-            while (n < 2) { //@Poupou le premier tour place les joueurs et les mobs au deuxiÃ¨me tour. Permet Ã  la IA de prioriser les joueurs.
+            while (n < 2) { //@Poupou le premier tour place les joueurs et les mobs au deuxième tour. Permet à la IA de prioriser les joueurs.
                 int i = 0, i2 = ennemy.size();
                 while (i < i2) {
                     curHP = 200000;
@@ -2014,7 +2048,7 @@ return list;
         {
             /**
              * @Flow
-             * Cette fonction tiens compte des personnages invisibles, elle va attaquer alï¿½atoire
+             * Cette fonction tiens compte des personnages invisibles, elle va attaquer aléatoire
              * Malheuresement cette version n'est pas trï¿½s efficace avec tous les mobs
              */
             try {
@@ -2068,7 +2102,7 @@ return list;
                 SortStats SS2 = null;
                 for (Entry<Integer, SortStats> S : fighter.getMob().getSpells().entrySet()) // pour chaque sort du mob
                 {
-                    int targetVal = getBestTargetZone(fight, fighter, S.getValue(), fighter.get_fightCell().getID()); // on dï¿½termine le meilleur
+                    int targetVal = getBestTargetZone(fight, fighter, S.getValue(), fighter.get_fightCell().getID()); // on détermine le meilleur
                     if (targetVal == -1 || targetVal == 0) // endroit pour lancer le sort de zone (ou non)
                     {
                         continue;
@@ -2172,7 +2206,7 @@ return list;
         }
 
         /**
-         * @Flow Les invocations sont maintenants gï¿½rï¿½es.
+         * @Flow Les invocations sont maintenants gérées.
          */
         private static int attackIfPossible(Fight fight, Fighter fighter)//
         {
@@ -2791,8 +2825,8 @@ return list;
                     infTot -= inf * (allies - ennemies);
                 else
                     // Si ennemis
-                    if (T.isHide())
-                        return 0;
+                    //if (T.isHide())
+                        //return 0;
                 infTot += inf * (ennemies - allies);
             }
             return (int) (((double) infTot) * fact);
@@ -2805,39 +2839,104 @@ return list;
         // AttaqueOK
         {
             try {
-                SortStats SS = getBestSpellForTarget(fight, fighter, target);
-                int curTarget = 0, cell = 0;
-                SortStats SS2 = null;
-                for (Entry<Integer, SortStats> S : fighter.getMob().getSpells()
-                        .entrySet()) // pour chaque sort du mob
-                {
-                    if (Thread.interrupted()) throw new InterruptedException();
-                    int targetVal = getBestTargetZone(fight, fighter, S.getValue(),
-                            fighter.get_fightCell().getID()); // on dï¿½termine le
-                    // meilleur
-                    if (targetVal == -1 || targetVal == 0) // endroit pour lancer le
-                        // sort de zone (ou non)
-                        continue;
-                    int nbTarget = targetVal / 1000;
-                    int cellID = targetVal - nbTarget * 1000;
-                    if (nbTarget > curTarget) {
-                        curTarget = nbTarget;
-                        cell = cellID;
-                        SS2 = S.getValue();
+                if (!target.isHide()) {
+                    SortStats SS = getBestSpellForTarget(fight, fighter, target);
+                    int curTarget = 0, cell = 0;
+                    SortStats SS2 = null;
+                    for (Entry<Integer, SortStats> S : fighter.getMob().getSpells()
+                            .entrySet()) // pour chaque sort du mob
+                    {
+                        if (Thread.interrupted()) throw new InterruptedException();
+                        int targetVal = getBestTargetZone(fight, fighter, S.getValue(),
+                                fighter.get_fightCell().getID()); // on dï¿½termine le
+                        // meilleur
+                        if (targetVal == -1 || targetVal == 0) // endroit pour lancer le
+                            // sort de zone (ou non)
+                            continue;
+                        int nbTarget = targetVal / 1000;
+                        int cellID = targetVal - nbTarget * 1000;
+                        if (nbTarget > curTarget) {
+                            curTarget = nbTarget;
+                            cell = cellID;
+                            SS2 = S.getValue();
+                        }
+                    }
+                    if ((curTarget > 1 || (curTarget > 0 && SS == null))
+                            && fight.get_map().getCase(cell) != null && SS2 != null) {
+                        int attack = fight.tryCastSpell(fighter, SS2, cell);
+                        if (attack != 0)
+                            return attack;
+                    } else {
+                        if (target == null || SS == null)
+                            return 666;
+                        int attack = fight.tryCastSpell(fighter, SS, target
+                                .get_fightCell().getID());
+                        if (attack != 0)
+                            return attack;
                     }
                 }
-                if ((curTarget > 1 || (curTarget > 0 && SS == null))
-                        && fight.get_map().getCase(cell) != null && SS2 != null) {
-                    int attack = fight.tryCastSpell(fighter, SS2, cell);
-                    if (attack != 0)
-                        return attack;
-                } else {
-                    if (target == null || SS == null)
+                else {
+                    SortStats SS = getBestSpellForTarget(fight, fighter, target);
+                    int area = -1;
+                    int curArea = -1;
+                    int cellTarget = 0;
+                    if (SS == null)
                         return 666;
-                    int attack = fight.tryCastSpell(fighter, SS, target
-                            .get_fightCell().getID());
-                    if (attack != 0)
-                        return attack;
+                    if (SS.getPorteeType().isEmpty()) {
+                        return 0;
+                    }
+                    String p = SS.getPorteeType();
+                    int size = CryptManager.getIntByHashedValue(p.charAt(1)); //calcul la taille de la zone (en cases)
+                    switch (p.charAt(0)) {
+                        case 'C': //en cercle
+                            curArea = 1;
+                            for (int n = 0; n < size; n++) {
+                                curArea += 4 * n;
+                            }
+                            break;
+                        case 'X': //en croix
+                            curArea = 4 * size + 1;
+                            break;
+                        case 'L': //en ligne
+                            curArea = size + 1;
+                            break;
+                        case 'P': //case simple
+                            curArea = 1;
+                            break;
+                        default:
+                            curArea = -1;
+                    }
+                    String args = SS.isLineLaunch(fighter) ? "X" : "C";
+                    char[] table = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v'};
+                    if (SS.getMaxPO(fighter) > 20) {
+                        args += "u";
+                    } else {
+                        args += table[SS.getMaxPO(fighter)];
+                    }
+
+                    if (curArea > area) { //si zone plus grande
+                        ArrayList<Case> possibleLaunch = Pathfinding.getCellListFromAreaString(fight.get_map(), fighter.get_fightCell().getID(), fighter.get_fightCell().getID(), args, 0, false);
+                        Collections.shuffle(possibleLaunch);
+                        for (Case possibleCell : possibleLaunch) {
+                            if (possibleCell.getFirstFighter() != null && possibleCell.getFirstFighter().getTeam2() == fighter.getTeam2()) {
+                                continue;
+                            }
+                            if (!fight.CanCastSpell(fighter, SS, fight.get_map().getCase(possibleCell.getID()), -1)) {
+                                if (Config.DEBUG) {
+                                    System.out.println("Cellule " + possibleCell.getID() + " non valide pour lancer le sort");
+                                }
+                                continue;
+                            }
+                            //SS = SS3;
+                            area = curArea;
+                            cellTarget = possibleCell.getID();
+                            if (Config.DEBUG) {
+                                System.out.println("Sort " + SS.getSpellID() + " sélectionné");
+                            }
+                            break;
+                        }
+                    }
+                    return fight.tryCastSpell(fighter, SS, cellTarget); //lance le sort (dans le vide)
                 }
                 return 0;
             } catch (InterruptedException ie) {

@@ -2398,7 +2398,6 @@ public class Fight {
                 perso.sendText("Il y a quelques choses d'invisible sous cette cellule.");
             }
         }
-
         /**    if (isMob){
          for (Fighter p: getAllFighters()){
          if (cell == p.get_fightCell()){
@@ -2462,15 +2461,19 @@ public class Fight {
         }
         //Vérification Portée mini / maxi
         if (dist < spell.getMinPO() || dist > MaxPO) {
-            if (Config.DEBUG)
-                GameServer.addToLog("(" + _curPlayer + ") La case est trop proche ou trop eloignee Min: " + spell.getMinPO() + " Max: " + spell.getMaxPO(fighter) + " Dist: " + dist);
-            if (perso != null) {
-                SocketManager.GAME_SEND_Im_PACKET(perso, "1171;" + spell.getMinPO() + "~" + MaxPO + "~" + dist);
-                SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
-                SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
-                //perso.sendText(""+ dist +" (distance) "+ MaxPO +" (Maximal) "+ spell.getMinPO() +" (minimal)");
+            for (Fighter p : getAllFighters()) {
+                if (cell == p.get_fightCell() && p.isHide() == false) { //@Poupou: Si la cible est invisible, on continue.
+                    if (Config.DEBUG)
+                        GameServer.addToLog("(" + _curPlayer + ") La case est trop proche ou trop eloignee Min: " + spell.getMinPO() + " Max: " + spell.getMaxPO(fighter) + " Dist: " + dist);
+                    if (perso != null) {
+                        SocketManager.GAME_SEND_Im_PACKET(perso, "1171;" + spell.getMinPO() + "~" + MaxPO + "~" + dist);
+                        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+                        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+                        //perso.sendText(""+ dist +" (distance) "+ MaxPO +" (Maximal) "+ spell.getMinPO() +" (minimal)");
+                    }
+                    return false;
+                }
             }
-            return false;
         }
         //vérification cooldown @Flow - On fix l'erreur d'un incompétent...
         if (!LaunchedSort.coolDownGood(fighter, spell.getSpellID())) {

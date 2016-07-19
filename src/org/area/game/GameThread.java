@@ -6305,7 +6305,7 @@ public class GameThread implements Runnable {
             Player Target = World.getPlayer(guid);
             if (Target == null)
                 return;
-            if (Target.getAccount().getCurIp().equals(player.getAccount().getCurIp())) {
+            if (Target.getAccount().getCurIp().equals(player.getAccount().getCurIp()) && player.getAccount().getGmLevel() != 5) { //@Poupou Pour pouvoir test
                 player.sendText("Impossible de défier ce personnage. (IP identique).");
                 return;
             }
