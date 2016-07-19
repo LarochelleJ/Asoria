@@ -1159,6 +1159,7 @@ public class World {
 		SQLManager.LOAD_HDVS();
 		SQLManager.LOAD_HDVS_ITEMS();
 		SQLManager.RESET_MOUNTPARKS();
+		SQLManager.LOAD_SORTS_INTERDITS();
 		//nextObjetID = SQLManager.getNextObjetID()+1;
 	    updateListeEchangeItem(); // @Flow
 		Constant.initialiserTableauPoidsParPuissance();

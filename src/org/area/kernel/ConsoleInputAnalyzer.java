@@ -156,6 +156,8 @@ public class ConsoleInputAnalyzer implements Runnable {
             sendEcho("Chargement des sorts : Ok");
             SQLManager.LOAD_GMCOMMANDS();
             sendEcho("Chargement des commandes GM : Ok");
+            SQLManager.LOAD_SORTS_INTERDITS();
+            sendEcho("Chargement des sorts interdits en PvP : Ok");
             sendEcho("Chargement des données terminée, Good :)");
 
         } else if (fct.equals("?") || command.equals("HELP")) {

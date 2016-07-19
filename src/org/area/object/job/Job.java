@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.Timer;
 
@@ -234,8 +237,8 @@ public class Job {
         private int _time = 0;
         private int _xpWin = 0;
         private long _startTime;
-        private Map<Integer, Integer> _ingredients = new TreeMap<Integer, Integer>();
-        private HashMap<Integer, Integer> _ingredientsProchainCraft = new HashMap<Integer, Integer>();
+        private LinkedHashMap<Integer, Integer> _ingredients = new LinkedHashMap<Integer, Integer>();
+        private LinkedHashMap<Integer, Integer> _ingredientsProchainCraft = new LinkedHashMap<Integer, Integer>();
         private boolean _repeat = false;
         private Map<Integer, Integer> _lastCraft = new TreeMap<Integer, Integer>();
         private Timer _craftTimer;
@@ -350,9 +353,6 @@ public class Job {
         public void craft() {
             if (!_isCraft) return;
             boolean signed = false;//TODO
-            if (!_ingredientsProchainCraft.isEmpty()) {
-                _ingredientsProchainCraft.clear();
-            }
             try {
                 Thread.sleep(750);
             } catch (Exception e) {
@@ -1670,6 +1670,7 @@ public class Job {
             return Alto;
         }
 
+        @Deprecated
         public void startRepeat(int time, Player P) { //Skryn & Return Enjoy :D
             _P = P;
             if (_skID != 1 && _skID != 113 && _skID != 115 && _skID != 116 && _skID != 117 && _skID != 118 && _skID != 119 && _skID != 120 && _skID != 163 && _skID != 164 && _skID != 165 && _skID != 166 && _skID != 167 && _skID != 168 && _skID != 169) {
@@ -1715,7 +1716,7 @@ public class Job {
             Config.fmTimer.schedule(temp, 100, 1000);
         }
 
-
+        @Deprecated
         public void repeat(int time, Player P) {//Skryn /Return
             _P = P;
             _isRepeat = true;
@@ -1741,22 +1742,26 @@ public class Job {
             _isRepeat = false;
         }
 
-        public void repeatCraft(int runesRestantes, Player P) { // @Flow // TODO: 2016-07-15  Faire la fonction
+        public void repeatAction(int runesRestantes, Player P) { // @Flow
             _P = P;
             if (!_repeat) {
                 _repeat = true;
                 for (int nbRunesRestantes = runesRestantes; nbRunesRestantes >= 0; nbRunesRestantes--) {
-                    if (!_repeat) break;
-                    SocketManager.GAME_SEND_EA_PACKET(_P, nbRunesRestantes + "");
-                    if (_ingredientsProchainCraft.isEmpty()) {
-                        _P.sendText("oops");
+                    if (!_ingredientsProchainCraft.isEmpty()) {
+                        _ingredients.putAll(_ingredientsProchainCraft);
+                        _ingredientsProchainCraft.clear();
                     }
-                    _ingredients.clear();
-                    _ingredients.putAll(_ingredientsProchainCraft);
+                    if (!_repeat) { // Bouton "stop"
+                        if (!_ingredients.isEmpty()) {
+                            SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "-", _ingredients.keySet().toArray()[1] + "|" + nbRunesRestantes);
+                        }
+                        break;
+                    }
+                    SocketManager.GAME_SEND_EA_PACKET(_P, nbRunesRestantes + "");
                     craft();
                     try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
+                        Thread.sleep(250);
+                    } catch (Exception e) {
                     }
                 }
                 SocketManager.GAME_SEND_Ea_PACKET(_P, "1");
@@ -1764,6 +1769,20 @@ public class Job {
             }
         }
 
+        public void repeatCraft(final int runesRestantes, Player P) {
+            _P = P;
+            new Thread(new Runnable() {
+                public void run() {
+                    repeatAction(runesRestantes, _P);
+                }
+            }).start();
+        }
+
+        public void stopRepeatCraft() {
+            _repeat = false;
+        }
+
+        @Deprecated
         public void breakFM() {
             _broken = true;
         }
