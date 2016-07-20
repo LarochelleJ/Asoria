@@ -1112,6 +1112,22 @@ public class SQLManager {
         }
     }
 
+    public static void LOAD_SORTS_INTERDITS() {
+        try {
+            String query = "SELECT * from sorts_interdits;";
+            ResultSet RS = executeQuery(query, true);
+            List<Integer> toSend = new ArrayList<Integer>();
+            while (RS.next()) {
+                toSend.add(RS.getInt("idSort"));
+            }
+            Constant.SORTS_INTERDITS_PVP = toSend;
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e);
+            e.printStackTrace();
+        }
+    }
+
     public static void SAVE_PERSONNAGE(Player _perso, boolean saveItem) {
         String baseQuery = "UPDATE `personnages` SET " +
                 "`name`= ?," +

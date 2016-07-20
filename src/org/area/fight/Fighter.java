@@ -702,15 +702,13 @@ public class Fighter
 			//Pandanlku
 			/*debuff = true;
 		}*/
-		debuff = true;
+		if (id != 950) debuff = true;
 		isPoison = true;
-		if(Config.CONFIG_SORT_INDEBUFFABLE != null || !Config.CONFIG_SORT_INDEBUFFABLE.isEmpty())
+		if(!debuff || Config.CONFIG_SORT_INDEBUFFABLE != null || !Config.CONFIG_SORT_INDEBUFFABLE.isEmpty())
 		{
 			for(String split : Config.CONFIG_SORT_INDEBUFFABLE.split("\\|"))
 			{
 				String[] infos = split.split(":");
-				if(!debuff)
-					continue;
 				int sortID = Integer.parseInt(infos[0]);
 				if(spellID == sortID)
 					debuff = false;

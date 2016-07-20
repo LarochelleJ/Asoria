@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.math.LongMath;
@@ -154,10 +155,18 @@ public class GameThread implements Runnable {
                     packet = CryptManager.toUnicode(packet);
                     /*if(!IpCheck.onGamePacket(_s.getInetAddress().getHostAddress(), packet))
                         _s.close();*/
-                    GameServer.addToSockLog("Game: Recv << " + packet);
+                    GameServer.addToSockLog("Game: Recu << " + packet);
+                    if (Main.gameServer.encryptPacketKey != "0") {
+                        try {
+                            String packetTest = CryptManager.decryptPacket(packet);
+                            GameServer.addToSockLog("Game: Packet decrypté: " + packetTest);
+                        } catch (Exception e) {
+                        }
+                    }
                     ParseTool.parsePacket(packet, player);
                     parsePacket(packet);
                     packet = "";
+
                 }
             }
         } catch (IOException e) {
@@ -772,7 +781,7 @@ public class GameThread implements Runnable {
         if (player.getDeshonor() >= 2) {
             SocketManager.GAME_SEND_Im_PACKET(player, "183");
             return;
-        } else if(!player.usePrisme(packet)) {
+        } else if (!player.usePrisme(packet)) {
             player.sendText("Téléportation étrange ? Un chausson aux pommes avec ça ?");
         }
     }
@@ -3678,8 +3687,8 @@ public class GameThread implements Runnable {
                         try {
                             // verification des failles
                             /** if(Security.isCompromised(packet, _perso)) return; **/
-                            // Echange impossible ! Bouleto, packet.contains("-"),
-                            // il y en aura toujours !
+                        // Echange impossible ! Bouleto, packet.contains("-"),
+                        // il y en aura toujours !
 /*
                             int guid = Integer.parseInt(infos[0]);
                             int qua = Integer.parseInt(infos[1]);
@@ -4105,16 +4114,17 @@ public class GameThread implements Runnable {
                         player.getCurJobAction().modifIngredient(player, guid, -qua);
                     } catch (NumberFormatException e) {
                     }
-                    ;
                 }
 
             } else if (packet.charAt(2) == 'R') {
                 try {
                     int c = Integer.parseInt(packet.substring(3));
-                    player.getCurJobAction().repeat(c, player);
+                    //player.getCurJobAction().repeat(c, player);
+                    player.getCurJobAction().repeatCraft(c, player);
                 } catch (Exception e) {
                 }
-                ;
+            } else if (packet.charAt(2) == 'r') {
+                player.getCurJobAction().stopRepeatCraft();
             }
             return;
         }
@@ -6173,12 +6183,24 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(player.getFight(), 7, 0, player.getGuid());
                     return;
                 }
-                player.getFight().tryCastSpell(player.getFight().getFighterByPerso(player), SS, caseID);
+                boolean canLaunch = true;
+                if (player.getFight().get_type() != Constant.FIGHT_TYPE_PVM) {
+                    if (Constant.SORTS_INTERDITS_PVP != null) {
+                        if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
+                            canLaunch = false;
+                        }
+                    }
+                }
+                if (canLaunch) {
+                    player.getFight().tryCastSpell(player.getFight().getFighterByPerso(player), SS, caseID);
+                } else {
+                    player.sendText("Vous ne pouvez utilisez ce sort uniquement en PvM.");
+                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
+                }
             }
         } catch (NumberFormatException e) {
             return;
         }
-        ;
     }
 
     private void game_join_fight(String packet) {

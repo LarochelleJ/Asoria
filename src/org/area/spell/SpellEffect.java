@@ -303,7 +303,7 @@ public class SpellEffect
 							}
 							return 0;
 							
-					case 79://chance éca
+					case 79://chance ï¿½ca
 							try
 							{
 								String[] infos = buff.getArgs().split(";");
@@ -336,7 +336,7 @@ public class SpellEffect
 								}
 							}catch(Exception e){return finalDommage;};
 							if(renvoie > finalDommage)renvoie = finalDommage;
-						//	finalDommage -= renvoie; On passe à la version officielle du sort ^^'
+						//	finalDommage -= renvoie; On passe ï¿½ la version officielle du sort ^^'
 							SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 107, "-1", target.getGUID()+","+renvoie);
 							if(renvoie>caster.getPDV())renvoie = caster.getPDV();
 							if(finalDommage<0)finalDommage =0;
@@ -362,7 +362,7 @@ public class SpellEffect
 								target.get_chatiValue().put(stat, max);
 								break;
 							}
-							//on retire au max possible la valeur déjà gagné sur le chati
+							//on retire au max possible la valeur dï¿½jï¿½ gagnï¿½ sur le chati
 							int a = (target.get_chatiValue().get(stat)==null?0:target.get_chatiValue().get(stat));
 							max -= a;
 							//Si gain trop grand, on le reduit au max
@@ -399,7 +399,7 @@ public class SpellEffect
 			if(Config.DEBUG)GameServer.addToLog("Effet id: "+effectID+" Args: "+args+" turns: "+turns+" cibles: "+cibles.size()+" chance: "+chance);
 			try
 			{
-				if(turns != -1)//Si ce n'est pas un buff qu'on applique en début de tour
+				if(turns != -1)//Si ce n'est pas un buff qu'on applique en dï¿½but de tour
 					turns = Integer.parseInt(args.split(";")[3]);
 			}catch(NumberFormatException e){}
 			caster = acaster;
@@ -420,7 +420,7 @@ public class SpellEffect
 			}
 			switch(effectID)
 			{
-				case 4://Fuite/Bond du félin/ Bond du iop / téléport
+				case 4://Fuite/Bond du fï¿½lin/ Bond du iop / tï¿½lï¿½port
 					applyEffect_4(fight,cibles);
 				break;
 				case 5://Repousse de X case
@@ -450,7 +450,7 @@ public class SpellEffect
 				case 78://Bonus PM
 					applyEffect_78(cibles,fight);
 				break;
-				case 79:// + X chance(%) dommage subis * Y sinon soigné de dommage *Z
+				case 79:// + X chance(%) dommage subis * Y sinon soignï¿½ de dommage *Z
 					applyEffect_79(cibles,fight);
 				break;
 				
@@ -513,7 +513,7 @@ public class SpellEffect
 					applyEffect_101(cibles,fight);
 				break;
 				
-				case 105://Dommages réduits de X
+				case 105://Dommages rï¿½duits de X
 					applyEffect_105(cibles,fight);
 				break;
 				case 106://Renvoie de sort
@@ -553,7 +553,7 @@ public class SpellEffect
 				case 118://Bonus force
 					applyEffect_118(cibles,fight);
 				break;
-				case 119://Bonus Agilité
+				case 119://Bonus Agilitï¿½
 					applyEffect_119(cibles,fight);
 				break;
 				case 120://Bonus PA
@@ -571,7 +571,7 @@ public class SpellEffect
 				case 124://+Sagesse
 					applyEffect_124(cibles,fight);
 				break;
-				case 125://+Vitalité
+				case 125://+Vitalitï¿½
 					applyEffect_125(cibles,fight);
 				break;
 				case 126://+Intelligence
@@ -608,7 +608,7 @@ public class SpellEffect
 					applyEffect_142(fight,cibles);
 				break;
 				
-				case 144://Dommages non boostés
+				case 144://Dommages non boostï¿½s
 					applyEffect_144(cibles,fight);
 				break;
 				case 145://Malus Dommage
@@ -618,7 +618,7 @@ public class SpellEffect
 				case 149://Change l'apparence
 					applyEffect_149(fight,cibles);
 				break;
-				case 150://Invisibilité
+				case 150://Invisibilitï¿½
 					applyEffect_150(fight,cibles);
 				break;
 				
@@ -649,7 +649,7 @@ public class SpellEffect
 				case 163:// - Esquive PM
 					applyEffect_163(fight,cibles);
 				break;
-				case 165:// Maîtrises
+				case 165:// Maï¿½trises
 					applyEffect_165(fight,cibles);
 				break;
 				
@@ -672,7 +672,7 @@ public class SpellEffect
 				case 180://Double du sram
 					applyEffect_180(fight);
 				break;
-				case 181://Invoque une créature
+				case 181://Invoque une crï¿½ature
 					applyEffect_181(fight);
 				break;
 				case 182://+ Crea Invoc
@@ -726,7 +726,7 @@ public class SpellEffect
 					applyEffect_219(fight,cibles);
 				break;
 				
-				case 243://Résistance feu
+				case 243://Rï¿½sistance feu
 					applyEffect_243(fight,cibles);
 				break;
 				
@@ -736,10 +736,10 @@ public class SpellEffect
 				case 266://Vol Chance
 					applyEffect_266(fight,cibles);
 				break;
-				case 267://Vol vitalité
+				case 267://Vol vitalitï¿½
 					applyEffect_267(fight,cibles);
 				break;
-				case 268://Vol agitlité
+				case 268://Vol agitlitï¿½
 					applyEffect_268(fight,cibles);
 				break;
 				case 269://Vol intell
@@ -752,7 +752,7 @@ public class SpellEffect
 					applyEffect_271(fight,cibles);
 				break;
 				
-				case 293://Augmente les dégâts de base du sort X de Y
+				case 293://Augmente les dï¿½gï¿½ts de base du sort X de Y
 					applyEffect_293(fight);
 				break;
 				
@@ -760,10 +760,10 @@ public class SpellEffect
 					applyEffect_320(fight,cibles);
 				break;
 				
-				case 400://Créer un  piège
+				case 400://Crï¿½er un  piï¿½ge
 					applyEffect_400(fight);
 				break;
-				case 401://Créer un glyphe
+				case 401://Crï¿½er un glyphe
 					applyEffect_401(fight);
 				break;
 				
@@ -771,15 +771,15 @@ public class SpellEffect
 					applyEffect_402(fight);
 				break;
 				
-				case 610://+Vitalité
+				case 610://+Vitalitï¿½
 					applyEffect_125(cibles,fight);
 				break;
 				
-				case 666://Pas d'effet complémentaire
+				case 666://Pas d'effet complï¿½mentaire
 				break;
 				
 				case 671://Dommages : X% de la vie de la victime (neutre)
-					applyEffect_671(cibles,fight); // Combustion Spontanée
+					applyEffect_671(cibles,fight); // Combustion Spontanï¿½e
 				case 672://Dommages : X% de la vie de l'attaquant // PUNITION
 					applyEffect_672(cibles,fight);
 				break;
@@ -793,10 +793,10 @@ public class SpellEffect
 				break;
 				case 781: //Poisse
 					applyEffect_781(cibles,fight);
-				case 782://Maximise les effets aléatoires
+				case 782://Maximise les effets alï¿½atoires
 					applyEffect_782(cibles,fight);
 				break;
-				case 783://Pousse jusqu'a la case visé
+				case 783://Pousse jusqu'a la case visï¿½
 					applyEffect_783(cibles,fight);
 				break;
 				case 784://Raulebaque
@@ -859,11 +859,11 @@ public class SpellEffect
 
 		private void applyEffect_784(ArrayList<Fighter> cibles, Fight fight) {
 			Map<Integer, Case> origPos = new TreeMap<Integer, Case>(); 
-			origPos = fight.get_raulebaque(); // les positions de début de combat
+			origPos = fight.get_raulebaque(); // les positions de dï¿½but de combat
 			
 			ArrayList<Fighter> list = new ArrayList<Fighter>();
 			list = fight.getFighters(3); // on copie la liste des fighters
-			for(int i = 1 ; i < list.size() ; i++)   // on boucle si tout le monde est à la place
+			for(int i = 1 ; i < list.size() ; i++)   // on boucle si tout le monde est ï¿½ la place
 				if(!list.isEmpty()) 				 // d'un autre
 					for(Fighter F : list){
 						if(F == null || F.isDead() || !origPos.containsKey(F.getGUID())) {	
@@ -889,7 +889,7 @@ public class SpellEffect
 				for(Fighter target : cibles)
 					if(target.isHide()) 
 						target.unHide(spell);
-				//unhide des pièges
+				//unhide des piï¿½ges
 				for(Piege p : fight.get_traps())
 				{
 					p.set_isunHide(caster);
@@ -924,13 +924,13 @@ public class SpellEffect
 			if(target == null)return;
 			if(target.isState(6))return;//Stabilisation
 			
-			//on ajoute le porté a sa case
+			//on ajoute le portï¿½ a sa case
 			target.set_fightCell(cell);
 			target.get_fightCell().addFighter(target);
-			//on enleve les états
+			//on enleve les ï¿½tats
 			target.setState(Constant.ETAT_PORTE, 0);
 			caster.setState(Constant.ETAT_PORTEUR, 0);
-			//on dé-lie les 2 Fighter
+			//on dï¿½-lie les 2 Fighter
 			target.set_holdedBy(null);
 			caster.set_isHolding(null);
 			
@@ -943,12 +943,13 @@ public class SpellEffect
 		private void applyEffect_950(Fight fight, ArrayList<Fighter> cibles)
 		{
 			int id = -1;
+			boolean debuff = true;
 			try
 			{
 				id = Integer.parseInt(args.split(";")[2]);
 			}catch(Exception e){}
 			if(id == -1)return;
-
+			if (id == 50) debuff = false;
 			for(Fighter target : cibles)
 			{
 			
@@ -964,7 +965,7 @@ public class SpellEffect
 				{
 					target.setState(id, turns);
 					SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 950, caster.getGUID()+"", target.getGUID()+","+id+",1");
-					target.addBuff(effectID, value, turns, 1, false, spell, args, target, poison);
+					target.addBuff(effectID, value, turns, 1, debuff, spell, args, target, poison);
 				}
 			}
 		}
@@ -980,9 +981,9 @@ public class SpellEffect
 			
 			for(Fighter target : cibles)
 			{
-				//Si la cible n'a pas l'état
+				//Si la cible n'a pas l'ï¿½tat
 				if(!target.isState(id))continue;
-				//on enleve l'état
+				//on enleve l'ï¿½tat
 				target.setState(id, 0);
 				//on envoie le packet
 				SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 950, caster.getGUID()+"", target.getGUID()+","+id+",0");
@@ -1013,12 +1014,12 @@ public class SpellEffect
 			if(target == null)return;
 			if(target.isState(6))return;//Stabilisation
 			
-			//on enleve le porté de sa case
+			//on enleve le portï¿½ de sa case
 			target.get_fightCell().getFighters().clear();
-			//on lui définie sa nouvelle case
+			//on lui dï¿½finie sa nouvelle case
 			target.set_fightCell(caster.get_fightCell());
 			
-			//on applique les états
+			//on applique les ï¿½tats
 			target.setState(Constant.ETAT_PORTE, -1);
 			caster.setState(Constant.ETAT_PORTEUR, -1);
 			//on lie les 2 Fighter
@@ -1096,7 +1097,7 @@ public class SpellEffect
 				pVie = (double)caster.getPDV() / (double)caster.getPDVMAX();
 				dgt = (int) (val * pVie);
 				//si la cible a le buff renvoie de sort
-				int finalDommage = applyOnHitBuffs(dgt,target,caster,fight);//S'il y a des buffs spéciaux
+				int finalDommage = applyOnHitBuffs(dgt,target,caster,fight);//S'il y a des buffs spï¿½ciaux
 				if(finalDommage>target.getPDV())
 					finalDommage = target.getPDV();//Target va mourir
 				target.removePDV(finalDommage);
@@ -1120,16 +1121,16 @@ public class SpellEffect
 						resP += target.getTotalStats().getEffect(Constant.STATS_ADD_RP_PVP_NEU);
 						resF += target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_NEU);
 					}
-					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligé
+					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligï¿½
 					dmg = getMaxMinSpell(target, dmg);
-					int val = caster.getPDV()/100*dmg;//Valeur des dégats
-					//retrait de la résist fixe
+					int val = caster.getPDV()/100*dmg;//Valeur des dï¿½gats
+					//retrait de la rï¿½sist fixe
 					val -= resF;
 					int reduc =	(int)(((float)val)/(float)100)*resP;//Reduc %resis
 					val -= reduc;
 					if(val <0)val = 0;
 					
-					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(val)/2;
@@ -1202,7 +1203,7 @@ public class SpellEffect
 					}
 				}
 				
-				int finalDommage = applyOnHitBuffs(dgt,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				int finalDommage = applyOnHitBuffs(dgt,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if(target.hasBuff(105))
 				{
 					finalDommage = finalDommage-target.getBuff(105).getValue();//Immu
@@ -1228,18 +1229,18 @@ public class SpellEffect
 
 		private void applyEffect_783(ArrayList<Fighter> cibles, Fight fight)
 		{
-			//Pousse jusqu'a la case visée
+			//Pousse jusqu'a la case visï¿½e
 			Case ccase = caster.get_fightCell();
 			//On calcule l'orientation entre les 2 cases
 			char d = Pathfinding.getDirBetweenTwoCase(ccase.getID(),cell.getID(), fight.get_map(), true);
-			//On calcule l'id de la case a coté du lanceur dans la direction obtenue
+			//On calcule l'id de la case a cotï¿½ du lanceur dans la direction obtenue
 			int tcellID = Pathfinding.GetCaseIDFromDirrection(ccase.getID(), d, fight.get_map(), true);
 			//on prend la case corespondante
 			Case tcase = fight.get_map().getCase(tcellID);
 			if(tcase == null)return;
 			//S'il n'y a personne sur la case, on arrete
 			if(tcase.getFighters().isEmpty())return;
-			//On prend le Fighter ciblé
+			//On prend le Fighter ciblï¿½
 			Fighter target = tcase.getFirstFighter();
 			if (target.isState(6)){ //Return, Skryn ;)
 				caster.getPersonnage().sendMess(Lang.LANG_125);
@@ -1250,13 +1251,13 @@ public class SpellEffect
 				if(target.getMob().getTemplate().getID() == 282 || target.getMob().getTemplate().getID() == 556)
 					return;
 			}
-			//On verifie qu'il peut aller sur la case ciblé en ligne droite
+			//On verifie qu'il peut aller sur la case ciblï¿½ en ligne droite
 			int isBlocked = Pathfinding.newCaseAfterPush(fight, ccase, tcase, tcellID);
 			
 			tcase = cell;
 			if(isBlocked > 0)
 			{
-				// On vérifie si il va toucher au piège @Flow
+				// On vï¿½rifie si il va toucher au piï¿½ge @Flow
 				int distanceB = Pathfinding.getDistanceBetween(fight.get_map(), ccase.getID(), isBlocked);
 				int distanceA = Pathfinding.getDistanceBetween(fight.get_map(), ccase.getID(), cell.getID());
 				/*caster.getPersonnage().sendText("Distance B: "+ distanceB +"");
@@ -1311,7 +1312,7 @@ public class SpellEffect
 					if(target.getTeam() == caster.getTeam())return;
 				break;
 				
-				case 449://Détour
+				case 449://Dï¿½tour
 				default:
 				break;
 			}
@@ -1321,7 +1322,7 @@ public class SpellEffect
 			//on retient les cases
 			Case exTarget = target.get_fightCell();
 			Case exCaster = caster.get_fightCell();
-			//on échange les cases
+			//on ï¿½change les cases
 			target.set_fightCell(exCaster);
 			caster.set_fightCell(exTarget);
 			//on ajoute les fighters aux cases
@@ -1960,7 +1961,7 @@ public class SpellEffect
 						//le lanceur devient donc la cible
 						target = caster;
 					}
-					if(!isBegin)dmg = applyOnHitBuffs(dmg,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)dmg = applyOnHitBuffs(dmg,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(-dmg)/2;
@@ -2111,7 +2112,7 @@ public class SpellEffect
 			}		
 		}
 
-		private void applyEffect_119(ArrayList<Fighter> cibles, Fight fight)//Bonus Agilité
+		private void applyEffect_119(ArrayList<Fighter> cibles, Fight fight)//Bonus Agilitï¿½
 		{
 			int val = Formulas.getRandomJet(jet);
 			if(val == -1)
@@ -2716,7 +2717,7 @@ public class SpellEffect
 		{
 			if(turns >1)return;//Olol bondir 3 tours apres ?
 			
-			if(cell.isWalkable(true) && !fight.isOccuped(cell.getID()))//Si la case est prise, on va éviter que les joueurs se montent dessus *-*
+			if(cell.isWalkable(true) && !fight.isOccuped(cell.getID()))//Si la case est prise, on va ï¿½viter que les joueurs se montent dessus *-*
 			{
 				caster.get_fightCell().getFighters().clear();
 				caster.set_fightCell(cell);
@@ -2764,7 +2765,7 @@ public class SpellEffect
 				dmg = getMaxMinSpell(caster, dmg);
 				int finalDommage = Formulas.calculFinalDommage(fight,caster, caster,Constant.ELEMENT_NULL, dmg, false, false, spell, isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,caster,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,caster,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if(finalDommage>caster.getPDV())finalDommage = caster.getPDV();//Caster va mourrir
 				caster.removePDV(finalDommage);
 				finalDommage = -(finalDommage);
@@ -2804,7 +2805,7 @@ public class SpellEffect
 					}
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_NULL, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if(spell == 450) finalDommage = dmg;
 					
 					if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
@@ -2862,7 +2863,7 @@ public class SpellEffect
 					if(newCellID == 0)
 						return;
 					
-					if(newCellID <0)//S'il a été bloqué
+					if(newCellID <0)//S'il a ï¿½tï¿½ bloquï¿½
 					{
 						int a = -(value + newCellID);
 						newCellID =	Pathfinding.newCaseAfterPush(fight,caster.get_fightCell(),target.get_fightCell(),a);
@@ -2901,10 +2902,10 @@ public class SpellEffect
 				if(!cibles.get(0).isDead())
 					caster.set_oldCible(cibles.get(0));
 			}
-			// @Flow - Je charge les pièges avant le sort
+			// @Flow - Je charge les piï¿½ges avant le sort
 			ArrayList<Piege> P = (new ArrayList<Piege>());
 			P.addAll(fight.get_traps());
-			if (spell == 1688) // piège répulsif
+			if (spell == 1688) // piï¿½ge rï¿½pulsif
 			{
 				if(turns <= 0)
 				{
@@ -2926,20 +2927,20 @@ public class SpellEffect
 						int newCellID =	Pathfinding.newCaseAfterPush(fight.get_map(),eCell,target.get_fightCell(),value);
 						if(newCellID == 0)
 							return;
-						if(newCellID <0)//S'il a été bloqué
+						if(newCellID <0)//S'il a ï¿½tï¿½ bloquï¿½
 						{
 							int a = -newCellID;
 							int coef = Formulas.getRandomJet("1d8+8");
 							double b = (caster.get_lvl()/(double)(50.00));
 							if(b<0.1)b= 0.1;
-							double c = b*a;//Calcule des dégats de poussé
+							double c = b*a;//Calcule des dï¿½gats de poussï¿½
 							int finalDommage = (int)(coef * c);
 							if(finalDommage < 1)finalDommage = 1;
 							if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 							
 							if(target.hasBuff(184)) 
 							{
-								finalDommage = finalDommage-target.getBuff(184).getValue();//Réduction physique
+								finalDommage = finalDommage-target.getBuff(184).getValue();//Rï¿½duction physique
 								SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID()+"", target.getGUID()+","+target.getBuff(184).getValue());
 							}
 							if(target.hasBuff(105))
@@ -3237,7 +3238,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_EAU, dmg,false,true,spell,isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 				if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 				target.removePDV(finalDommage);
@@ -3282,7 +3283,7 @@ public class SpellEffect
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_EAU, dmg,false,false,spell,isBegin);
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 					if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 					target.removePDV(finalDommage);
@@ -3359,7 +3360,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_TERRE, dmg,false,true,spell,isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 				if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 				target.removePDV(finalDommage);
@@ -3404,7 +3405,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_TERRE, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 					target.removePDV(finalDommage);
 					finalDommage = -(finalDommage);
@@ -3456,7 +3457,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_AIR, dmg,false,true,spell,isBegin);
 				
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 				if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 				target.removePDV(finalDommage);
@@ -3501,7 +3502,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_AIR, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 					target.removePDV(finalDommage);
 					finalDommage = -(finalDommage);
@@ -3553,7 +3554,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_FEU, dmg,false,true,spell,isBegin);
 				
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 				if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 				target.removePDV(finalDommage);
@@ -3598,7 +3599,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_FEU, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 					target.removePDV(finalDommage);
 					finalDommage = -(finalDommage);
@@ -3649,7 +3650,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_NEUTRE, dmg,false,true,spell,isBegin);
 				
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 				if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 				target.removePDV(finalDommage);
@@ -3694,7 +3695,7 @@ public class SpellEffect
 					dmg = getMaxMinSpell(target, dmg);
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_NEUTRE, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 					target.removePDV(finalDommage);
 					finalDommage = -(finalDommage);
@@ -3755,16 +3756,16 @@ public class SpellEffect
 						resP += target.getTotalStats().getEffect(Constant.STATS_ADD_RP_PVP_EAU);
 						resF += target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_EAU);
 					}
-					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligé
+					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligï¿½
 					dmg = getMaxMinSpell(target, dmg);
-					int val = caster.getPDV()/100*dmg;//Valeur des dégats
-					//retrait de la résist fixe
+					int val = caster.getPDV()/100*dmg;//Valeur des dï¿½gats
+					//retrait de la rï¿½sist fixe
 					val -= resF;
 					int reduc =	(int)(((float)val)/(float)100)*resP;//Reduc %resis
 					val -= reduc;
 					if(val <0)val = 0;
 					
-					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(-val)/2;
@@ -3819,16 +3820,16 @@ public class SpellEffect
 						resP += target.getTotalStats().getEffect(Constant.STATS_ADD_RP_PVP_TER);
 						resF += target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_TER);
 					}
-					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligé
+					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligï¿½
 					dmg = getMaxMinSpell(target, dmg);
-					int val = caster.getPDV()/100*dmg;//Valeur des dégats
-					//retrait de la résist fixe
+					int val = caster.getPDV()/100*dmg;//Valeur des dï¿½gats
+					//retrait de la rï¿½sist fixe
 					val -= resF;
 					int reduc =	(int)(((float)val)/(float)100)*resP;//Reduc %resis
 					val -= reduc;
 					if(val <0)val = 0;
 					
-					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(-val)/2;
@@ -3883,16 +3884,16 @@ public class SpellEffect
 						resP += target.getTotalStats().getEffect(Constant.STATS_ADD_RP_PVP_AIR);
 						resF += target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_AIR);
 					}
-					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligé
+					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligï¿½
 					dmg = getMaxMinSpell(target, dmg);
-					int val = caster.getPDV()/100*dmg;//Valeur des dégats
-					//retrait de la résist fixe
+					int val = caster.getPDV()/100*dmg;//Valeur des dï¿½gats
+					//retrait de la rï¿½sist fixe
 					val -= resF;
 					int reduc =	(int)(((float)val)/(float)100)*resP;//Reduc %resis
 					val -= reduc;
 					if(val <0)val = 0;
 					
-					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(-val)/2;
@@ -3947,16 +3948,16 @@ public class SpellEffect
 						resP += target.getTotalStats().getEffect(Constant.STATS_ADD_RP_PVP_FEU);
 						resF += target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_FEU);
 					}
-					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligé
+					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligï¿½
 					dmg = getMaxMinSpell(target, dmg);
-					int val = caster.getPDV()/100*dmg;//Valeur des dégats
-					//retrait de la résist fixe
+					int val = caster.getPDV()/100*dmg;//Valeur des dï¿½gats
+					//retrait de la rï¿½sist fixe
 					val -= resF;
 					int reduc =	(int)(((float)val)/(float)100)*resP;//Reduc %resis
 					val -= reduc;
 					if(val <0)val = 0;
 					
-					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(-val)/2;
@@ -4011,16 +4012,16 @@ public class SpellEffect
 						resP += target.getTotalStats().getEffect(Constant.STATS_ADD_RP_PVP_NEU);
 						resF += target.getTotalStats().getEffect(Constant.STATS_ADD_R_PVP_NEU);
 					}
-					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligé
+					int dmg = Formulas.getRandomJet(args.split(";")[5]);//%age de pdv infligï¿½
 					dmg = getMaxMinSpell(target, dmg);
-					int val = caster.getPDV()/100*dmg;//Valeur des dégats
-					//retrait de la résist fixe
+					int val = caster.getPDV()/100*dmg;//Valeur des dï¿½gats
+					//retrait de la rï¿½sist fixe
 					val -= resF;
 					int reduc =	(int)(((float)val)/(float)100)*resP;//Reduc %resis
 					val -= reduc;
 					if(val <0)val = 0;
 					
-					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)val = applyOnHitBuffs(val,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(-val)/2;
@@ -4064,7 +4065,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4080,7 +4081,7 @@ public class SpellEffect
 					}
 				int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_EAU, dmg,false,true,spell,isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if (target.getMob() != null){
 					if (target.getMob().getTemplate().getID() == 2750){
 						int heal = (int)(finalDommage)/2;
@@ -4119,7 +4120,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4136,7 +4137,7 @@ public class SpellEffect
 					
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_EAU, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin) finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin) finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(finalDommage)/2;
@@ -4180,7 +4181,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4195,7 +4196,7 @@ public class SpellEffect
 						}
 					}
 				int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_TERRE, dmg,false,true,spell,isBegin);
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if (target.getMob() != null){
 					if (target.getMob().getTemplate().getID() == 2750){
 						int heal = (int)(finalDommage)/2;
@@ -4234,7 +4235,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4251,11 +4252,11 @@ public class SpellEffect
 					}
 					if(spell==160 && target==caster)
 					{
-						continue;//Epée de Iop ne tape pas le lanceur.
-					}else if(chance > 0 && spell==108 && !isBegin)//Esprit félin ?
+						continue;//Epï¿½e de Iop ne tape pas le lanceur.
+					}else if(chance > 0 && spell==108 && !isBegin)//Esprit fï¿½lin ?
 					{
 						int fDommage = Formulas.calculFinalDommage(fight,caster, caster,Constant.ELEMENT_TERRE, dmg,false,false,spell,isBegin);
-						if(!isBegin)fDommage = applyOnHitBuffs(fDommage,caster,caster,fight, poison);//S'il y a des buffs spéciaux
+						if(!isBegin)fDommage = applyOnHitBuffs(fDommage,caster,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 						if(fDommage>caster.getPDV())fDommage = caster.getPDV();//Target va mourrir
 						caster.removePDV(fDommage);
 						fDommage = -(fDommage);
@@ -4274,7 +4275,7 @@ public class SpellEffect
 					}else
 					{
 						int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_TERRE, dmg,false,false,spell,isBegin);
-						if(!isBegin) finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+						if(!isBegin) finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 						if(finalDommage>target.getPDV())finalDommage = target.getPDV();//Target va mourrir
 						target.removePDV(finalDommage);
 						finalDommage = -(finalDommage);
@@ -4320,7 +4321,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4336,7 +4337,7 @@ public class SpellEffect
 					}
 				int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_AIR, dmg,false,true,spell,isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if (target.getMob() != null){
 					if (target.getMob().getTemplate().getID() == 2750){
 						int heal = (int)(finalDommage)/2;
@@ -4375,7 +4376,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4392,7 +4393,7 @@ public class SpellEffect
 					
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_AIR, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(finalDommage)/2;
@@ -4437,7 +4438,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4453,7 +4454,7 @@ public class SpellEffect
 					}
 				int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_FEU, dmg,false,true,spell,isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if (target.getMob() != null){
 					if (target.getMob().getTemplate().getID() == 2750){
 						int heal = (int)(finalDommage)/2;
@@ -4495,7 +4496,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4512,7 +4513,7 @@ public class SpellEffect
 					
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_FEU, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(finalDommage)/2;
@@ -4556,7 +4557,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4572,7 +4573,7 @@ public class SpellEffect
 					}
 				int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_NEUTRE, dmg,false,true,spell,isBegin);
 				
-				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+				if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				if (target.getMob() != null){
 					if (target.getMob().getTemplate().getID() == 2750){
 						int heal = (int)(finalDommage)/2;
@@ -4610,7 +4611,7 @@ public class SpellEffect
 					
 					int dmg = Formulas.getRandomJet(args.split(";")[5]);
 					dmg = getMaxMinSpell(target, dmg);
-					//Si le sort est boosté par un buff spécifique
+					//Si le sort est boostï¿½ par un buff spï¿½cifique
 					for(SpellEffect SE : caster.getBuffsByEffectID(293))
 					{
 						if(SE.getValue() == spell)
@@ -4628,7 +4629,7 @@ public class SpellEffect
 					
 					int finalDommage = Formulas.calculFinalDommage(fight,caster, target,Constant.ELEMENT_NEUTRE, dmg,false,false,spell,isBegin);
 					
-					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spéciaux
+					if(!isBegin)finalDommage = applyOnHitBuffs(finalDommage,target,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 					if (target.getMob() != null){
 						if (target.getMob().getTemplate().getID() == 2750){
 							int heal = (int)(finalDommage)/2;
@@ -4686,7 +4687,7 @@ public class SpellEffect
 				int pAge = Formulas.getRandomJet(args.split(";")[5]);
 				int val = pAge * (caster.getPDV()/100);
 				//Calcul des Doms recus par le lanceur
-				int finalDommage = applyOnHitBuffs(val,caster,caster,fight, poison);//S'il y a des buffs spéciaux
+				int finalDommage = applyOnHitBuffs(val,caster,caster,fight, poison);//S'il y a des buffs spï¿½ciaux
 				
 				if(finalDommage>caster.getPDV())finalDommage = caster.getPDV();//Caster va mourrir
 				caster.removePDV(finalDommage);
@@ -4731,7 +4732,7 @@ public class SpellEffect
 				}
 				for(Fighter target : cibles)
 				{
-					if((spell == 139 || spell == 1675) && target.getTeam() != caster.getTeam())//Mot d'altruisme && Tournée général, pas de heal pour ennemi (Skryn, Return ;) )
+					if((spell == 139 || spell == 1675) && target.getTeam() != caster.getTeam())//Mot d'altruisme && Tournï¿½e gï¿½nï¿½ral, pas de heal pour ennemi (Skryn, Return ;) )
 					{
 						continue;
 					}
@@ -4806,8 +4807,8 @@ public class SpellEffect
 		private void applyEffect_780(Fight fight)
 		{
 			// Faut faire un truc intelligent ici 
-			// On ne récupére pas le dernier mort, mais le premier allié en fonction du guid
-			// Corrigé @Flow
+			// On ne rï¿½cupï¿½re pas le dernier mort, mais le premier alliï¿½ en fonction du guid
+			// Corrigï¿½ @Flow
 			Map<Integer,Fighter> deads = fight.getDeadList();
 			Fighter target = null;
 			for(Entry<Integer,Fighter> entry : deads.entrySet())

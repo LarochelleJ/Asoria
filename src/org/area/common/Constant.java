@@ -504,6 +504,9 @@ public class Constant
 	public static final int STATS_BOOST_SPELL_MAXPERTARGET	=	291;
 	public static final int STATS_BOOST_SPELL_SET_INTVL		=	292;
 
+	// Sorts interdits en PvP
+	public static List<Integer> SORTS_INTERDITS_PVP = null;
+
 	// Prisme empêcher téléportation
 	public static final List<Integer> DONJONS_TELEPORTATION_INTERDITE = Arrays.asList(
 			15001,
@@ -770,19 +773,19 @@ public class Constant
 		int taux = 0;
 		switch (prestige) {
 			case 16:
-				taux = 30;
+				taux = 50;
 				break;
 			case 17:
-				taux = 45;
+				taux = 65;
 				break;
 			case 18:
-				taux = 55;
+				taux = 75;
 				break;
 			case 19:
-				taux = 70;
+				taux = 85;
 				break;
 			case 20:
-				taux = 80;
+				taux = 90;
 				break;
 			default:
 				break;
