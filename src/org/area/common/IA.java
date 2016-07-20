@@ -659,6 +659,7 @@ public class IA {
                 boolean modeAttack = false;
                 Fighter T = getNearestFriend(fight, F);
                 Fighter E = null;
+                Fighter C = null;
                 if (E == null || E.isDead()) {
                     E = getBestEnnemy(fight, F);
                 }
@@ -672,6 +673,12 @@ public class IA {
                         if (E == null || E.isDead()) {
                             E = getBestEnnemy(fight, F);
                         }
+                        if (E.isHide()) {
+                            C = T;
+                        }
+                        else {
+                            C = E;
+                        }
                         if (!HealIfPossible(fight, F, false))// soin alliï¿½
                         {
                             if (!buffIfPossible(fight, F, T))// buff alliï¿½
@@ -681,7 +688,7 @@ public class IA {
                                     if (!buffIfPossible(fight, F, F))// auto-buff
                                     {
                                         if (!invocIfPossible(fight, F)) {
-                                            if (!moveNearIfPossible(fight, F, E))// Avancer
+                                            if (!moveNearIfPossible(fight, F, C))// Avancer
                                             // vers
                                             // ennemie
                                             {

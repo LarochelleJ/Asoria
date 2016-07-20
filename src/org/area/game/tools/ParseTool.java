@@ -617,7 +617,7 @@ public class ParseTool {
                         itemID = 1520;
                         break;
                     case 44:
-                        itemID = 1339;
+                        itemID = 494;
                         break;
                     case 45:
                         itemID = 1561;
