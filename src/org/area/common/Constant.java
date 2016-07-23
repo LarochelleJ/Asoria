@@ -792,6 +792,8 @@ public class Constant
 		}
 		return taux;
 	}
+	// Prix prestiges
+	public static final int[] prixPrestiges = {80000000, 140000000, 250000000, 500000000, 1000000000};
 
 	// Poids par puissance unitaire d'un effets
 	private static HashMap<Integer, Double> tableauPoidsParPuissance = new HashMap<Integer, Double>();

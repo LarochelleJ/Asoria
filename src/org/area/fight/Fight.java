@@ -910,7 +910,6 @@ public class Fight {
             Thread.sleep(100);
         } catch (Exception e) {
         }
-        ;
         startTurn();
 
         for (Fighter F : getFighters(3)) {

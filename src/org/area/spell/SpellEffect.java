@@ -949,7 +949,7 @@ public class SpellEffect
 				id = Integer.parseInt(args.split(";")[2]);
 			}catch(Exception e){}
 			if(id == -1)return;
-			if (id == 50) debuff = false;
+			if (id == 50 || id == 7) debuff = false;
 			for(Fighter target : cibles)
 			{
 			

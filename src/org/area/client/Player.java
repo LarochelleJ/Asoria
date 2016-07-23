@@ -2055,7 +2055,34 @@ public class Player {
             stats.addOneStat(125, 100);
             stats.addOneStat(Constant.STATS_ADD_DOMA, 15);
         }
-
+        if (gP > 15) {
+            stats.addOneStat(Constant.STATS_ADD_VITA, 100);
+            stats.addOneStat(Constant.STATS_ADD_INTE, 25);
+            stats.addOneStat(Constant.STATS_ADD_AGIL, 25);
+            stats.addOneStat(Constant.STATS_ADD_FORC, 25);
+            stats.addOneStat(Constant.STATS_ADD_CHAN, 25);
+        }
+        if (gP > 16) {
+            stats.addOneStat(Constant.STATS_ADD_VITA, 150);
+            stats.addOneStat(Constant.STATS_MULTIPLY_DOMMAGE, 40);
+            stats.addOneStat(Constant.STATS_ADD_PROS, 50);
+        }
+        if (gP > 17) {
+            stats.addOneStat(Constant.STATS_ADD_VITA, 200);
+            stats.addOneStat(Constant.STATS_ADD_AGIL, 60);
+            stats.addOneStat(Constant.STATS_ADD_FORC, 60);
+        }
+        if (gP > 18) {
+            stats.addOneStat(Constant.STATS_ADD_VITA, 200);
+            stats.addOneStat(Constant.STATS_ADD_INTE, 60);
+            stats.addOneStat(Constant.STATS_ADD_CHAN, 60);
+            stats.addOneStat(Constant.STATS_ADD_PM, 1);
+        }
+        if (gP > 19) {
+            stats.addOneStat(Constant.STATS_ADD_VITA, 350);
+            stats.addOneStat(Constant.STATS_MULTIPLY_DOMMAGE, 50);
+            stats.addOneStat(Constant.STATS_ADD_PA, 1);
+        }
         return stats;
     }
 
@@ -4934,6 +4961,16 @@ public class Player {
                 addOrnement(6);
                 send("000A" + getOrnementsStringData());
                 sendText("Votre nouveau prestige vous fait gagner <b>15</b> dommages de base et <b>150</b> points de vitalité de base supplémentaire.");
+            } else if (getPrestige() == 16) {
+                sendText("Votre nouveau prestige vous fait gagner <b>100</b> de vitalité et <b>25</b> points de agilité, chance, intelligence et force.");
+            } else if (getPrestige() == 17) {
+                sendText("Votre nouveau prestige vous fait gagner <b>150</b> de vitalité, <b>40</b> points en puissance et <b>50</b> points en prospection.");
+            } else if (getPrestige() == 18) {
+                sendText("Votre nouveau prestige vous fait gagner <b>200</b> de vitalité, <b>60</b> points en agilité et en force.");
+            } else if (getPrestige() == 19) {
+                sendText("Votre nouveau prestige vous fait gagner <b>200</b> de vitalité, <b>60</b> points en intelligence et en chance. Ainsi qu'<b>un</b> PM supplémentaire !");
+            } else if (getPrestige() == 20) {
+                sendText("Votre nouveau prestige vous fait gagner <b>350</b> de vitalité, <b>50</b> points en puissance. Ainsi qu'<b>un</b> PA supplémentaire !");
             }
         }
         int levelUp = 6;
