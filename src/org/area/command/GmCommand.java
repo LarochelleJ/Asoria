@@ -2071,7 +2071,11 @@ public class GmCommand {
                 return true;
             } catch (Exception e) {
             }
-        } else if (command.equalsIgnoreCase("GLOBAL")) {
+        } else if(command.equalsIgnoreCase("RUNESRELOAD")){
+            World.definirRunes(SQLManager.LOAD_RUNES());
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Runes rechargés !");
+        }
+        else if (command.equalsIgnoreCase("GLOBAL")) {
             if (Constant.GLOBAL_ACTIVE) {
                 Constant.GLOBAL_ACTIVE = false;
                 String str = "Le canal global est maintenant désactivé !";

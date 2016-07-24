@@ -2559,7 +2559,7 @@ public class Player {
 
     public void levelUp(boolean send, boolean addXp) {
         if (_lvl == World.getExpLevelSize()) return;
-        if (_lvl + 1 > 200 && prestige < 20) return;
+        if (_lvl == 200 && prestige != 20) return;
         _lvl++;
         _capital += 5;
         _spellPts++;
@@ -2579,7 +2579,7 @@ public class Player {
         }
 
         if (_lvl == World.getExpLevelSize() && prestige == 20) {
-            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau " + World.getExpLevelSize(), "D85F03");
+            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau maximum d'Area !", "D85F03");
         }
 
         if (send && _isOnline && _compte != null && _compte.getGameThread() != null) {
@@ -2593,8 +2593,10 @@ public class Player {
         if (this.askCandyActive()) winxp = winxp * 2;    // Bonbon d'xp x2
         _curExp += winxp;
         int exLevel = _lvl;
-        while (_curExp >= World.getPersoXpMax(_lvl) && _lvl < World.getExpLevelSize())
+        while (_curExp >= World.getPersoXpMax(_lvl) && _lvl < World.getExpLevelSize()) {
             levelUp(false, false);
+            if (_lvl == 200 & prestige != 20) break;
+        }
         if (_isOnline) {
             if (exLevel < _lvl) SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte.getGameThread().getOut(), _lvl);
             SocketManager.GAME_SEND_STATS_PACKET(this);
@@ -4998,8 +5000,10 @@ public class Player {
                 }
             }
         }
-        for (int i = 0; i < savedSpells.size(); i++) {
-            this.learnSpell(savedSpells.get(i), 1, true, true);
+        if (getPrestige() < 16) {
+            for (int i = 0; i < savedSpells.size(); i++) {
+                this.learnSpell(savedSpells.get(i), 1, true, true);
+            }
         }
         if (this.getFight() == null)
             SocketManager.GAME_SEND_ALTER_GM_PACKET(this.getMap(), this);
