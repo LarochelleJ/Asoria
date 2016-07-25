@@ -2187,6 +2187,10 @@ public class World {
 		return rune;
 	}
 
+	public static void definirRunes(HashMap<Integer, Rune> runes) {
+		World.runes = runes;
+	}
+
 	public static int EchangeItemValue(int guid){
 		if(_listeEchangeItem.containsKey(guid)){
 			return _listeEchangeItem.get(guid);
