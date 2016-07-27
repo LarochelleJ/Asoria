@@ -489,14 +489,6 @@ public class Player {
             return Effects.containsKey(id) ? Effects.get(id) : 0;
         }
 
-        public boolean getisMimi(int id) {
-            if (Effects.get(id) == null || Effects.get(id) == 0) {
-                return false;
-            }
-            else
-                return true;
-        }
-
         public void setOneStat(int id, int val) {
             if (Effects.containsKey(id)) {
                 Effects.remove(id);

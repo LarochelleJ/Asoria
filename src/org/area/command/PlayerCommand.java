@@ -277,7 +277,7 @@ public class PlayerCommand {
                             if (_perso.getFight() != null)
                                 break;
                             int nombrePoints = Util.loadPointsByAccount(_perso.getAccount());
-                            if (nombrePoints <= 15) {
+                            if (nombrePoints < 15) {
                                 _perso.sendText("Il vous manque " + (15 - nombrePoints) + " points !");
                                 return true;
                             }
