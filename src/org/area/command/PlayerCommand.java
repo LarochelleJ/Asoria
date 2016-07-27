@@ -113,6 +113,7 @@ public class PlayerCommand {
                                     + "\n   ";
                             String List5 = "\n <b> Les Diverses Commandes :</b>"
                                     + "\n   "
+                                    + "\n .safe - Empêcher les crashs de fin de combat"
                                     + "\n .save - Sauvegarde votre personnage"
                                     + "\n .savetitre - Sauvegarder son titre actuel [5 pts]"
                                     + "\n .mestitres - Voir ses titres sauvegardés"
@@ -170,7 +171,7 @@ public class PlayerCommand {
                                     + "\n .morph8 - Zobal (seulement la morph) [200PB]"
                                     + "\n .demorph - Vous revenez en apparence 1.29 [0PB]"
                                     + "\n   ";
-                            String List9 = "\n <b> Les équipements Rapide :</b> "
+                            /*String List9 = "\n <b> Les équipements Rapide :</b> "
                                     + "\n   "
                                     + "\n .rapidstuff create [NAME] - Créé un stuff rapide"
                                     + "\n .rapidstuff remove [NAME] - Supprimer un stuff"
@@ -181,7 +182,7 @@ public class PlayerCommand {
                                     + "\n "
                                     + "\n .deathmatch on - Vous inscrit au DeathMatch"
                                     + "\n .deathmatch off - Vous désinscrit du DeathMatch"
-                                    + "\n   ";
+                                    + "\n   "; */
 					      /*String List11 = "\n <b> La commande de guerre de guilde :</b> "
 					      + "\n "
 					      + "\n .gvg + nom de la guilde à  attaquer - Attaquer une guilde";*/
@@ -192,8 +193,8 @@ public class PlayerCommand {
                             _perso.sendText(List5);
                             _perso.sendText(List6);
                             _perso.sendText(List7);
-                            _perso.sendText(List9);
-                            _perso.sendText(List10);
+                            //_perso.sendText(List9);
+                            //_perso.sendText(List10);
                             // _perso.sendText(List11);
                             break;
                         case 1: //Liste des commandes VIP
@@ -403,7 +404,7 @@ public class PlayerCommand {
                             SocketManager.GAME_SEND_STATS_PACKET(_perso);
                             break;
                         case 24: //Ouvrir la banque
-                            //Sauvagarde du perso et des item avant.
+                            //Sauvegarde du perso et des item avant.
                             if (_perso.getFight() != null)
                                 break;
                             SQLManager.SAVE_PERSONNAGE(_perso, true);
