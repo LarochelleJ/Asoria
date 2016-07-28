@@ -1025,6 +1025,13 @@ public class Fight {
             {
                 //Alors le joueur est dans le glyphe
                 g.onTraped(_ordreJeu.get(_curPlayer));
+                if (curPlayer.isDead())//Si joueur mort
+                {
+                    if (Config.DEBUG)
+                        GameServer.addToLog("(" + _curPlayer + ") Fighter ID=  " + _ordreJeu.get(_curPlayer).getGUID() + " est mort");
+                    endTurn();
+                    return;
+                }
             }
         }
         if (_ordreJeu == null) return;
