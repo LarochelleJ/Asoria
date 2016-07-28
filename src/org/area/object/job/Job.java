@@ -368,7 +368,8 @@ public class Job {
                     || _skID == 119
                     || _skID == 120
                     || (_skID >= 163 && _skID <= 169)) {
-                doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
+                //doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
+                doFmCraft();
                 return;
             } else {
                 try {

@@ -4119,12 +4119,13 @@ public class GameThread implements Runnable {
             } else if (packet.charAt(2) == 'R') {
                 try {
                     int c = Integer.parseInt(packet.substring(3));
-                    //player.getCurJobAction().repeat(c, player);
-                    player.getCurJobAction().repeatCraft(c, player);
+                    player.getCurJobAction().repeat(c, player);
+                    //player.getCurJobAction().repeatCraft(c, player);
                 } catch (Exception e) {
                 }
             } else if (packet.charAt(2) == 'r') {
-                player.getCurJobAction().stopRepeatCraft();
+                //player.getCurJobAction().stopRepeatCraft();
+                player.getCurJobAction().breakFM();
             }
             return;
         }

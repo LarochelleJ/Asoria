@@ -386,7 +386,7 @@ public class ParseTool {
                         int template = Integer.parseInt(params[2]);
                         if (!ParseTool.getShop().containsKey(template))
                             break;
-                        int price = ParseTool.getShop().get((Integer) template);
+                        int price = ParseTool.getShop().get(template);
                         int points = Util.loadPointsByAccount(player.getAccount());
 
                         if (points < price)
@@ -604,7 +604,7 @@ public class ParseTool {
                         itemID = 1520;
                         break;
                     case 44:
-                        itemID = 494;
+                        itemID = 1339;
                         break;
                     case 45:
                         itemID = 1561;
@@ -749,8 +749,8 @@ public class ParseTool {
 
             for (ObjTemplate object : collection) {
                 Item item = object.createNewItem(1, true, -1);
-                int price = ParseTool.getShop().get((Integer) object.getID());
-                string += object.getID() + ";;" + price + ";;" + item.parseStatsString() + "|;";
+                int price = ParseTool.getShop().get(object.getID());
+                string += object.getID() + ";;" + price + ";;" + item.parseStatsString() + ";;" + item.getPrestige() + "|;";
             }
             shopList = string;
         }

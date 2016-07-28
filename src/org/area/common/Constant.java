@@ -765,24 +765,7 @@ public class Constant
 			15156,
 			15157,
 			15158,
-			18034,
-			12499,
-			12500,
-			12501,
-			12502,
-			12503,
-			12504,
-			10191,
-			10192,
-			10195,
-			10197,
-			10198,
-			10199,
-			6707,
-			6706,
-			6702,
-			6704,
-			6701
+			18034
 			);
 
 	// Taux supression prestiges
@@ -836,7 +819,7 @@ public class Constant
 		tableauPoidsParPuissance.put(STATS_ADD_RP_EAU, 5D);
 
 		tableauPoidsParPuissance.put(STATS_ADD_INIT, 0.10);
-		tableauPoidsParPuissance.put(STATS_ADD_DOMA, 20D);
+		tableauPoidsParPuissance.put(STATS_ADD_DOMA, 7D);
 		tableauPoidsParPuissance.put(STATS_ADD_PERDOM, 2D);
 		tableauPoidsParPuissance.put(STATS_TRAPDOM, 15D);
 		tableauPoidsParPuissance.put(STATS_TRAPPER, 2D);
