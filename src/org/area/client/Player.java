@@ -2064,7 +2064,7 @@ public class Player {
         }
         if (gP > 16) {
             stats.addOneStat(Constant.STATS_ADD_VITA, 150);
-            stats.addOneStat(Constant.STATS_MULTIPLY_DOMMAGE, 40);
+            stats.addOneStat(Constant.STATS_ADD_PERDOM, 40);
             stats.addOneStat(Constant.STATS_ADD_PROS, 50);
         }
         if (gP > 17) {
@@ -2080,7 +2080,7 @@ public class Player {
         }
         if (gP > 19) {
             stats.addOneStat(Constant.STATS_ADD_VITA, 350);
-            stats.addOneStat(Constant.STATS_MULTIPLY_DOMMAGE, 50);
+            stats.addOneStat(Constant.STATS_ADD_PERDOM, 50);
             stats.addOneStat(Constant.STATS_ADD_PA, 1);
         }
         return stats;
