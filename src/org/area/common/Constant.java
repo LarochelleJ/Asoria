@@ -765,8 +765,26 @@ public class Constant
 			15156,
 			15157,
 			15158,
-			18034
-			);
+			18034,
+			12499,
+			12500,
+			12501,
+			12502,
+			12503,
+			12504,
+			10191,
+			10192,
+			10195,
+			10197,
+			10198,
+			10199,
+			6707,
+			6706,
+			6702,
+			6704,
+			6701
+
+	);
 
 	// Taux supression prestiges
 	public static final int obtenir_taux_xp_prestige(int prestige) {
@@ -1006,7 +1024,7 @@ public class Constant
 			}
 		break;
 		case CLASS_STEAMER:
-			int[] steamerSpell = { 100000,101000,102000,103000,104000,105000,106000,107000,121000,109000,110000,111000,113000,115000,116000,117000,118000,119000,120000 };
+			int[] steamerSpell = { 100000,101000,102000,103000,104000,105000,106000,107000,121000,109000,110000,111000,113000,115000,116000,117000,118000,119000,120000, 112000, 114000 };
 			for (int i = 0; i < steamerSpell.length; i++){
 				toReturn.add(steamerSpell[i]);
 			}
@@ -2288,8 +2306,12 @@ public class Constant
 						perso.learnSpell(110000, 1,true,false);//
 					if(lvl == 36)
 						perso.learnSpell(111000, 1,true,false);//
+				 	if(lvl == 42)
+						perso.learnSpell(112000, 1,true,false); // Tactirelle
 					if(lvl == 48)
 						perso.learnSpell(113000, 1,true,false);//
+				 	if(lvl == 54)
+						perso.learnSpell(114000, 1,true,false); // Secourisme
 					if(lvl == 60)
 						perso.learnSpell(115000, 1,true,false);//
 					if(lvl == 70)

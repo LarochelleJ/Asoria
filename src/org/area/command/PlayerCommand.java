@@ -113,6 +113,7 @@ public class PlayerCommand {
                                     + "\n   ";
                             String List5 = "\n <b> Les Diverses Commandes :</b>"
                                     + "\n   "
+                                    + "\n .safe - EmpÃªcher les crashs de fin de combat"
                                     + "\n .save - Sauvegarde votre personnage"
                                     + "\n .savetitre - Sauvegarder son titre actuel [5 pts]"
                                     + "\n .mestitres - Voir ses titres sauvegardés"
@@ -192,8 +193,8 @@ public class PlayerCommand {
                             _perso.sendText(List5);
                             _perso.sendText(List6);
                             _perso.sendText(List7);
-                            _perso.sendText(List9);
-                            _perso.sendText(List10);
+                            //_perso.sendText(List9);
+                            //_perso.sendText(List10);
                             // _perso.sendText(List11);
                             break;
                         case 1: //Liste des commandes VIP
@@ -277,7 +278,7 @@ public class PlayerCommand {
                             if (_perso.getFight() != null)
                                 break;
                             int nombrePoints = Util.loadPointsByAccount(_perso.getAccount());
-                            if (nombrePoints <= 15) {
+                            if (nombrePoints < 15) {
                                 _perso.sendText("Il vous manque " + (15 - nombrePoints) + " points !");
                                 return true;
                             }

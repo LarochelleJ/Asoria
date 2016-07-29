@@ -775,15 +775,27 @@ public class Fight {
 
         _state = Constant.FIGHT_STATE_ACTIVE;
         //Pour le sort corruption
+        // @Poupou et perdition(sort mob 2.7)
         // @Flow - Attaquant guilde fix
         for (Fighter f : getFighters(3)) {
             Player player = f.getPersonnage();
             if (f == null || player == null) continue;
             f.setSpellStats();
             f.getPersonnage().sendLimitationIm();
-            if (!f.getPersonnage().hasSpell(59)) continue;
+            if (!f.getPersonnage().hasSpell(59)) {
+                if (!f.getPersonnage().hasSpell(212162)) {
+                    continue;
+                }
+                else {
+                    f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(212162), 10);
+                }
+                continue;
+            }
             f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(59), 3);
+            if (!f.getPersonnage().hasSpell(212162)) continue;
+            f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(212162), 10);
         }
+
 
         set_startTime(System.currentTimeMillis());
         SocketManager.GAME_SEND_GAME_REMFLAG_PACKET_TO_MAP(_init0.getPersonnage().getMap(), _init0.getGUID());
