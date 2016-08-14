@@ -266,8 +266,15 @@ public class GmCommand {
         } else if (command.equalsIgnoreCase("WHO")) {
             String mess = "==========\n" + "Liste des joueurs en ligne:";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
-            int diff = Main.gameServer.getClients().size() - 30;
-            for (byte b = 0; b < 30; b++) {
+            int nbIterration = 30, diff = 0;
+            if (infos.length > 1) {
+                if (infos[1].equalsIgnoreCase("FULL")) {
+                    nbIterration = Main.gameServer.getClients().size();
+                }
+            } else {
+                diff = Main.gameServer.getClients().size() - 30;
+            }
+            for (byte b = 0; b < nbIterration; b++) {
                 if (b == Main.gameServer.getClients().size())
                     break;
                 GameThread GT = Main.gameServer.getClients().get(b);

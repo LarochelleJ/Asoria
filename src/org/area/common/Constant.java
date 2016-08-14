@@ -797,7 +797,7 @@ public class Constant
 				taux = 65;
 				break;
 			case 18:
-				taux = 75;
+				taux = 80;
 				break;
 			case 19:
 				taux = 85;
