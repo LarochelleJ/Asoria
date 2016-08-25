@@ -368,8 +368,8 @@ public class Job {
                     || _skID == 119
                     || _skID == 120
                     || (_skID >= 163 && _skID <= 169)) {
-                //doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
-                doFmCraft();
+                doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
+                //doFmCraft();
                 return;
             } else {
                 try {
@@ -1289,7 +1289,7 @@ public class Job {
                                 runeSignature = true;
                                 runeSignatureObjet = tempItem;
                                 if (runeSignatureObjet.getQuantity() > 1) {
-                                    int qtaRestante = runeSignatureObjet.getQuantity() - 2;
+                                    int qtaRestante = runeSignatureObjet.getQuantity() - 1;
                                     SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "-", runeSignatureObjet.getGuid() + "|" + qtaRestante);
                                 }
                             } else {
@@ -1342,8 +1342,7 @@ public class Job {
                                 int pbSC = 0, pbSN = 0, pbEC = 0;
                                 Rune rune = World.obtenirRune(runeObjet.getTemplate(false).getID());
                                 int puissanceObjet = objet.getStats().getEffect(rune.getIdEffet());
-                                final double poidParPuissanceElement = Constant.obtenirPoidsPuissance(rune.getIdEffet());
-                                if (puissanceObjet == 0) { // Exo
+                                if (!objet.getTemplate(estMimibiote).statsContains(rune.getIdEffet()) && puissanceObjet == 0) { // Exo, n'existe pas sur l'item de base, mais ça passe si un exo a déjà été fait (puissance != 0)
                                     pbSC = 1;
                                     pbEC = 99;
                                 } else if (puissanceObjet > 35) {

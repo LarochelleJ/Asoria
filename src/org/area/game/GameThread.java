@@ -245,7 +245,7 @@ public class GameThread implements Runnable {
         if (packet.length() > 1000)
             return;
         if (packet.length() > 3 && packet.substring(0, 4).equalsIgnoreCase("ping")) {
-            if (out != null)
+           if (out != null)
                 SocketManager.GAME_SEND_PONG(out);
             return;
         }
@@ -254,7 +254,17 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_QPONG(out);
             return;
         }
+        if (out == null) {
+            player.sendText("La connexion de sortie lié à votre thread est inexistante, veuillez le signaler à Flow.");
+            GameSendThread o = player.getAccount().getGameThread().getOut();
+            if (o != null) {
+                out = o;
+                player.sendText("Tentative de correction de la connexion.");
+            } else {
+                player.sendText("Impossible de corriger la connexion.");
+            }
 
+        }
         switch (packet.charAt(0)) {
             case 'A':
                 parseAccountPacket(packet);
@@ -2269,6 +2279,12 @@ public class GameThread implements Runnable {
      */
     public static synchronized void Object_move(Player _perso,
                                                 GameSendThread _out, int qua, int guid, int pos) {
+        if (_out == null) {
+            _perso.sendText("Erreur liée à la connexion, veuillez le signaler à Flow");
+        }
+        if (_perso == null) {
+            _perso.sendText("Erreur liée au personnage, veuillez le signaler à Flow");
+        }
         try {
             boolean ignore = false; //@Flow
             Item obj = null;
@@ -4119,13 +4135,13 @@ public class GameThread implements Runnable {
             } else if (packet.charAt(2) == 'R') {
                 try {
                     int c = Integer.parseInt(packet.substring(3));
-                    player.getCurJobAction().repeat(c, player);
-                    //player.getCurJobAction().repeatCraft(c, player);
+                    //player.getCurJobAction().repeat(c, player);
+                    player.getCurJobAction().repeatCraft(c, player);
                 } catch (Exception e) {
                 }
             } else if (packet.charAt(2) == 'r') {
-                //player.getCurJobAction().stopRepeatCraft();
-                player.getCurJobAction().breakFM();
+                player.getCurJobAction().stopRepeatCraft();
+                //player.getCurJobAction().breakFM();
             }
             return;
         }

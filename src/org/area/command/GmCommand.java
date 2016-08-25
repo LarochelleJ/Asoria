@@ -262,7 +262,7 @@ public class GmCommand {
                 } catch (Exception e) {
                 }
             }
-            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Nombre de combats: " + nombreCombats);
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Nombre de joueurs en combat: " + nombreCombats);
         } else if (command.equalsIgnoreCase("WHO")) {
             String mess = "==========\n" + "Liste des joueurs en ligne:";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);

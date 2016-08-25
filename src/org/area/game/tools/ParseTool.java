@@ -547,6 +547,11 @@ public class ParseTool {
                 if (prestige >= 13 && player.getSortStatBySortIfHas(212124) == null) {
                     player.learnSpell(212124, 6, true, true);
                 }
+                if (player.getLevel() == World.getExpLevelSize() && prestige == 20) {
+                    if (player.getSortStatBySortIfHas(6004) == null) {
+                        player.learnSpell(6004, 1, true, true);
+                    }
+                }
                 baseStats.addOneStat(111, -player._baseStats.getEffect(111));
                 baseStats.addOneStat(128, -player._baseStats.getEffect(128));
                 player.get_baseStats().addOneStat(111, pa);

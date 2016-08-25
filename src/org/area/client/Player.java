@@ -2580,6 +2580,7 @@ public class Player {
 
         if (_lvl == World.getExpLevelSize() && prestige == 20) {
             SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau maximum d'Area !", "D85F03");
+            this.learnSpell(6004, 1, true, true);
         }
 
         if (send && _isOnline && _compte != null && _compte.getGameThread() != null) {

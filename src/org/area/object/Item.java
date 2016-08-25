@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 
 import org.area.client.Player;
@@ -49,6 +50,18 @@ public class Item {
                 return 1;
             else
                 return -1;
+        }
+
+        public boolean statsContains(int idEffect) {
+            boolean statExist = false;
+            String[] effets = StrTemplate.split(",");
+            for (String s : effets) {
+                if (Integer.parseInt(s.split("#")[0], 16) == idEffect) {
+                    statExist = true;
+                    break;
+                }
+            }
+            return statExist;
         }
 
         public ObjTemplate(int id, String strTemplate, String name, int type, int level, int pod, int prix, int panopID, String conditions, String armesInfos, int sold, int avgPrice, int prestige) {
@@ -319,7 +332,7 @@ public class Item {
             return Effets;
         }
 
-        public Stats generateNewStatsFromTemplate2(String statsTemplate, boolean useMax) //@Flow - �tait private avant
+        /**public Stats generateNewStatsFromTemplate2(String statsTemplate, boolean useMax) //@Flow - �tait private avant
         {
             Stats itemStats = new Stats(false, null);
             //Si stats Vides
@@ -359,7 +372,7 @@ public class Item {
                 itemStats.addOneStat(statID, value);
             }
             return itemStats;
-        }
+        }**/
 
 
         public String parseItemTemplateStats() {
