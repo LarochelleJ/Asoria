@@ -791,16 +791,16 @@ public class Constant
 		int taux = 0;
 		switch (prestige) {
 			case 16:
-				taux = 50;
+				taux = 40;
 				break;
 			case 17:
-				taux = 65;
+				taux = 50;
 				break;
 			case 18:
-				taux = 80;
+				taux = 60;
 				break;
 			case 19:
-				taux = 85;
+				taux = 70;
 				break;
 			case 20:
 				taux = 90;
@@ -811,7 +811,7 @@ public class Constant
 		return taux;
 	}
 	// Prix prestiges
-	public static final int[] prixPrestiges = {80000000, 140000000, 250000000, 500000000, 1000000000};
+	public static final int[] prixPrestiges = {45000000, 90000000, 130000000, 200000000, 400000000};
 
 	// Poids par puissance unitaire d'un effets
 	private static HashMap<Integer, Double> tableauPoidsParPuissance = new HashMap<Integer, Double>();

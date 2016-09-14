@@ -334,7 +334,11 @@ public class PlayerCommand {
                             break;
                         case 12: //Alignement
                             byte align = (byte) Integer.parseInt(args);
-                            _perso.modifAlignement(align);
+                            if (_perso.getFight() != null) {
+                                _perso.sendText("Vous ne pouvez pas changer d'alignement lorsque vous êtes en combat.");
+                            } else {
+                                _perso.modifAlignement(align);
+                            }
                             if (_perso.isOnline())
                                 SocketManager.GAME_SEND_STATS_PACKET(_perso);
                             break;
@@ -1881,6 +1885,10 @@ public class PlayerCommand {
                             } else {
                                 _perso.sendText("Le mode anti-crash est maintenant désactivé.");
                             }
+                            break;
+                        case 2222:
+                            _perso.addObjet(World.getObjTemplate(470001).createNewItem(1000, true, -1));
+                            _perso.sendText("Vous avez reçu 10000 PP ! Bon testing !");
                             break;
                         case 55: //Guerre de Guilde
 

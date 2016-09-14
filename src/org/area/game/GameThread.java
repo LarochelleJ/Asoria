@@ -2306,6 +2306,11 @@ public class GameThread implements Runnable {
             if (!Constant.isValidPlaceForItem(obj.getTemplate(false), pos)
                     && pos != Constant.ITEM_POS_NO_EQUIPED) // si mauvaise place
                 return;
+            int idCompteLie = obj.getStats().getEffect(252526);
+            if (idCompteLie > 0 && idCompteLie != _perso.getAccID()) {
+                _perso.sendText("Cet item est lié à un compte qui n'est pas le votre. Vous ne pouvez pas équipé cet item.");
+                return;
+            }
             if (obj.getStats().getEffect(1000000000) == 1) // @Flow - Pardonne moi dieu pour ce code... Heureusement on s'en sert plus pour les nouveaux mimi
             {
                 boolean dont_stop = true;
@@ -3029,7 +3034,7 @@ public class GameThread implements Runnable {
                 Exchange_start(packet);
                 break;
             case 'S':// Vente
-                /** Exchange_onSellItem(packet); **/ // On laisse ça ainsi, on ne remet plus jamais cette fonctionnalité.
+                Exchange_onSellItem(packet);
                 break;
 
             case 'V':// Fin de l'échange

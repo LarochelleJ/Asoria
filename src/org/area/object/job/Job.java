@@ -369,7 +369,7 @@ public class Job {
                     || _skID == 120
                     || (_skID >= 163 && _skID <= 169)) {
                 doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
-                //doFmCraft();
+                //doFmCraft();S
                 return;
             } else {
                 try {
@@ -1281,10 +1281,14 @@ public class Job {
                         if (tempItem != null) {
                             if (World.obtenirRune(tempItem.getTemplate(false).getID()) != null) { // Rune connue du système
                                 runeObjet = tempItem;
-                                if (runeObjet.getQuantity() > 1) {
-                                    int qtaRestante = runeObjet.getQuantity() - 2;
+                                if (_ingredients.get(itemId) > 1) {
+                                    int qtaRestante = 0;
                                     SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "-", runeObjet.getGuid() + "|" + qtaRestante);
                                 }
+                                /*if (runeObjet.getQuantity() > 1) {
+                                    int qtaRestante = runeObjet.getQuantity() - 2;
+                                    SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK_FM(_P.getAccount().getGameThread().getOut(), 'O', "-", runeObjet.getGuid() + "|" + qtaRestante);
+                                }*/
                             } else if (tempItem.getTemplate(false).getID() == 7508) { // Rune de signature
                                 runeSignature = true;
                                 runeSignatureObjet = tempItem;

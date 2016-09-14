@@ -778,7 +778,7 @@ public class GmCommand {
             } else {
                 //String temps_str = time+" minute" + ((time > 1)?"s":"");
                 /*SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1242;"
-						+ perso.getName() + "~" + _perso.getName() + "~" + temps_str + "~"
+                        + perso.getName() + "~" + _perso.getName() + "~" + temps_str + "~"
 						+ message);*/
 
                 SocketManager.GAME_SEND_MESSAGE_TO_ALL("Le joueur <b>" + perso.getName() + "</b> a été mute par " + _perso.getName() + " pour la raison suivante : " + message, AllColor.RED);
@@ -2078,11 +2078,10 @@ public class GmCommand {
                 return true;
             } catch (Exception e) {
             }
-        } else if(command.equalsIgnoreCase("RUNESRELOAD")){
+        } else if (command.equalsIgnoreCase("RUNESRELOAD")) {
             World.definirRunes(SQLManager.LOAD_RUNES());
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Runes rechargés !");
-        }
-        else if (command.equalsIgnoreCase("GLOBAL")) {
+        } else if (command.equalsIgnoreCase("GLOBAL")) {
             if (Constant.GLOBAL_ACTIVE) {
                 Constant.GLOBAL_ACTIVE = false;
                 String str = "Le canal global est maintenant désactivé !";
@@ -2263,6 +2262,7 @@ public class GmCommand {
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
         } else if (command.equalsIgnoreCase("ITEM")
                 || command.equalsIgnoreCase("!getitem")) {
+            Player joueurCible = null;
             boolean isOffiCmd = command.equalsIgnoreCase("!getitem");
             if (_compte.getGmLevel() < 2) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out,
@@ -2274,7 +2274,6 @@ public class GmCommand {
                 tID = Integer.parseInt(infos[1]);
             } catch (Exception e) {
             }
-            ;
             if (tID == 0) {
                 String mess = "Le template " + tID + " n'existe pas ";
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
@@ -2295,6 +2294,9 @@ public class GmCommand {
                 if (infos[3].equalsIgnoreCase("MAX"))
                     useMax = true;
             }
+            if (infos.length == 5 && !isOffiCmd) { // Lié un item à un compte
+                joueurCible = World.getPersoByName(infos[4]);
+            }
             ObjTemplate t = World.getObjTemplate(tID);
             if (t == null) {
                 String mess = "Le template " + tID + " n'existe pas ";
@@ -2304,6 +2306,9 @@ public class GmCommand {
             if (qua < 1)
                 qua = 1;
             Item obj = t.createNewItem(qua, useMax, -1);
+            if (joueurCible != null) { // On verouille l'item au compte du joueur
+                obj.getStats().addOneStat(252526, joueurCible.getAccID());
+            }
             if (_perso.addObjet(obj, true))// Si le joueur n'avait pas d'item
                 // similaire
                 World.addObjet(obj, true);
