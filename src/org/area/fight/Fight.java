@@ -3211,14 +3211,15 @@ public class Fight {
                             // calcul du temps de combat, système anti-mulage @WINNER @Flow
                             Long timeFight = (System.currentTimeMillis() - this.get_startTime()) / 1000;
                             Integer TimeAntiMulage = 60;
-                            if (timeFight <= TimeAntiMulage) {
+                            /*if (timeFight <= TimeAntiMulage) {
 
                                 SocketManager.GAME_SEND_MESSAGE(i.getPersonnage(), "<b>Tentative de mulage : </b> Le combat a été trop rapide, pour cette raison, vous n'avez gagner aucun points d'honneur.", Config.CONFIG_MOTD_COLOR);
                                 winH = 0;
 
                             } else if (timeFight > TimeAntiMulage) {
                                 winH = Formulas.calculHonorWin(TEAM1, TEAM2, i);
-                            }
+                            }*/
+                            winH = Formulas.calculHonorWin(TEAM1, TEAM2, i);
                         }
                         if (i.getPersonnage().getDeshonor() > 0) winD = -1;
                     }
@@ -3310,13 +3311,7 @@ public class Fight {
                 if (_type == Constant.FIGHT_TYPE_AGRESSION) {
                     if (_init1.getPersonnage().get_align() != 0 && _init0.getPersonnage().get_align() != 0) {
                         if (_init1.getPersonnage().getAccount().getCurIp().compareTo(_init0.getPersonnage().getAccount().getCurIp()) != 0 || Config.ALLOW_MULE_PVP) {
-                            // calcul du temps de combat, système anti-mulage
-                            Long timeFight = (System.currentTimeMillis() - this.get_startTime()) / 1000;
-                            Integer TimeAntiMulage = 60;
-                            if (timeFight <= TimeAntiMulage) {
-
-                                SocketManager.GAME_SEND_MESSAGE(i.getPersonnage(), "<b>Tentative de mulage : </b> Le combat a été trop rapide, pour cette raison, personne ne gagne de points d'honneur, mais vous en perdez.", Config.CONFIG_MOTD_COLOR);
-                            }
+                            // calcul du temps de combat, système anti-mulage #Removed
                             winH = Formulas.calculHonorWin(TEAM1, TEAM2, i);
                         }
                     }
