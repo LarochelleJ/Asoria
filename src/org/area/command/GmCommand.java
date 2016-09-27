@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import javax.swing.Timer;
 
+import jdk.internal.jfr.events.SocketReadEvent;
 import org.area.client.Account;
 import org.area.client.Player;
 import org.area.command.player.Tickets;
@@ -2289,13 +2290,14 @@ public class GmCommand {
                 ;
             }
             boolean useMax = false;
-            if (infos.length == 4 && !isOffiCmd)// Si un jet est spÃ©cifiÃ©
+            if (infos.length >= 4 && !isOffiCmd)// Si un jet est spÃ©cifiÃ©
             {
                 if (infos[3].equalsIgnoreCase("MAX"))
                     useMax = true;
             }
-            if (infos.length == 5 && !isOffiCmd) { // Lié un item à un compte
+            if (infos.length >= 5 && !isOffiCmd) { // Lié un item à un compte
                 joueurCible = World.getPersoByName(infos[4]);
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "L'item est désormais lié au compte du joueur: " + infos[4]);
             }
             ObjTemplate t = World.getObjTemplate(tID);
             if (t == null) {
@@ -2309,7 +2311,8 @@ public class GmCommand {
             if (joueurCible != null) { // On verouille l'item au compte du joueur
                 obj.getStats().addOneStat(252526, joueurCible.getAccID());
             }
-            if (_perso.addObjet(obj, true))// Si le joueur n'avait pas d'item
+            Player j = joueurCible != null ? joueurCible : _perso;
+            if (j.addObjet(obj, true))// Si le joueur n'avait pas d'item
                 // similaire
                 World.addObjet(obj, true);
             String str = "Creation de l'item " + tID + " reussie";

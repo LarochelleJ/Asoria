@@ -2173,8 +2173,13 @@ public class GameThread implements Runnable {
                 || player.getFight() != null || player.is_away())
             return;
         Item obj = World.getObjet(guid);
+        if (obj == null) return;
         if ((obj.getStats().getEffect(9000) == 1)) {
             player.sendText("Cet objet ne peut être jeté !");
+            return;
+        }
+        if ((obj.getStats().getEffect(252526) > 0)) {
+            player.sendText("Cet objet ne peut être jeté ! Il est lié à votre compte !");
             return;
         }
         player.set_curCell(player.get_curCell());
@@ -3875,6 +3880,7 @@ public class GameThread implements Runnable {
                                 .parseByte(packet.substring(4).split("\\|")[1]);
                         int price = Integer
                                 .parseInt(packet.substring(4).split("\\|")[2]);
+                        Item obj = World.getObjet(itmID);// Récupère l'item
                         if (amount <= 0 || price <= 0)
                             return;
 
@@ -3888,6 +3894,11 @@ public class GameThread implements Runnable {
                                 return;
                             }
                         } catch (Exception E) {
+                        }
+
+                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillé à un compte
+                            player.sendText("Cet item est lié à votre compte, vous ne pouvez pas le vendre.");
+                            return;
                         }
 
                         AuctionHouse curHdv = World.getHdv(Math.abs(player
@@ -3911,7 +3922,6 @@ public class GameThread implements Runnable {
                             return;
                         }
                         // Changement des vérifications, vraiment mal structuré... @Flow
-                        Item obj = World.getObjet(itmID);// Récupère l'item
                         if (amount > obj.getQuantity())// S'il veut mettre plus de cette
                             // objet en vente que ce qu'il
                             // possède
@@ -4319,6 +4329,10 @@ public class GameThread implements Runnable {
                     }
                     switch (packet.charAt(3)) {
                         case '+':// Ajouter a la banque
+                            if (obj.getStats().getEffect(252526) > 0) { // Item verouillé au compte
+                                player.sendText("Cet item est lié à votre compte, vous ne pouvez pas le déposer dans un coffre.");
+                                return;
+                            }
                             t.addInTrunk(guid, qua, player);
                             break;
 
@@ -4359,7 +4373,10 @@ public class GameThread implements Runnable {
                             qua = obj.getQuantity() - quaInExch;
                         if (qua <= 0)
                             return;
-
+                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillé à un compte
+                            player.sendText("Cet item est lié à votre compte, vous ne pouvez pas l'échanger.");
+                            return;
+                        }
                         player.get_curExchange().addItem(guid, qua,
                                 player.getGuid());
                     } catch (NumberFormatException e) {
