@@ -3,6 +3,7 @@ package org.area.command;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.swing.Timer;
 
@@ -2295,9 +2296,14 @@ public class GmCommand {
                 if (infos[3].equalsIgnoreCase("MAX"))
                     useMax = true;
             }
-            if (infos.length >= 5 && !isOffiCmd) { // Lié un item à un compte
-                joueurCible = World.getPersoByName(infos[4]);
-                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "L'item est désormais lié au compte du joueur: " + infos[4]);
+            for (String param : infos) {
+                if (param.contains(":")) {
+                    if (param.split(Pattern.quote(":"))[0].equalsIgnoreCase("lie")) {
+                        String nomPerso = param.split(Pattern.quote(":"))[1];
+                        joueurCible = World.getPersoByName(nomPerso);
+                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "L'item est désormais lié au compte du joueur: " + nomPerso);
+                    }
+                }
             }
             ObjTemplate t = World.getObjTemplate(tID);
             if (t == null) {

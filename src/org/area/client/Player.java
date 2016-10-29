@@ -2462,7 +2462,8 @@ public class Player {
             if (_items.get(guid).getQuantity() < qua)//Si il a moins d'item que ce qu'on veut Del
                 qua = _items.get(guid).getQuantity();
 
-            int prix = Math.round(qua * (_items.get(guid).getTemplate(true).getPrix() / 100) + 1);//Calcul du prix de vente (prix d'achat/10)
+            //int prix = Math.round(qua * (_items.get(guid).getTemplate(true).getPrix() / 100) + 1);//Calcul du prix de vente (prix d'achat/10)
+            int prix = 0;
             int newQua = _items.get(guid).getQuantity() - qua;
 
             if (newQua <= 0)//Ne devrait pas etre <0, S'il n'y a plus d'item apres la vente

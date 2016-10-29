@@ -24,6 +24,7 @@ public class Config {
 	public static String CONFIG_LOG_MJ_FLOUET = "";
 	static BufferedReader config;
 	boolean isLoaded = false;
+	public static boolean BETA = false; // Indique si version beta ou offi
 
 	/** Database **/
 	public static String DB_NAME, DB_HOST, DB_USER, DB_PASS;

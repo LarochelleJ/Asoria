@@ -368,8 +368,11 @@ public class Job {
                     || _skID == 119
                     || _skID == 120
                     || (_skID >= 163 && _skID <= 169)) {
-                doFMCraftJr(); // @Flow Nouvelle forgemarie - À tester
-                //doFmCraft();S
+                if (Config.BETA) {
+                    doFMCraftJr();
+                } else {
+                    doFmCraft();
+                }
                 return;
             } else {
                 try {
@@ -1746,7 +1749,6 @@ public class Job {
             Config.fmTimer.schedule(temp, 100, 1000);
         }
 
-        @Deprecated
         public void repeat(int time, Player P) {//Skryn /Return
             _P = P;
             _isRepeat = true;
@@ -1813,7 +1815,6 @@ public class Job {
             _repeat = false;
         }
 
-        @Deprecated
         public void breakFM() {
             _broken = true;
         }

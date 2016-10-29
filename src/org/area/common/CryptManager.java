@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.area.game.GameServer;
 import org.area.kernel.Main;
 import org.area.object.Maps;
@@ -249,7 +250,7 @@ public class CryptManager {
             resultat = resultat + Character.toString((char)(Integer.parseInt(a.substring(y, y + 2), 16) ^ b.charAt((x++ + c) % longueurCle)));
             y += 2;
         }
-        return Functions.unescape_perl_string(resultat);
+        return StringEscapeUtils.unescapeHtml(resultat);
     }
 
 }
