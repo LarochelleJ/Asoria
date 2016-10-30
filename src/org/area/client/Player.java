@@ -298,6 +298,9 @@ public class Player {
     // Anti-crash prototype
     public boolean noCrash = false;
 
+    // Level secret
+    public boolean secretLevelUp = false;
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;
@@ -2455,6 +2458,11 @@ public class Player {
         }
     }
 
+    private int obtenirPrixRevente(int prixListe) {
+        int prixReventePossible = prixListe / 100;
+        return prixReventePossible < 1 ? 0 : prixReventePossible;
+    }
+
     public void sellItem(int guid, int qua) {
         if (qua <= 0)
             return;
@@ -2462,8 +2470,7 @@ public class Player {
             if (_items.get(guid).getQuantity() < qua)//Si il a moins d'item que ce qu'on veut Del
                 qua = _items.get(guid).getQuantity();
 
-            //int prix = Math.round(qua * (_items.get(guid).getTemplate(true).getPrix() / 100) + 1);//Calcul du prix de vente (prix d'achat/10)
-            int prix = 0;
+            int prix = qua * obtenirPrixRevente(_items.get(guid).getTemplate(true).getPrix());
             int newQua = _items.get(guid).getQuantity() - qua;
 
             if (newQua <= 0)//Ne devrait pas etre <0, S'il n'y a plus d'item apres la vente
@@ -2574,14 +2581,15 @@ public class Player {
             SQLManager.UPDATE_GUILDMEMBER(getGuildMember());
             getGuildMember().setLevel(_lvl);
         }
+        if (!this.secretLevelUp) {
+            if (_lvl == 200) {
+                SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau 200", "D85F03");
+            }
 
-        if (_lvl == 200) {
-            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau 200", "D85F03");
-        }
-
-        if (_lvl == World.getExpLevelSize() && prestige == 20) {
-            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau maximum d'Area !", "D85F03");
-            this.learnSpell(6004, 1, true, true);
+            if (_lvl == World.getExpLevelSize() && prestige == 20) {
+                SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau maximum d'Area !", "D85F03");
+                this.learnSpell(6004, 1, true, true);
+            }
         }
 
         if (send && _isOnline && _compte != null && _compte.getGameThread() != null) {

@@ -2165,6 +2165,15 @@ public class GmCommand {
                 if (count > World.getExpLevelSize())
                     count = World.getExpLevelSize();
                 Player perso = _perso;
+                boolean secret = false;
+                if (_perso.getAccount().getGmLevel() >= 5) {
+                    for (String s : infos) {
+                        if (s.equalsIgnoreCase("secret")) {
+                            secret = true;
+                            break;
+                        }
+                    }
+                }
                 if (infos.length == 3)// Si le nom du perso est spÃ©cifiÃ©
                 {
                     String name = infos[2];
@@ -2172,6 +2181,7 @@ public class GmCommand {
                     if (perso == null)
                         perso = _perso;
                 }
+                perso.secretLevelUp = secret;
                 if (perso.getLevel() < count) {
                     while (perso.getLevel() < count) {
                         perso.levelUp(false, true);
@@ -2184,6 +2194,7 @@ public class GmCommand {
                         SocketManager.GAME_SEND_STATS_PACKET(perso);
                     }
                 }
+                perso.secretLevelUp = false;
                 String mess = "Vous avez fixer le niveau de "
                         + perso.getName() + " a " + count;
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
@@ -2193,6 +2204,22 @@ public class GmCommand {
                 return true;
             }
             ;
+        } else if (command.equalsIgnoreCase("RATE_XP")) {
+            if (infos.length == 1) {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le rate xp actuel est de : " + Config.RATE_PVM);
+            } else {
+                int newRate = 0;
+                try {
+                    newRate = Integer.parseInt(infos[1]);
+                } catch (Exception e) {
+                }
+                if (newRate > 0) {
+                    int oldRate = Config.RATE_PVM;
+                    Config.RATE_PVM = newRate;
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le rate d'xp actuel est désormais de : " + Config.RATE_PVM);
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "** L'ancien rate d'xp était de  : " + oldRate);
+                }
+            }
         } else if (command.equalsIgnoreCase("CAPITAL")) {
             int pts = -1;
             try {
