@@ -32,8 +32,11 @@ import org.joda.time.DateTime;
 public class GameServer implements Runnable{
 
 	/** SheduledExecutor **/
+	/*public static ScheduledExecutorService executorTimer = Executors.newSingleThreadScheduledExecutor(),
+			fightExecutor = Executors.newSingleThreadScheduledExecutor();*/
+	private final static int NUM_THREADS = Runtime.getRuntime().availableProcessors();
 	public static ScheduledExecutorService executorTimer = Executors.newSingleThreadScheduledExecutor(),
-			fightExecutor = Executors.newSingleThreadScheduledExecutor();
+			fightExecutor = Executors.newScheduledThreadPool(NUM_THREADS);
 	/** Socket and Thread **/
 	private ServerSocket serverSocket;
 	private Thread thread;
