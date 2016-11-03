@@ -4609,6 +4609,21 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Ow_PACKET(player);
                     return;
                 }
+            } else if (idPnj == 816) {
+                int prixObj = Ints.checkedCast(prix);
+                if (!player.hasItemTemplate(1749, prixObj)) {
+                    player.sendText("Vous n'avez pas assez de jeton d'event pour effectuer cet achat !");
+                    return;
+                } else {
+                    Item newObj = template.createNewItem(qua, false, -1);
+                    player.removeByTemplateID(11022, prixObj);
+                    if (player.addObjet(newObj, true))
+                        World.addObjet(newObj, true);
+                    SocketManager.GAME_SEND_BUY_OK_PACKET(out);
+                    SocketManager.GAME_SEND_STATS_PACKET(player);
+                    SocketManager.GAME_SEND_Ow_PACKET(player);
+                    return;
+                }
             } else if (player.get_kamas() < prix)// Si le joueur n'a pas assez de kamas et que le npc demande des kamas
             {
                 GameServer.addToLog(player.getName()
@@ -4817,6 +4832,9 @@ public class GameThread implements Runnable {
                         return;
                     } else if (idPnj == 50029) {
                         SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Kolizeton requis");
+                        return;
+                    } else if (idPnj == 816) {
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de jeton d'event Area requis");
                         return;
                     }
                 } catch (NumberFormatException e) {

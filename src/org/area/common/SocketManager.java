@@ -1649,7 +1649,7 @@ public class SocketManager {
 	
 	public static void GAME_SEND_MESSAGE_TO_ALL2(String msg,String color)
 	{
-		String packet = "cMK|9|Global|<font color='#"+color+"'>"+msg+"</font>|";
+		String packet = "cMK|0|Global|<font color='#"+color+"'>"+msg+"</font>|";
 		for(Player P : World.getOnlinePlayers())
 		{
 			send(P,packet);

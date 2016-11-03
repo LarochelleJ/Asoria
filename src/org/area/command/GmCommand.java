@@ -2174,7 +2174,7 @@ public class GmCommand {
                         }
                     }
                 }
-                if (infos.length == 3)// Si le nom du perso est spÃ©cifiÃ©
+                if (infos.length >= 3)// Si le nom du perso est spÃ©cifiÃ©
                 {
                     String name = infos[2];
                     perso = World.getPersoByName(name);
