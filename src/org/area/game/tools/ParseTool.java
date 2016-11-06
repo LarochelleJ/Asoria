@@ -189,25 +189,31 @@ public class ParseTool {
     private static void parsePrestige(Player player, String packet, String[] params) {
         switch (packet) {
             case "UP": /** Up your prestige **/
-                int prix = player.getPrestige() < 15 ? 0 : Constant.prixPrestiges[player.getPrestige() - 15];
-                if (player.getFight() != null) {
-                    player.sendMess(Lang.LANG_50);
-                }
-                else if (player.getLevel() != 200) { // World.getExpLevelSize()
-                    player.sendMess(Lang.LANG_39);
-                }
-                else if (player.getPrestige() == Config.MAX_PRESTIGES) {
-                    player.sendMess(Lang.LANG_40);
-                }
-                else if (player.get_kamas() < prix) {
-                    long montantManquant = prix - player.get_kamas();
-                    player.sendMess(Lang.LANG_128, "", " " + montantManquant + " Kamas");
-                }
-                else {
-                    player.addKamas(-prix);
-                    player.upPrestige();
-                    player.sendMess(Lang.LANG_41, "", " " + player.getPrestige() + ".");
-                    player.send("002P" + player.getPrestige());
+                if (player.getPrestige() == 20) { // Prestige maximum
+                    player.sendText("Désolé, vous avez atteint le prestige maximum.");
+                } else {
+                    int prix = player.getPrestige() < 15 ? 0 : Constant.prixPrestiges[player.getPrestige() - 15];
+                    final int oldPrestige = player.getPrestige();
+                    if (player.getFight() != null) {
+                        player.sendMess(Lang.LANG_50);
+                    } else if (player.getLevel() != 200) { // World.getExpLevelSize()
+                        player.sendMess(Lang.LANG_39);
+                    } else if (player.getPrestige() == Config.MAX_PRESTIGES) {
+                        player.sendMess(Lang.LANG_40);
+                    } else if (player.get_kamas() < prix) {
+                        long montantManquant = prix - player.get_kamas();
+                        player.sendMess(Lang.LANG_128, "", " " + montantManquant + " Kamas");
+                    } else {
+                        player.addKamas(-prix);
+                        player.upPrestige();
+                        if (prix > 0 && !(player.getPrestige() > oldPrestige)) {
+                            player.addKamas(prix);
+                            player.sendText("Une erreur avec le passage de prestige s'est produite, le coût du passage vous a été remboursé, toutefois votre prestige n'a pas changé.");
+                        } else {
+                            player.sendMess(Lang.LANG_41, "", " " + player.getPrestige() + ".");
+                            player.send("002P" + player.getPrestige());
+                        }
+                    }
                 }
                 break;
             case "PRIX": /** Send prestige price list **/
@@ -215,7 +221,7 @@ public class ParseTool {
                 for (int i = 0; i < Constant.prixPrestiges.length; i++) {
                     list += Constant.prixPrestiges[i] + ";";
                 }
-                list = list.substring(0, list.length()-1);
+                list = list.substring(0, list.length() - 1);
                 player.send(list);
                 break;
             default:
@@ -573,7 +579,7 @@ public class ParseTool {
             case "RESTAT": /** Reset stats **/
                 player.sendText("Veuillez utiliser la commande .restat. Celle-ci coûte 50 points.");
                 /*try {
-			        player.get_baseStats().addOneStat(125, -player.get_baseStats().getEffect(125));
+                    player.get_baseStats().addOneStat(125, -player.get_baseStats().getEffect(125));
 			        player.get_baseStats().addOneStat(124, -player.get_baseStats().getEffect(124));
 			        player.get_baseStats().addOneStat(118, -player.get_baseStats().getEffect(118));
 			        player.get_baseStats().addOneStat(123, -player.get_baseStats().getEffect(123));

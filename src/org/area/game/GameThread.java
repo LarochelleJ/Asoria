@@ -730,9 +730,10 @@ public class GameThread implements Runnable {
                         player.removeByTemplateID(skinItem, 1);
                         Item obj = Item.createNewMorphItem(skinItem, baseItem, verif2);
 
-                        obj.getStats().addOneStat(9000, 1);//Non echangeable = 9000 @Flow
+                        // Si déjà mimibioté
+                        obj.getStats().setOneStat(9000, 1);//Non echangeable = 9000 @Flow
                         /** Ajout d'une variable pour récupérer l'item stat de départ. Exemple bonus de panoplie **/
-                        obj.getStats().addOneStat(616161, OM1.getID());
+                        obj.getStats().setOneStat(616161, OM1.getID());
                         obj.addTxtStat(970, Integer.toHexString(OM1.getID()));
                         World.addObjet(obj, true);
                         player.addObjet(obj);
@@ -4616,7 +4617,7 @@ public class GameThread implements Runnable {
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
-                    player.removeByTemplateID(11022, prixObj);
+                    player.removeByTemplateID(1749, prixObj);
                     if (player.addObjet(newObj, true))
                         World.addObjet(newObj, true);
                     SocketManager.GAME_SEND_BUY_OK_PACKET(out);

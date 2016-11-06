@@ -3414,9 +3414,11 @@ public class Player {
             obj.setPosition(Constant.ITEM_POS_NO_EQUIPED);
             SocketManager.GAME_SEND_OBJET_MOVE_PACKET(this, obj);
         }
-        if (_mount.get_energie() <= 0) {
+        int energieRestanteApresPerte = _mount.get_energie() - 10;
+        if (energieRestanteApresPerte < 0) {
             _mount.setEnergie(0);
-            return;
+        } else {
+            _mount.setEnergie(energieRestanteApresPerte);
         }
         //on envoie les packets
         if (getFight() != null && getFight().get_state() == 2) {
@@ -3427,8 +3429,6 @@ public class Player {
         SocketManager.GAME_SEND_Re_PACKET(this, "+", _mount);
         SocketManager.GAME_SEND_Rr_PACKET(this, _onMount ? "+" : "-");
         SocketManager.GAME_SEND_STATS_PACKET(this);
-        int EnergyoLose = _mount.get_energie() - 10;
-        _mount.setEnergie(EnergyoLose);
     }
 
     public int getMountXpGive() {

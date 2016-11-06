@@ -31,13 +31,10 @@ import org.area.game.tools.Util;
 import org.area.kernel.Config;
 import org.area.kernel.Main;
 import org.area.kernel.Reboot;
-import org.area.object.Action;
+import org.area.object.*;
 import org.area.object.AuctionHouse.HdvEntry;
-import org.area.object.Item;
 import org.area.object.Item.ObjTemplate;
-import org.area.object.Maps;
 import org.area.object.Maps.MountPark;
-import org.area.object.NpcTemplate;
 import org.area.object.NpcTemplate.NPC;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
@@ -2130,7 +2127,14 @@ public class GmCommand {
             } catch (Exception e) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Mauvaise syntaxe");
             }
-        } else if (command.equalsIgnoreCase("DOACTION")) {
+        } else if (command.equalsIgnoreCase("DDZERO")){
+            Mount dd = _perso.getMount();
+            if (dd != null) {
+                dd.setEnergie(0);
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Énergie dd à zéro");
+            }
+        }
+        else if (command.equalsIgnoreCase("DOACTION")) {
             // DOACTION NAME TYPE ARGS COND
             if (infos.length < 4) {
                 String mess = "Nombre d'argument de la commande incorect !";
