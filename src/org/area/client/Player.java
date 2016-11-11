@@ -694,7 +694,7 @@ public class Player {
     public Player(int _guid, String _name, int _sexe, int _classe,
                   int _color1, int _color2, int _color3, long _kamas, int pts, int _capital, int _energy, int _lvl, long exp,
                   int _size, int _gfxid, byte alignement, int _compte, Map<Integer, Integer> stats,
-                  byte seeFriend, byte seeAlign, byte seeSeller, String canaux, short map, int cell, String stuff, String storeObjets, int pdvPer, String spells, String savePos, String jobs,
+                  byte seeFriend, byte seeAlign, byte seeSeller, String canaux, short map, int cell, String storeObjets, int pdvPer, String spells, String savePos, String jobs,
                   int mountXp, int mount, int honor, int deshonor, int alvl, String z, int title, int wifeGuid, int teamID, int server, int prestige, String folowers, int currentFolower,
                   int winK, int loseK, int winA, int loseA, int canExp, int pvpMod, String candy_used, String quest, int ScrollFuerza, int ScrollInteligencia, int ScrollAgilidad, int ScrollSuerte, int ScrollVitalidad,
                   int ScrollSabiduria, int ornement) {
@@ -785,28 +785,12 @@ public class Player {
             Reboot.reboot();
         }
 
-        if (!stuff.equals("")) {
-            if (stuff.charAt(stuff.length() - 1) == '|')
-                stuff = stuff.substring(0, stuff.length() - 1);
-            SQLManager.LOAD_ITEMS(stuff.replace("|", ","));
-        }
-        for (String item : stuff.split("\\|")) {
-            if (item.equals("")) continue;
-            String[] infos = item.split(":");
-
-            int guid = 0;
-            try {
-                guid = Integer.parseInt(infos[0]);
-            } catch (Exception e) {
-                continue;
-            }
-            ;
-
+        List<Integer> stuff = SQLManager.LOAD_PLAYER_ITEMS(_guid);
+        for (int guid : stuff) {
             Item obj = World.getObjet(guid);
             if (obj == null) continue;
             synchronized (_items) {
                 _items.put(obj.getGuid(), obj);
-                SQLManager.SAVE_PERSONNAGE_ITEM(this);
             }
         }
         if (!storeObjets.equals("")) {
@@ -939,7 +923,6 @@ public class Player {
                 "*#%!pi$:?",
                 (short) Config.START_MAP,
                 Config.START_CELL,
-                "",
                 "",
                 100,
                 "",

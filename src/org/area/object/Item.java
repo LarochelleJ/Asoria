@@ -478,7 +478,7 @@ public class Item {
             split = strStats.split(",");
         } catch (OutOfMemoryError e) {
         }
-        if (split.length > 0 && split != null) {
+        if (split != null && split.length > 0) {
             for (String s : split) {
                 try {
                     String[] stats = s.split("#");
@@ -573,11 +573,12 @@ public class Item {
 
     // Clone objet / Cr�ation nouvel objet
     public Item(int Guid, int template, int qua, int pos, Stats stats, ArrayList<SpellEffect> effects, BoostSpellStats sp, int prestige) {
-        if (World.getObjets().containsKey(Guid)) {
+
+        /*if (World.getObjets().containsKey(Guid)) {
             this.guid = SQLManager.getNextObjetID() + 1;
         } else {
             this.guid = Guid;
-        }
+        }*/
         this.template = World.getObjTemplate(template);
         this.quantity = qua;
         this.position = pos;
@@ -587,7 +588,15 @@ public class Item {
         this.obvijevan = 0;
         this.obvijevanLook = 0;
         this.prestige = prestige;
-        // 3 tentatives de cr�ation
+        this.guid = SQLManager.INSERT_NEW_ITEM(this);
+
+        if (this.guid > -1) { // Item crée en bdd
+            try {
+                World.addObjet(this, false);
+            } catch (Exception e) {
+            }
+        }
+       /* // 3 tentatives de cr�ation
         for (int i = 0; i <= 3; i++) {
             if (SQLManager.INSERT_NEW_ITEM(this)) {
                 break;
@@ -598,7 +607,7 @@ public class Item {
         try {
             World.addObjet(this, false);
         } catch (Exception e) {
-        }
+        }*/
     }
 
     public Player.Stats getStats() {
@@ -646,6 +655,10 @@ public class Item {
 
     public int getGuid() {
         return guid;
+    }
+
+    public void setGuid(int guid) {
+        this.guid = guid;
     }
 
     public String parseItem() {

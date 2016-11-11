@@ -12,36 +12,23 @@ public class SoulStone extends Item{
 	
 	public SoulStone (int Guid, int qua,int template, int pos, String strStats, boolean nouvelleCapture)
 	{
+		this.template = World.getObjTemplate(template);	//7010 = Pierre d'ame pleine
+		this.quantity = qua;
+		this.position = Constant.ITEM_POS_NO_EQUIPED;
+		_monsters = new ArrayList<Couple<Integer, Integer>>();	//Couple<MonstreID,Level>
+		parseStringToStats(strStats);
 		if (nouvelleCapture){
-			if (World.getObjets().containsKey(Guid)){
-				this.guid = SQLManager.getNextObjetID()+1;
-			}
-			else {
-			this.guid = Guid;
-			}
+			this.guid = SQLManager.INSERT_NEW_ITEM(this);
 		}
 		else{
 		this.guid = Guid;
 		}
-		this.template = World.getObjTemplate(template);	//7010 = Pierre d'ame pleine
-		this.quantity = qua;
-		this.position = Constant.ITEM_POS_NO_EQUIPED;
-		
-		_monsters = new ArrayList<Couple<Integer, Integer>>();	//Couple<MonstreID,Level>
-		parseStringToStats(strStats);
-		if (nouvelleCapture){
-		    // 3 tentatives de création
-		    for (int i = 0; i <= 3; i++) {
-		    	if (SQLManager.INSERT_NEW_ITEM(this)){
-		    		break;
-		    	}
-		    	else{
-		    		this.guid = SQLManager.getNextObjetID()+1;
-		    	}
-		    }
-		    try{
-		    	World.addObjet(this, false);
-		    } catch (Exception e) {}
+
+		if (this.guid > -1) {
+			try {
+				World.addObjet(this, false);
+			} catch (Exception e) {
+			}
 		}
 	}
 	

@@ -832,7 +832,6 @@ public class SQLManager {
                         RS.getString("canaux"),
                         RS.getShort("map"),
                         RS.getInt("cell"),
-                        RS.getString("objets"),
                         RS.getString("storeObjets"),
                         RS.getInt("pdvper"),
                         RS.getString("spells"),
@@ -932,8 +931,8 @@ public class SQLManager {
     }
 
     public static boolean ADD_PERSO_IN_BDD(Player perso) {
-        String baseQuery = "INSERT INTO personnages( `guid` , `name` , `sexe` , `class` , `color1` , `color2` , `color3` , `kamas` , `spellboost` , `capital` , `energy` , `level` , `xp` , `size` , `gfx` , `account`,`cell`,`map`,`spells`,`objets`, `storeObjets`, `server`, `prestige`, `folowers`, `canExp`, `pvpMod`, `candy_used`)" +
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'', '', ?, ?, ?, ?, ?, ?);";
+        String baseQuery = "INSERT INTO personnages( `guid` , `name` , `sexe` , `class` , `color1` , `color2` , `color3` , `kamas` , `spellboost` , `capital` , `energy` , `level` , `xp` , `size` , `gfx` , `account`,`cell`,`map`,`spells`, `storeObjets`, `server`, `prestige`, `folowers`, `canExp`, `pvpMod`, `candy_used`)" +
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, '', ?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(true));
@@ -1158,7 +1157,6 @@ public class SQLManager {
                 "`cell`= ?," +
                 "`pdvper`= ?," +
                 "`spells`= ?," +
-                "`objets`= ?," +
                 "`storeObjets`= ?," +
                 "`savepos`= ?," +
                 "`zaaps`= ?," +
@@ -1220,36 +1218,35 @@ public class SQLManager {
             p.setInt(26, _perso.get_curCell().getID());
             p.setInt(27, _perso.get_pdvper());
             p.setString(28, _perso.parseSpellToDB());
-            p.setString(29, _perso.parseObjetsToDB());
-            p.setString(30, _perso.parseStoreItemstoBD());
-            p.setString(31, _perso.get_savePos());
-            p.setString(32, _perso.parseZaaps());
-            p.setString(33, _perso.parseJobData());
-            p.setInt(34, _perso.getMountXpGive());
-            p.setInt(35, (_perso.getMount() != null ? _perso.getMount().get_id() : -1));
-            p.setInt(36, (_perso.get_title()));
-            p.setInt(37, _perso.getWife());
-            p.setInt(38, _perso.getTeamID());
-            p.setInt(39, _perso.getPrestige());
-            p.setString(40, _perso.getFolowersString());
-            p.setInt(41, _perso.getCurrentFolower());
-            p.setInt(42, _perso.getWinKolizeum());
-            p.setInt(43, _perso.getLoseKolizeum());
-            p.setInt(44, _perso.getWinArena());
-            p.setInt(45, _perso.getLoseArena());
-            p.setInt(46, _perso.getCanExp());
-            p.setInt(47, _perso.getPvpMod());
-            p.setString(48, _perso.getCandyUsed().toString());
-            p.setInt(49, _perso.getScrollFuerza());
-            p.setInt(50, _perso.getScrollInteligencia());
-            p.setInt(51, _perso.getScrollAgilidad());
-            p.setInt(52, _perso.getScrollSuerte());
-            p.setInt(53, _perso.getScrollVitalidad());
-            p.setInt(54, _perso.getScrollSabiduria());
-            p.setInt(55, _perso.get_ornement());
-            p.setString(56, _perso.questsToString());
-            p.setInt(57, _perso.getGuid());
-            p.setInt(58, GameServer.id);
+            p.setString(29, _perso.parseStoreItemstoBD());
+            p.setString(30, _perso.get_savePos());
+            p.setString(31, _perso.parseZaaps());
+            p.setString(32, _perso.parseJobData());
+            p.setInt(33, _perso.getMountXpGive());
+            p.setInt(34, (_perso.getMount() != null ? _perso.getMount().get_id() : -1));
+            p.setInt(35, (_perso.get_title()));
+            p.setInt(36, _perso.getWife());
+            p.setInt(37, _perso.getTeamID());
+            p.setInt(38, _perso.getPrestige());
+            p.setString(39, _perso.getFolowersString());
+            p.setInt(40, _perso.getCurrentFolower());
+            p.setInt(41, _perso.getWinKolizeum());
+            p.setInt(42, _perso.getLoseKolizeum());
+            p.setInt(43, _perso.getWinArena());
+            p.setInt(44, _perso.getLoseArena());
+            p.setInt(45, _perso.getCanExp());
+            p.setInt(46, _perso.getPvpMod());
+            p.setString(47, _perso.getCandyUsed().toString());
+            p.setInt(48, _perso.getScrollFuerza());
+            p.setInt(49, _perso.getScrollInteligencia());
+            p.setInt(50, _perso.getScrollAgilidad());
+            p.setInt(51, _perso.getScrollSuerte());
+            p.setInt(52, _perso.getScrollVitalidad());
+            p.setInt(53, _perso.getScrollSabiduria());
+            p.setInt(54, _perso.get_ornement());
+            p.setString(55, _perso.questsToString());
+            p.setInt(56, _perso.getGuid());
+            p.setInt(57, GameServer.id);
 
             p.executeUpdate();
 
@@ -1264,7 +1261,8 @@ public class SQLManager {
             Console.println("Le personnage n'a pas ete sauvegarde");
             Reboot.reboot();
         }
-        ;
+        // Nouveau système inventaire joueur
+        SAVE_PERSONNAGE_ITEM(_perso);
         if (saveItem) {
             baseQuery = "UPDATE `items` SET qua = ?, pos= ?, stats = ?" +
                     " WHERE guid = ? AND server = ?;";
@@ -1322,7 +1320,6 @@ public class SQLManager {
 
     public static boolean SAVE_PERSONNAGE_ITEM(Player _perso) {
         String baseQuery = "UPDATE `personnages` SET " +
-                "`objets`= ?," +
                 "`storeObjets`= ?" +
                 " WHERE `personnages`.`guid` = ? AND `personnages`.`server` = ? LIMIT 1 ;";
 
@@ -1330,21 +1327,34 @@ public class SQLManager {
         boolean fine = true;
         try {
             p = newTransact(baseQuery, Connection(true));
-            p.setString(1, _perso.parseObjetsToDB());
-            p.setString(2, _perso.parseStoreItemstoBD());
-            p.setInt(3, _perso.getGuid());
-            p.setInt(4, GameServer.id);
+            p.setString(1, _perso.parseStoreItemstoBD());
+            p.setInt(2, _perso.getGuid());
+            p.setInt(3, GameServer.id);
 
             p.executeUpdate();
+
+            String queryy = "UPDATE inventairePersonnages SET oldItem = 1 WHERE idJoueur = ?;";
+            closePreparedStatement(p);
+            p = newTransact(queryy, Connection(true));
+            p.setInt(1, _perso.getGuid());
+            p.execute();
+            int idJoueur = _perso.getGuid();
+            String queryy2 = "REPLACE INTO inventairePersonnages (idJoueur, idItem, oldItem) VALUES (?, ?, 0);";
+            for (int idObjet : _perso.getItems().keySet()) {
+                closePreparedStatement(p);
+                p = newTransact(queryy2, Connection(true));
+                p.setInt(1, idJoueur);
+                p.setInt(2, idObjet);
+                p.execute();
+            }
+
+            closePreparedStatement(p);
         } catch (Exception e) {
             fine = false;
             Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
             Console.println("Requete: " + baseQuery);
             Console.println("Le personnage n'a pas ete sauvegarde");
         }
-        ;
-
-        closePreparedStatement(p);
         return fine;
     }
 
@@ -1613,9 +1623,27 @@ public class SQLManager {
         }
     }
 
-    public static boolean INSERT_NEW_ITEM(Item item) {
+    public static int INSERT_NEW_ITEM(Item item) {
         boolean toReturn = false;
         try {
+            String sql = "INSERT INTO items (template, qua, pos, stats, server) VALUES (?, ?, ?, ?, ?);";
+            PreparedStatement p = (PreparedStatement) Connection(true).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            p.setInt(1, item.getTemplate(false).getID());
+            p.setInt(2, item.getQuantity());
+            p.setInt(3, item.getPosition());
+            p.setString(4, item.parseToSave());
+            p.setInt(5, GameServer.id);
+
+            p.executeUpdate();
+
+            ResultSet rs = p.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        /*try {
             String baseQuery = "INSERT INTO `items` VALUES(?,?,?,?,?,?);";
 
             PreparedStatement p = newTransact(baseQuery, Connection(true));
@@ -1632,8 +1660,8 @@ public class SQLManager {
             toReturn = true;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        return toReturn;
+        }*/
+        return -1;
     }
 
     public static boolean SAVE_NEW_FIXGROUP(int mapID, int cellID, String groupData) {
@@ -1743,7 +1771,7 @@ public class SQLManager {
         try {
             ResultSet RS = SQLManager.executeQuery(req, true);
             while (RS.next()) {
-                int guid = RS.getInt("guid");
+                int guid = RS.getInt("id");
                 int tempID = RS.getInt("template");
                 int qua = RS.getInt("qua");
                 int pos = RS.getInt("pos");
@@ -1769,13 +1797,47 @@ public class SQLManager {
         }
     }
 
+    public static List<Integer> LOAD_PLAYER_ITEMS(int idJoueur) {
+        String req = "SELECT items.* FROM inventairePersonnages INNER JOIN items ON idItem = id WHERE idJoueur = " + idJoueur + " AND server = " + GameServer.id + " AND oldItem = 0";
+        List<Integer> idItemsJoueurs = new ArrayList<Integer>();
+        try {
+            ResultSet RS = SQLManager.executeQuery(req, true);
+            while (RS.next()) {
+                int guid = RS.getInt("id");
+                idItemsJoueurs.add(guid);
+                int tempID = RS.getInt("template");
+                int qua = RS.getInt("qua");
+                int pos = RS.getInt("pos");
+                String stats = RS.getString("stats");
+                World.addObjet
+                        (
+                                World.newObjet
+                                        (
+                                                guid,
+                                                tempID,
+                                                qua,
+                                                pos,
+                                                stats
+                                        ),
+                                false
+                        );
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
+            Console.println("Requete: \n" + req);
+            Reboot.reboot();
+        }
+        return idItemsJoueurs;
+    }
+
     public static void LOAD_ITEMS_FULL() {
         String req = "SELECT * FROM items WHERE server = '" + GameServer.id + "';";
         try {
             ResultSet RS = SQLManager.executeQuery(req, true);
             while (RS.next()) {
                 try {
-                    int guid = RS.getInt("guid");
+                    int guid = RS.getInt("id");
                     int tempID = RS.getInt("template");
                     int qua = RS.getInt("qua");
                     int pos = RS.getInt("pos");
@@ -1837,7 +1899,7 @@ public class SQLManager {
     }
 
     public static void SAVE_ITEM_QUANTITY(int guid, int qua) {
-        String baseQuery = "UPDATE `items` SET qua = ? WHERE guid = ? AND server = ?;";
+        String baseQuery = "UPDATE `items` SET qua = ? WHERE id = ? AND server = ?;";
 
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(true));
@@ -2043,7 +2105,6 @@ public class SQLManager {
                         RS.getString("canaux"),
                         RS.getShort("map"),
                         RS.getInt("cell"),
-                        RS.getString("objets"),
                         RS.getString("storeObjets"),
                         RS.getInt("pdvper"),
                         RS.getString("spells"),
@@ -2146,7 +2207,6 @@ public class SQLManager {
                         RS.getString("canaux"),
                         RS.getShort("map"),
                         RS.getInt("cell"),
-                        RS.getString("objets"),
                         RS.getString("storeObjets"),
                         RS.getInt("pdvper"),
                         RS.getString("spells"),
@@ -2668,7 +2728,7 @@ public class SQLManager {
             e.printStackTrace();
         }
         if (guildId >= 0) {
-            if (!World.guildExist(guildId)){
+            if (!World.guildExist(guildId)) {
                 guildId = -1;
                 DEL_GUILDMEMBER(guid);
             }
@@ -3074,8 +3134,8 @@ public class SQLManager {
     }
 
     public static int getNextObjetID() {
-        try {
-            ResultSet RS = executeQuery("SELECT MAX(guid) AS max FROM items;", true);
+        /*try {
+            ResultSet RS = executeQuery("SELECT MAX(id) AS max FROM items;", true);
 
             int guid = 0;
             boolean found = RS.first();
@@ -3089,7 +3149,7 @@ public class SQLManager {
             GameServer.addToLog("SQL ERROR: " + e.getMessage());
             e.printStackTrace();
             Reboot.reboot();
-        }
+        }*/
         return 0;
     }
 
@@ -4413,12 +4473,12 @@ public class SQLManager {
             long time1 = System.currentTimeMillis();    //TIME
             ResultSet RS = executeQuery("SELECT i.*" +
                     " FROM `items` AS i,`hdvs_items` AS h" +
-                    " WHERE i.guid = h.itemID", true);
+                    " WHERE i.id = h.itemID", true);
 
             //Load items
             while (RS.next()) {
                 try {
-                    int guid = RS.getInt("guid");
+                    int guid = RS.getInt("id");
                     int tempID = RS.getInt("template");
                     int qua = RS.getInt("qua");
                     int pos = RS.getInt("pos");

@@ -1017,6 +1017,11 @@ public class GameThread implements Runnable {
         if (player.get_guild() == null || player.getFight() != null
                 || player.is_away())
             return;
+        short mapID = player.getMap().get_id();
+        if (mapID >= 17700 && mapID <= 17746 || mapID == 10812) { // Map interdite pour la pose
+            player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
+            return;
+        }
         if (!player.getGuildMember().canDo(Constant.G_POSPERCO))
             return;// Pas le droit de le poser
         if (player.get_guild().getMembers().size() < 1)
