@@ -308,10 +308,13 @@ public class IpCheck {
 	public static void addToLog(String data)
 	{
 		String date = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+":"+Calendar.getInstance().get(+Calendar.MINUTE)+":"+Calendar.getInstance().get(Calendar.SECOND);
-		try {
-			Config.Log_IpCheck.write("["+date+"]"+data);
-			Config.Log_IpCheck.newLine();
-			Config.Log_IpCheck.flush();
-		} catch (IOException e) {}
+		if (Config.LOGS) {
+			try {
+				Config.Log_IpCheck.write("[" + date + "]" + data);
+				Config.Log_IpCheck.newLine();
+				Config.Log_IpCheck.flush();
+			} catch (IOException e) {
+			}
+		}
 	}
 }

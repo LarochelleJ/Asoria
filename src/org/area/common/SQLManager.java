@@ -1294,7 +1294,8 @@ public class SQLManager {
 
             if (_perso.getAccount() == null)
                 return;
-            for (String idStr : _perso.getBankItemsIDSplitByChar(":").split(":")) {
+            SAVE_ACCOUNT_ITEM(_perso);
+           /* for (String idStr : _perso.getBankItemsIDSplitByChar(":").split(":")) {
                 try {
                     int guid = Integer.parseInt(idStr);
                     Item obj = World.getObjet(guid);
@@ -1312,7 +1313,7 @@ public class SQLManager {
                 }
                 ;
 
-            }
+            }*/
         }
 
         closePreparedStatement(p);
@@ -1354,6 +1355,32 @@ public class SQLManager {
             Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
             Console.println("Requete: " + baseQuery);
             Console.println("Le personnage n'a pas ete sauvegarde");
+        }
+        return fine;
+    }
+
+    public static boolean SAVE_ACCOUNT_ITEM(Player _perso) {
+        int accountGuid = _perso.getAccount().getGuid();
+        PreparedStatement p = null;
+        boolean fine = true;
+        try {
+            String queryy = "UPDATE inventaireBanque SET oldItem = 1 WHERE idCompte = ?;";
+            p = newTransact(queryy, Connection(true));
+            p.setInt(1, accountGuid);
+            p.execute();
+            int idJoueur = _perso.getGuid();
+            String queryy2 = "REPLACE INTO inventaireBanque (idCompte, idItem, oldItem) VALUES (?, ?, 0);";
+            for (int idObjet : _perso.getAccount().getBank().keySet()) {
+                closePreparedStatement(p);
+                p = newTransact(queryy2, Connection(true));
+                p.setInt(1, accountGuid);
+                p.setInt(2, idObjet);
+                p.execute();
+            }
+
+            closePreparedStatement(p);
+        } catch (Exception e) {
+            fine = false;
         }
         return fine;
     }
@@ -1831,6 +1858,40 @@ public class SQLManager {
         return idItemsJoueurs;
     }
 
+    public static List<Integer> LOAD_ACCOUNT_ITEMS(int idCompte) {
+        String req = "SELECT items.* FROM inventaireBanque INNER JOIN items ON idItem = id WHERE idCompte = " + idCompte + " AND server = " + GameServer.id + " AND oldItem = 0";
+        List<Integer> idItemsCompte = new ArrayList<Integer>();
+        try {
+            ResultSet RS = SQLManager.executeQuery(req, true);
+            while (RS.next()) {
+                int guid = RS.getInt("id");
+                idItemsCompte.add(guid);
+                int tempID = RS.getInt("template");
+                int qua = RS.getInt("qua");
+                int pos = RS.getInt("pos");
+                String stats = RS.getString("stats");
+                World.addObjet
+                        (
+                                World.newObjet
+                                        (
+                                                guid,
+                                                tempID,
+                                                qua,
+                                                pos,
+                                                stats
+                                        ),
+                                false
+                        );
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
+            Console.println("Requete: \n" + req);
+            Reboot.reboot();
+        }
+        return idItemsCompte;
+    }
+
     public static void LOAD_ITEMS_FULL() {
         String req = "SELECT * FROM items WHERE server = '" + GameServer.id + "';";
         try {
@@ -1987,7 +2048,6 @@ public class SQLManager {
                         RS.getLong("banned_time"),
                         RS.getString("lastIP"),
                         RS.getString("lastConnectionDate"),
-                        RS.getString("bank"),
                         RS.getLong("bankKamas"),
                         RS.getString("friends"),
                         RS.getString("enemy"),
@@ -2033,7 +2093,6 @@ public class SQLManager {
                         RS.getLong("banned_time"),
                         RS.getString("lastIP"),
                         RS.getString("lastConnectionDate"),
-                        RS.getString("bank"),
                         RS.getLong("bankKamas"),
                         RS.getString("friends"),
                         RS.getString("enemy"),
