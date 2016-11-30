@@ -3,6 +3,7 @@ package org.area.client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -300,6 +301,9 @@ public class Player {
 
     // Level secret
     public boolean secretLevelUp = false;
+
+    // itemSetApplied
+    private ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
 
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
@@ -1447,11 +1451,15 @@ public class Player {
         SocketManager.GAME_SEND_Rx_PACKET(this);
 
         SocketManager.GAME_SEND_ASK(out, this);
-        //Envoie des bonus pano si besoin
-        for (int a = 1; a < World.getItemSetNumber(); a++) {
+        //Envoie des bonus pano si besoin TODO revoir cette méthode, semble non fonctionnelle
+        /*for (int a = 1; a < World.getItemSetNumber(); a++) {
             int num = getNumbEquipedItemOfPanoplie(a);
             if (num == 0) continue;
             SocketManager.GAME_SEND_OS_PACKET(this, a);
+        }*/
+        defineItemSetApplied();
+        for (int panoID : getItemSetApplied()) { // Version optimisée ? Moins d'itération au moins
+            SocketManager.GAME_SEND_OS_PACKET(this, panoID);
         }
 
         //envoie des données de métier
@@ -1798,9 +1806,36 @@ public class Player {
         this._emoteActive = emoteActive;
     }
 
-    public Stats getStuffStats() {
-        Stats stats = new Stats(false, null);
+    public void defineItemSetApplied() {
         ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
+        List<Integer> positionCalculee = new ArrayList<Integer>();
+        synchronized (_items) {
+            for (Item i : _items.values()) {
+                if (i.getPosition() != Constant.ITEM_POS_NO_EQUIPED) {
+                    if (!positionCalculee.contains(i.getPosition())) {
+                        positionCalculee.add(i.getPosition());
+                        ObjTemplate template = i.getTemplate(true);
+                        if (template == null) continue;
+                        int panID = template.getPanopID();
+                        //Si panoplie, et si l'effet de pano n'a pas encore été ajouté
+                        if (panID > 0 && !itemSetApplied.contains(panID)) {
+                            itemSetApplied.add(panID);
+                        }
+                    }
+                }
+            }
+        }
+        this.itemSetApplied = itemSetApplied;
+    }
+
+    public ArrayList<Integer> getItemSetApplied() {
+        return this.itemSetApplied;
+    }
+
+    public Stats getStuffStats() {
+        defineItemSetApplied();
+        Stats stats = new Stats(false, null);
+        /*ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
         List<Integer> positionCalculee = new ArrayList<Integer>();
         synchronized (_items) {
             for (Item i : _items.values()) {
@@ -1827,6 +1862,14 @@ public class Player {
                         }
                     }
                 }
+            }
+        }*/
+        for (int panID : getItemSetApplied()) {
+            ItemSet IS = World.getItemSet(panID);
+            //Si la pano existe
+            if (IS != null) {
+                //on ajoute le bonus de pano en fonction du nombre d'item
+                stats = Stats.cumulStat(stats, IS.getBonusStatByItemNumb(this.getNumbEquipedItemOfPanoplie(panID)));
             }
         }
         if (_onMount && _mount != null) {
@@ -2726,12 +2769,13 @@ public class Player {
                 //On ignore les objets non équipés
                 if (i.getValue().getPosition() == Constant.ITEM_POS_NO_EQUIPED) continue;
                 //On prend que les items de la pano demandée, puis on augmente le nombre si besoin
-                if (i.getValue().getStats().getEffect(616161) > 0) {
+                /*if (i.getValue().getStats().getEffect(616161) > 0) {
                     ObjTemplate template = World.getObjTemplate(i.getValue().getStats().getEffect(616161));
                     if (template.getPanopID() == panID) nb++;
                 } else {
                     if (i.getValue().getTemplate(false).getPanopID() == panID) nb++;
-                }
+                }*/
+                if (i.getValue().getTemplate(true).getPanopID() == panID) nb++;
             }
         }
         return nb;

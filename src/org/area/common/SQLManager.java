@@ -1975,6 +1975,22 @@ public class SQLManager {
         }
     }
 
+    public static void SAVE_ITEM_POS(int guid, int pos) {
+        String baseQuery = "UPDATE `items` SET pos = ? WHERE id = ? AND server = ?;";
+
+        try {
+            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            p.setInt(1, pos);
+            p.setInt(2, guid);
+            p.setInt(3, GameServer.id);
+            p.execute();
+            closePreparedStatement(p);
+        } catch (SQLException e) {
+            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+            GameServer.addToLog("Game: Query: " + baseQuery);
+        }
+    }
+
     public static void CREATE_MOUNT(Mount DD) {
         String baseQuery = "REPLACE INTO `mounts_data`(`id`,`color`,`sexe`,`name`,`xp`,`level`," +
                 "`endurance`,`amour`,`maturite`,`serenite`,`reproductions`,`fatigue`,`items`," +

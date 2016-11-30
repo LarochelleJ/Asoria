@@ -634,6 +634,7 @@ public class Item {
 
     public void setPosition(int position) {
         this.position = position;
+        SQLManager.SAVE_ITEM_POS(this.guid, position);
     }
 
     public ObjTemplate getTemplate(boolean getRealTemplateBehindMimibiote) {
