@@ -1728,17 +1728,19 @@ public class Maps {
 
     public void onPlayerArriveOnCell(Player perso, int caseID) {
         if (_cases.get(caseID) == null) return;
-        Item obj = _cases.get(caseID)._droppedItem;
-        if (obj != null) {
-            synchronized (obj) {
-                if (perso.addObjet(obj, true))
-                    World.addObjet(obj, true);
-                SocketManager.GAME_SEND_GDO_PACKET_TO_MAP(this, '-', caseID, 0, 0);
-                SocketManager.GAME_SEND_Ow_PACKET(perso);
-                _cases.get(caseID).clearDroppedItem();
+        synchronized (_cases) {
+            Item obj = _cases.get(caseID)._droppedItem;
+            if (obj != null) {
+                synchronized (obj) {
+                    if (perso.addObjet(obj, true))
+                        World.addObjet(obj, true);
+                    SocketManager.GAME_SEND_GDO_PACKET_TO_MAP(this, '-', caseID, 0, 0);
+                    SocketManager.GAME_SEND_Ow_PACKET(perso);
+                    _cases.get(caseID).clearDroppedItem();
+                }
             }
+            _cases.get(caseID).applyOnCellStopActions(perso);
         }
-        _cases.get(caseID).applyOnCellStopActions(perso);
         if (perso.getHasEndFight()) {
             perso.setHasEndFight(false);
             //return; @Flow - Is it needed, well I don't think so ^^ ? bug du double clique

@@ -505,7 +505,7 @@ public class Player {
 
         public boolean isSameStats(Stats other) {
             for (Entry<Integer, Integer> entry : Effects.entrySet()) {
-                //Si la stat n'existe pas dans l'autre map
+                //Si la stat parn'existe pas dans l'autre map
                 if (other.getMap().get(entry.getKey()) == null) return false;
                 //Si la stat existe mais n'a pas la même valeur
                 if (other.getMap().get(entry.getKey()) != entry.getValue()) return false;
@@ -1864,6 +1864,13 @@ public class Player {
                 }
             }
         }*/
+        synchronized (_items) {
+            for (Item i : _items.values()) {
+                if (i.getPosition() != Constant.ITEM_POS_NO_EQUIPED) {
+                    stats = Stats.cumulStat(stats, i.getStats());
+                }
+            }
+        }
         for (int panID : getItemSetApplied()) {
             ItemSet IS = World.getItemSet(panID);
             //Si la pano existe

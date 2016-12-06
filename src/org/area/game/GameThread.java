@@ -753,17 +753,20 @@ public class GameThread implements Runnable {
                 break;
             case 'C':
                 points = Util.loadPointsByAccount(player.getAccount());
-                if (points < 60) {
+                if (points < 60 && !(player.getAccount().getGmLevel() > 0)) {
                     player.sendText("Vous n'avez pas assez de points, il vous en manque" + (60 - points) + " !");
                 } else {
                     try {
-                        Util.updatePointsByAccount(player.getAccount(), points - 60);
                         String realPacket = packet.substring(2);
                         String[] donnees = realPacket.split(";");
                         player.set_colors(Integer.valueOf(donnees[0]), Integer.valueOf(donnees[1]), Integer.valueOf(donnees[2]));
                         if (player.isOnline()) {
-                            player.send("000C" + (points - 60));
-                            player.sendText("Vous avez perdu 60 points suite à votre changement de couleur !");
+                            if (!(player.getAccount().getGmLevel() > 0)) {
+                                Util.updatePointsByAccount(player.getAccount(), points - 60);
+                                player.send("000C" + (points - 60));
+                                player.sendText("Vous avez perdu 60 points suite à votre changement de couleur !");
+                            }
+
                             if (player.getFight() == null) {
                                 player.teleport(player.getMap().get_id(), player.get_curCell().getID());
                                 SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);

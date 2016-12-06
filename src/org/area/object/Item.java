@@ -797,8 +797,11 @@ public class Item {
         StringBuilder stats = new StringBuilder();
         boolean isFirst = true;
         for (SpellEffect SE : Effects) {
-            if (!isFirst)
+            if (!isFirst) {
                 stats.append(",");
+            } else {
+                isFirst = false;
+            }
 
             String[] infos = SE.getArgs().split(";");
             try {
@@ -807,9 +810,6 @@ public class Item {
                 e.printStackTrace();
                 continue;
             }
-            ;
-
-            isFirst = false;
         }
 
         for (Entry<Integer, Integer> entry : Stats.getMap().entrySet()) {

@@ -1265,7 +1265,7 @@ public class SQLManager {
         SAVE_PERSONNAGE_ITEM(_perso);
         if (saveItem) {
             baseQuery = "UPDATE `items` SET qua = ?, pos= ?, stats = ?" +
-                    " WHERE guid = ? AND server = ?;";
+                    " WHERE id = ? AND server = ?;";
             try {
                 p = newTransact(baseQuery, Connection(true));
             } catch (SQLException e1) {
@@ -1794,7 +1794,7 @@ public class SQLManager {
     }
 
     public static void LOAD_ITEMS(String ids) {
-        String req = "SELECT * FROM items WHERE guid IN (" + ids + ") AND server = '" + GameServer.id + "';";
+        String req = "SELECT * FROM items WHERE id IN (" + ids + ") AND server = '" + GameServer.id + "';";
         try {
             ResultSet RS = SQLManager.executeQuery(req, true);
             while (RS.next()) {
@@ -1927,7 +1927,7 @@ public class SQLManager {
     }
 
     public static void DELETE_ITEM(int guid) {
-        String baseQuery = "DELETE FROM items WHERE guid = ? AND server = ?;";
+        String baseQuery = "DELETE FROM items WHERE id = ? AND server = ?;";
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(true));
             p.setInt(1, guid);
@@ -1941,7 +1941,7 @@ public class SQLManager {
     }
 
     public static void SAVE_ITEM(Item item) {
-        String baseQuery = "UPDATE `items` SET template = ?,qua = ?, pos = ?, stats = ? WHERE guid = ? AND server = ?;";
+        String baseQuery = "UPDATE `items` SET template = ?,qua = ?, pos = ?, stats = ? WHERE id = ? AND server = ?;";
 
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(true));
@@ -3940,7 +3940,7 @@ public class SQLManager {
     public static int GetItemTemplateByID(int guid) {
         int TemplateId = 0;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM items WHERE guid='" + guid + "';", false);
+            ResultSet RS = executeQuery("SELECT * FROM items WHERE id='" + guid + "';", false);
             while (RS.next()) {
                 TemplateId = RS.getInt("template");
             }
