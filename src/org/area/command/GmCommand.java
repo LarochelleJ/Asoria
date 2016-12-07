@@ -835,7 +835,7 @@ public class GmCommand {
                 }
             }
             if (perso.isOnline()) {
-                perso.getAccount().getGameThread().kick();
+                perso.getAccount().getGameThread().kick(18, _perso.getName(), "Voici la raison de l'expulsion: " + message);
                 String mess = "Vous avez kick " + perso.getName();
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
             } else {
@@ -1144,7 +1144,11 @@ public class GmCommand {
                 P.getAccount().ban(-1, false);
             }
             im_mess.append("~").append(message);
-            if (P.getAccount().getGameThread() != null) P.getAccount().getGameThread().kick();
+            String duree = "permanente !";
+            if (nb_heures > 0 ) {
+                duree = nb_heures + " heures.";
+            }
+            if (P.getAccount().getGameThread() != null) P.getAccount().getGameThread().kick(40, "Le membre du staff " + _perso.getName() + " vous a banni pour la raison suivante: " + message + ". La durée du ban est " + duree);
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous avez banni " + P.getName());
             SocketManager.GAME_SEND_MESSAGE_TO_ALL("Le joueur <b>" + P.getName() + "</b> a été banni pour la raison suivante : " + message, AllColor.RED);
             return true;

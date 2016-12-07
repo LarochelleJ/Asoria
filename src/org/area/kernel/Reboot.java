@@ -32,14 +32,13 @@ public class Reboot {
 	public static void reboot() {
 		Main.isRunning = false;
 		Main.exchangeClient.stop();
-		for (Player p : World.getPersos().values()) {
-			p.save(true);
-		}
 		for (Player player: World.getOnlinePlayers()) {
 			//player.save(true);
 			player.send("000OUT");
 		}
-		
+		for (Player p : World.getPersos().values()) {
+			p.save(true);
+		}
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) { }

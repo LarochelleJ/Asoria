@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -170,27 +171,30 @@ public class GameThread implements Runnable {
                 }
             }
         } catch (IOException e) {
-            try {
-                GameServer.addToLog(e.getMessage());
-                if (in != null) {
-                    in.close();
-                    in = null;
-                }
+            if (e.getClass() == SocketTimeoutException.class) {
+                kick(1);
+            } else {
+                try {
+                    GameServer.addToLog(e.getMessage());
+                    if (in != null) {
+                        in.close();
+                        in = null;
+                    }
 
-                if (out != null) {
-                    out.close();
-                    out = null;
+                    if (out != null) {
+                        out.close();
+                        out = null;
+                    }
+                    if (account != null) {
+                        account.setCurPerso(null);
+                        account.setGameThread(null);
+                    }
+                    if (!socket.isClosed())
+                        socket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-                if (account != null) {
-                    account.setCurPerso(null);
-                    account.setGameThread(null);
-                }
-                if (!socket.isClosed())
-                    socket.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
             }
-            ;
         } catch (Exception e) {
             e.printStackTrace();
             GameServer.addToLog(e.getMessage());
@@ -245,7 +249,7 @@ public class GameThread implements Runnable {
         if (packet.length() > 1000)
             return;
         if (packet.length() > 3 && packet.substring(0, 4).equalsIgnoreCase("ping")) {
-           if (out != null)
+            if (out != null)
                 SocketManager.GAME_SEND_PONG(out);
             return;
         }
@@ -4734,8 +4738,8 @@ public class GameThread implements Runnable {
             player.set_isOnPercepteurID(0);
         }
 
-        SQLManager.SAVE_PERSONNAGE(player, true);
         SocketManager.GAME_SEND_EV_PACKET(out);
+        SQLManager.SAVE_PERSONNAGE(player, true);
         player.set_isTradingWith(0);
         player.set_away(false);
         player.setInBank(false);
@@ -6533,6 +6537,25 @@ public class GameThread implements Runnable {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+
+    public void kick(int messageID, String... args) {
+        String finalArg = "";
+        boolean firstArg = true;
+        for (String arg : args) {
+            if (!firstArg) {
+                finalArg += ";";
+            } else {
+                firstArg = false;
+            }
+            finalArg += arg;
+        }
+        SocketManager.REALM_SEND_MESSAGE_DECO(player, messageID, finalArg);
+        kick();
+    }
+
+    public void kick(int messageID) {
+        SocketManager.REALM_SEND_MESSAGE_DECO(player, messageID, "");
     }
 
     private void parseAccountPacket(String packet) {
