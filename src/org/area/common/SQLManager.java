@@ -4424,10 +4424,10 @@ public class SQLManager {
     public static void LOAD_HDVS_ITEMS() {
         try {
             long time1 = System.currentTimeMillis();    //TIME
-            /*ResultSet RS = executeQuery("SELECT i.*" +
+            ResultSet RS = executeQuery("SELECT i.*" +
                     " FROM `items` AS i,`hdvs_items` AS h" +
                     " WHERE i.guid = h.itemID", true);
-            ResultSet RS = executeQuery("SELECT itemID FROM hdvs_items;", true);
+
             //Load items
             while (RS.next()) {
                 try {
@@ -4450,14 +4450,16 @@ public class SQLManager {
                             );
                 } catch (Exception e) {
                 }
-            }*/
+            }
 
             //Load HDV entry
-            ResultSet RS = executeQuery("SELECT * FROM `hdvs_items`", false);
+            RS = executeQuery("SELECT * FROM `hdvs_items`", false);
             while (RS.next()) {
                 try {
                     AuctionHouse tempHdv = World.getHdv(RS.getInt("map"));
                     if (tempHdv == null) continue;
+
+
                     tempHdv.addEntry(new HdvEntry(
                             RS.getInt("price"),
                             RS.getByte("count"),

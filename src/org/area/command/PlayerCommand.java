@@ -208,7 +208,7 @@ public class PlayerCommand {
                             SocketManager.GAME_SEND_POPUP(_perso, args);
                             break;
                         case 4: //Informations serveur
-                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.7.4</b>\n\n"
+                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.7.1</b>\n\n"
                                     + "\n   "
                                     + GameServer.uptime()
                                     + "Joueurs en ligne : <b>" + Main.gameServer.getPlayerNumber() + "</b>\n"
@@ -220,37 +220,26 @@ public class PlayerCommand {
                             boolean allOffline = true;
 
                             for (int i = 0; i < World.getOnlinePlayers().size(); i++) {
-                                Player persoStaff = World.getOnlinePlayers().get(i);
-                                if (persoStaff.getAccount().getGmLevel() > 0) {
-                                    staff += "- <b><a href='asfunction:onHref,ShowPlayerPopupMenu," + persoStaff.getName() + "'>" + persoStaff.getName() + "</a></b> (";
-                                    if (persoStaff.getAccID() == 6569) {
+                                if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() > 0) {
+                                    staff += "- <b><a href='asfunction:onHref,ShowPlayerPopupMenu," + World.getOnlinePlayers().get(i).getName() + "'>" + World.getOnlinePlayers().get(i).getName() + "</a></b> (";
+                                    if (World.getOnlinePlayers().get(i).getAccID() == 6569) {
                                         staff += "Game designer)";
-                                    } else if (persoStaff.getAccID() == 6465) {
+                                    } else if (World.getOnlinePlayers().get(i).getAccID() == 6465) {
                                         staff += "Administrateur / Développeur)";
-                                    } else {
-                                        switch (persoStaff.getAccount().getGmLevel()) {
-                                            case 1:
-                                                staff += "Animateur)";
-                                                break;
-                                            case 2:
-                                                staff += "Modérateur)";
-                                                break;
-                                            case 3:
-                                                staff += "Community manager)";
-                                                break;
-                                            case 4:
-                                                staff += "Administrateur)";
-                                                break;
-                                            case 5:
-                                                staff += "Fondateur)";
-                                                break;
-                                            default:
-                                                staff += "Unknown";
-                                                break;
-                                        }
-                                        staff += "\n";
-                                        allOffline = false;
-                                    }
+                                    } else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 1)
+                                        staff += "Animateur)";
+                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 2)
+                                        staff += "Modérateur)";
+                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 3)
+                                        staff += "Community manager)";
+                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 4)
+                                        staff += "Administrateur)";
+                                    else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 5)
+                                        staff += "Fondateur)";
+                                    else
+                                        staff += "Unknown";
+                                    staff += "\n";
+                                    allOffline = false;
                                 }
                             }
                             if (!staff.isEmpty() && !allOffline) {

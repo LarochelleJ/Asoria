@@ -1,7 +1,10 @@
 package org.area.client;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.area.arena.Arena;
 import org.area.arena.Team;
@@ -65,7 +68,8 @@ public class Account {
 
     public Account(int aGUID, String aName, String aPass, String aPseudo,
                    String aQuestion, String aReponse, int aGmLvl, int vip, boolean aBanned,
-                   long banned_time, String aLastIp, String aLastConnectionDate, long l, String friends, String enemy,
+                   long banned_time, String aLastIp, String aLastConnectionDate,
+                   String bank, long l, String friends, String enemy,
                    int cadeau, long mute_time, String mute_raison, String mute_pseudo, int vote) {
         this._GUID = aGUID;
         this._name = aName;
@@ -86,14 +90,7 @@ public class Account {
         this._mute_pseudo = mute_pseudo;
         this._vote = vote;
         //Chargement de la banque
-        List<Item> stuff = SQLManager.LOAD_ACCOUNT_ITEMS(aGUID);
-        for (Item o : stuff) {
-            if (o == null) continue;
-            synchronized (_bank) {
-                _bank.put(o.getGuid(), o);
-            }
-        }
-        /*for (String item : bank.split("\\|")) {
+        for (String item : bank.split("\\|")) {
             if (item.equals("")) continue;
             String[] infos = item.split(":");
             int guid = Integer.parseInt(infos[0]);
@@ -101,7 +98,7 @@ public class Account {
             Item obj = World.getObjet(guid);
             if (obj == null) continue;
             _bank.put(obj.getGuid(), obj);
-        }*/
+        }
         //Chargement de la liste d'amie
         for (String f : friends.split(";")) {
             try {
