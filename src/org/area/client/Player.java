@@ -482,7 +482,7 @@ public class Player {
         }
 
         public int addOneStat(int id, int val) {
-            if (Effects.get(id) == null || Effects.get(id) == 0) {
+            if (!Effects.containsKey(id) || Effects.get(id) == 0) {
                 if (val > 0) {
                     Effects.put(id, val);
                 }
@@ -789,12 +789,11 @@ public class Player {
             Reboot.reboot();
         }
 
-        List<Integer> stuff = SQLManager.LOAD_PLAYER_ITEMS(_guid);
-        for (int guid : stuff) {
-            Item obj = World.getObjet(guid);
-            if (obj == null) continue;
+        List<Item> stuff = SQLManager.LOAD_PLAYER_ITEMS(_guid);
+        for (Item o : stuff) {
+            if (o == null) continue;
             synchronized (_items) {
-                _items.put(obj.getGuid(), obj);
+                _items.put(o.getGuid(), o);
             }
         }
         if (!storeObjets.equals("")) {

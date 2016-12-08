@@ -896,14 +896,14 @@ public class SQLManager {
             p.execute();
 
             if (!perso.getItemsIDSplitByChar(",").equals("")) {
-                baseQuery = "DELETE FROM items WHERE guid IN (?) AND server = ?;";
+                baseQuery = "DELETE FROM items WHERE id IN (?) AND server = ?;";
                 p = newTransact(baseQuery, Connection(true));
                 p.setString(1, perso.getItemsIDSplitByChar(","));
                 p.setInt(2, GameServer.id);
                 p.execute();
             }
             if (!perso.getStoreItemsIDSplitByChar(",").equals("")) {
-                baseQuery = "DELETE FROM items WHERE guid IN (?) AND server = ?;";
+                baseQuery = "DELETE FROM items WHERE id IN (?) AND server = ?;";
                 p = newTransact(baseQuery, Connection(true));
                 p.setString(1, perso.getStoreItemsIDSplitByChar(","));
                 p.setInt(2, GameServer.id);
@@ -1357,7 +1357,6 @@ public class SQLManager {
             //closePreparedStatement(p);
             p = newTransact(queryy, Connection(true));
             p.setInt(1, _perso.getGuid());
-            p.execute();
             /*int idJoueur = _perso.getGuid();
             String queryy2 = "REPLACE INTO inventairePersonnages (idJoueur, idItem, oldItem) VALUES (?, ?, 0);";
 
@@ -1368,8 +1367,6 @@ public class SQLManager {
                 p.setInt(2, idObjet);
                 p.execute();
             }*/
-
-            closePreparedStatement(p);
         } catch (Exception e) {
             fine = false;
             Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
@@ -1385,13 +1382,14 @@ public class SQLManager {
 
             for (int idObjet : _perso.getItems().keySet()) {
                 try {
-                    p.setInt(1, idJoueur);
-                    p.setInt(2, idObjet);
+                    preparedStatement.setInt(1, idJoueur);
+                    preparedStatement.setInt(2, idObjet);
                     preparedStatement.addBatch();
                 } catch (Exception e) {
                     continue;
                 }
             }
+            p.execute();
             preparedStatement.executeBatch();
             con.commit();
             preparedStatement.close();
@@ -1400,6 +1398,9 @@ public class SQLManager {
             Console.println("Requete: " + baseQuery);
             Console.println("Le personnage n'a pas ete sauvegarde");
             Reboot.reboot();
+        }
+        if (p != null) {
+            closePreparedStatement(p);
         }
         return fine;
     }
@@ -1412,7 +1413,7 @@ public class SQLManager {
             String queryy = "UPDATE inventaireBanque SET oldItem = 1 WHERE idCompte = ?;";
             p = newTransact(queryy, Connection(true));
             p.setInt(1, accountGuid);
-            p.execute();
+            //p.execute();
             /*int idJoueur = _perso.getGuid();
             String queryy2 = "REPLACE INTO inventaireBanque (idCompte, idItem, oldItem) VALUES (?, ?, 0);";
             for (int idObjet : _perso.getAccount().getBank().keySet()) {
@@ -1422,7 +1423,7 @@ public class SQLManager {
                 p.setInt(2, idObjet);
                 p.execute();
             }*/
-            closePreparedStatement(p);
+            //closePreparedStatement(p);
         } catch (Exception e) {
             fine = false;
         }
@@ -1434,14 +1435,15 @@ public class SQLManager {
 
             for (int idObjet : _perso.getAccount().getBank().keySet()) {
                 try {
-                    p.setInt(1, accountGuid);
-                    p.setInt(2, idObjet);
+                    preparedStatement.setInt(1, accountGuid);
+                    preparedStatement.setInt(2, idObjet);
                     preparedStatement.addBatch();
                 } catch (Exception e) {
                     continue;
                 }
             }
             preparedStatement.executeBatch();
+            p.execute();;
             con.commit();
             preparedStatement.close();
         } catch (SQLException e) {
@@ -1450,7 +1452,9 @@ public class SQLManager {
             Console.println("Le personnage n'a pas ete sauvegarde");
             Reboot.reboot();
         }
-
+        if (p != null) {
+            closePreparedStatement(p);
+        }
         return fine;
     }
 
@@ -1736,6 +1740,7 @@ public class SQLManager {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+            closePreparedStatement(p);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1893,30 +1898,26 @@ public class SQLManager {
         }
     }
 
-    public static List<Integer> LOAD_PLAYER_ITEMS(int idJoueur) {
+    public static List<Item> LOAD_PLAYER_ITEMS(int idJoueur) {
         String req = "SELECT items.* FROM inventairePersonnages INNER JOIN items ON idItem = id WHERE idJoueur = " + idJoueur + " AND server = " + GameServer.id + " AND oldItem = 0";
-        List<Integer> idItemsJoueurs = new ArrayList<Integer>();
+        List<Item> itemsJoueur = new ArrayList<Item>();
         try {
             ResultSet RS = SQLManager.executeQuery(req, true);
             while (RS.next()) {
                 int guid = RS.getInt("id");
-                idItemsJoueurs.add(guid);
                 int tempID = RS.getInt("template");
                 int qua = RS.getInt("qua");
                 int pos = RS.getInt("pos");
                 String stats = RS.getString("stats");
-                World.addObjet
-                        (
-                                World.newObjet
-                                        (
-                                                guid,
-                                                tempID,
-                                                qua,
-                                                pos,
-                                                stats
-                                        ),
-                                false
-                        );
+                Item obj = World.newObjet(
+                        guid,
+                        tempID,
+                        qua,
+                        pos,
+                        stats
+                );
+                itemsJoueur.add(obj);
+                World.addObjet(obj, false);
             }
             closeResultSet(RS);
         } catch (SQLException e) {
@@ -1924,33 +1925,30 @@ public class SQLManager {
             Console.println("Requete: \n" + req);
             Reboot.reboot();
         }
-        return idItemsJoueurs;
+        return itemsJoueur;
     }
 
-    public static List<Integer> LOAD_ACCOUNT_ITEMS(int idCompte) {
+    public static List<Item> LOAD_ACCOUNT_ITEMS(int idCompte) {
         String req = "SELECT items.* FROM inventaireBanque INNER JOIN items ON idItem = id WHERE idCompte = " + idCompte + " AND server = " + GameServer.id + " AND oldItem = 0";
-        List<Integer> idItemsCompte = new ArrayList<Integer>();
+        List<Item> itemsCompte = new ArrayList<Item>();
         try {
             ResultSet RS = SQLManager.executeQuery(req, true);
             while (RS.next()) {
                 int guid = RS.getInt("id");
-                idItemsCompte.add(guid);
                 int tempID = RS.getInt("template");
                 int qua = RS.getInt("qua");
                 int pos = RS.getInt("pos");
                 String stats = RS.getString("stats");
-                World.addObjet
+                Item obj =  World.newObjet
                         (
-                                World.newObjet
-                                        (
-                                                guid,
-                                                tempID,
-                                                qua,
-                                                pos,
-                                                stats
-                                        ),
-                                false
+                                guid,
+                                tempID,
+                                qua,
+                                pos,
+                                stats
                         );
+                itemsCompte.add(obj);
+                World.addObjet(obj, false);
             }
             closeResultSet(RS);
         } catch (SQLException e) {
@@ -1958,7 +1956,7 @@ public class SQLManager {
             Console.println("Requete: \n" + req);
             Reboot.reboot();
         }
-        return idItemsCompte;
+        return itemsCompte;
     }
 
     public static void LOAD_ITEMS_FULL() {

@@ -86,12 +86,11 @@ public class Account {
         this._mute_pseudo = mute_pseudo;
         this._vote = vote;
         //Chargement de la banque
-        List<Integer> stuff = SQLManager.LOAD_ACCOUNT_ITEMS(aGUID);
-        for (int guid : stuff) {
-            Item obj = World.getObjet(guid);
-            if (obj == null) continue;
+        List<Item> stuff = SQLManager.LOAD_ACCOUNT_ITEMS(aGUID);
+        for (Item o : stuff) {
+            if (o == null) continue;
             synchronized (_bank) {
-                _bank.put(obj.getGuid(), obj);
+                _bank.put(o.getGuid(), o);
             }
         }
         /*for (String item : bank.split("\\|")) {

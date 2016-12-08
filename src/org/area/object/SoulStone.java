@@ -24,12 +24,11 @@ public class SoulStone extends Item{
 		this.guid = Guid;
 		}
 
-		if (this.guid > -1) {
 			try {
 				World.addObjet(this, false);
 			} catch (Exception e) {
 			}
-		}
+
 	}
 	
 	public void parseStringToStats(String monsters) //Dans le format "monstreID,lvl|monstreID,lvl..."

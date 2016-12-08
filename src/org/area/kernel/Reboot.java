@@ -33,16 +33,9 @@ public class Reboot {
 		Main.isRunning = false;
 		Main.exchangeClient.stop();
 		for (Player player: World.getOnlinePlayers()) {
-			//player.save(true);
+			player.save(true);
 			player.send("000OUT");
 		}
-		for (Player p : World.getPersos().values()) {
-			p.save(true);
-		}
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) { }
-		
 		System.exit(0);
 	}
 }

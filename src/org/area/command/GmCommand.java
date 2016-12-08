@@ -2449,7 +2449,7 @@ public class GmCommand {
             else if (usePM)
                 val = 2;
 
-            Item obj = new Item(World.getNewItemGuid(), tmorph.getID(), qua,
+            Item obj = new Item(-1, tmorph.getID(), qua,
                     Constant.ITEM_POS_NO_EQUIPED,
                     tstats.generateNewStatsFromTemplate(
                             tstats.getStrTemplate(), useMax, val),

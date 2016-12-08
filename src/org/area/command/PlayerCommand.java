@@ -1394,7 +1394,7 @@ public class PlayerCommand {
                             //Si toute les conditions sont respecté
                             _perso.DesequiperItem(items);
 
-                            obj = new Item(World.getNewItemGuid(), tmorph.getID(), 1,
+                            obj = new Item(-1, tmorph.getID(), 1,
                                     Constant.ITEM_POS_NO_EQUIPED,
                                     items.getStats(),
                                     tstats.getEffectTemplate(tstats.getStrTemplate()),

@@ -215,7 +215,7 @@ public class Item {
 
         public Item createNewItem(int qua, boolean useMax, int effet) {
 
-            Item item = new Item(SQLManager.getNextObjetID() + 1, ID, qua, Constant.ITEM_POS_NO_EQUIPED, generateNewStatsFromTemplate(StrTemplate, useMax, effet), getEffectTemplate(StrTemplate), getBoostSpellStats(StrTemplate), Prestige);
+            Item item = new Item(-1, ID, qua, Constant.ITEM_POS_NO_EQUIPED, generateNewStatsFromTemplate(StrTemplate, useMax, effet), getEffectTemplate(StrTemplate), getBoostSpellStats(StrTemplate), Prestige);
             return item;
         }
 
@@ -297,7 +297,7 @@ public class Item {
                 try {
                     int statID = Integer.parseInt(statsInfos[0], 16);
                     if (Constant.isSpellStat(statID)) continue;
-                    int poid = (int)Constant.obtenirPoidsPuissance(statID);
+                    int poid = (int) Constant.obtenirPoidsPuissance(statID);
                     if (poid > poidPlusGros) {
                         poidPlusGros = poid;
                     }
@@ -332,47 +332,49 @@ public class Item {
             return Effets;
         }
 
-        /**public Stats generateNewStatsFromTemplate2(String statsTemplate, boolean useMax) //@Flow - �tait private avant
-        {
-            Stats itemStats = new Stats(false, null);
-            //Si stats Vides
-            if (statsTemplate.equals("") || statsTemplate == null) return itemStats;
-
-            String[] splitted = statsTemplate.split(",");
-            for (String s : splitted) {
-                String[] stats = s.split("#");
-                int statID = Integer.parseInt(stats[0], 16);
-                boolean follow = true;
-
-                for (int a : Constant.ARMES_EFFECT_IDS)//Si c'est un Effet Actif
-                    if (a == statID)
-                        follow = false;
-                if (!follow) continue;//Si c'était un effet Actif d'arme
-
-                String jet = "";
-                int value = 1;
-                try {
-                    jet = stats[4];
-                    value = Formulas.getRandomJet(jet);
-                    if (useMax) {
-                        try {
-                            //on prend le jet max
-                            int min = Integer.parseInt(stats[1], 16);
-                            int max = Integer.parseInt(stats[2], 16);
-                            value = min;
-                            if (max != 0) value = max;
-                        } catch (Exception e) {
-                            value = Formulas.getRandomJet(jet);
-                        }
-                        ;
-                    }
-                } catch (Exception e) {
-                }
-                ;
-                itemStats.addOneStat(statID, value);
-            }
-            return itemStats;
-        }**/
+        /**
+         * public Stats generateNewStatsFromTemplate2(String statsTemplate, boolean useMax) //@Flow - �tait private avant
+         * {
+         * Stats itemStats = new Stats(false, null);
+         * //Si stats Vides
+         * if (statsTemplate.equals("") || statsTemplate == null) return itemStats;
+         * <p>
+         * String[] splitted = statsTemplate.split(",");
+         * for (String s : splitted) {
+         * String[] stats = s.split("#");
+         * int statID = Integer.parseInt(stats[0], 16);
+         * boolean follow = true;
+         * <p>
+         * for (int a : Constant.ARMES_EFFECT_IDS)//Si c'est un Effet Actif
+         * if (a == statID)
+         * follow = false;
+         * if (!follow) continue;//Si c'était un effet Actif d'arme
+         * <p>
+         * String jet = "";
+         * int value = 1;
+         * try {
+         * jet = stats[4];
+         * value = Formulas.getRandomJet(jet);
+         * if (useMax) {
+         * try {
+         * //on prend le jet max
+         * int min = Integer.parseInt(stats[1], 16);
+         * int max = Integer.parseInt(stats[2], 16);
+         * value = min;
+         * if (max != 0) value = max;
+         * } catch (Exception e) {
+         * value = Formulas.getRandomJet(jet);
+         * }
+         * ;
+         * }
+         * } catch (Exception e) {
+         * }
+         * ;
+         * itemStats.addOneStat(statID, value);
+         * }
+         * return itemStats;
+         * }
+         **/
 
 
         public String parseItemTemplateStats() {
@@ -588,13 +590,14 @@ public class Item {
         this.obvijevan = 0;
         this.obvijevanLook = 0;
         this.prestige = prestige;
-        this.guid = SQLManager.INSERT_NEW_ITEM(this);
-
-        if (this.guid > -1) { // Item crée en bdd
-            try {
-                World.addObjet(this, false);
-            } catch (Exception e) {
-            }
+        if (World.getObjets().containsKey(Guid) || Guid == -1) { // Clonage item ou création d'un nouvel item
+            this.guid = SQLManager.INSERT_NEW_ITEM(this);
+        } else { // Item déjà existant
+            this.guid = Guid;
+        }
+        try {
+            World.addObjet(this, false);
+        } catch (Exception e) {
         }
        /* // 3 tentatives de cr�ation
         for (int i = 0; i <= 3; i++) {
@@ -872,7 +875,7 @@ public class Item {
             entry.setValue(10000); // valeur d'origine + ObjLvl / 32
             // s'il mange un obvi, on r�cup�re son exp�rience
             /*if (obj.getTemplate().getID() == getTemplate().getID()) {
-				for(Map.Entry<Integer, Integer> ent : obj.getStats().getMap().entrySet()) {
+                for(Map.Entry<Integer, Integer> ent : obj.getStats().getMap().entrySet()) {
 					if (entry.getKey().intValue() != 974) // on ne consid�re que la stat de l'exp�rience de l'obvi
 						continue; 
 					entry.setValue(Integer.valueOf(entry.getValue().intValue() + Integer.valueOf(ent.getValue().intValue())));
@@ -1337,7 +1340,7 @@ public class Item {
     }
 
     public static Item getCloneObjet(Item obj, int qua) {
-        Item ob = new Item(SQLManager.getNextObjetID() + 1, obj.getTemplate(false).getID(), qua, Constant.ITEM_POS_NO_EQUIPED, obj.getStats(), obj.cloneEffects(), new BoostSpellStats(obj.getBoostSpellStats()), obj.getPrestige());
+        Item ob = new Item(-1, obj.getTemplate(false).getID(), qua, Constant.ITEM_POS_NO_EQUIPED, obj.getStats(), obj.cloneEffects(), new BoostSpellStats(obj.getBoostSpellStats()), obj.getPrestige());
         return ob;
     }
 
@@ -1403,7 +1406,7 @@ public class Item {
     public static Item createNewMorphItem(int skinItem, int baseItem, String verif) { //@Flow
         ObjTemplate skin = World.getObjTemplate(skinItem);
         ObjTemplate stats = World.getObjTemplate(baseItem);
-        Item obj = new Item(SQLManager.getNextObjetID() + 1, skin.getID(), 1,
+        Item obj = new Item(-1, skin.getID(), 1,
                 Constant.ITEM_POS_NO_EQUIPED,
                 stats.generateNewStatsFromTemplate(
                         verif, true, -1),

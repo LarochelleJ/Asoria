@@ -1728,18 +1728,19 @@ public class Maps {
 
     public void onPlayerArriveOnCell(Player perso, int caseID) {
         if (_cases.get(caseID) == null) return;
-        synchronized (_cases) {
-            Item obj = _cases.get(caseID)._droppedItem;
+        Case caseCible = _cases.get(caseID);
+        synchronized (caseCible) {
+            Item obj = caseCible._droppedItem;
             if (obj != null) {
                 synchronized (obj) {
                     if (perso.addObjet(obj, true))
                         World.addObjet(obj, true);
                     SocketManager.GAME_SEND_GDO_PACKET_TO_MAP(this, '-', caseID, 0, 0);
                     SocketManager.GAME_SEND_Ow_PACKET(perso);
-                    _cases.get(caseID).clearDroppedItem();
+                    caseCible.clearDroppedItem();
                 }
             }
-            _cases.get(caseID).applyOnCellStopActions(perso);
+            caseCible.applyOnCellStopActions(perso);
         }
         if (perso.getHasEndFight()) {
             perso.setHasEndFight(false);
