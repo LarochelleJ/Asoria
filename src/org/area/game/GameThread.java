@@ -2305,12 +2305,7 @@ public class GameThread implements Runnable {
         }
         try {
             boolean ignore = false; //@Flow
-            Item obj = null;
-            try {
-                obj = World.getObjet(guid);
-            } catch (Exception e) {
-                SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("", 0, "@", e.toString());
-            }
+            Item obj = World.getObjet(guid);
             // LES VERIFS
             if (!_perso.hasItemGuid(guid) || obj == null) // item n'existe pas
                 // ou perso n'a pas
@@ -2633,6 +2628,7 @@ public class GameThread implements Runnable {
                     }
                     obj.setPosition(pos);
                     SocketManager.GAME_SEND_OBJET_MOVE_PACKET(_perso, obj);
+                    SocketManager.GAME_SEND_MESSAGE_TO_ALL("#1 Pos: " +  obj.getPosition(), Config.CONFIG_MOTD_COLOR);
                 }
             }
             if (_perso.CheckItemConditions() != 0) {

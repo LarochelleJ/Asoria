@@ -36,6 +36,11 @@ public class Reboot {
 			player.save(true);
 			player.send("000OUT");
 		}
+
+		try {
+			Thread.sleep(1000);
+		} catch (Exception e) {
+		}
 		System.exit(0);
 	}
 }

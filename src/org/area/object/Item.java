@@ -433,6 +433,7 @@ public class Item {
 
     // Constructeur pour le chargement des items au lancement du serveur
     public Item(int Guid, int template, int qua, int pos, String strStats, int gprestige) {
+        if (Config.DEBUG) SocketManager.GAME_SEND_MESSAGE_TO_ALL("WTF #2", Config.CONFIG_MOTD_COLOR);
         this.guid = Guid;
         this.template = World.getObjTemplate(template);
         this.quantity = qua;
@@ -635,9 +636,10 @@ public class Item {
         return position;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-        SQLManager.SAVE_ITEM_POS(this.guid, position);
+    public void setPosition(int pos) {
+        this.position = pos;
+        SocketManager.GAME_SEND_MESSAGE_TO_ALL("Objet déplacé à la position:" + this.position, Config.CONFIG_MOTD_COLOR);
+        SQLManager.SAVE_ITEM_POS(this.guid, pos);
     }
 
     public ObjTemplate getTemplate(boolean getRealTemplateBehindMimibiote) {

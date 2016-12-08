@@ -2634,6 +2634,14 @@ public class GmCommand {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out,
                         "Serveur en sauvegarde.");
             }
+        } else if (command.equalsIgnoreCase("ASKPOS")) {
+            synchronized (_perso.getItems()) {
+                for (Item i : _perso.getItems().values()) {
+                    if (i.getPosition() != Constant.ITEM_POS_NO_EQUIPED) {
+                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, String.valueOf(i.getPosition()));
+                    }
+                }
+            }
         } else if (command.equalsIgnoreCase("AJOUTPOINTS")) {
             Player perso = _perso;
             String nom = infos[1];

@@ -791,7 +791,6 @@ public class Player {
 
         List<Item> stuff = SQLManager.LOAD_PLAYER_ITEMS(_guid);
         for (Item o : stuff) {
-            if (o == null) continue;
             synchronized (_items) {
                 _items.put(o.getGuid(), o);
             }
@@ -2487,6 +2486,12 @@ public class Player {
         synchronized (_items) {
             //return _items.get(guid) != null ? _items.get(guid).getQuantity() > 0 : false;
             return _items.containsKey(guid);
+        }
+    }
+
+    public Item getItem(int guid) {
+        synchronized (_items) {
+            return _items.get(guid);
         }
     }
 

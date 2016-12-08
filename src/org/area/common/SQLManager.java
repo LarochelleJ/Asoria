@@ -1443,7 +1443,7 @@ public class SQLManager {
                 }
             }
             preparedStatement.executeBatch();
-            p.execute();;
+            p.execute();
             con.commit();
             preparedStatement.close();
         } catch (SQLException e) {
@@ -2052,6 +2052,7 @@ public class SQLManager {
             p.setInt(3, GameServer.id);
             p.execute();
             closePreparedStatement(p);
+            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Item sauvegardé à la position:" + pos, Config.CONFIG_MOTD_COLOR);
         } catch (SQLException e) {
             GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
             GameServer.addToLog("Game: Query: " + baseQuery);
