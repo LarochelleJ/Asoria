@@ -3,7 +3,6 @@ package org.area.client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -305,6 +304,7 @@ public class Player {
     // itemSetApplied
     private ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
 
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;
@@ -482,7 +482,7 @@ public class Player {
         }
 
         public int addOneStat(int id, int val) {
-            if (!Effects.containsKey(id) || Effects.get(id) == 0) {
+            if (Effects.get(id) == null || Effects.get(id) == 0) {
                 if (val > 0) {
                     Effects.put(id, val);
                 }
@@ -505,7 +505,7 @@ public class Player {
 
         public boolean isSameStats(Stats other) {
             for (Entry<Integer, Integer> entry : Effects.entrySet()) {
-                //Si la stat parn'existe pas dans l'autre map
+                //Si la stat n'existe pas dans l'autre map
                 if (other.getMap().get(entry.getKey()) == null) return false;
                 //Si la stat existe mais n'a pas la même valeur
                 if (other.getMap().get(entry.getKey()) != entry.getValue()) return false;
@@ -698,7 +698,7 @@ public class Player {
     public Player(int _guid, String _name, int _sexe, int _classe,
                   int _color1, int _color2, int _color3, long _kamas, int pts, int _capital, int _energy, int _lvl, long exp,
                   int _size, int _gfxid, byte alignement, int _compte, Map<Integer, Integer> stats,
-                  byte seeFriend, byte seeAlign, byte seeSeller, String canaux, short map, int cell, String storeObjets, int pdvPer, String spells, String savePos, String jobs,
+                  byte seeFriend, byte seeAlign, byte seeSeller, String canaux, short map, int cell, String stuff, String storeObjets, int pdvPer, String spells, String savePos, String jobs,
                   int mountXp, int mount, int honor, int deshonor, int alvl, String z, int title, int wifeGuid, int teamID, int server, int prestige, String folowers, int currentFolower,
                   int winK, int loseK, int winA, int loseA, int canExp, int pvpMod, String candy_used, String quest, int ScrollFuerza, int ScrollInteligencia, int ScrollAgilidad, int ScrollSuerte, int ScrollVitalidad,
                   int ScrollSabiduria, int ornement) {
@@ -789,10 +789,28 @@ public class Player {
             Reboot.reboot();
         }
 
-        List<Item> stuff = SQLManager.LOAD_PLAYER_ITEMS(_guid);
-        for (Item o : stuff) {
+        if (!stuff.equals("")) {
+            if (stuff.charAt(stuff.length() - 1) == '|')
+                stuff = stuff.substring(0, stuff.length() - 1);
+            SQLManager.LOAD_ITEMS(stuff.replace("|", ","));
+        }
+        for (String item : stuff.split("\\|")) {
+            if (item.equals("")) continue;
+            String[] infos = item.split(":");
+
+            int guid = 0;
+            try {
+                guid = Integer.parseInt(infos[0]);
+            } catch (Exception e) {
+                continue;
+            }
+            ;
+
+            Item obj = World.getObjet(guid);
+            if (obj == null) continue;
             synchronized (_items) {
-                _items.put(o.getGuid(), o);
+                _items.put(obj.getGuid(), obj);
+                SQLManager.SAVE_PERSONNAGE_ITEM(this);
             }
         }
         if (!storeObjets.equals("")) {
@@ -925,6 +943,7 @@ public class Player {
                 "*#%!pi$:?",
                 (short) Config.START_MAP,
                 Config.START_CELL,
+                "",
                 "",
                 100,
                 "",
@@ -1449,7 +1468,7 @@ public class Player {
         SocketManager.GAME_SEND_Rx_PACKET(this);
 
         SocketManager.GAME_SEND_ASK(out, this);
-        //Envoie des bonus pano si besoin TODO revoir cette méthode, semble non fonctionnelle
+        //Envoie des bonus pano si besoin
         /*for (int a = 1; a < World.getItemSetNumber(); a++) {
             int num = getNumbEquipedItemOfPanoplie(a);
             if (num == 0) continue;
@@ -1640,7 +1659,7 @@ public class Player {
 
     public String parseToMerchant() {
         /*StringBuilder str = new StringBuilder();
-    	str.append(_curCell.getID()).append(";");
+        str.append(_curCell.getID()).append(";");
     	str.append(_orientation).append(";");
     	str.append("0").append(";");
     	str.append(_GUID).append(";");
@@ -1830,9 +1849,10 @@ public class Player {
         return this.itemSetApplied;
     }
 
+
     public Stats getStuffStats() {
-        defineItemSetApplied();
         Stats stats = new Stats(false, null);
+        defineItemSetApplied();
         /*ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
         List<Integer> positionCalculee = new ArrayList<Integer>();
         synchronized (_items) {
@@ -1862,13 +1882,7 @@ public class Player {
                 }
             }
         }*/
-        synchronized (_items) {
-            for (Item i : _items.values()) {
-                if (i.getPosition() != Constant.ITEM_POS_NO_EQUIPED) {
-                    stats = Stats.cumulStat(stats, i.getStats());
-                }
-            }
-        }
+
         for (int panID : getItemSetApplied()) {
             ItemSet IS = World.getItemSet(panID);
             //Si la pano existe
@@ -1877,6 +1891,14 @@ public class Player {
                 stats = Stats.cumulStat(stats, IS.getBonusStatByItemNumb(this.getNumbEquipedItemOfPanoplie(panID)));
             }
         }
+        synchronized (_items) {
+            for (Item i : _items.values()) {
+                if (i.getPosition() != Constant.ITEM_POS_NO_EQUIPED) {
+                    stats = Stats.cumulStat(stats, i.getStats());
+                }
+            }
+        }
+
         if (_onMount && _mount != null) {
             stats = Stats.cumulStat(stats, _mount.get_stats());
         }
@@ -2489,12 +2511,6 @@ public class Player {
         }
     }
 
-    public Item getItem(int guid) {
-        synchronized (_items) {
-            return _items.get(guid);
-        }
-    }
-
     private int obtenirPrixRevente(int prixListe) {
         int prixReventePossible = prixListe / 100;
         return prixReventePossible < 1 ? 0 : prixReventePossible;
@@ -2652,7 +2668,7 @@ public class Player {
     }
 
     public void addKamas(long l) {
-        if (_kamas + l < 0 ) {
+        if (_kamas + l < 0) {
             _kamas = 0;
         } else {
             _kamas += l;
@@ -3710,14 +3726,14 @@ public class Player {
         }
         if (valide) {
             int cellID = -1;
-                for (Prism Prisme : World.AllPrisme()) {
-                    if (Prisme.getCarte() == Short.valueOf(packet.substring(2))) {
-                        if (Prisme.getalignement() == _align) {
-                            cellID = Prisme.getCell();
-                        }
-                        break;
+            for (Prism Prisme : World.AllPrisme()) {
+                if (Prisme.getCarte() == Short.valueOf(packet.substring(2))) {
+                    if (Prisme.getalignement() == _align) {
+                        cellID = Prisme.getCell();
                     }
+                    break;
                 }
+            }
             if (cellID != -1) {
                 SocketManager.GAME_SEND_STATS_PACKET(this);
                 this.teleport(Short.valueOf(packet.substring(2)), cellID);

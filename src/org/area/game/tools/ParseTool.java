@@ -402,6 +402,7 @@ public class ParseTool {
                             Item object = objTemplate.createNewItem(1, true, -1);
                             if (player.addObjet(object, true))
                                 World.addObjet(object, true);
+                            player.save(true);
                             int remaining = points - price;
                             Util.updatePointsByAccount(player.getAccount(), remaining);
                             player.send("000C" + remaining);

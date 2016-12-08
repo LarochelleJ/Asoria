@@ -160,7 +160,7 @@ public class GameThread implements Runnable {
                     if (Main.gameServer.encryptPacketKey != "0") {
                         try {
                             String packetTest = CryptManager.decryptPacket(packet);
-                            GameServer.addToSockLog("Game: Packet decrypté: " + packetTest);
+                            GameServer.addToSockLog("Game: Packet decryptÃ©: " + packetTest);
                         } catch (Exception e) {
                         }
                     }
@@ -259,7 +259,7 @@ public class GameThread implements Runnable {
             return;
         }
         if (out == null) {
-            player.sendText("La connexion de sortie lié à votre thread est inexistante, veuillez le signaler à Flow.");
+            player.sendText("La connexion de sortie liÃ© Ã  votre thread est inexistante, veuillez le signaler Ã  Flow.");
             GameSendThread o = player.getAccount().getGameThread().getOut();
             if (o != null) {
                 out = o;
@@ -352,15 +352,15 @@ public class GameThread implements Runnable {
                 parseSpecialPackets(packet);
                 break;
 
-            default: // Pour éviter les packets chinoix qui génères des <<Dofus ne
-                // répond pas>>
+            default: // Pour Ã©viter les packets chinoix qui gÃ©nÃ¨res des <<Dofus ne
+                // rÃ©pond pas>>
                 break;
         }
     }
 
     private void parseQuestPacket(String packet) {
         switch (packet.charAt(1)) {
-            case 'L': //Liste quête
+            case 'L': //Liste quÃªte
                 SocketManager.SEND_QUESTS_LIST_PACKET(player);
                 break;
             case 'S'://Etapes d'une quete
@@ -671,7 +671,7 @@ public class GameThread implements Runnable {
              * @Flow
              * Mimibiotes
              */
-            case 'M': // @Flow - Optimisé
+            case 'M': // @Flow - OptimisÃ©
                 int points = Util.loadPointsByAccount(player.getAccount());
                 if (points >= 50) {
                     String[] mim = packet.substring(2).split(";");
@@ -717,7 +717,7 @@ public class GameThread implements Runnable {
                         break;
                     }
 
-                    if (targetItem.getType() != itemSkinVerif.getType()) // Merci RedLabel d'avoir abusé le système
+                    if (targetItem.getType() != itemSkinVerif.getType()) // Merci RedLabel d'avoir abusÃ© le systÃ¨me
                     {
                         player.sendText("Fusion mimibiote impossible !");
                         break;
@@ -727,16 +727,16 @@ public class GameThread implements Runnable {
                         //ObjTemplate OM2 = World.getObjTemplate(skinItem);
                         ObjTemplate OM1 = World.getObjTemplate(baseItem);
                         if (SQLManager.verifStats(baseItem, verif2) == 6) {
-                            player.sendText("Erreur: Packet corrompu ! Veuillez ré-essayer !");
+                            player.sendText("Erreur: Packet corrompu ! Veuillez rÃ©-essayer !");
                             break;
                         }
                         player.removeByTemplateID(baseItem, 1);
                         player.removeByTemplateID(skinItem, 1);
                         Item obj = Item.createNewMorphItem(skinItem, baseItem, verif2);
 
-                        // Si déjà mimibioté
+                        // Si dÃ©jÃ  mimibiotÃ©
                         obj.getStats().setOneStat(9000, 1);//Non echangeable = 9000 @Flow
-                        /** Ajout d'une variable pour récupérer l'item stat de départ. Exemple bonus de panoplie **/
+                        /** Ajout d'une variable pour rÃ©cupÃ©rer l'item stat de dÃ©part. Exemple bonus de panoplie **/
                         obj.getStats().setOneStat(616161, OM1.getID());
                         obj.addTxtStat(970, Integer.toHexString(OM1.getID()));
                         World.addObjet(obj, true);
@@ -746,9 +746,9 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_Ow_PACKET(player);
 
                         Util.updatePointsByAccount(player.getAccount(), points - 50);
-                        player.sendText("Le service <b>Mimibiote</b> vous a coûté 50 points.");
+                        player.sendText("Le service <b>Mimibiote</b> vous a coÃ»tÃ© 50 points.");
                     } else {
-                        player.sendText("Impossible, nous n'avons pas trouvé l'item dans votre inventaire.");
+                        player.sendText("Impossible, nous n'avons pas trouvÃ© l'item dans votre inventaire.");
                     }
                 } else {
                     player.sendText("Il vous faut 50 points pour effectuer ceci !");
@@ -768,7 +768,7 @@ public class GameThread implements Runnable {
                             if (!(player.getAccount().getGmLevel() > 0)) {
                                 Util.updatePointsByAccount(player.getAccount(), points - 60);
                                 player.send("000C" + (points - 60));
-                                player.sendText("Vous avez perdu 60 points suite à votre changement de couleur !");
+                                player.sendText("Vous avez perdu 60 points suite Ã  votre changement de couleur !");
                             }
 
                             if (player.getFight() == null) {
@@ -800,7 +800,7 @@ public class GameThread implements Runnable {
             SocketManager.GAME_SEND_Im_PACKET(player, "183");
             return;
         } else if (!player.usePrisme(packet)) {
-            player.sendText("Téléportation étrange ? Un chausson aux pommes avec ça ?");
+            player.sendText("TÃ©lÃ©portation Ã©trange ? Un chausson aux pommes avec Ã§a ?");
         }
     }
 
@@ -895,13 +895,13 @@ public class GameThread implements Runnable {
             case 'C':// Creation
                 guild_create(packet);
                 break;
-            case 'f':// Téléportation enclo de guilde
+            case 'f':// TÃ©lÃ©portation enclo de guilde
                 guild_enclo(packet.substring(2));
                 break;
             case 'F':// Retirer percepteur
                 guild_remove_perco(packet.substring(2));
                 break;
-            case 'h':// Téléportation maison de guilde
+            case 'h':// TÃ©lÃ©portation maison de guilde
                 guild_house(packet.substring(2));
                 break;
             case 'H':// Poser un percepteur
@@ -922,7 +922,7 @@ public class GameThread implements Runnable {
             case 'T':// attaque sur percepteur
                 guild_perco_join_fight(packet.substring(2));
                 break;
-            case 'V':// Ferme le panneau de création de guilde
+            case 'V':// Ferme le panneau de crÃ©ation de guilde
                 guild_CancelCreate();
                 break;
         }
@@ -970,7 +970,7 @@ public class GameThread implements Runnable {
                 }
                 if (player.getFight() == null && !player.is_away()) {
                     player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
-                    Fight combat = World.getCarte(MapID).getFight(FightID); // FIXME getFight lorsqu'on tente de re-défendre retourne null
+                    Fight combat = World.getCarte(MapID).getFight(FightID); // FIXME getFight lorsqu'on tente de re-dÃ©fendre retourne null
                     if (combat != null) {
                         combat.joinPercepteurFight(player, player.getGuid(), TiD);
                     }
@@ -1026,7 +1026,7 @@ public class GameThread implements Runnable {
             return;
         short mapID = player.getMap().get_id();
         if (mapID >= 17700 && mapID <= 17746 || mapID == 10812) { // Map interdite pour la pose
-            player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
+            player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaÃ®tre la raison.");
             return;
         }
         if (!player.getGuildMember().canDo(Constant.G_POSPERCO))
@@ -1045,7 +1045,7 @@ public class GameThread implements Runnable {
         }
         if (Collector.GetPercoGuildID(player.getMap().get_id()) > 0)// La
         // carte
-        // possède
+        // possÃ¨de
         // un
         // perco
         {
@@ -1053,7 +1053,7 @@ public class GameThread implements Runnable {
             return;
         }
         if (player.getMap().get_placesStr().length() < 5)// La map ne
-        // possède pas
+        // possÃ¨de pas
         // de "places"
         {
             SocketManager.GAME_SEND_Im_PACKET(player, "113");
@@ -1144,7 +1144,7 @@ public class GameThread implements Runnable {
 
     private void guild_promote(String packet) {
         if (player.get_guild() == null)
-            return; // Si le personnage envoyeur n'a même pas de guilde
+            return; // Si le personnage envoyeur n'a mÃªme pas de guilde
 
         String[] infos = packet.split("\\|");
 
@@ -1154,27 +1154,27 @@ public class GameThread implements Runnable {
         int right = Integer.parseInt(infos[3]);
 
         Player p = World.getPlayer(guid); // Cherche le personnage a qui l'on
-        // change les droits dans la mémoire
+        // change les droits dans la mÃ©moire
         GuildMember toChange;
         GuildMember changer = player.getGuildMember();
 
-        // Récupération du personnage à changer, et verification de quelques
+        // RÃ©cupÃ©ration du personnage Ã  changer, et verification de quelques
         // conditions de base
-        if (p == null) // Arrive lorsque le personnage n'est pas chargé dans la
-        // mémoire
+        if (p == null) // Arrive lorsque le personnage n'est pas chargÃ© dans la
+        // mÃ©moire
         {
-            int guildId = SQLManager.isPersoInGuild(guid); // Récupère l'id de
+            int guildId = SQLManager.isPersoInGuild(guid); // RÃ©cupÃ¨re l'id de
             // la guilde du
             // personnage qui
             // n'est pas dans la
-            // mémoire
+            // mÃ©moire
 
             if (guildId < 0)
-                return; // Si le personnage à qui les droits doivent être
-            // modifié n'existe pas ou n'a pas de guilde
+                return; // Si le personnage Ã  qui les droits doivent Ãªtre
+            // modifiÃ© n'existe pas ou n'a pas de guilde
 
             if (guildId != player.get_guild().get_id()) // Si ils ne sont pas
-            // dans la même guilde
+            // dans la mÃªme guilde
             {
                 SocketManager.GAME_SEND_gK_PACKET(player, "Ed");
                 return;
@@ -1182,7 +1182,7 @@ public class GameThread implements Runnable {
             toChange = World.getGuild(guildId).getMember(guid);
         } else {
             if (p.get_guild() == null)
-                return; // Si la personne à qui changer les droits n'a pas de
+                return; // Si la personne Ã  qui changer les droits n'a pas de
             // guilde
             if (player.get_guild().get_id() != p.get_guild().get_id()) // Si ils
             // ne
@@ -1199,12 +1199,12 @@ public class GameThread implements Runnable {
             toChange = p.getGuildMember();
         }
 
-        // Vérifie ce que le personnage changeur à le droit de faire
+        // VÃ©rifie ce que le personnage changeur Ã  le droit de faire
 
         if (changer.getRank() == 1) // Si c'est le meneur
         {
             if (changer.getGuid() == toChange.getGuid()) // Si il se modifie lui
-            // même, reset tout
+            // mÃªme, reset tout
             // sauf l'XP
             {
                 rank = -1;
@@ -1218,7 +1218,7 @@ public class GameThread implements Runnable {
                     // avec tout les
                     // droits
 
-                    // Défini les droits à mettre au nouveau meneur
+                    // DÃ©fini les droits Ã  mettre au nouveau meneur
                     rank = 1;
                     xpGive = -1;
                     right = 1;
@@ -1327,26 +1327,26 @@ public class GameThread implements Runnable {
                 // du
                 // perso
                 // qui
-                // l'éjecte
+                // l'Ã©jecte
             }
             toRemMember = toRemGuild.getMember(P.getGuid());
             if (toRemMember == null)
                 return;// Si le membre n'est pas dans la guilde.
             if (toRemMember.getGuild().get_id() != player.get_guild().get_id())
-                return;// Si guilde différente
+                return;// Si guilde diffÃ©rente
         }
         // si pas la meme guilde
         if (toRemGuild.get_id() != player.get_guild().get_id()) {
             SocketManager.GAME_SEND_gK_PACKET(player, "Ea");
             return;
         }
-        // S'il n'a pas le droit de kick, et que ce n'est pas lui même la cible
+        // S'il n'a pas le droit de kick, et que ce n'est pas lui mÃªme la cible
         if (!player.getGuildMember().canDo(Constant.G_BAN)
                 && player.getGuildMember().getGuid() != toRemMember.getGuid()) {
             SocketManager.GAME_SEND_gK_PACKET(player, "Ed");
             return;
         }
-        // Si différent : Kick
+        // Si diffÃ©rent : Kick
         if (player.getGuildMember().getGuid() != toRemMember.getGuid()) {
             if (toRemMember.getRank() == 1) // S'il veut kicker le meneur
                 return;
@@ -1429,7 +1429,7 @@ public class GameThread implements Runnable {
                         player.getInvitation() + "")) {
                     Player p = World.getPlayer(player.getInvitation());
                     if (p == null)
-                        return;// Pas censé arriver
+                        return;// Pas censÃ© arriver
                     SocketManager.GAME_SEND_gJ_PACKET(p, "Ec");
                 }
                 break;
@@ -1438,7 +1438,7 @@ public class GameThread implements Runnable {
                         player.getInvitation() + "")) {
                     Player p = World.getPlayer(player.getInvitation());
                     if (p == null)
-                        return;// Pas censé arriver
+                        return;// Pas censÃ© arriver
                     Guild G = p.get_guild();
                     GuildMember GM = G.addNewMember(player);
                     SQLManager.UPDATE_GUILDMEMBER(GM);
@@ -1510,12 +1510,12 @@ public class GameThread implements Runnable {
             // Validation du nom de la guilde
             String tempName = name.toLowerCase();
             boolean isValid = true;
-            // Vérifie d'abord si il contient des termes définit
+            // VÃ©rifie d'abord si il contient des termes dÃ©finit
             if (tempName.length() > 20 || tempName.contains("mj")
                     || tempName.contains("modo") || tempName.contains("admin")) {
                 isValid = false;
             }
-            // Si le nom passe le test, on vérifie que les caractère entré sont
+            // Si le nom passe le test, on vÃ©rifie que les caractÃ¨re entrÃ© sont
             // correct.
             if (isValid) {
                 int tiretCount = 0;
@@ -1546,7 +1546,7 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_gC_PACKET(player, "Eae");
                 return;
             }
-            if (player.getMap().get_id() == 2196)// Temple de création de
+            if (player.getMap().get_id() == 2196)// Temple de crÃ©ation de
             // guilde
             {
                 if (!player.hasItemTemplate(1575, 1))// Guildalogemme
@@ -1773,7 +1773,7 @@ public class GameThread implements Runnable {
         Player Wife = World.getPlayer(player.getWife());
         if (Wife == null)
             return;
-        player.RejoindeWife(Wife); // Correcion téléportation mariage par
+        player.RejoindeWife(Wife); // Correcion tÃ©lÃ©portation mariage par
         // Taparisse
         if (!Wife.isOnline()) {
             if (Wife.get_sexe() == 0)
@@ -2029,7 +2029,7 @@ public class GameThread implements Runnable {
         Group g = player.getGroup();
         if (g == null)
             return;
-        if (packet.length() == 2)// Si aucun guid est spécifié, alors c'est que
+        if (packet.length() == 2)// Si aucun guid est spÃ©cifiÃ©, alors c'est que
         // le joueur quitte
         {
             g.leave(player);
@@ -2136,7 +2136,7 @@ public class GameThread implements Runnable {
                 Object_drop(packet);
                 //player.sendText("Action impossible");
                 break;
-            case 'M':// Bouger un objet (Equiper/déséquiper) // Associer obvijevan
+            case 'M':// Bouger un objet (Equiper/dÃ©sÃ©quiper) // Associer obvijevan
                 String[] infos = packet.substring(2).split("" + (char) 0x0A)[0]
                         .split("\\|");
                 int qua = 1;
@@ -2188,11 +2188,11 @@ public class GameThread implements Runnable {
         Item obj = World.getObjet(guid);
         if (obj == null) return;
         if ((obj.getStats().getEffect(9000) == 1)) {
-            player.sendText("Cet objet ne peut être jeté !");
+            player.sendText("Cet objet ne peut Ãªtre jetÃ© !");
             return;
         }
         if ((obj.getStats().getEffect(252526) > 0)) {
-            player.sendText("Cet objet ne peut être jeté ! Il est lié à votre compte !");
+            player.sendText("Cet objet ne peut Ãªtre jetÃ© ! Il est liÃ© Ã  votre compte !");
             return;
         }
         player.set_curCell(player.get_curCell());
@@ -2282,12 +2282,12 @@ public class GameThread implements Runnable {
         }
         Console.print("\nObject use\n");
         T.applyAction(player, Target, guid, cellID);
-        // Objectif quÃªte : Utiliser l'objet x
+        // Objectif quÃƒÂªte : Utiliser l'objet x
         player.confirmObjective(8, T.getID() + "", null);
     }
 
     /**
-     * TODO Trouvé et corrigé problème !
+     * TODO TrouvÃ© et corrigÃ© problÃ¨me !
      *
      * @param _perso
      * @param _out
@@ -2298,20 +2298,25 @@ public class GameThread implements Runnable {
     public static synchronized void Object_move(Player _perso,
                                                 GameSendThread _out, int qua, int guid, int pos) {
         if (_out == null) {
-            _perso.sendText("Erreur liée à la connexion, veuillez le signaler à Flow");
+            _perso.sendText("Erreur liÃ©e Ã  la connexion, veuillez le signaler Ã  Flow");
         }
         if (_perso == null) {
-            _perso.sendText("Erreur liée au personnage, veuillez le signaler à Flow");
+            _perso.sendText("Erreur liÃ©e au personnage, veuillez le signaler Ã  Flow");
         }
         try {
             boolean ignore = false; //@Flow
-            Item obj = World.getObjet(guid);
+            Item obj = null;
+            try {
+                obj = World.getObjet(guid);
+            } catch (Exception e) {
+                SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("", 0, "@", e.toString());
+            }
             // LES VERIFS
             if (!_perso.hasItemGuid(guid) || obj == null) // item n'existe pas
                 // ou perso n'a pas
                 // l'item
                 return;
-            if (_perso.getFight() != null) // si en combat démarré
+            if (_perso.getFight() != null) // si en combat dÃ©marrÃ©
             {
                 if (_perso.getFight().get_state() != Constant.FIGHT_STATE_PLACE)
                     return;
@@ -2321,7 +2326,7 @@ public class GameThread implements Runnable {
                 return;
             int idCompteLie = obj.getStats().getEffect(252526);
             if (idCompteLie > 0 && idCompteLie != _perso.getAccID()) {
-                _perso.sendText("Cet item est lié à un compte qui n'est pas le votre. Vous ne pouvez pas équipé cet item.");
+                _perso.sendText("Cet item est liÃ© Ã  un compte qui n'est pas le votre. Vous ne pouvez pas Ã©quipÃ© cet item.");
                 return;
             }
             if (obj.getStats().getEffect(1000000000) == 1) // @Flow - Pardonne moi dieu pour ce code... Heureusement on s'en sert plus pour les nouveaux mimi
@@ -2335,7 +2340,7 @@ public class GameThread implements Runnable {
                         dont_stop = false;
                         ignore = true;
                         if (_perso.getLevel() < verif_level) {
-                            _perso.sendText("Pour équiper cet item mimibioté, vous devez être niveau " + verif_level + " !");
+                            _perso.sendText("Pour Ã©quiper cet item mimibiotÃ©, vous devez Ãªtre niveau " + verif_level + " !");
                             return;
                         }
                     }
@@ -2346,7 +2351,7 @@ public class GameThread implements Runnable {
                 }
             }
 
-            if (obj.getStats().getEffect(616161) > 0) // Si mimibioté
+            if (obj.getStats().getEffect(616161) > 0) // Si mimibiotÃ©
             {
                 int templateMimibiote = obj.getStats().getEffect(616161);
                 ObjTemplate objT = World.getObjTemplate(templateMimibiote);
@@ -2355,7 +2360,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Im_PACKET(_perso, "119|43"); // si le
                     // perso
                     // ne
-                    // vérifie
+                    // vÃ©rifie
                     // pas
                     // les
                     // conditions
@@ -2363,7 +2368,7 @@ public class GameThread implements Runnable {
                     return;
                 }
                 if (objT.getPrestige() >= (_perso.getPrestige() + 1) && ignore == false) {
-                    SocketManager.GAME_SEND_MESSAGE(_perso, "Cet équipement est réservé aux joueurs <b>prestige " + obj.getPrestige() + "</b> et vous êtes prestige " + _perso.getPrestige() + ".", Config.CONFIG_MOTD_COLOR);
+                    SocketManager.GAME_SEND_MESSAGE(_perso, "Cet Ã©quipement est rÃ©servÃ© aux joueurs <b>prestige " + obj.getPrestige() + "</b> et vous Ãªtes prestige " + _perso.getPrestige() + ".", Config.CONFIG_MOTD_COLOR);
                     return;
                 }
                 if (objT.getLevel() > _perso.getLevel() && ignore == false) {// si le
@@ -2397,7 +2402,7 @@ public class GameThread implements Runnable {
                             SocketManager.GAME_SEND_OT_PACKET(_out, -1);
                     }
                 }
-                // On ne peut équiper 2 items de panoplies identiques, ou 2 Dofus
+                // On ne peut Ã©quiper 2 items de panoplies identiques, ou 2 Dofus
                 // identiques
                 if (pos != Constant.ITEM_POS_NO_EQUIPED
                         && (objT.getPanopID() != -1 || objT.getType() == Constant.ITEM_TYPE_DOFUS)
@@ -2405,7 +2410,7 @@ public class GameThread implements Runnable {
                     return;
                 // FIN DES VERIFS
 
-            } else { // pas mimibioté
+            } else { // pas mimibiotÃ©
 
                 if (!obj.getTemplate(false).getConditions().equalsIgnoreCase("")
                         && !ConditionParser.validConditions(_perso, obj
@@ -2413,7 +2418,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Im_PACKET(_perso, "119|43"); // si le
                     // perso
                     // ne
-                    // vérifie
+                    // vÃ©rifie
                     // pas
                     // les
                     // conditions
@@ -2421,7 +2426,7 @@ public class GameThread implements Runnable {
                     return;
                 }
                 if (obj.getPrestige() >= (_perso.getPrestige() + 1) && ignore == false) {
-                    SocketManager.GAME_SEND_MESSAGE(_perso, "Cet équipement est réservé aux joueurs <b>prestige " + obj.getPrestige() + "</b> et vous êtes prestige " + _perso.getPrestige() + ".", Config.CONFIG_MOTD_COLOR);
+                    SocketManager.GAME_SEND_MESSAGE(_perso, "Cet Ã©quipement est rÃ©servÃ© aux joueurs <b>prestige " + obj.getPrestige() + "</b> et vous Ãªtes prestige " + _perso.getPrestige() + ".", Config.CONFIG_MOTD_COLOR);
                     return;
                 }
                 if (obj.getTemplate(true).getLevel() > _perso.getLevel() && ignore == false) {// si le
@@ -2455,7 +2460,7 @@ public class GameThread implements Runnable {
                             SocketManager.GAME_SEND_OT_PACKET(_out, -1);
                     }
                 }
-                // On ne peut équiper 2 items de panoplies identiques, ou 2 Dofus
+                // On ne peut Ã©quiper 2 items de panoplies identiques, ou 2 Dofus
                 // identiques
                 if (pos != Constant.ITEM_POS_NO_EQUIPED
                         && (obj.getTemplate(true).getPanopID() != -1 || obj
@@ -2476,25 +2481,25 @@ public class GameThread implements Runnable {
                     SocketManager.send(_perso, "Im1161");
                     return;
                 }
-                if (exObj.getObvijevanPos() != 0) {// si il y a déjà un obvi
+                if (exObj.getObvijevanPos() != 0) {// si il y a dÃ©jÃ  un obvi
                     SocketManager.GAME_SEND_BN(_perso);
                     return;
                 }
                 // FIN DES VERIFS
 
                 exObj.setObvijevanPos(obj.getObvijevanPos()); // L'objet qui
-                // était en
+                // Ã©tait en
                 // place a
                 // Configtenant
                 // un obvi
 
-                _perso.removeItem(obj.getGuid(), 1, false, false); // on enlève
+                _perso.removeItem(obj.getGuid(), 1, false, false); // on enlÃ¨ve
                 // l'existance
                 // de l'obvi
                 // en
-                // lui-même
+                // lui-mÃªme
                 SocketManager.send(_perso, "OR" + obj.getGuid()); // on le
-                // précise
+                // prÃ©cise
                 // au
                 // org.area.client
 
@@ -2538,7 +2543,7 @@ public class GameThread implements Runnable {
                 SocketManager.send(_perso, exObj.obvijevanOCO_Packet(pos));
                 SocketManager.GAME_SEND_ON_EQUIP_ITEM(_perso.getMap(), _perso); // Si
                 // l'obvi
-                // était
+                // Ã©tait
                 // cape
                 // ou
                 // coiffe
@@ -2551,7 +2556,7 @@ public class GameThread implements Runnable {
                     if (qua > obj.getQuantity())
                         qua = obj.getQuantity();
 
-                    if (obj.getQuantity() - qua > 0)// Si il en reste #Logique Améliorée
+                    if (obj.getQuantity() - qua > 0)// Si il en reste #Logique AmÃ©liorÃ©e
                     {
                         int newItemQua = obj.getQuantity() - qua;
                         Item newItem = Item.getCloneObjet(obj, qua);
@@ -2563,11 +2568,11 @@ public class GameThread implements Runnable {
                     }
                 }
 
-                return; // on s'arrête là pour l'obvi
+                return; // on s'arrÃªte lÃ  pour l'obvi
             } // FIN DU CODE OBVI
 
-            if (exObj != null)// S'il y avait déja un objet sur cette place on
-            // déséquipe
+            if (exObj != null)// S'il y avait dÃ©ja un objet sur cette place on
+            // dÃ©sÃ©quipe
             {
                 //_perso.sendText("Meow 1");
                 _perso.setEquip(true);
@@ -2628,7 +2633,6 @@ public class GameThread implements Runnable {
                     }
                     obj.setPosition(pos);
                     SocketManager.GAME_SEND_OBJET_MOVE_PACKET(_perso, obj);
-                    SocketManager.GAME_SEND_MESSAGE_TO_ALL("#1 Pos: " +  obj.getPosition(), Config.CONFIG_MOTD_COLOR);
                 }
             }
             if (_perso.CheckItemConditions() != 0) {
@@ -2665,7 +2669,7 @@ public class GameThread implements Runnable {
                     SocketManager
                             .GAME_SEND_MESSAGE(
                                     _perso,
-                                    "Votre personnage ne possède pas de dragodinde sur lui, il ne peut donc en nourir ...",
+                                    "Votre personnage ne possÃ¨de pas de dragodinde sur lui, il ne peut donc en nourir ...",
                                     Config.CONFIG_MOTD_COLOR);
                 } else {
                     if (obj.getTemplate(false).getType() == 41
@@ -2681,8 +2685,8 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_DELETE_STATS_ITEM_FM(_perso,
                                 guid);
                         SocketManager.GAME_SEND_MESSAGE(_perso,
-                                "Votre dragodinde a gagné " + totalwin
-                                        + " en énergie.",
+                                "Votre dragodinde a gagnÃ© " + totalwin
+                                        + " en Ã©nergie.",
                                 Config.CONFIG_MOTD_COLOR);
                     } else {
                         SocketManager.GAME_SEND_MESSAGE(_perso,
@@ -2691,7 +2695,7 @@ public class GameThread implements Runnable {
                     }
                 }
             }
-            // Verif pour les outils de métier
+            // Verif pour les outils de mÃ©tier
             if (pos == Constant.ITEM_POS_NO_EQUIPED
                     && _perso.getObjetByPos(Constant.ITEM_POS_ARME) == null)
                 SocketManager.GAME_SEND_OT_PACKET(_out, -1);
@@ -2767,7 +2771,7 @@ public class GameThread implements Runnable {
                 Dialog_start(packet, player);
                 break;
 
-            case 'R':// Réponse du joueur
+            case 'R':// RÃ©ponse du joueur
                 Dialog_response(packet, player);
                 break;
 
@@ -2785,7 +2789,7 @@ public class GameThread implements Runnable {
             NPC_question quest = World.getNPCQuestion(qID, _perso);
             NPC_reponse rep = World.getNPCreponse(rID);
             //NpcTemplate npcVerif = World.getNPCTemplate(_perso.get_isTalkingWith());
-            // Revu des vérifications (+ intelligente et efficacité 100%)
+            // Revu des vÃ©rifications (+ intelligente et efficacitÃ© 100%)
             ArrayList<Integer> npcWithThisQuestionId = SQLManager.GET_NPCS_WITH_QUESTION_ID(qID);
             boolean valid = false;
             Map<Integer, Integer> npcOnMap = new HashMap<Integer, Integer>();
@@ -2805,10 +2809,10 @@ public class GameThread implements Runnable {
 
             // Quest
             Map<Integer, Map<String, String>> objectives = World.getObjectiveByOptAnswer(rID);
-            if (objectives != null) // C'est une rÃ©ponse de quÃªte avec au moins 1 objectif
+            if (objectives != null) // C'est une rÃƒÂ©ponse de quÃƒÂªte avec au moins 1 objectif
             {
                 for (Entry<Integer, Map<String, String>> objective : objectives.entrySet()) {
-                    if (_perso.hasObjective(objective.getKey())) // Si le perso Ã  cet objectif
+                    if (_perso.hasObjective(objective.getKey())) // Si le perso ÃƒÂ  cet objectif
                     {
                         qID = Integer.parseInt(objective.getValue().get("optQuestion"));
 
@@ -2851,7 +2855,7 @@ public class GameThread implements Runnable {
                 NPC npc = _perso.getMap().getNPC(npcID);
                 if (npc == null) return;
                 SocketManager.GAME_SEND_DCK_PACKET(_perso.getAccount().getGameThread().getOut(), npcID);
-                // Objectif quÃªtes : Aller voir x
+                // Objectif quÃƒÂªtes : Aller voir x
                 _perso.confirmObjective(1, npc.get_template().get_id() + "", null);
                 int qID = npc.get_template().get_initQuestionID();
                 // Quests
@@ -2865,7 +2869,7 @@ public class GameThread implements Runnable {
                     {
                         Map<String, String> questPerso = _perso.get_quest(Integer.parseInt(curQuest));
                         Map<String, String> questDetails = World.getQuest(Integer.parseInt(curQuest));
-                        if (questPerso != null && (questDetails.get("unique").equals("1") || questPerso.get("finishQuest").equals("0"))) // Le perso Ã  la quÃªte
+                        if (questPerso != null && (questDetails.get("unique").equals("1") || questPerso.get("finishQuest").equals("0"))) // Le perso ÃƒÂ  la quÃƒÂªte
                         {
                             String curStep = questPerso.get("curStep");
                             if (!curStep.equals("-1")) // Si quete non terminee
@@ -2906,7 +2910,7 @@ public class GameThread implements Runnable {
                 // Pnj quete secondaire
                 int newAnswer = -1;
                 Map<Integer, Map<String, String>> objectives = World.getObjectiveByNpcTarget(npc.get_template().get_id());
-                if (objectives != null) // Il y a un objectif liÃ© Ã  ce pnj
+                if (objectives != null) // Il y a un objectif liÃƒÂ© ÃƒÂ  ce pnj
                 {
                     for (Entry<Integer, Map<String, String>> objective : objectives.entrySet()) {
                         int question = Integer.parseInt(objective.getValue().get("optQuestion"));
@@ -2931,7 +2935,7 @@ public class GameThread implements Runnable {
                     return;
                 }
                 String DQPacket = quest.parseToDQPacket(_perso);
-                if (pendingStep) // Etape de quete en cours: on remplace la rÃ©ponse par "terminer la discussion"
+                if (pendingStep) // Etape de quete en cours: on remplace la rÃƒÂ©ponse par "terminer la discussion"
                 {
                     DQPacket = DQPacket.split("\\|")[0] + "|4840"; // 4840 = "Terminer la discussion"
                 } else if (newAnswer != -1) {
@@ -2947,25 +2951,25 @@ public class GameThread implements Runnable {
 
     private void parseExchangePacket(String packet) {
         switch (packet.charAt(1)) {
-            case 'A':// Accepter demande d'échange
+            case 'A':// Accepter demande d'Ã©change
                 Exchange_accept();
                 break;
             case 'B':// Achat
                 Exchange_onBuyItem(packet);
                 break;
 
-            case 'H':// Demande prix moyen + catégorie
+            case 'H':// Demande prix moyen + catÃ©gorie
                 Exchange_HDV(packet);
                 break;
 
             case 'K':// Ok
                 Exchange_isOK();
                 break;
-            case 'L':// jobAction : Refaire le craft précedent
+            case 'L':// jobAction : Refaire le craft prÃ©cedent
                 Exchange_doAgain();
                 break;
 
-            case 'M':// Move (Ajouter//retirer un objet a l'échange)
+            case 'M':// Move (Ajouter//retirer un objet a l'Ã©change)
                 Exchange_onMoveItem(packet);
                 break;
 
@@ -3019,8 +3023,8 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_Eq_PACKET(player, Apayer);
                 break;
 
-            case 'Q'://Mode marchand (Si valider après la taxe)
-                player.sendText("Le mode marchand est temporairement désactivé, vous pouvez utilisez l'HDV et retirer les items de votre mode marchand.");
+            case 'Q'://Mode marchand (Si valider aprÃ¨s la taxe)
+                player.sendText("Le mode marchand est temporairement dÃ©sactivÃ©, vous pouvez utilisez l'HDV et retirer les items de votre mode marchand.");
                 /*int Apayer2 = player.storeAllBuy() / 1000;
 
                 if (player.get_kamas() < Apayer2) {
@@ -3044,17 +3048,17 @@ public class GameThread implements Runnable {
                 Exchange_mountPark(packet);
                 break;
 
-            case 'R':// liste d'achat NPC // demande d'échange
+            case 'R':// liste d'achat NPC // demande d'Ã©change
                 Exchange_start(packet);
                 break;
             case 'S':// Vente
                 Exchange_onSellItem(packet);
                 break;
 
-            case 'V':// Fin de l'échange
+            case 'V':// Fin de l'Ã©change
                 Exchange_finish_buy();
                 break;
-            case 'J':// Livre de métiers
+            case 'J':// Livre de mÃ©tiers
                 Book_open(packet.substring(3));
                 break;
         }
@@ -3289,7 +3293,7 @@ public class GameThread implements Runnable {
                     if (curHdv.getLigne(ligneID) != null
                             && !curHdv.getLigne(ligneID).isEmpty())
                         SocketManager.GAME_SEND_EHm_PACKET(player, "+", curHdv
-                                .getLigne(ligneID).parseToEHm());// Réajoute la
+                                .getLigne(ligneID).parseToEHm());// RÃ©ajoute la
                     // ligne si elle
                     // n'est pas
                     // vide
@@ -3304,7 +3308,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Ow_PACKET(player);
                     SocketManager.GAME_SEND_Im_PACKET(player, "068");// Envoie le
                     // message
-                    // "Lot acheté"
+                    // "Lot achetÃ©"
                 } else {
                     SocketManager.GAME_SEND_Im_PACKET(player, "172");// Envoie un
                     // message
@@ -3331,7 +3335,7 @@ public class GameThread implements Runnable {
                 templateID = Integer.parseInt(packet.substring(3));
                 SocketManager.GAME_SEND_EHP_PACKET(player, templateID);
                 break;
-            case 'T':// Demande des template de la catégorie
+            case 'T':// Demande des template de la catÃ©gorie
                 int categ = Integer.parseInt(packet.substring(3));
                 String allTemplate = World.getHdv(
                         Math.abs(player.get_isTradingWith())).parseTemplate(categ);
@@ -3358,15 +3362,15 @@ public class GameThread implements Runnable {
                 case 'C':// Parcho => Etable (Stocker)
                     if (guid == -1 || !player.hasItemGuid(guid))
                         return;
-                /*if (MP.get_size() <= MP.MountParkDATASize()) { // Une boucle vide, on enlève @Flow
+                /*if (MP.get_size() <= MP.MountParkDATASize()) { // Une boucle vide, on enlÃ¨ve @Flow
                     //SocketManager.GAME_SEND_Im_PACKET(player, "1145");
 					//return;
 				}*/
                     Item obj = World.getObjet(guid);
-                    // on prend la DD demandée
+                    // on prend la DD demandÃ©e
                     int DDid = obj.getStats().getEffect(995);
                     Mount DD = World.getDragoByID(DDid);
-                    // FIXME mettre return au if pour ne pas créer des nouvelles
+                    // FIXME mettre return au if pour ne pas crÃ©er des nouvelles
                     // dindes
                     if (DD == null) {
                         int color = Constant.getMountColorByParchoTemplate(obj
@@ -3378,7 +3382,7 @@ public class GameThread implements Runnable {
                     // On enleve l'objet du Monde et du Perso
                     player.removeItem(guid);
                     World.removeItem(guid);
-                    // on ajoute la dinde a l'étable
+                    // on ajoute la dinde a l'Ã©table
                     MP.addData(DD.get_id(), player.getGuid());
                     SQLManager.UPDATE_MOUNTPARK(MP);
                     // On envoie les packet
@@ -3394,27 +3398,27 @@ public class GameThread implements Runnable {
                     if (MP.getData().get(DD1.get_id()) != player.getGuid()
                             && World.getPlayer(MP.getData().get(DD1.get_id()))
                             .get_guild() != player.get_guild()) {
-                        // Pas la même guilde, pas le même perso
+                        // Pas la mÃªme guilde, pas le mÃªme perso
                         return;
                     }
                     if (MP.getData().get(DD1.get_id()) != player.getGuid()
                             && World.getPlayer(MP.getData().get(DD1.get_id()))
                             .get_guild() == player.get_guild()
                             && !player.getGuildMember().canDo(Constant.G_OTHDINDE)) {
-                        // Même guilde, pas le droit
+                        // MÃªme guilde, pas le droit
                         SocketManager.GAME_SEND_Im_PACKET(player, "1101");
                         return;
                     }
-                    // on retire la dinde de l'étable
+                    // on retire la dinde de l'Ã©table
                     MP.removeData(DD1.get_id());
                     SQLManager.UPDATE_MOUNTPARK(MP);
-                    // On créer le parcho
+                    // On crÃ©er le parcho
                     ObjTemplate T = Constant.getParchoTemplateByMountColor(DD1
                             .get_color());
                     Item obj1 = T.createNewItem(1, false, -1);
                     // On efface les stats
                     obj1.clearStats();
-                    // on ajoute la possibilité de voir la dinde
+                    // on ajoute la possibilitÃ© de voir la dinde
                     obj1.getStats().addOneStat(995, DD1.get_id());
                     obj1.addTxtStat(996, player.getName());
                     obj1.addTxtStat(997, DD1.get_nom());
@@ -3442,14 +3446,14 @@ public class GameThread implements Runnable {
                     if (MP.getData().get(DD3.get_id()) != player.getGuid()
                             && World.getPlayer(MP.getData().get(DD3.get_id()))
                             .get_guild() != player.get_guild()) {
-                        // Pas la même guilde, pas le même perso
+                        // Pas la mÃªme guilde, pas le mÃªme perso
                         return;
                     }
                     if (MP.getData().get(DD3.get_id()) != player.getGuid()
                             && World.getPlayer(MP.getData().get(DD3.get_id()))
                             .get_guild() == player.get_guild()
                             && !player.getGuildMember().canDo(Constant.G_OTHDINDE)) {
-                        // Même guilde, pas le droit
+                        // MÃªme guilde, pas le droit
                         SocketManager.GAME_SEND_Im_PACKET(player, "1101");
                         return;
                     }
@@ -3464,14 +3468,14 @@ public class GameThread implements Runnable {
                             + "");
                     SocketManager.GAME_SEND_Rx_PACKET(player);
                     break;
-                case 'p':// Equipé => Stocker
-                    // Si c'est la dinde équipé
+                case 'p':// EquipÃ© => Stocker
+                    // Si c'est la dinde Ã©quipÃ©
                     if (player.getMount() != null ? player.getMount().get_id() == guid
                             : false) {
                         // Si le perso est sur la monture on le fait descendre
                         if (player.isOnMount())
                             player.toogleOnMount();
-                        // Si ca n'a pas réussie, on s'arrete là (Items dans le sac
+                        // Si ca n'a pas rÃ©ussie, on s'arrete lÃ  (Items dans le sac
                         // ?)
                         if (player.isOnMount())
                             return;
@@ -3510,10 +3514,10 @@ public class GameThread implements Runnable {
             int points = Util.loadPointsByAccount(player.getAccount());
             Util.updatePointsByAccount(player.getAccount(), points + player.getOffrePoints());
             player.deleteItemQuantity();
-            player.sendText("Vous avez obtenu " + player.getOffrePoints() + " points boutique suite à cet échange !");
+            player.sendText("Vous avez obtenu " + player.getOffrePoints() + " points boutique suite Ã  cet Ã©change !");
             player.resetOffrePoints();
         }
-        if (player.getCurJobAction() != null && player.getMap().get_id() == 8731) { //@Flow - Fix formagie échange
+        if (player.getCurJobAction() != null && player.getMap().get_id() == 8731) { //@Flow - Fix formagie Ã©change
             // Si pas action de craft, on s'arrete la
             if (!player.getCurJobAction().isCraft()) {
                 return;
@@ -3527,7 +3531,7 @@ public class GameThread implements Runnable {
     }
 
     private void Exchange_onMoveItem(String packet) {
-        //PNJ Échangeur boutique @Flow
+        //PNJ Ã‰changeur boutique @Flow
         if (player.get_echangePNJBoutique()) {
             switch (packet.charAt(2)) {
                 case 'O':// Objet
@@ -3552,7 +3556,7 @@ public class GameThread implements Runnable {
                             if (qua <= 0)
                                 return;
                             int guidT = obj.getTemplate(false).getID();
-                            // Item mimibioté
+                            // Item mimibiotÃ©
                             if (obj.getStats().getEffect(616161) > 0) {
                                 guidT = obj.getStats().getEffect(616161);
                                 player.setOffrePoints(50);
@@ -3561,7 +3565,7 @@ public class GameThread implements Runnable {
                                 if (obj.getTemplate(true).getStrTemplate().contains("6f#") || obj.getTemplate(true).getStrTemplate().contains("80#")) {
                                     baseFM = true;
                                 }
-                                // @Flow - Vérifications si c'est un item fm en atelier.
+                                // @Flow - VÃ©rifications si c'est un item fm en atelier.
                                 if (!baseFM) {
                                     String statsTemplate = obj.getTemplate(true).getStrTemplate();
                                     String[] elementsBase = statsTemplate.split(",");
@@ -3585,9 +3589,9 @@ public class GameThread implements Runnable {
                                     } catch (Exception e) {
                                     }
                                 }
-                                SocketManager.GAME_SEND_MESSAGE(player, "Je vous offre " + player.getOffrePoints() + " points pour tous vos équipements, acceptez-vous ?", "0BF9B7");
+                                SocketManager.GAME_SEND_MESSAGE(player, "Je vous offre " + player.getOffrePoints() + " points pour tous vos Ã©quipements, acceptez-vous ?", "0BF9B7");
                             } else {
-                                player.sendText("Désolé, je ne collectionne pas cet objet...");
+                                player.sendText("DÃ©solÃ©, je ne collectionne pas cet objet...");
                                 return;
                             }
                             player.setItemQuantity(guid, qua);
@@ -3615,7 +3619,7 @@ public class GameThread implements Runnable {
                             if (obj.getQuantity() < qua)
                                 return;
                             int guidT = obj.getTemplate(false).getID();
-                            // Si mimibioté
+                            // Si mimibiotÃ©
                             if (obj.getStats().getEffect(616161) > 0) {
                                 guidT = obj.getStats().getEffect(616161);
                                 player.setOffrePoints(-50);
@@ -3632,12 +3636,12 @@ public class GameThread implements Runnable {
                                 } catch (Exception e) {
                                 }
                                 if (player.getOffrePoints() > 0) {
-                                    SocketManager.GAME_SEND_MESSAGE(player, "Je modifie mon offre, je vous offre " + player.getOffrePoints() + " points pour tous vos équipements, acceptez-vous ?", "0BF9B7");
+                                    SocketManager.GAME_SEND_MESSAGE(player, "Je modifie mon offre, je vous offre " + player.getOffrePoints() + " points pour tous vos Ã©quipements, acceptez-vous ?", "0BF9B7");
                                 } else {
-                                    SocketManager.GAME_SEND_MESSAGE(player, "Qu'avez vous à m'offrir ?", "0BF9B7");
+                                    SocketManager.GAME_SEND_MESSAGE(player, "Qu'avez vous Ã  m'offrir ?", "0BF9B7");
                                 }
                             } else {
-                                player.sendText("Désolé, je ne collectionne pas cet objet...");
+                                player.sendText("DÃ©solÃ©, je ne collectionne pas cet objet...");
                                 return;
                             }
                             //int quaItem = player.getItemQuantity(guid);
@@ -3691,7 +3695,7 @@ public class GameThread implements Runnable {
 					SocketManager
 							.GAME_SEND_MESSAGE(
 									player,
-									"Cet objet n'existe pas ou bug, changes de perso pour en être sûr.",
+									"Cet objet n'existe pas ou bug, changes de perso pour en Ãªtre sÃ»r.",
 									Config.CONFIG_MOTD_COLOR);
 					return;
 				}
@@ -3717,7 +3721,7 @@ public class GameThread implements Runnable {
             switch (packet.charAt(2)) {
                 case 'O':// Objets
                     if (packet.charAt(3) == '+') {
-                        player.sendText("Le mode marchand est temporairement désactivé, vous pouvez utilisez l'HDV et retirer les items de votre mode marchand.");
+                        player.sendText("Le mode marchand est temporairement dÃ©sactivÃ©, vous pouvez utilisez l'HDV et retirer les items de votre mode marchand.");
                        /* String[] infos = packet.substring(4).split("\\|");
                         try {
                             // verification des failles
@@ -3732,14 +3736,14 @@ public class GameThread implements Runnable {
                             Item obj = World.getObjet(guid);
                             if (obj == null)
                                 return;
-                            // Prévention valeurs négatives @Flow
+                            // PrÃ©vention valeurs nÃ©gatives @Flow
                             if (qua <= 0 || price <= 0)
                                 return;
                             if (qua > obj.getQuantity())
                                 qua = obj.getQuantity();
 
                             if ((obj.getStats().getEffect(9000) == 1)) {
-                                player.sendText("Cet objet ne peut être échangé");
+                                player.sendText("Cet objet ne peut Ãªtre Ã©changÃ©");
                                 return;
                             }
                             player.addinStore(obj.getGuid(), price, qua);
@@ -3757,7 +3761,7 @@ public class GameThread implements Runnable {
                             /** if(Security.isCompromised(packet, _perso)) return; **/
                             // Echange impossible ! Bouleto, packet.contains("-"),
                             // il y en aura toujours !
-                            // Un autre code à la con ci-dessus ^^ @Flow
+                            // Un autre code Ã  la con ci-dessus ^^ @Flow
 
                             if (qua <= 0)
                                 return;
@@ -3770,7 +3774,7 @@ public class GameThread implements Runnable {
                             if (qua < obj.getQuantity())
                                 qua = obj.getQuantity();
                             if ((obj.getStats().getEffect(9000) == 1)) {
-                                player.sendText("Cet objet ne peut être échangé");
+                                player.sendText("Cet objet ne peut Ãªtre Ã©changÃ©");
                                 return;
                             }
                             player.removeFromStore(obj.getGuid(), qua);
@@ -3889,7 +3893,7 @@ public class GameThread implements Runnable {
                                 .parseByte(packet.substring(4).split("\\|")[1]);
                         int price = Integer
                                 .parseInt(packet.substring(4).split("\\|")[2]);
-                        Item obj = World.getObjet(itmID);// Récupère l'item
+                        Item obj = World.getObjet(itmID);// RÃ©cupÃ¨re l'item
                         if (amount <= 0 || price <= 0)
                             return;
 
@@ -3899,14 +3903,14 @@ public class GameThread implements Runnable {
                         try {
                             int typeObjet = World.getObjet(itmID).getTemplate(false).getType();
                             if (player.getMap().get_id() == 27002 && World.getObjet(itmID).getTemplate(false).getID() != 470001 && typeObjet == 39) {
-                                player.sendText("Vous ne pouvez vendre que des pierres précieuses (ID : " + typeObjet + "!");
+                                player.sendText("Vous ne pouvez vendre que des pierres prÃ©cieuses (ID : " + typeObjet + "!");
                                 return;
                             }
                         } catch (Exception E) {
                         }
 
-                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillé à un compte
-                            player.sendText("Cet item est lié à votre compte, vous ne pouvez pas le vendre.");
+                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillÃ© Ã  un compte
+                            player.sendText("Cet item est liÃ© Ã  votre compte, vous ne pouvez pas le vendre.");
                             return;
                         }
 
@@ -3915,8 +3919,8 @@ public class GameThread implements Runnable {
                         //long taxe = Math.round((double)(price * (curHdv.getTaxe() / 100)));
                         float taxes = Math.round((price * (curHdv.getTaxe() / 100)));
 
-                        if (!player.hasItemGuid(itmID))// Vérifie si le personnage a
-                            // bien l'item spécifié et
+                        if (!player.hasItemGuid(itmID))// VÃ©rifie si le personnage a
+                            // bien l'item spÃ©cifiÃ© et
                             // l'argent pour payer la taxe
                             return;
 
@@ -3930,15 +3934,15 @@ public class GameThread implements Runnable {
                             SocketManager.GAME_SEND_Im_PACKET(player, "176");
                             return;
                         }
-                        // Changement des vérifications, vraiment mal structuré... @Flow
+                        // Changement des vÃ©rifications, vraiment mal structurÃ©... @Flow
                         if (amount > obj.getQuantity())// S'il veut mettre plus de cette
                             // objet en vente que ce qu'il
-                            // possède
+                            // possÃ¨de
 
                             return;
 
                         if ((obj.getStats().getEffect(9000) == 1)) {
-                            player.sendText("Cet objet ne peut être échangé");
+                            player.sendText("Cet objet ne peut Ãªtre Ã©changÃ©");
                             return;
                         }
 
@@ -3952,8 +3956,8 @@ public class GameThread implements Runnable {
                         int newQua = (obj.getQuantity() - rAmount);
 
                         if (newQua <= 0) { // Si c'est plusieurs objets ensemble enleve
-                            // seulement la quantité de mise en vente
-                            player.removeItem(itmID);// Enlève l'item de l'inventaire du
+                            // seulement la quantitÃ© de mise en vente
+                            player.removeItem(itmID);// EnlÃ¨ve l'item de l'inventaire du
                             // personnage
                             SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player, itmID);// Envoie
                             // un
@@ -4028,7 +4032,7 @@ public class GameThread implements Runnable {
 			// Si pas action de craft, on s'arrete la
 			if (!player.getCurJobAction().isCraft()) {
 				SocketManager.GAME_SEND_MESSAGE(player,
-						"Vous êtes déjà entrain de craft !",
+						"Vous Ãªtes dÃ©jÃ  entrain de craft !",
 						Config.CONFIG_MOTD_COLOR);
 				return;
 			}
@@ -4109,7 +4113,7 @@ public class GameThread implements Runnable {
 
         //Metier @Flow - A revoir
 
-        if (player.getCurJobAction() != null && player.getMap().get_id() == 8731) { // Doit être sur la map de craft, cause conflit avec la banque autrement @Flow
+        if (player.getCurJobAction() != null && player.getMap().get_id() == 8731) { // Doit Ãªtre sur la map de craft, cause conflit avec la banque autrement @Flow
             //Si pas action de craft, on s'arrete la
             if (!player.getCurJobAction().isCraft()) {
                 return;
@@ -4248,10 +4252,10 @@ public class GameThread implements Runnable {
                     ;
                     if (guid == 0 || qua <= 0 || qua > 100000)
                         return;
-                    Item obj = World.getObjet(guid); // Récupération stats
+                    Item obj = World.getObjet(guid); // RÃ©cupÃ©ration stats
                     if (obj == null) return; // Pourquoi pas ^^ @Flow
                     if ((obj.getStats().getEffect(9000) == 1)) {
-                        player.sendText("Cet objet ne peut être échangé");
+                        player.sendText("Cet objet ne peut Ãªtre Ã©changÃ©");
                         return;
                     }
                     switch (packet.charAt(3)) {
@@ -4339,13 +4343,13 @@ public class GameThread implements Runnable {
                     Item obj = World.getObjet(guid);
                     if (obj == null) return;
                     if ((obj.getStats().getEffect(9000) == 1)) {
-                        player.sendText("Cet objet ne peut être échangé");
+                        player.sendText("Cet objet ne peut Ãªtre Ã©changÃ©");
                         return;
                     }
                     switch (packet.charAt(3)) {
                         case '+':// Ajouter a la banque
-                            if (obj.getStats().getEffect(252526) > 0) { // Item verouillé au compte
-                                player.sendText("Cet item est lié à votre compte, vous ne pouvez pas le déposer dans un coffre.");
+                            if (obj.getStats().getEffect(252526) > 0) { // Item verouillÃ© au compte
+                                player.sendText("Cet item est liÃ© Ã  votre compte, vous ne pouvez pas le dÃ©poser dans un coffre.");
                                 return;
                             }
                             t.addInTrunk(guid, qua, player);
@@ -4360,7 +4364,7 @@ public class GameThread implements Runnable {
             return;
         }
 
-        if (player.get_curExchange() == null) // Échange joueur
+        if (player.get_curExchange() == null) // Ã‰change joueur
             return;
         switch (packet.charAt(2)) {
             case 'O':// Objet ?
@@ -4388,8 +4392,8 @@ public class GameThread implements Runnable {
                             qua = obj.getQuantity() - quaInExch;
                         if (qua <= 0)
                             return;
-                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillé à un compte
-                            player.sendText("Cet item est lié à votre compte, vous ne pouvez pas l'échanger.");
+                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillÃ© Ã  un compte
+                            player.sendText("Cet item est liÃ© Ã  votre compte, vous ne pouvez pas l'Ã©changer.");
                             return;
                         }
                         player.get_curExchange().addItem(guid, qua,
@@ -4436,7 +4440,7 @@ public class GameThread implements Runnable {
 
             case 'G':// Kamas
                 try {
-                    long numb = Long.valueOf(packet.substring(3)).longValue(); // @Flow - Algatron = dumb, convertir un string en int pour le déclarer en long ? What about high value ? #Fixé
+                    long numb = Long.valueOf(packet.substring(3)).longValue(); // @Flow - Algatron = dumb, convertir un string en int pour le dÃ©clarer en long ? What about high value ? #FixÃ©
                     if (player.get_kamas() < numb) {
                         numb = player.get_kamas();
                     }
@@ -4511,7 +4515,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_BUY_ERROR_PACKET(out);
                     return;
                 }
-                if (qua == itemStore.getQuantity()) { // si il achète tous les items du même template
+                if (qua == itemStore.getQuantity()) { // si il achÃ¨te tous les items du mÃªme template
                     seller.getStoreItems().remove(itemStore.getGuid());
                     player.addObjet(itemStore, true);
                 } else {
@@ -4566,8 +4570,8 @@ public class GameThread implements Runnable {
                 return;
 
             ObjTemplate template = World.getObjTemplate(tempID);
-            if (template == null)// Si l'objet demandé n'existe pas(ne devrait
-            // pas arrivé)
+            if (template == null)// Si l'objet demandÃ© n'existe pas(ne devrait
+            // pas arrivÃ©)
             {
                 GameServer.addToLog(player.getName()
                         + " tente d'acheter l'itemTemplate " + tempID
@@ -4585,13 +4589,13 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_BUY_ERROR_PACKET(out);
                 return;
             }
-            long prix = LongMath.checkedMultiply(template.getPrix(), qua); // ArithmeticException en cas d'erreur, donc échec achat
-            //int prix = Math.abs(template.getPrix() * qua); // Va recommencer à Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
+            long prix = LongMath.checkedMultiply(template.getPrix(), qua); // ArithmeticException en cas d'erreur, donc Ã©chec achat
+            //int prix = Math.abs(template.getPrix() * qua); // Va recommencer Ã  Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
 
             if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) {
                 int prixPierres = Ints.checkedCast(prix); // Cas d'erreur: IllegalArgumentException
                 if (!player.hasItemTemplate(470001, prixPierres)) {
-                    player.sendText("Vous n'avez pas assez de pierres précieuses pour effectuer cet achat !");
+                    player.sendText("Vous n'avez pas assez de pierres prÃ©cieuses pour effectuer cet achat !");
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
@@ -4676,14 +4680,14 @@ public class GameThread implements Runnable {
                 && player.getInTrunk() == null)
             return;
 
-        // Si échange avec un personnage
+        // Si Ã©change avec un personnage
         if (player.get_curExchange() != null) {
             player.get_curExchange().cancel();
             player.set_isTradingWith(0);
             player.set_away(false);
             return;
         }
-        // Si métier
+        // Si mÃ©tier
         if (player.getCurJobAction() != null) {
             player.getCurJobAction().resetCraft();
         }
@@ -4745,7 +4749,7 @@ public class GameThread implements Runnable {
     private void Exchange_start(String packet) {
         if (packet.substring(2, 4).equals("11"))// Ouverture HDV achat
         {
-            if (player.get_isTradingWith() < 0)// Si déjà ouvert
+            if (player.get_isTradingWith() < 0)// Si dÃ©jÃ  ouvert
                 SocketManager.GAME_SEND_EV_PACKET(out);
 
             if (player.getDeshonor() >= 5) {
@@ -4762,7 +4766,7 @@ public class GameThread implements Runnable {
                     + toOpen.parseTaxe() + ";" + toOpen.getLvlMax() + ";"
                     + toOpen.getMaxItemCompte() + ";-1;" + toOpen.getSellTime();
             SocketManager.GAME_SEND_ECK_PACKET(player, 11, info);
-            player.set_isTradingWith(0 - player.getMap().get_id()); // Récupère
+            player.set_isTradingWith(0 - player.getMap().get_id()); // RÃ©cupÃ¨re
             // l'ID
             // de
             // la
@@ -4771,11 +4775,11 @@ public class GameThread implements Runnable {
             // rend
             // cette
             // valeur
-            // négative
+            // nÃ©gative
             return;
         } else if (packet.substring(2, 4).equals("10"))// Ouverture HDV vente
         {
-            if (player.get_isTradingWith() < 0)// Si déjà ouvert
+            if (player.get_isTradingWith() < 0)// Si dÃ©jÃ  ouvert
                 SocketManager.GAME_SEND_EV_PACKET(out);
 
             if (player.getDeshonor() >= 5) {
@@ -4792,7 +4796,7 @@ public class GameThread implements Runnable {
                     + toOpen.parseTaxe() + ";" + toOpen.getLvlMax() + ";"
                     + toOpen.getMaxItemCompte() + ";-1;" + toOpen.getSellTime();
             SocketManager.GAME_SEND_ECK_PACKET(player, 10, info);
-            player.set_isTradingWith(0 - player.getMap().get_id()); // Récupère
+            player.set_isTradingWith(0 - player.getMap().get_id()); // RÃ©cupÃ¨re
             // l'ID
             // de
             // la
@@ -4801,7 +4805,7 @@ public class GameThread implements Runnable {
             // rend
             // cette
             // valeur
-            // négative
+            // nÃ©gative
 
             SocketManager.GAME_SEND_HDVITEM_SELLING(player);
             return;
@@ -4834,16 +4838,16 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_ECK_PACKET(out, 0, npcID + "");
                     SocketManager.GAME_SEND_ITEM_VENDOR_LIST_PACKET(player, npc);
                     player.set_isTradingWith(npcID);
-                    int idPnj = player.getMap().getNPC(player.get_isTradingWith()).get_template().get_id(); // je récupère la vrai id du pnj et non l'id qu'il a sur la map comme le fait NpcID
-                    if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) // message notif pierres précieuses @Flow
+                    int idPnj = player.getMap().getNPC(player.get_isTradingWith()).get_template().get_id(); // je rÃ©cupÃ¨re la vrai id du pnj et non l'id qu'il a sur la map comme le fait NpcID
+                    if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) // message notif pierres prÃ©cieuses @Flow
                     {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de pierres précieuses requis");
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichÃ©s correspondent au nombre de pierres prÃ©cieuses requis");
                         return;
                     } else if (idPnj == 50029) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Kolizeton requis");
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichÃ©s correspondent au nombre de Kolizeton requis");
                         return;
                     } else if (idPnj == 816) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de jeton d'event Area requis");
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichÃ©s correspondent au nombre de jeton d'event Area requis");
                         return;
                     }
                 } catch (NumberFormatException e) {
@@ -4878,7 +4882,7 @@ public class GameThread implements Runnable {
                         return;
                     }
                     if (player.getMap().get_id() == 8731) {
-                        player.sendText("Échange impossible sur cette map. Veuillez quitter l'atelier.");
+                        player.sendText("Ã‰change impossible sur cette map. Veuillez quitter l'atelier.");
                         return;
                     }
                     SocketManager.GAME_SEND_EXCHANGE_REQUEST_OK(out,
@@ -4932,7 +4936,7 @@ public class GameThread implements Runnable {
                     e.printStackTrace();
                 }
                 break;
-            case '4'://StorePlayer @Flow - A réviser
+            case '4'://StorePlayer @Flow - A rÃ©viser
                 int pID = 0;
                 //int cellID = 0;//Inutile
                 try {
@@ -5015,9 +5019,9 @@ public class GameThread implements Runnable {
         if (player == null)
             return;
         if (player.getFight() != null)
-            return;// Pas d'émote en combat
+            return;// Pas d'Ã©mote en combat
 
-        switch (emote)// effets spéciaux des émotes
+        switch (emote)// effets spÃ©ciaux des Ã©motes
         {
             case 19:// s'allonger
             case 1:// s'asseoir
@@ -5136,7 +5140,7 @@ public class GameThread implements Runnable {
     private void parseFightPacket(String packet) {
         try {
             switch (packet.charAt(1)) {
-                case 'D':// Détails d'un combat (liste des combats)
+                case 'D':// DÃ©tails d'un combat (liste des combats)
                     int key = -1;
                     try {
                         key = Integer.parseInt(packet.substring(2).replace(
@@ -5187,7 +5191,7 @@ public class GameThread implements Runnable {
             case 'A':// Console
                 Basic_console(packet);
                 break;
-            case 'a': // Téléportation via géoposition... //-WalakaZ- & Skryn
+            case 'a': // TÃ©lÃ©portation via gÃ©oposition... //-WalakaZ- & Skryn
                 switch (packet.charAt(2)) {
                     case 'M':
                         try {
@@ -5378,7 +5382,7 @@ public class GameThread implements Runnable {
                 long l;
                 if ((l = System.currentTimeMillis() - _timeLastTradeMsg) < Config.FLOOD_TIME
                         && player.getAccount().getGmLevel() < 3) {
-                    l = (Config.FLOOD_TIME - l) / 1000;// On calcul la différence en
+                    l = (Config.FLOOD_TIME - l) / 1000;// On calcul la diffÃ©rence en
                     // secondes
                     SocketManager.GAME_SEND_Im_PACKET(player,
                             "0115;" + ((int) Math.ceil(l) + 1));
@@ -5415,7 +5419,7 @@ public class GameThread implements Runnable {
                 long j;
                 if ((j = System.currentTimeMillis() - _timeLastRecrutmentMsg) < Config.FLOOD_TIME
                         && player.getAccount().getGmLevel() < 3) {
-                    j = (Config.FLOOD_TIME - j) / 1000;// On calcul la différence en
+                    j = (Config.FLOOD_TIME - j) / 1000;// On calcul la diffÃ©rence en
                     // secondes
                     SocketManager.GAME_SEND_Im_PACKET(player,
                             "0115;" + ((int) Math.ceil(j) + 1));
@@ -5467,7 +5471,7 @@ public class GameThread implements Runnable {
                 long k;
                 if ((k = System.currentTimeMillis() - _timeLastAlignMsg) < Config.FLOOD_TIME
                         && player.getAccount().getGmLevel() < 3) {
-                    k = (Config.FLOOD_TIME - k) / 1000;// On calcul la différence en
+                    k = (Config.FLOOD_TIME - k) / 1000;// On calcul la diffÃ©rence en
                     // secondes
                     SocketManager.GAME_SEND_Im_PACKET(player,
                             "0115;" + ((int) Math.ceil(k) + 1));
@@ -5493,7 +5497,7 @@ public class GameThread implements Runnable {
                 msg = packet.split("\\|", 2)[1];
                 long x;
                 if ((x = System.currentTimeMillis() - _timeLastIncarnamMsg) < Config.FLOOD_TIME) {
-                    x = (Config.FLOOD_TIME - x) / 1000;// Calculamos a diferença em
+                    x = (Config.FLOOD_TIME - x) / 1000;// Calculamos a diferenÃ§a em
                     // segundos
                     SocketManager.GAME_SEND_Im_PACKET(player,
                             "0115;" + ((int) Math.ceil(x) + 1));
@@ -5552,7 +5556,7 @@ public class GameThread implements Runnable {
                             player.getGuid(), player.getName(), msg);
                     SocketManager.GAME_SEND_cMK_PACKET(player, "T",
                             target.getGuid(), target.getName(), msg);
-                    log_msg = "[MP à " + target.getName() + "] : " + msg;
+                    log_msg = "[MP Ã  " + target.getName() + "] : " + msg;
                 }
                 break;
         }
@@ -5616,7 +5620,7 @@ public class GameThread implements Runnable {
                     return;
                 if (player.getFight() == null)
                     return;
-                //player.sendText("DEBUG: Le packet pour passer le tour a été reçu, attente du traitement...");
+                //player.sendText("DEBUG: Le packet pour passer le tour a Ã©tÃ© reÃ§u, attente du traitement...");
                 player.getFight().playerPass(player);
                 break;
         }
@@ -5643,7 +5647,7 @@ public class GameThread implements Runnable {
             }
             Player target = World.getPlayer(targetID);
             // On ne quitte pas un joueur qui : est null, ne combat pas, n'est
-            // pas de ça team.
+            // pas de Ã§a team.
             if (target == null
                     || target.getFight() == null
                     || target.getFight().getTeamID(target.getGuid()) != player
@@ -5740,7 +5744,7 @@ public class GameThread implements Runnable {
                         player.get_curCell().removePlayer(player.getGuid());
                         SocketManager.GAME_SEND_BN(out);
                         String path = GA._args;
-                        // On prend la case ciblï¿½e
+                        // On prend la case ciblÃ¯Â¿Â½e
                         Case nextCell = player.getMap().getCase(
                                 CryptManager.cellCode_To_ID(path.substring(path
                                         .length() - 2)));
@@ -5753,7 +5757,7 @@ public class GameThread implements Runnable {
                         if (targetCell == null) {
                             targetCell = player.get_curCell();
                         }
-                        // On dï¿½finie la case et on ajoute le personnage sur la
+                        // On dÃ¯Â¿Â½finie la case et on ajoute le personnage sur la
                         // case
                         player.set_curCell(nextCell);// TODO
                         player.set_orientation(CryptManager
@@ -5762,7 +5766,7 @@ public class GameThread implements Runnable {
                         if (!player._isGhosts)
                             player.set_away(false);
                         if (targetCell.getObject() != null) {
-                            // Si c'est une "borne" comme Emotes, ou Crï¿½ation
+                            // Si c'est une "borne" comme Emotes, ou CrÃ¯Â¿Â½ation
                             // guilde
                             if (targetCell.getObject().getID() == 1324) {
                                 Constant.applyPlotIOAction(player, player.getMap()
@@ -5872,7 +5876,7 @@ public class GameThread implements Runnable {
             SocketManager.GAME_SEND_eUK_PACKET_TO_PLAYER(this.player.getMap(), this.player);
         } catch (Exception e) {
             SocketManager.send(this.player, "cC+i");
-            System.out.println("Erreur GI numéro: " + debug);
+            System.out.println("Erreur GI numÃ©ro: " + debug);
         }
 
     }
@@ -5945,7 +5949,7 @@ public class GameThread implements Runnable {
                 player.openPrismeMenu();
                 break;
 
-            case 507:// Panneau intérieur de la maison
+            case 507:// Panneau intÃ©rieur de la maison
                 house_action(packet);
                 break;
 
@@ -6013,7 +6017,7 @@ public class GameThread implements Runnable {
             if (player.get_align() == Constant.ALIGNEMENT_NEUTRE)
                 return;
             if (Constant.COMBAT_BLOQUE) {
-                player.sendText("Les combats sont bloqués par les administrateurs.");
+                player.sendText("Les combats sont bloquÃ©s par les administrateurs.");
                 return;
             } else if (player.estBloqueCombat()) {
                 player.sendText("Temporisation en cours... Veuillez patienter...");
@@ -6037,7 +6041,7 @@ public class GameThread implements Runnable {
         if (h == null)
             return;
         switch (actionID) {
-            case 81:// Vérouiller maison
+            case 81:// VÃ©rouiller maison
                 h.Lock(player);
                 break;
             case 97:// Acheter maison
@@ -6063,7 +6067,7 @@ public class GameThread implements Runnable {
                 return;
             }
             if (Constant.COMBAT_BLOQUE) {
-                player.sendText("Les combats sont bloqués par les administrateurs.");
+                player.sendText("Les combats sont bloquÃ©s par les administrateurs.");
                 return;
             } else if (player.estBloqueCombat()) {
                 player.sendText("Temporisation en cours... Veuillez patienter...");
@@ -6098,7 +6102,7 @@ public class GameThread implements Runnable {
             if (player == null)
                 return;
             if (Constant.COMBAT_BLOQUE) {
-                player.sendText("Les combats sont bloqués par les administrateurs.");
+                player.sendText("Les combats sont bloquÃ©s par les administrateurs.");
                 return;
             } else if (target.estBloqueCombat()) {
                 player.sendText("Votre cible est toujours en temporisation... Veuillez patienter...");
@@ -6111,7 +6115,7 @@ public class GameThread implements Runnable {
             }
 
 			/*
-             * 	Possibilité d'aggro.
+             * 	PossibilitÃ© d'aggro.
 			 */
             Integer calcDifLevel = 0;
             Integer calcDifPrestige = 0;
@@ -6158,7 +6162,7 @@ public class GameThread implements Runnable {
             // Anti-mulage - Restriction aggro
             if (!player.verifIfResetTimeAggroList(target.getGuid())) {
                 if (player.getNumberOfAggro(target.getGuid()) == 3) {
-                    player.sendText("Vous avez le droit d'agresser que 3 fois par heure la même cible !");
+                    player.sendText("Vous avez le droit d'agresser que 3 fois par heure la mÃªme cible !");
                     return;
                 }
             }
@@ -6378,7 +6382,7 @@ public class GameThread implements Runnable {
             if (Target == null)
                 return;
             if (Target.getAccount().getCurIp().equals(player.getAccount().getCurIp()) && player.getAccount().getGmLevel() != 5) { //@Poupou Pour pouvoir test
-                player.sendText("Impossible de défier ce personnage. (IP identique).");
+                player.sendText("Impossible de dÃ©fier ce personnage. (IP identique).");
                 return;
             }
             if (Target.is_away() || Target.getFight() != null
@@ -6387,7 +6391,7 @@ public class GameThread implements Runnable {
                 return;
             }
             if (Constant.COMBAT_BLOQUE) {
-                player.sendText("Les combats sont bloqués par les administrateurs.");
+                player.sendText("Les combats sont bloquÃ©s par les administrateurs.");
                 return;
             } else if (Target.estBloqueCombat()) {
                 player.sendText("Votre cible est toujours en temporisation... Veuillez patienter...");
@@ -6421,7 +6425,7 @@ public class GameThread implements Runnable {
             if (player.getAccount().getGmLevel() > 0 && player.isGodmode()) {
                 player.get_curCell().removePlayer(player.getGuid());
                 SocketManager.GAME_SEND_BN(out);
-                // On prend la case ciblï¿½e
+                // On prend la case ciblÃ¯Â¿Â½e
                 Case nextCell = player.getMap().getCase(
                         CryptManager.cellCode_To_ID(path.substring(path
                                 .length() - 2)));
@@ -6434,7 +6438,7 @@ public class GameThread implements Runnable {
                 if (targetCell == null) {
                     targetCell = player.get_curCell();
                 }
-                // On dï¿½finie la case et on ajoute le personnage sur la
+                // On dÃ¯Â¿Â½finie la case et on ajoute le personnage sur la
                 // case
                 player.set_curCell(nextCell);// TODO
                 player.set_orientation(CryptManager
@@ -6443,7 +6447,7 @@ public class GameThread implements Runnable {
                 if (!player._isGhosts)
                     player.set_away(false);
                 if (targetCell.getObject() != null) {
-                    // Si c'est une "borne" comme Emotes, ou Crï¿½ation
+                    // Si c'est une "borne" comme Emotes, ou CrÃ¯Â¿Â½ation
                     // guilde
                     if (targetCell.getObject().getID() == 1324) {
                         Constant.applyPlotIOAction(player, player.getMap()
@@ -6468,7 +6472,7 @@ public class GameThread implements Runnable {
             int result = Pathfinding.isValidPath(player.getMap(), player
                     .get_curCell().getID(), pathRef, null);
 
-            // Si déplacement inutile
+            // Si dÃ©placement inutile
             if (result == 0) {
                 SocketManager.GAME_SEND_GA_PACKET(out, "", "0", "", "");
                 removeAction(GA);
@@ -6572,7 +6576,7 @@ public class GameThread implements Runnable {
                 }
                 ;
                 break;
-            case 'g':// Cadeaux à la connexion
+            case 'g':// Cadeaux Ã  la connexion
                 int regalo = account.getCadeau();
                 if (regalo != 0) {
                     String idModObjeto = Integer.toString(regalo, 16);
@@ -6785,7 +6789,7 @@ public class GameThread implements Runnable {
         Item obj = World.getObjet(guid);
         int idOBVI = 0;
 
-        if (obj.getObvijevanPos() != 0) { // On vérifie si il y a bien un obvi
+        if (obj.getObvijevanPos() != 0) { // On vÃ©rifie si il y a bien un obvi
             idOBVI = obj.getObviID();
         } else {
             SocketManager.GAME_SEND_MESSAGE(player, "ERROR", "000000");

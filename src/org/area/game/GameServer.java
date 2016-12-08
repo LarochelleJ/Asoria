@@ -64,43 +64,43 @@ public class GameServer implements Runnable{
 					SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1165");
 				}
 			}, 30, 30, TimeUnit.MINUTES);
-			
+
 			/** @Automatic pub **/
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
 					int rand = Formulas.getRandomValue(1, 5);
 					switch(rand) {
-					case 1:
-						SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB1, Config.CONFIG_MOTD_COLOR);
-						break;
-					case 2:
-						SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB2, Config.CONFIG_MOTD_COLOR);
-						break;
-					case 3:
-						SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB3, Config.CONFIG_MOTD_COLOR);
-						break;
-					case 4:
-						SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB4, Config.CONFIG_MOTD_COLOR);
-						break;
-					case 5:
-						SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB5, Config.CONFIG_MOTD_COLOR);
-						break;
-					} 
+						case 1:
+							SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB1, Config.CONFIG_MOTD_COLOR);
+							break;
+						case 2:
+							SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB2, Config.CONFIG_MOTD_COLOR);
+							break;
+						case 3:
+							SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB3, Config.CONFIG_MOTD_COLOR);
+							break;
+						case 4:
+							SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB4, Config.CONFIG_MOTD_COLOR);
+							break;
+						case 5:
+							SocketManager.GAME_SEND_MESSAGE_TO_ALL(Config.PUB5, Config.CONFIG_MOTD_COLOR);
+							break;
+					}
 				}
 			}, 10, 10, TimeUnit.MINUTES);
-			
+
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
 					World.MoveMobsOnMaps();
 				}
 			}, 1, 1, TimeUnit.MINUTES);
-			
+
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
 					World.PnjParoleOnMaps();
 				}
 			}, 5, 5, TimeUnit.MINUTES);
-			
+
 			/** @Refresh world mobs System **/
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
@@ -108,7 +108,7 @@ public class GameServer implements Runnable{
 					GameServer.addToLog(">La recharge des mobs est finie\n");
 				}
 			}, 5, 5, TimeUnit.HOURS);
-			
+
 			/** Clear Garbage collector @Flow
 			 * L'utilisation du System.gc n'est pas conseill? ! **/
 			/*
@@ -128,12 +128,12 @@ public class GameServer implements Runnable{
 					GameServer.addToLog(">La recharge des mobs est finie\n");
 				}
 			}, 3, 3, TimeUnit.HOURS);*/
-			
+
 			/** @Uptime infos **/
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
 					String baseQuery = "UPDATE `servers` SET `uptime` = ?, `logged` = ? WHERE `id` = ?;";
-					
+
 					try {
 						PreparedStatement p = SQLManager.newTransact(baseQuery, SQLManager.Connection(true));
 						p.setString(1, GameServer.uptimeSQL());
@@ -142,14 +142,14 @@ public class GameServer implements Runnable{
 						p.execute();
 						SQLManager.closePreparedStatement(p);
 					} catch (SQLException e) {
-					}	
+					}
 				}
 			}, 30, 30, TimeUnit.SECONDS);
-			
-			/** 
+
+			/**
 			 * @Start the GameServer 
 			 **/
-			
+
 			serverSocket = new ServerSocket(Config.CONFIG_GAME_PORT);
 			if(Config.CONFIG_USE_IP)
 				Config.GAMESERVER_IP = CryptManager.CryptIP(ip)+CryptManager.CryptPort(Config.CONFIG_GAME_PORT);
@@ -162,8 +162,8 @@ public class GameServer implements Runnable{
 			Reboot.reboot();
 		}
 	}
-	
-	public void run() {	
+
+	public void run() {
 		while(Main.isRunning) {
 			try {
 				Socket socket = serverSocket.accept();
@@ -172,7 +172,7 @@ public class GameServer implements Runnable{
 				else {
 					socket.setSoTimeout(1200000); // 1200000 = 20 minutes
 					GameThread gamethread = new GameThread(socket);
-					
+
 					getClients().add(gamethread);
 					if(getClients().size() > maxClients)
 						maxClients = getClients().size();
@@ -185,26 +185,26 @@ public class GameServer implements Runnable{
 			}
 		}
 	}
-	
+
 	public void kickAll() throws Exception {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {}
-		
+
 		ArrayList<GameThread> c = new ArrayList<GameThread>();
 		c.addAll(clients);
 		for(GameThread GT : c) 	{
 			try {
 				GT.closeSocket();
-			} catch(Exception e){};	
+			} catch(Exception e){};
 		}
 	}
-	
+
 	public void delClient(GameThread gameThread)
 	{
 		clients.remove(gameThread);
 	}
-	
+
 	public static String getServerTime() {
 		Date actDate = new Date();
 		return "BT"+(actDate.getTime()+3600000);
@@ -216,7 +216,7 @@ public class GameServer implements Runnable{
 			thread.start();
 		}
 	}
-	
+
 	public static class SaveThread implements Runnable {
 		public void run() {
 			if(!Config.IS_SAVING) {
@@ -224,7 +224,7 @@ public class GameServer implements Runnable{
 			}
 		}
 	}
-	
+
 	public synchronized static void addToLog(String str) {
 		if(Config.LOGS) {
 			try {
@@ -237,7 +237,7 @@ public class GameServer implements Runnable{
 			}
 		}
 	}
-	
+
 	public synchronized static void addToHdvLog(String str) {
 		if(Config.LOGS) {
 			try {
@@ -250,7 +250,7 @@ public class GameServer implements Runnable{
 			}
 		}
 	}
-	
+
 	public synchronized static void addToSockLog(String str) {
 		if(Config.DEBUG)System.out.println(str);
 		if(Config.LOGS) {
@@ -262,25 +262,25 @@ public class GameServer implements Runnable{
 			} catch (IOException e) {}
 		}
 	}
-	
+
 	public static String getServerDate() {
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("dd");
-		
+
 		String day = Integer.parseInt(dateFormat.format(date)) + "";
-		
+
 		while(day.length() <2) day = "0"+day;
-		
+
 		dateFormat = new SimpleDateFormat("MM");
 		String mounth = (Integer.parseInt(dateFormat.format(date))-1) + "";
-		
+
 		while(mounth.length() <2) mounth = "0"+mounth;
-		
+
 		dateFormat = new SimpleDateFormat("yyyy");
 		String year = (Integer.parseInt(dateFormat.format(date))-1370) + "";
 		return "BD" + year + "|" + mounth + "|" + day;
 	}
-	
+
 	public static String uptime() {
 		long uptime = System.currentTimeMillis() - Main.gameServer.getStartTime();
 		int jour = (int) (uptime/(1000*3600*24));
@@ -292,7 +292,7 @@ public class GameServer implements Runnable{
 		int sec = (int) (uptime/(1000));
 		return "Uptime : <b>"+jour+"j "+hour+"h "+min+"m "+sec+"s</b>\n";
 	}
-	
+
 	public static String uptimeSQL() {
 		long uptime = System.currentTimeMillis() - Main.gameServer.getStartTime();
 		int jour = (int) (uptime/(1000*3600*24));
@@ -302,11 +302,11 @@ public class GameServer implements Runnable{
 		int min = (int) (uptime/(1000*60));
 		return jour+"j "+hour+"h "+min+"m";
 	}
-	
+
 	public synchronized void stop() {
 		this.stop();
 	}
-	
+
 	public static void addShutDown(int time) {
 		/** @Automatic reboot **/
 		timeShutdown = time;
@@ -328,7 +328,7 @@ public class GameServer implements Runnable{
 			}
 		}, timeShutdown, 10, TimeUnit.SECONDS);
 	}
-	
+
 	public ArrayList<GameThread> getClients() {
 		return clients;
 	}
@@ -337,12 +337,12 @@ public class GameServer implements Runnable{
 	{
 		return startTime;
 	}
-	
+
 	public int getMaxPlayer()
 	{
 		return maxClients;
 	}
-	
+
 	public int getPlayerNumber()
 	{
 		return clients.size();

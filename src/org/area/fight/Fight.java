@@ -962,7 +962,6 @@ public class Fight {
         _affectedTarget = 0; // @Flow #Temporisation
         _curFighterPA = _ordreJeu.get(_curPlayer).getPA();
         _curFighterPM = _ordreJeu.get(_curPlayer).getPM();
-        //System.out.println("CurFighterPM : " + _curFighterPM);
         _curFighterUsedPA = 0;
         _curFighterUsedPM = 0;
         Fighter curPlayer = _ordreJeu.get(_curPlayer);
