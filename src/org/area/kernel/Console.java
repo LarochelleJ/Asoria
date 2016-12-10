@@ -32,10 +32,10 @@ public class Console {
 		//SPECIAL
 		BLACK_AND_BG_WHITE(7),
 		RESET(0);
-		
+
 		private int color;
 		
-		private Color(int color) {
+		Color(int color) {
 			this.color = color;
 		}
 		

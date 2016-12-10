@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.NullArgumentException;
 import org.area.check.FloodCheck;
 import org.area.check.Security;
 import org.area.client.Account;

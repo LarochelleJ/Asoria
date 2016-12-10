@@ -1614,9 +1614,6 @@ public class SQLManager {
     }
 
     public static int INSERT_NEW_ITEM(Item item) {
-
-        boolean toReturn = false;
-
         try {
 
             String sql = "INSERT INTO items (template, qua, pos, stats, server) VALUES (?, ?, ?, ?, ?);";
@@ -1627,6 +1624,8 @@ public class SQLManager {
             p.setString(4, item.parseToSave());
             p.setInt(5, GameServer.id);
 
+            String baseQuery = "UPDATE `items` SET guid = 20000000 + id WHERE id = ?;";
+            PreparedStatement prepareState = newTransact(baseQuery, Connection(false));
             p.executeUpdate();
 
             ResultSet rs = p.getGeneratedKeys();
@@ -1634,10 +1633,9 @@ public class SQLManager {
             if (rs.next()) {
                 id = rs.getInt(1);
             }
+            closeResultSet(rs);
+            closePreparedStatement(p);
             if (id > -1) {
-                String baseQuery = "UPDATE `items` SET guid = 20000000 + id WHERE id = ?;";
-                PreparedStatement prepareState = newTransact(baseQuery, Connection(false));
-
                 prepareState.setInt(1, id);
                 prepareState.execute();
                 closePreparedStatement(prepareState);

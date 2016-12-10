@@ -2794,7 +2794,7 @@ public class Fight {
                 if (F.get_lvl() > maxLvl)    //Trouve le monstre au plus haut lvl du groupe (pour la puissance de la pierre)
                     maxLvl = F.get_lvl();
             }
-            pierrePleine = new SoulStone(World.getNewItemGuid(), 1, 7010, Constant.ITEM_POS_NO_EQUIPED, pierreStats, true);    //Crée la pierre d'âme
+            pierrePleine = new SoulStone(-1, 1, 7010, Constant.ITEM_POS_NO_EQUIPED, pierreStats);    //Crée la pierre d'âme
 
             for (Fighter F : TEAM1)    //Récupère les captureur
             {

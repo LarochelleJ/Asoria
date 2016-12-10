@@ -2067,7 +2067,7 @@ public class World {
         }
 
         if (World.getObjTemplate(template).getType() == 85)
-            return new SoulStone(Guid, qua, template, pos, strStats, false);
+            return new SoulStone(Guid, qua, template, pos, strStats);
         else
             return new Item(Guid, template, qua, pos, strStats, World.getObjTemplate(template).getPrestige());
     }

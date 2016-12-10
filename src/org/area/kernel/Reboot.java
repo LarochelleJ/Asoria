@@ -34,6 +34,8 @@ public class Reboot {
 		Main.exchangeClient.stop();
 		for (Player player: World.getOnlinePlayers()) {
 			player.save(true);
+		}
+		for (Player player : World.getOnlinePlayers()) {
 			player.send("000OUT");
 		}
 		

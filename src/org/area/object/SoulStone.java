@@ -11,28 +11,21 @@ import org.area.common.World.Couple;
 public class SoulStone extends Item {
     private ArrayList<Couple<Integer, Integer>> _monsters;
 
-    public SoulStone(int Guid, int qua, int template, int pos, String strStats, boolean nouvelleCapture) {
-        if (nouvelleCapture) {
-            if (World.getObjets().containsKey(Guid)) {
-                this.guid = SQLManager.INSERT_NEW_ITEM(this);
-            } else {
-                this.guid = Guid;
-                nouvelleCapture = false;
-            }
-        } else {
-            this.guid = Guid;
-        }
+    public SoulStone(int Guid, int qua, int template, int pos, String strStats) {
         this.template = World.getObjTemplate(template);    //7010 = Pierre d'ame pleine
         this.quantity = qua;
         this.position = Constant.ITEM_POS_NO_EQUIPED;
-
         _monsters = new ArrayList<Couple<Integer, Integer>>();    //Couple<MonstreID,Level>
         parseStringToStats(strStats);
-        if (nouvelleCapture) {
-            try {
-                World.addObjet(this, false);
-            } catch (Exception e) {
-            }
+
+        if (Guid == -1 || World.getObjets().containsKey(Guid)) { // Nouvel objet ou clone
+            this.guid = SQLManager.INSERT_NEW_ITEM(this);
+        } else { // Item deja existant en bdd
+            this.guid = Guid;
+        }
+        try {
+            World.addObjet(this, false);
+        } catch (Exception e) {
         }
     }
 
