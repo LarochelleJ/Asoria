@@ -1995,17 +1995,28 @@ public class Player {
                 int cur_sagesse = total.getEffect(Constant.STATS_ADD_SAGE);
                 if (cur_sagesse > 800) total.addOneStat(Constant.STATS_ADD_SAGE, 800 - cur_sagesse);
                 int cur_force = total.getEffect(Constant.STATS_ADD_FORC);
-                if (cur_force > 1200) total.addOneStat(Constant.STATS_ADD_FORC, 1200 - cur_force);
+                if (cur_force > 1100) total.addOneStat(Constant.STATS_ADD_FORC, 1100 - cur_force);
                 int cur_intell = total.getEffect(Constant.STATS_ADD_INTE);
-                if (cur_intell > 1200) total.addOneStat(Constant.STATS_ADD_INTE, 1200 - cur_intell);
+                if (cur_intell > 1100) total.addOneStat(Constant.STATS_ADD_INTE, 1100 - cur_intell);
                 int cur_chance = total.getEffect(Constant.STATS_ADD_CHAN);
-                if (cur_chance > 1200) total.addOneStat(Constant.STATS_ADD_CHAN, 1200 - cur_chance);
+                if (cur_chance > 1100) total.addOneStat(Constant.STATS_ADD_CHAN, 1100 - cur_chance);
                 int cur_agi = total.getEffect(Constant.STATS_ADD_AGIL);
-                if (cur_agi > 1200) total.addOneStat(Constant.STATS_ADD_AGIL, 1200 - cur_agi);
+                if (cur_agi > 1100) total.addOneStat(Constant.STATS_ADD_AGIL, 1100 - cur_agi);
                 int cur_bonus_dmg = total.getEffect(Constant.STATS_ADD_PERDOM);
-                if (cur_bonus_dmg > 300) total.addOneStat(Constant.STATS_ADD_PERDOM, 300 - cur_bonus_dmg);
+                if (cur_bonus_dmg > 150) total.addOneStat(Constant.STATS_ADD_PERDOM, 150 - cur_bonus_dmg);
+                int cur_bonus_dmg_no_per = total.getEffect(Constant.STATS_ADD_DOMA);
+                if (cur_bonus_dmg_no_per > 100) total.addOneStat(Constant.STATS_ADD_DOMA, 100 - cur_bonus_dmg_no_per);
                 int cur_bonus_soins = total.getEffect(Constant.STATS_ADD_SOIN);
-                if (cur_bonus_soins > 95) total.addOneStat(Constant.STATS_ADD_SOIN, 95 - cur_bonus_soins);
+                if (cur_bonus_soins > 85) total.addOneStat(Constant.STATS_ADD_SOIN, 85 - cur_bonus_soins);
+                int cur_renvoi_dommage = total.getEffect(Constant.STATS_RETDOM);
+                if (cur_renvoi_dommage > 0) total.addOneStat(Constant.STATS_RETDOM, 0 - cur_renvoi_dommage);
+            } else if (_fight.get_type() == Constant.FIGHT_TYPE_PVM) {
+                int cur_renvoi_dommage = total.getEffect(Constant.STATS_RETDOM);
+                if (cur_renvoi_dommage > 5) total.addOneStat(Constant.STATS_RETDOM, 5 - cur_renvoi_dommage);
+                int cur_prospection = total.getEffect(Constant.STATS_ADD_PROS);
+                if (cur_prospection > 100) total.addOneStat(Constant.STATS_ADD_PROS, 100 - cur_prospection);
+                int cur_pa = total.getEffect(Constant.STATS_ADD_PA);
+                if (cur_pa > 30) total.addOneStat(Constant.STATS_ADD_PA, 30 - cur_pa);
             }
         }
         if (_fight == null && !noBuff)

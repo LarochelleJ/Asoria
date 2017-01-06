@@ -470,12 +470,14 @@ public class PlayerCommand {
                             } else {
                                 if (!_perso.isMuteFromGlobal) {
                                     long tempEcoule = (System.currentTimeMillis() - _perso.tempAncienMessage) / 1000;
-                                    if (tempEcoule < 7 && _perso.getAccount().getGmLevel() == 0) {
-                                        _perso.sendText("Ce canal est restreint pour améliorer sa lisibilité. Vous pourrez envoyer un nouveau message dans " + Math.abs(7 - tempEcoule) + " secondes.");
+                                    if (tempEcoule < 30 && _perso.getAccount().getGmLevel() == 0) {
+                                        _perso.sendText("Ce canal est restreint pour améliorer sa lisibilité. Vous pourrez envoyer un nouveau message dans " + Math.abs(30 - tempEcoule) + " secondes.");
                                     } else {
                                         _perso.tempAncienMessage = System.currentTimeMillis();
                                         String clicker_name = "<a href='asfunction:onHref,ShowPlayerPopupMenu," + _perso.getName() + "'>" + prefix + "</a>";
-                                        SocketManager.GAME_SEND_MESSAGE_TO_ALL2((new StringBuilder("<b> ")).append(clicker_name).append("</b> : ").append(sp).toString(), "0BCFF9");
+                                        //SocketManager.GAME_SEND_MESSAGE_TO_ALL2((new StringBuilder("<b> ")).append(clicker_name).append("</b> : ").append(sp).toString(), "0BCFF9");
+                                        String name = _perso.getAccount().getGmLevel() > 0 ? "[Staff] " +_perso.getName() : _perso.getName();
+                                        SocketManager.GAME_SEND_cMK_PACKET_GLOBAL_CHAT(_perso, "^", _perso.getGuid(), name, sp);
                                     }
                                 } else {
                                     if (_perso.timeMuted < 0) {

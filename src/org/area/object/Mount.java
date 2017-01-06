@@ -180,7 +180,7 @@ public class Mount {
 		str.append(_id).append(":");
 		str.append(_color).append(":");
 		str.append(_ancetres).append(":");
-		str.append(",,").append(_ability).append(":");//FIXME capacités
+		str.append(",,").append(_ability).append(":");//FIXME capacitÃ©s
 		str.append(_nom).append(":");
 		str.append(_sexe).append(":");
 		str.append(parseXpString()).append(":");
@@ -358,8 +358,8 @@ public class Mount {
 		}
 		if (perso.getItems().get(objToAdd.getGuid()).getQuantity() < qua)
 		{
-			GameServer.addToLog("Le joueur "+perso.getName()+" a tenté d'ajouter une quantité d'objet en banque dont il ne possédait pas.");
-			SocketManager.GAME_SEND_MESSAGE(perso, "Alors petit rigolo, ça marche plus ?", Config.CONFIG_MOTD_COLOR);
+			GameServer.addToLog("Le joueur "+perso.getName()+" a tentÃ© d'ajouter une quantitÃ© d'objet en banque dont il ne possÃ©dait pas.");
+			SocketManager.GAME_SEND_MESSAGE(perso, "Alors petit rigolo, Ã§a marche plus ?", Config.CONFIG_MOTD_COLOR);
 			return;
 		}	
 		if (SameObjInSac == null) {
@@ -426,8 +426,8 @@ public class Mount {
 		}
 		if (_items.get(objToDelete.getGuid()).getQuantity() < qua)
 		{
-			GameServer.addToLog("Le joueur "+perso.getName()+" a tenté d'ajouter une quantité d'objet en banque dont il ne possédait pas.");
-			SocketManager.GAME_SEND_MESSAGE(perso, "Alors petit rigolo, ça marche plus ?", Config.CONFIG_MOTD_COLOR);
+			GameServer.addToLog("Le joueur "+perso.getName()+" a tentÃ© d'ajouter une quantitÃ© d'objet en banque dont il ne possÃ©dait pas.");
+			SocketManager.GAME_SEND_MESSAGE(perso, "Alors petit rigolo, Ã§a marche plus ?", Config.CONFIG_MOTD_COLOR);
 			return;
 		}
 		Item SameObjInInventaire = perso.getSimilarItem(objToDelete);

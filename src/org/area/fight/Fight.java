@@ -3696,6 +3696,7 @@ public class Fight {
                 if (F._Perco != null) {
                     _mapOld.RemoveNPC(F._Perco.getGuid());
                     SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(_mapOld, F._Perco.getGuid());
+                    // Supression percepteur Edited @Flow
                     collector.DelPerco(F._Perco.getGuid());
                     SQLManager.DELETE_PERCO(F._Perco.getGuid());
                     //On actualise la guilde+Message d'attaque
@@ -4108,7 +4109,11 @@ public class Fight {
         Fighter caster = getFighterByPerso(perso);
 
         if (caster == null) return;
-
+        if (this._type != Constant.FIGHT_TYPE_PVM) {
+            perso.sendText("L'utilisation des armes est autorisée uniquement en PvM.");
+            SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+            return;
+        }
         if (_ordreJeu.get(_curPlayer).getGUID() != caster.getGUID())//Si ce n'est pas a lui de jouer
             return;
         // Pour les challenges, vérif sur CaC

@@ -175,11 +175,15 @@ public class Collector
 	
 	public void DelPerco(int percoGuid)
 	{
+		Collector perco = World.getPerco(percoGuid);
 		for(Item obj : _objets.values())
 		{
 			//On supprime les objets non ramasser/drop
 			World.removeItem(obj.getGuid());
 		}
+		// On ajoute une restriction de pose sur la carte
+		Maps cartePerco = World.getCarte(perco.get_mapID());
+		cartePerco.setTempsPourPosePercepteur(System.currentTimeMillis() + 3600000);
 		World.getPercos().remove(percoGuid);
 	}
 	

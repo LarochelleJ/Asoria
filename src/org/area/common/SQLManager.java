@@ -1634,7 +1634,6 @@ public class SQLManager {
                 id = rs.getInt(1);
             }
             closeResultSet(rs);
-            closePreparedStatement(p);
             if (id > -1) {
                 prepareState.setInt(1, id);
                 prepareState.execute();
@@ -3617,18 +3616,18 @@ public class SQLManager {
         }
     }
 
-    public static int verifStats(int templateID, String verif) //@Flow
+    public static Item verifStats(int templateID, String verif) //@Flow
     {
         try {
-            String query = "SELECT stats FROM items WHERE template = '" + templateID + "' AND stats = '" + verif + "' AND server = '" + GameServer.id + "';";
+            String query = "SELECT guid FROM items WHERE template = '" + templateID + "' AND stats = '" + verif + "' AND server = '" + GameServer.id + "';";
             ResultSet RS = executeQuery(query, false);
-            while (RS.next()) {
-                return 2;
+            if (RS.next()) {
+                return World.getObjet(RS.getInt("guid"));
             }
             closeResultSet(RS);
         } catch (SQLException e) {
         }
-        return 6;
+        return null;
     }
 
     public static Tickets SelectTicket() {

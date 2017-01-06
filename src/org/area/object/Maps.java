@@ -64,6 +64,7 @@ public class Maps {
     private ArrayList<Integer> atelier = new ArrayList<Integer>();
     private long _muteTime = -1;
     private Map<Integer, Integer> _parleTime = new HashMap<Integer, Integer>();
+    private long _tempsPourPosePercepteur;
 
     public static class MountPark {
         private int _owner;
@@ -1258,6 +1259,14 @@ public class Maps {
             spawnGroup(Constant.ALIGNEMENT_BONTARIEN, 1, false, -1);//Spawn du groupe de gardes bontarien s'il y a
             spawnGroup(Constant.ALIGNEMENT_BRAKMARIEN, 1, false, -1);//Spawn du groupe de gardes brakmarien s'il y a
         }
+    }
+
+    public void setTempsPourPosePercepteur(long temps){
+        _tempsPourPosePercepteur = temps;
+    }
+
+    public long getTempsPourPosePercepteur() {
+        return _tempsPourPosePercepteur;
     }
 
     public void applyEndFightAction(int type, Player perso) {

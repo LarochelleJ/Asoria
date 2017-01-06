@@ -30,7 +30,7 @@ public class Guild {
 	private int _capital = 0;
 	private int _nbrPerco = 0;
 	private Map<Integer, SortStats> Spells = new TreeMap<Integer, SortStats>();	//<ID, Level>
-	private Map<Integer, Integer> stats = new TreeMap<Integer, Integer>(); //<Effet, Quantité>
+	private Map<Integer, Integer> stats = new TreeMap<Integer, Integer>(); //<Effet, QuantitÃ©>
 	//Stats en combat
 	private Map<Integer,Integer> statsFight = new TreeMap<Integer,Integer>();
 	
@@ -169,7 +169,7 @@ public class Guild {
 			this._rank = rank;
 			this._pXpGive = xp;
 			
-			if(right != this._rights && right != 1)	//Vérifie si les droits sont pareils ou si des droits de meneur; pour ne pas faire la conversion pour rien
+			if(right != this._rights && right != 1)	//VÃ©rifie si les droits sont pareils ou si des droits de meneur; pour ne pas faire la conversion pour rien
 				parseIntToRight(right);
 			this._rights = right;
 			
@@ -213,12 +213,12 @@ public class Guild {
 			if(total == 1)
 				return;
 			
-			if(haveRight.size() > 0)	//Si les droits contiennent quelque chose -> Vidage (Même si le TreeMap supprimerais les entrées doublon lors de l'ajout)
+			if(haveRight.size() > 0)	//Si les droits contiennent quelque chose -> Vidage (MÃªme si le TreeMap supprimerais les entrÃ©es doublon lors de l'ajout)
 				haveRight.clear();
 				
 			initRight();	//Remplissage des droits
 			
-			Integer[] mapKey = haveRight.keySet().toArray(new Integer[haveRight.size()]);	//Récupère les clef de map dans un tableau d'Integer
+			Integer[] mapKey = haveRight.keySet().toArray(new Integer[haveRight.size()]);	//RÃ©cupÃ¨re les clef de map dans un tableau d'Integer
 			
 			while(total > 0)
 			{
@@ -391,7 +391,7 @@ public class Guild {
 	}
 	public void removeMember(Player perso)
 	{
-		Houses h = Houses.get_HouseByPerso(perso);//On prend ça maison
+		Houses h = Houses.get_HouseByPerso(perso);//On prend Ã§a maison
 		if(h != null)
 		{
 			if(Houses.HouseOnGuild(_id) > 0)

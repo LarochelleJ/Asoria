@@ -2608,6 +2608,17 @@ public class SocketManager {
     		GameServer.addToSockLog("Game: ALL("+World.getOnlinePlayers().size()+"): Send>>"+packet); 
     }
 
+	public static void GAME_SEND_cMK_PACKET_GLOBAL_CHAT(Player perso, String suffix, int guid, String name, String msg)
+	{
+		String packet = "cMK" + suffix + "|" + guid + "|" + name + "|" + msg;
+		for(Player perso1 : World.getOnlinePlayers())
+		{
+			send(perso1, packet);
+		}
+		if(Config.DEBUG)
+			GameServer.addToSockLog("Game: ALL("+World.getOnlinePlayers().size()+"): Send>>"+packet);
+	}
+
 	public static void GAME_SEND_PACKET_TO_FIGHT(Fight fight, int i, String packet) {
 		for(Fighter f : fight.getFighters(i))
 		{
