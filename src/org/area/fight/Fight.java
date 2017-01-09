@@ -2115,6 +2115,21 @@ public class Fight {
             return 10;
         //ticMyTimer();
         //if(fighter == null || Spell == null) return 10;
+        // @Flow - Fix de j'ai pas de temps à perdre
+        Case cellTemp = null;
+        for (Fighter f : getAllFighters()) {
+            if (f.isDead()) {
+                cellTemp = f.get_fightCell();
+                if (cellTemp != null) {
+                    cellTemp.getFighters().clear();
+                }
+            }
+        }
+        for (Fighter f : getAllFighters()) {
+            if (!f.isDead()) {
+                f.get_fightCell().addFighter(f);
+            }
+        }
         Case Cell = _map.getCase(caseID);
         _curAction = "casting";
         _spellCastDelay = 50;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
@@ -3839,7 +3854,7 @@ public class Fight {
         }
     }
 
-    public void onFighterDie(Fighter target, Fighter caster) {
+    public void onFighterDie(Fighter target, Fighter caster) { // Lorsque qu'un personnage meurt
         target.setIsDead(true);
         if (!target.hasLeft()) deadList.put(target.getGUID(), target);//on ajoute le joueur à la liste des cadavres ;)
         setLastFighterDie(target, target.getTeam()); // @Flow - Laisse spirituelle
@@ -3850,7 +3865,7 @@ public class Fight {
             }
         }
         try { // @Flow - On enlève le combatant de la case
-            target._cell.removeFighter(target);
+            target.get_fightCell().removeFighter(target);
         } catch (Exception e) {
         }
         SocketManager.GAME_SEND_FIGHT_PLAYER_DIE_TO_FIGHT(this, 7, target.getGUID());
@@ -3858,12 +3873,11 @@ public class Fight {
 
         if (target.isState(Constant.ETAT_PORTEUR)) {
             Fighter f = target.get_isHolding();
-            f.set_fightCell(f.get_fightCell());
-            f.get_fightCell().addFighter(f);//Le bug venait par manque de ceci, il ni avait plus de firstFighter
-            f.setState(Constant.ETAT_PORTE, 0);//J'ajoute ceci quand même pour signaler qu'ils ne sont plus en état porté/porteur
+            f.setState(Constant.ETAT_PORTE, 0);
             target.setState(Constant.ETAT_PORTEUR, 0);
             f.set_holdedBy(null);
             target.set_isHolding(null);
+            f.get_fightCell().addFighter(f);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 950, f.getGUID() + "", f.getGUID() + "," + Constant.ETAT_PORTE + ",0");
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 950, target.getGUID() + "", target.getGUID() + "," + Constant.ETAT_PORTEUR + ",0");
         }
@@ -4122,6 +4136,21 @@ public class Fight {
                 if (c.getValue() == null)
                     continue;
                 c.getValue().onPlayer_cac(this._ordreJeu.get(this._curPlayer));
+            }
+        }
+        // @Flow - Fix de j'ai pas de temps à perdre
+        Case cellTemp = null;
+        for (Fighter f : getAllFighters()) {
+            if (f.isDead()) {
+                cellTemp = f.get_fightCell();
+                if (cellTemp != null) {
+                    cellTemp.getFighters().clear();
+                }
+            }
+        }
+        for (Fighter f : getAllFighters()) {
+            if (!f.isDead()) {
+                f.get_fightCell().addFighter(f);
             }
         }
         // Fin Challenges

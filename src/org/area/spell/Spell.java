@@ -196,7 +196,7 @@ public class Spell {
 		
 		public void applySpellEffectToFight(Fight fight, Fighter perso,Case cell,ArrayList<Case> cells,boolean isCC)
 		{
-			//Seulement appellé par les pieges, or les sorts de piege
+			//Seulement appellÃ© par les pieges, or les sorts de piege
 			ArrayList<SpellEffect> effets;
 			
 			if(isCC)
@@ -270,7 +270,7 @@ public class Spell {
 					if(C == null)continue;
 					Fighter F = C.getFirstFighter();
 					if(F == null)continue;
-					//Ne touche pas les alliés
+					//Ne touche pas les alliÃ©s
 					if(((TE & 1) == 1) && (F.getTeam() == perso.getTeam()))continue;
 					//Ne touche pas le lanceur
 					if((((TE>>1) & 1) == 1) && (F.getGUID() == perso.getGUID()))continue;

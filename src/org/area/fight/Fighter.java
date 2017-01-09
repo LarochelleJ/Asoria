@@ -121,8 +121,8 @@ public class Fighter {
         _type = 5;
         _Perco = Perco;
         _id = -1;
-        _PDVMAX = (World.getGuild(Perco.get_guildID()).get_lvl() * 100);
-        _PDV = (World.getGuild(Perco.get_guildID()).get_lvl() * 100);
+        _PDVMAX = (World.getGuild(Perco.get_guildID()).get_lvl() * 50);
+        _PDV = (World.getGuild(Perco.get_guildID()).get_lvl() * 50);
         _gfxID = 6000;
     }
 
@@ -213,10 +213,6 @@ public class Fighter {
 
     public boolean isDead() {
         return _isDead;
-    }
-
-    public void setDead(boolean isDead) {
-        _isDead = isDead;
     }
 
     public boolean hasLeft() {

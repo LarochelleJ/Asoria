@@ -176,9 +176,9 @@ public class Collector
 	public void DelPerco(int percoGuid)
 	{
 		Collector perco = World.getPerco(percoGuid);
+		//On supprime les objets non ramasser/drop
 		for(Item obj : _objets.values())
 		{
-			//On supprime les objets non ramasser/drop
 			World.removeItem(obj.getGuid());
 		}
 		// On ajoute une restriction de pose sur la carte

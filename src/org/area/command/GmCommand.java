@@ -21,6 +21,7 @@ import org.area.common.World;
 import org.area.common.World.ItemSet;
 import org.area.event.Event;
 import org.area.fight.Fight;
+import org.area.fight.Fighter;
 import org.area.fight.object.Monster.MobGroup;
 import org.area.game.GameSendThread;
 import org.area.game.GameServer;
@@ -170,6 +171,16 @@ public class GmCommand {
                 SocketManager.GAME_SEND_MESSAGE_TO_ALL("Bravo à " + gagnant + " qui remporte l'évent " + events + " ! Merci d'avoir participé.", "CCFF00");
             } else if (!event) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Aucun event n'est en cours. Veuillez entrer la commande STARTEVENT pour débuter un event");
+            }
+        } else if (command.equalsIgnoreCase("CELLCOMBAT")) {
+            if (_perso.getFight() != null) {
+                Fighter f = _perso.getFight().getFighterByPerso(_perso);
+                int cellule = f.get_fightCell().getID();
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Cellule id: " + cellule);
+                if (cellule > 0) {
+                    f.get_fightCell().getFighters().clear();
+                    f.get_fightCell().addFighter(f);
+                }
             }
         }
         if (command.equalsIgnoreCase("INFOS")) {
