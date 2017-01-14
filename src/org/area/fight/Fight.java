@@ -2126,7 +2126,7 @@ public class Fight {
             }
         }
         for (Fighter f : getAllFighters()) {
-            if (!f.isDead()) {
+            if (!f.isDead() && f.get_holdedBy() == null) { // Les portés sont intouchables
                 f.get_fightCell().addFighter(f);
             }
         }
@@ -4149,7 +4149,7 @@ public class Fight {
             }
         }
         for (Fighter f : getAllFighters()) {
-            if (!f.isDead()) {
+            if (!f.isDead() && f.get_holdedBy() == null) {
                 f.get_fightCell().addFighter(f);
             }
         }
@@ -4218,7 +4218,7 @@ public class Fight {
                 if (Config.DEBUG) GameServer.addToLog(perso.getName() + " Echec critique sur le CaC ");
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 305, perso.getGuid() + "", "");//Echec Critique Cac
                 SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this, 7, 0, perso.getGuid());//Fin de l'action
-                endTurn();
+                //endTurn(); // On ne met plus fin au tour en cas d'EC
             } else {
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 303, perso.getGuid() + "", cellID + "");
                 boolean isCC = caster.testIfCC(arme.getTemplate(false).getTauxCC());

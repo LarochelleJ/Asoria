@@ -3459,7 +3459,7 @@ public class Constant
             	stats.addOneStat(STATS_ADD_CC, 5);
             	stats.addOneStat(STATS_ADD_DOMA, 25);
             	stats.addOneStat(STATS_ADD_INIT, 500);
-            	stats.addOneStat(STATS_RETDOM, 40);
+            	stats.addOneStat(STATS_CREATURE, 1);
             	break;
 			//Kwaltess
 			case 98:
