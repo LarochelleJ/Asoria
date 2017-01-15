@@ -1161,7 +1161,7 @@ public class GmCommand {
             }
             if (P.getAccount().getGameThread() != null) P.getAccount().getGameThread().kick(40, "Le membre du staff " + _perso.getName() + " vous a banni pour la raison suivante: " + message + ". La durée du ban est " + duree);
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous avez banni " + P.getName());
-            SocketManager.GAME_SEND_MESSAGE_TO_ALL("Le joueur <b>" + P.getName() + "</b> a été banni pour la raison suivante : " + message, AllColor.RED);
+            SocketManager.GAME_SEND_MESSAGE_TO_STAFF("Le joueur <b>" + P.getName() + "</b> a été banni pour la raison suivante : " + message, AllColor.RED);
             return true;
         } else if (command.equalsIgnoreCase("PDVPER")) {
             int count = 0;

@@ -2610,7 +2610,7 @@ public class SpellEffect {
                 target.get_fightCell().addFighter(target);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 5, caster.getGUID() + "", target.getGUID() + "," + newCellID);
 
-                // @Flow - Fix porteur / porté
+                /*// @Flow - Fix porteur / porté TODO
                 if (cibles.get(0).isState(Constant.ETAT_PORTEUR)) {
                     Fighter f = cibles.get(0).get_isHolding();
                     f.setState(Constant.ETAT_PORTE, 0);
@@ -2620,7 +2620,7 @@ public class SpellEffect {
                     f.get_fightCell().addFighter(f);
                     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 950, f.getGUID() + "", f.getGUID() + "," + Constant.ETAT_PORTE + ",0");
                     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 950, cibles.get(0).getGUID() + "", cibles.get(0).getGUID() + "," + Constant.ETAT_PORTEUR + ",0");
-                }
+                }*/
 
                 ArrayList<Piege> P = (new ArrayList<Piege>());
                 P.addAll(fight.get_traps());
@@ -2644,7 +2644,7 @@ public class SpellEffect {
             if (!cibles.get(0).isDead())
                 caster.set_oldCible(cibles.get(0));
         }
-        // @Flow - Fix porteur / porté
+        /*// @Flow - Fix porteur / porté TODO
         if (cibles.get(0).isState(Constant.ETAT_PORTEUR)) {
             Fighter f = cibles.get(0).get_isHolding();
             f.setState(Constant.ETAT_PORTE, 0);
@@ -2654,7 +2654,8 @@ public class SpellEffect {
             f.get_fightCell().addFighter(f);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 950, f.getGUID() + "", f.getGUID() + "," + Constant.ETAT_PORTE + ",0");
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 950, cibles.get(0).getGUID() + "", cibles.get(0).getGUID() + "," + Constant.ETAT_PORTEUR + ",0");
-        }
+        }*/
+
         // @Flow - Je charge les pi�ges avant le sort
         ArrayList<Piege> P = (new ArrayList<Piege>());
         P.addAll(fight.get_traps());

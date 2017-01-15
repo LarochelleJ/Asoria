@@ -729,7 +729,7 @@ public class GameThread implements Runnable {
                     if (player.hasItemTemplate(baseItem, 1) && player.hasItemTemplate(skinItem, 1)) {
                         //ObjTemplate OM2 = World.getObjTemplate(skinItem);
                         ObjTemplate OM1 = World.getObjTemplate(baseItem);
-                        Item objetStats = SQLManager.verifStats(baseItem, verif2);
+                        Item objetStats = SQLManager.verifStats(baseItem, verif2, player);
                         if (objetStats == null) {
                             player.sendText("Erreur: Packet corrompu ! Veuillez ré-essayer !");
                             return;
@@ -1033,7 +1033,7 @@ public class GameThread implements Runnable {
                 || player.is_away())
             return;
         short mapID = player.getMap().get_id();
-        if (mapID >= 17700 && mapID <= 17746 || mapID == 10812) { // Map interdite pour la pose
+        if (mapID >= 17700 && mapID <= 17746 || mapID == 10812 || mapID >= 26105 && mapID <= 26108) { // Map interdite pour la pose
             player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
             return;
         }

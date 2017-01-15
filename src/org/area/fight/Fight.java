@@ -3032,7 +3032,7 @@ public class Fight {
                     }
                     // Modification drop en fin de donjon
                     switch (i.getPersonnage().getMap().get_id()) {
-                        case 15006:
+                        /*case 15006:
                             min = 150;
                             round = 250;
                             break;
@@ -3077,7 +3077,7 @@ public class Fight {
                             break;
                         case 26103:
                             min = 1000;
-                            round = 2000;
+                            round = 2000;*/
                         default:
                             break;
                     }
@@ -4217,6 +4217,8 @@ public class Fight {
             if (isEc) {
                 if (Config.DEBUG) GameServer.addToLog(perso.getName() + " Echec critique sur le CaC ");
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 305, perso.getGuid() + "", "");//Echec Critique Cac
+                _curFighterPA -= PACost;
+                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 102, perso.getGuid() + "", perso.getGuid() + ",-" + PACost);
                 SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this, 7, 0, perso.getGuid());//Fin de l'action
                 //endTurn(); // On ne met plus fin au tour en cas d'EC
             } else {

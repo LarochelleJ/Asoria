@@ -3616,18 +3616,24 @@ public class SQLManager {
         }
     }
 
-    public static Item verifStats(int templateID, String verif) //@Flow
+    public static Item verifStats(int templateID, String verif, Player p) //@Flow
     {
+        Item objetStats = null;
         try {
             String query = "SELECT guid FROM items WHERE template = '" + templateID + "' AND stats = '" + verif + "' AND server = '" + GameServer.id + "';";
             ResultSet RS = executeQuery(query, false);
-            if (RS.next()) {
-                return World.getObjet(RS.getInt("guid"));
+            Map<Integer, Item> objetsJoueurs = p.getItems();
+            while (RS.next()) {
+                int idObjet = RS.getInt("guid");
+                if (objetsJoueurs.containsKey(idObjet)) {
+                    objetStats = objetsJoueurs.get(idObjet);
+                    break;
+                }
             }
             closeResultSet(RS);
         } catch (SQLException e) {
         }
-        return null;
+        return objetStats;
     }
 
     public static Tickets SelectTicket() {

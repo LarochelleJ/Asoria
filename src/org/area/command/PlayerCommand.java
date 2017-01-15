@@ -208,7 +208,7 @@ public class PlayerCommand {
                             SocketManager.GAME_SEND_POPUP(_perso, args);
                             break;
                         case 4: //Informations serveur
-                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.7.4</b>\n\n"
+                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.8</b>\n\n"
                                     + "\n   "
                                     + GameServer.uptime()
                                     + "Joueurs en ligne : <b>" + Main.gameServer.getPlayerNumber() + "</b>\n"
@@ -445,7 +445,7 @@ public class PlayerCommand {
                             _perso.addCapital(capital);
                             SocketManager.GAME_SEND_STATS_PACKET(_perso);
                             break;
-                        case 28: //Canal sans limite
+                        case 28: //Canal sans limite #Global
 						/*String RangP = "";
 						if (_perso.getAccount().getGmLevel() == 0 && _perso.getAccount().getVip() == 0)
 							RangP = "Joueur";
@@ -509,6 +509,14 @@ public class PlayerCommand {
                                         _perso.sendText("Vous n'êtes plus autorisé à parler dans le canal global. La parole vous sera rendue dans " + tempRestant + " !");
                                     }
                                 }
+                            }
+                            break;
+                        case 2828: // Bloquer / Activer réception message canal global
+                            _perso.neVeutPasVoirMessage = !_perso.neVeutPasVoirMessage;
+                            if (_perso.neVeutPasVoirMessage) {
+                                _perso.sendText("Vous ne recevez plus de message provenant du canal global, si vous souhaitez le ré-activer, taper .global !");
+                            } else {
+                                _perso.sendText("Vous recevez à nouveau les messages provenant du canal global !");
                             }
                             break;
                         case 29: //Création de Team Arena

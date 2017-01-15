@@ -96,8 +96,13 @@ public class Fighter {
             _perso = perso;
         }
         _id = perso.getGuid();
-        _PDVMAX = perso.get_PDVMAX();
-        _PDV = perso.get_PDV();
+        if (f.get_type() != Constant.FIGHT_TYPE_AGRESSION && f.get_type() != Constant.FIGHT_TYPE_CHALLENGE && f.get_type() != Constant.FIGHT_TYPE_PVT) {
+            _PDVMAX = perso.get_PDVMAX();
+            _PDV = perso.get_PDV();
+        } else {
+            _PDVMAX = perso.get_classe() == Constant.CLASS_SACRIEUR ? 7500 : 6000;
+            _PDV = perso.get_PDV() > _PDVMAX ? _PDVMAX : perso.get_PDV();
+        }
         _gfxID = getDefaultGfx();
     }
 

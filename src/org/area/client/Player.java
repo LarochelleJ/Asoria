@@ -288,6 +288,7 @@ public class Player {
 
     // Canal global
     public long tempAncienMessage = 0;
+    public boolean neVeutPasVoirMessage = false;
     // Bloquer du canal global
     public boolean isMuteFromGlobal = false;
     public long timeMuted = -1;
@@ -2017,6 +2018,19 @@ public class Player {
                 if (cur_prospection > 100) total.addOneStat(Constant.STATS_ADD_PROS, 100 - cur_prospection);
                 int cur_pa = total.getEffect(Constant.STATS_ADD_PA);
                 if (cur_pa > 30) total.addOneStat(Constant.STATS_ADD_PA, 30 - cur_pa);
+
+                if (getAccount().getGmLevel() < 1) {
+                    int cur_sagesse = total.getEffect(Constant.STATS_ADD_SAGE);
+                    if (cur_sagesse > 3000) total.addOneStat(Constant.STATS_ADD_SAGE, 3000 - cur_sagesse);
+                    int cur_force = total.getEffect(Constant.STATS_ADD_FORC);
+                    if (cur_force > 3000) total.addOneStat(Constant.STATS_ADD_FORC, 3000 - cur_force);
+                    int cur_intell = total.getEffect(Constant.STATS_ADD_INTE);
+                    if (cur_intell > 3000) total.addOneStat(Constant.STATS_ADD_INTE, 3000 - cur_intell);
+                    int cur_chance = total.getEffect(Constant.STATS_ADD_CHAN);
+                    if (cur_chance > 3000) total.addOneStat(Constant.STATS_ADD_CHAN, 3000 - cur_chance);
+                    int cur_agi = total.getEffect(Constant.STATS_ADD_AGIL);
+                    if (cur_agi > 3000) total.addOneStat(Constant.STATS_ADD_AGIL, 3000 - cur_agi);
+                }
             }
         }
         if (_fight == null && !noBuff)
