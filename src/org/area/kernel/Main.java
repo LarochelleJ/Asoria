@@ -52,7 +52,7 @@ public class Main {
 			Reboot.reboot();
 		}
 		
-		//Chargement de la base de donnée
+		//Chargement de la base de donnï¿½e
 		Console.setTitle("World");
 		World.createWorld();
 		
@@ -64,7 +64,7 @@ public class Main {
 		Console.setTitle("Exchange");
 		/*exchangeClient = new ExchangeClient();
 		exchangeClient.start();*/
-		new ExchangeClient().start();
+		//new ExchangeClient().start();
 		Event.scheduleEvents();
 		
 		Console.setTitle("Area - GameServer "+GameServer.id);
@@ -77,7 +77,7 @@ public class Main {
 	public static void listThreads(boolean isError) throws Exception {
 		Console.println("\nListage des threads", Color.YELLOW);
 		
-		if(isError) SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("@", 0, "Thread", "La RAM est surchargée !");
+		if(isError) SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("@", 0, "Thread", "La RAM est surchargï¿½e !");
 		
 		try {
 			Console.println(gameServer.getPlayerNumber() + " player online", Color.GREEN);

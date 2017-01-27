@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.area.client.Player;
 import org.area.common.*;
+import org.area.exchange.ExchangeClient;
 import org.area.game.GameServer.SaveThread;
 import org.area.kernel.Config;
 import org.area.kernel.Console.Color;
@@ -70,6 +71,29 @@ public class ConsoleInputAnalyzer implements Runnable {
                 e.printStackTrace();
             }
 
+        } else if (fct.equals("REALM")) {
+            // On tente de forcer la fermeture
+            try {
+                Main.exchangeClient.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            new ExchangeClient().start();
+        } else if (fct.equals("BLOQUER")) {
+            try {
+                for (Player perso : World.getOnlinePlayers()) {
+                    perso.mettreCombatBloque(true);
+                }
+                Constant.COMBAT_BLOQUE = !Constant.COMBAT_BLOQUE; // Elles sont pas vraiment constante maintenent @Flow ^^
+                String str;
+                if (Constant.COMBAT_BLOQUE) {
+                    str = "Les combats sont bloqués !";
+                } else {
+                    str = "Les combats sont débloqués !";
+                }
+                sendInfo(str);
+            } catch (Exception e) {
+            }
         } else if (fct.equals("TOOGLE_DEBUG")) {
 
             Config.DEBUG = !Config.DEBUG;
@@ -124,17 +148,19 @@ public class ConsoleInputAnalyzer implements Runnable {
             String newKey = "0";
             try {
                 newKey = command.substring(4);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
             Main.gameServer.encryptPacketKey = newKey;
             sendEcho("La clé d'encryption des packets est maintenant: " + newKey);
         } else if (fct.equals("DECRYPT")) {
             try {
-               String toDecrypt = command.substring(8);
+                String toDecrypt = command.substring(8);
                 sendEcho("Chaine decryptée: " + CryptManager.decryptPacket(toDecrypt));
-            } catch (Exception e) {sendEcho("Impossible de décrypter ceci.");}
+            } catch (Exception e) {
+                sendEcho("Impossible de décrypter ceci.");
+            }
 
-        }
-        else if (fct.equals("RELOADSERV")) {
+        } else if (fct.equals("RELOADSERV")) {
             sendEcho("Rechargement de la configuration");
             Config.load();
             sendEcho("Chargement des items : Ok");
@@ -174,6 +200,8 @@ public class ConsoleInputAnalyzer implements Runnable {
             sendInfo("- KICK [Pseudo] pour kicker le joueur.");
             sendInfo("- RELOADSERV pour reload le serveur.");
             sendInfo("- CLS pour effacer le contenu de la console");
+            sendInfo("- BlOQUER pour bloquer / débloquer combat");
+            sendInfo("- REALM pour reset la connexion realm");
             sendInfo("- Touches CTRL+C pour stop le serveur.");
             sendInfo("- HELP ou ? pour afficher cette liste.");
             sendInfo("----------------------------------");

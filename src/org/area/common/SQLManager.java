@@ -135,13 +135,9 @@ public class SQLManager {
 
     public static ResultSet executeQuery(String query,
                                          boolean realm) throws SQLException {
-        Connection DB;
-
-        DB = Connection(realm);
-
-        Statement stat = DB.createStatement();
-        ResultSet RS = stat.executeQuery(query);
-        stat.setQueryTimeout(600); // 10 minute
+        Connection DB = Connection(realm);
+        java.sql.PreparedStatement stat = DB.prepareStatement(query);
+        ResultSet RS = stat.executeQuery();
         return RS;
     }
 
@@ -260,7 +256,10 @@ public class SQLManager {
 
         try {
             String query = "SELECT * FROM `personnages` WHERE `name` = '" + name + "' AND `server` = " + GameServer.id + ";";
-            ResultSet RS = executeQuery(query, true);
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, name);
+            ps.setInt(2, GameServer.id);
+            ResultSet RS = ps.executeQuery();
             while (RS.next())
                 exist = true;
             closeResultSet(RS);
@@ -786,7 +785,10 @@ public class SQLManager {
             e.printStackTrace();
         }
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM personnages WHERE account = '" + accID + "';", true);
+            String query = "SELECT * FROM personnages WHERE account = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, accID);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 if (RS.getInt("server") != GameServer.id)
                     continue;
@@ -1749,9 +1751,12 @@ public class SQLManager {
     }
 
     public static void LOAD_ITEMS(String ids) {
-        String req = "SELECT * FROM items WHERE guid IN (" + ids + ") AND server = '" + GameServer.id + "';";
+        String req = "SELECT * FROM items WHERE guid IN (?) AND server = ?;";
         try {
-            ResultSet RS = SQLManager.executeQuery(req, true);
+            java.sql.PreparedStatement ps = newTransact(req, Connection(true));
+            ps.setString(1, ids);
+            ps.setInt(2, GameServer.id);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 int guid = RS.getInt("guid");
                 int tempID = RS.getInt("template");
@@ -1910,7 +1915,10 @@ public class SQLManager {
 
     public static void LOAD_ACCOUNT_BY_IP(String ip) {
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * from accounts WHERE `lastIP` = '" + ip + "';", false);
+            String query = "SELECT * from accounts WHERE `lastIP` = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, ip);
+            ResultSet RS = ps.executeQuery();
             //ResultSet RS = SQLManager.executeQuery("SELECT * from accounts;",false);
             String baseQuery = "UPDATE accounts " +
                     "SET `reload_needed` = 0 " +
@@ -1966,7 +1974,10 @@ public class SQLManager {
         Account account = null;
 
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM accounts WHERE guid = '" + guid + "';", true);
+            String query = "SELECT * FROM accounts WHERE guid = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, guid);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 account = new Account(
                         RS.getInt("guid"),
@@ -2008,7 +2019,10 @@ public class SQLManager {
         Player player = null;
 
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM personnages WHERE guid = '" + guid + "';", true);
+            String query = "SELECT * FROM personnages WHERE guid = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, guid);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 if (RS.getInt("server") != GameServer.id)
                     continue;
@@ -2112,7 +2126,10 @@ public class SQLManager {
         Player player = null;
 
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM personnages WHERE name = '" + name + "';", true);
+            String query = "SELECT * FROM personnages WHERE name = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, name);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 if (RS.getInt("server") != GameServer.id)
                     continue;
@@ -2665,7 +2682,10 @@ public class SQLManager {
         int guildId = -1;
 
         try {
-            ResultSet GuildQuery = SQLManager.executeQuery("SELECT guild FROM `guild_members` WHERE guid=" + guid + ";", false);
+            String sql = "SELECT guild FROM `guild_members` WHERE guid = ?;";
+            java.sql.PreparedStatement ps = newTransact(sql, Connection(true));
+            ps.setInt(1, guid);
+            ResultSet GuildQuery = ps.executeQuery();
 
             boolean found = GuildQuery.first();
 
@@ -2691,7 +2711,10 @@ public class SQLManager {
         int guildId = -1;
         int guid = -1;
         try {
-            ResultSet GuildQuery = SQLManager.executeQuery("SELECT guild,guid FROM `guild_members` WHERE name='" + name + "';", false);
+            String query = "SELECT guild,guid FROM `guild_members` WHERE name=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, name);
+            ResultSet GuildQuery = ps.executeQuery();
             boolean found = GuildQuery.first();
 
             if (found) {
@@ -3449,7 +3472,10 @@ public class SQLManager {
     public static void LOAD_PERSO_PACKS(Player p) {
         PreparedStatement pe;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM pack_actions WHERE personnage=" + p.getGuid() + " AND done=0", false);
+            String query = "SELECT * FROM pack_actions WHERE personnage=? AND done=0";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, p.getGuid());
+            ResultSet RS = ps.executeQuery();
 
             //Load items
             while (RS.next()) {
@@ -3458,8 +3484,9 @@ public class SQLManager {
                 String params = RS.getString("params");
                 if (ShopPack.executePack(p, id, pack, params)) {
                     try {
-                        String query = "UPDATE pack_actions SET done=1 WHERE id=" + id + ";";
-                        pe = newTransact(query, Connection(false));
+                        String sql = "UPDATE pack_actions SET done=1 WHERE id=?;";
+                        pe = newTransact(sql, Connection(false));
+                        ps.setInt(1, id);
                         pe.execute();
                         Console.println("CommandePack " + id + " livrée avec succès.");
                     } catch (SQLException e) {
@@ -3529,10 +3556,10 @@ public class SQLManager {
     public static byte TotalMPGuild(int getId) {
         byte i = 0;
         try {
-            String query = "SELECT *FROM mountpark_data WHERE guild='" + getId
-                    + "';";
-
-            ResultSet RS = executeQuery(query, false);
+            String query = "SELECT *FROM mountpark_data WHERE guild=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, getId);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 i = (byte) (i + 1);
             }
@@ -3620,8 +3647,12 @@ public class SQLManager {
     {
         Item objetStats = null;
         try {
-            String query = "SELECT guid FROM items WHERE template = '" + templateID + "' AND stats = '" + verif + "' AND server = '" + GameServer.id + "';";
-            ResultSet RS = executeQuery(query, false);
+            String query = "SELECT guid FROM items WHERE template = ? AND stats = ? AND server = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, templateID);
+            ps.setString(2, verif);
+            ps.setInt(3, GameServer.id);
+            ResultSet RS = ps.executeQuery();
             Map<Integer, Item> objetsJoueurs = p.getItems();
             while (RS.next()) {
                 int idObjet = RS.getInt("guid");
@@ -3665,9 +3696,13 @@ public class SQLManager {
 
         try {
             ResultSet RS;
-            for (RS = executeQuery("SELECT * from ticketigs WHERE `joueur` ='" + pseudo + "' AND valid = '0';", false); RS.next(); )
+            String query = "SELECT * from ticketigs WHERE `joueur` =? AND valid = '0';";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, pseudo);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
                 verif++;
-            closeResultSet(RS);
+            closeResultSet(rs);
         } catch (SQLException e) {
             GameServer.addToLog((new StringBuilder("SQL ERROR: ")).append(e.getMessage()).toString());
             e.printStackTrace();
@@ -3694,8 +3729,10 @@ public class SQLManager {
 
     public static void updateticketencour(String pseudoj, String pseudom) {
         try {
-            String baseQuery = "UPDATE ticketigs SET `maitrejeu` = '" + pseudom + "' ,`valid` = 1 WHERE `valid` = 0 AND `joueur` = '" + pseudoj + "'";
+            String baseQuery = "UPDATE ticketigs SET `maitrejeu` = ? ,`valid` = 1 WHERE `valid` = 0 AND `joueur` = ?;";
             PreparedStatement p = newTransact(baseQuery, Connection(true));
+            p.setString(1, pseudom);
+            p.setString(2, pseudoj);
             p.executeUpdate();
             closePreparedStatement(p);
         } catch (SQLException e) {
@@ -3706,8 +3743,9 @@ public class SQLManager {
 
     public static void deleteticket(String pseudoj) {
         try {
-            String baseQuery = "DELETE FROM ticketigs WHERE `valid` = 0 AND `joueur` = '" + pseudoj + "'";
+            String baseQuery = "DELETE FROM ticketigs WHERE `valid` = 0 AND `joueur` = ?;";
             PreparedStatement p = newTransact(baseQuery, Connection(true));
+            p.setString(1, pseudoj);
             p.executeUpdate();
             closePreparedStatement(p);
         } catch (SQLException e) {
@@ -3718,8 +3756,9 @@ public class SQLManager {
 
     public static void updateticketfini(String pseudom) {
         try {
-            String baseQuery = "UPDATE ticketigs SET `valid` = 2 WHERE `valid` = 1 AND `maitrejeu` = '" + pseudom + "'";
+            String baseQuery = "UPDATE ticketigs SET `valid` = 2 WHERE `valid` = 1 AND `maitrejeu` = ?;";
             PreparedStatement p = newTransact(baseQuery, Connection(true));
+            p.setString(1, pseudom);
             p.executeUpdate();
             closePreparedStatement(p);
         } catch (SQLException e) {
@@ -3821,7 +3860,10 @@ public class SQLManager {
     public static int GetItemTemplateByID(int guid) {
         int TemplateId = 0;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM items WHERE guid='" + guid + "';", false);
+            String query = "SELECT * FROM items WHERE guid=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, guid);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 TemplateId = RS.getInt("template");
             }
@@ -3835,7 +3877,10 @@ public class SQLManager {
     public static String GetItemNameByID(int id) {
         String name = "";
         try {
-            ResultSet RS = executeQuery("SELECT * FROM item_template WHERE id='" + id + "';", false);
+            String query = "SELECT * FROM item_template WHERE id=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, id);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 name = RS.getString("name");
             }
@@ -3850,10 +3895,10 @@ public class SQLManager {
     public static int Guild_GetIdByName(String name) {
         int id = 0;
         try {
-            String query = "SELECT * FROM guilds WHERE name='" + name
-                    + "';";
-
-            ResultSet RS = executeQuery(query, false);
+            String query = "SELECT * FROM guilds WHERE name=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, name);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 id = RS.getInt("id");
             }
@@ -3866,7 +3911,7 @@ public class SQLManager {
         return id;
     }
 
-    public static int Guild_GetId(int id) {
+    /*public static int Guild_GetId(int id) {
         int ids = 0;
         try {
             String query = "SELECT * FROM guerre_victims WHERE guildID='" + id
@@ -3883,16 +3928,16 @@ public class SQLManager {
             e.printStackTrace();
         }
         return ids;
-    }
+    }*/
 
     public static boolean Guild_VerifyExist(String name) {
         int id = 0;
         boolean exist = false;
         try {
-            String query = "SELECT * FROM guilds WHERE name='" + name
-                    + "';";
-
-            ResultSet RS = executeQuery(query, false);
+            String query = "SELECT * FROM guilds WHERE name=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, name);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 id = RS.getInt("id");
             }
@@ -3910,7 +3955,7 @@ public class SQLManager {
         return exist;
     }
 
-    public static boolean Guild_VerifyInGuerre(int id) {
+   /* public static boolean Guild_VerifyInGuerre(int id) {
         int ids = 0;
         boolean exist = false;
         try {
@@ -3933,15 +3978,15 @@ public class SQLManager {
             exist = true;
         }
         return exist;
-    }
+    }*/
 
     public static boolean Guild_VerifyGuerre(String name) {
         boolean exist = false;
         try {
-            String query = "SELECT * FROM guildesnoguerre WHERE name='" + name
-                    + "';";
-
-            ResultSet RS = executeQuery(query, false);
+            String query = "SELECT * FROM guildesnoguerre WHERE name=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, name);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 exist = true;
             }
@@ -3984,7 +4029,7 @@ public class SQLManager {
     }
 
 
-    public static int[] Guild_CountVictims(int id) {
+    /*public static int[] Guild_CountVictims(int id) {
         int[] victims = new int[2];
         try {
             String query = "SELECT * FROM guerre_victims WHERE guildID='" + id + "';";
@@ -4019,9 +4064,9 @@ public class SQLManager {
         }
         ;
         closePreparedStatement(p);
-    }
+    }*/
 
-    public static void Guild_UpdateCibles(int id) {
+   /* public static void Guild_UpdateCibles(int id) {
         String baseQuery = "UPDATE `guerre_victims` SET `intciblewin` = `intciblewin` + ? WHERE guildID = ?";
 
         PreparedStatement p = null;
@@ -4038,9 +4083,9 @@ public class SQLManager {
         }
         ;
         closePreparedStatement(p);
-    }
+    }*/
 
-    public static void Guild_CreateTimer(String name) {
+    /*public static void Guild_CreateTimer(String name) {
         try {
             String baseQuery = "INSERT INTO guerre_timer(`name`) VALUES(?);";
             PreparedStatement p = newTransact(baseQuery, Connection(false));
@@ -4052,9 +4097,9 @@ public class SQLManager {
             e.printStackTrace();
             GameServer.addToLog("Erreur à la créaton des stats : " + e.getMessage());
         }
-    }
+    }*/
 
-    public static void Guild_DeleteTimer(String name) {
+   /* public static void Guild_DeleteTimer(String name) {
         String baseQuery = "DELETE FROM guerre_timer WHERE name = ?;";
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(false));
@@ -4063,9 +4108,9 @@ public class SQLManager {
             closePreparedStatement(p);
         } catch (SQLException e) {
         }
-    }
+    }*/
 
-    public static boolean Guild_SelectTimer(String name) {
+    /*public static boolean Guild_SelectTimer(String name) {
         boolean exist = false;
         try {
             String query = "SELECT * FROM guerre_timer WHERE name='" + name
@@ -4082,9 +4127,9 @@ public class SQLManager {
             e.printStackTrace();
         }
         return exist;
-    }
+    }*/
 
-    public static void Guild_Delete(String name) {
+    /*public static void Guild_Delete(String name) {
         String baseQuery = "DELETE FROM guildesnoguerre WHERE name = ?;";
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(false));
@@ -4093,9 +4138,9 @@ public class SQLManager {
             closePreparedStatement(p);
         } catch (SQLException e) {
         }
-    }
+    }*/
 
-    public static void Guild_CleanVictims(int id) {
+    /*public static void Guild_CleanVictims(int id) {
         String baseQuery = "DELETE FROM guerre_victims WHERE guildID = ?;";
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(false));
@@ -4104,9 +4149,9 @@ public class SQLManager {
             closePreparedStatement(p);
         } catch (SQLException e) {
         }
-    }
+    }*/
 
-    public static String getStatsTemplate2(int templateID) {
+    /*public static String getStatsTemplate2(int templateID) {
         String itemm = "";
         try {
             String query = "SELECT statsTemplate FROM item_template WHERE id='" + templateID + "' AND server='" + GameServer.id + "';";
@@ -4123,7 +4168,7 @@ public class SQLManager {
         }
 
         return itemm;
-    }
+    }*/
 
     public static boolean VERIFIER_TITRE_UTILISE(String titre) {
         boolean toReturn = false;
@@ -4382,7 +4427,10 @@ public class SQLManager {
         List<Integer> tempList = new ArrayList<Integer>();
         Map<String, Integer> titres = new LinkedHashMap<String, Integer>();
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `titres_save` WHERE idJoueur=" + idJoueur + "", false);
+            String query = "SELECT * FROM `titres_save` WHERE idJoueur= ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, idJoueur);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 tempList.add(RS.getInt("idTitre"));
             }
@@ -4411,7 +4459,10 @@ public class SQLManager {
     public static boolean VERIFIER_SI_TITRE_SAUVEGARDE(int idJoueur, int idTitre) {
         boolean toReturn = false;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `titres_save` WHERE idJoueur=" + idJoueur + "", false);
+            String query = "SELECT * FROM `titres_save` WHERE idJoueur=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, idJoueur);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 if (RS.getInt("idTitre") == idTitre) {
                     toReturn = true;
@@ -4483,7 +4534,10 @@ public class SQLManager {
     public static ArrayList<Integer> LOAD_ORNEMENTS(int guid) {
         ArrayList<Integer> toReturn = new ArrayList<Integer>();
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `ornements` WHERE idJoueur=" + guid + "", false);
+            String query = "SELECT * FROM `ornements` WHERE idJoueur=?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, guid);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 toReturn.add(RS.getInt("id"));
             }
@@ -4528,7 +4582,10 @@ public class SQLManager {
     public static ArrayList<Integer> GET_NPCS_WITH_QUESTION_ID(int questionId) {
         ArrayList<Integer> toReturn = new ArrayList<Integer>();
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `npc_template` WHERE initQuestion=" + questionId + "", false);
+            String query = "SELECT * FROM `npc_template` WHERE initQuestion= ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, questionId);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 toReturn.add(RS.getInt("id"));
             }
@@ -4541,7 +4598,10 @@ public class SQLManager {
 
     public static boolean IS_A_GOOD_ANSWER_FOR_QUESTION(int questionId, int responseId) {
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `npc_questions` WHERE ID=" + questionId + "", false);
+            String query = "SELECT * FROM `npc_questions` WHERE ID= ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, questionId);
+            ResultSet RS = ps.executeQuery();
             String[] arr = null;
             while (RS.next()) {
                 arr = RS.getString("responses").split(";");
@@ -4563,7 +4623,10 @@ public class SQLManager {
     public static HashMap<Integer, Integer> OBTENIR_ITEMS_REQUIS_PAR_PNJ(int idPnj) {
         HashMap<Integer, Integer> toReturn = new HashMap<Integer, Integer>();
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `objets_requis_pnj` WHERE idPnj=" + idPnj + "", false);
+            String query = "SELECT * FROM `objets_requis_pnj` WHERE idPnj= ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setInt(1, idPnj);
+            ResultSet RS = ps.executeQuery();
             while (RS.next()) {
                 toReturn.put(RS.getInt("itemTemplate"), RS.getInt("qta"));
             }
