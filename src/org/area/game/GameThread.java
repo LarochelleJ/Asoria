@@ -6680,6 +6680,9 @@ public class GameThread implements Runnable {
                 if (account != null) {
                     String ip = socket.getInetAddress().getHostAddress();
 
+                    if (account.getGameThread() != null) {
+                        account.getGameThread().kick();
+                    }
                     account.setGameThread(this);
                     account.setCurIP(ip);
                     SocketManager.GAME_SEND_ATTRIBUTE_SUCCESS(out);

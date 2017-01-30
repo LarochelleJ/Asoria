@@ -17,7 +17,7 @@ public class Reboot {
 		try { Main.gameServer.kickAll(); } catch(Exception e) {}
 		Main.gameServer.stop();
 		Main.gameServer = null;
-		Main.exchangeClient.stop();
+		//Main.exchangeClient.stop();
 		
 		
 		try { World.clearAllVar(); } catch(Exception e) {}	
@@ -31,7 +31,7 @@ public class Reboot {
 	
 	public static void reboot() {
 		Main.isRunning = false;
-		Main.exchangeClient.stop();
+		//Main.exchangeClient.stop();
 		for (Player player: World.getOnlinePlayers()) {
 			player.save(true);
 		}

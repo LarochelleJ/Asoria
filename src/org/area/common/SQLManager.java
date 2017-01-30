@@ -255,7 +255,7 @@ public class SQLManager {
         boolean exist = false;
 
         try {
-            String query = "SELECT * FROM `personnages` WHERE `name` = '" + name + "' AND `server` = " + GameServer.id + ";";
+            String query = "SELECT * FROM `personnages` WHERE `name` = '?' AND `server` = ?;";
             java.sql.PreparedStatement ps = newTransact(query, Connection(true));
             ps.setString(1, name);
             ps.setInt(2, GameServer.id);
