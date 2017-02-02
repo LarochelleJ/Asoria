@@ -4177,7 +4177,8 @@ public class GameThread implements Runnable {
                 try {
                     int c = Integer.parseInt(packet.substring(3));
                     if (!Config.BETA) {
-                        player.getCurJobAction().repeat(c, player);
+                        player.sendText("Cette option est désactivée temporairement.");
+                        //player.getCurJobAction().repeat(c, player);
                     } else {
                         player.getCurJobAction().repeatCraft(c, player);
                     }
@@ -4187,7 +4188,7 @@ public class GameThread implements Runnable {
                 if (Config.BETA) {
                     player.getCurJobAction().stopRepeatCraft();
                 } else {
-                    player.getCurJobAction().breakFM();
+                    //player.getCurJobAction().breakFM();
                 }
             }
             return;
@@ -5540,7 +5541,7 @@ public class GameThread implements Runnable {
                     if (nom.equalsIgnoreCase("[Staff]")) {
                         String[] donnes = msg.split(Pattern.quote(" "));
                         nom = donnes[0];
-                        msg = donnes[1];
+                        msg = msg.substring(nom.length() + 1);
                     }
                     Player target = World.getPersoByName(nom);
                     if (target == null)// si le personnage n'existe pas
@@ -6829,6 +6830,7 @@ public class GameThread implements Runnable {
             World.addObjet(obV, true);
         }
         obj.removeAllObvijevanStats();
+        obj.setObvijevanLook(0);
         SocketManager.send(player, obj.obvijevanOCO_Packet(pos));
         SocketManager.GAME_SEND_ON_EQUIP_ITEM(player.getMap(), player);
     }
