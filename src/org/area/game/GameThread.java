@@ -1957,6 +1957,8 @@ public class GameThread implements Runnable {
                 Group g2 = player.getGroup();
                 if (g2 == null)
                     return;
+                if (g2.getChief() != player)
+                    return;
 
                 int pGuid2 = -1;
                 try {
@@ -1973,9 +1975,10 @@ public class GameThread implements Runnable {
 
                 if (P2 == null || !P2.isOnline())
                     return;
-
                 if (packet.charAt(2) == '+')// Suivre
                 {
+                    short mapID = P2.getMap().get_id();
+                    int cellID = P2.get_curCell().getID();
                     for (Player T : g2.getPlayers()) {
                         if (T.getGuid() == P2.getGuid())
                             continue;
@@ -1985,6 +1988,13 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_FLAG_PACKET(T, P2);
                         SocketManager.GAME_SEND_PF(T, "+" + P2.getGuid());
                         T._Follows = P2;
+                        if (T.getMap().get_id() == P2.getMap().get_id()) {
+                            if (T.getAccount().getCurIp().equalsIgnoreCase(P2.getAccount().getCurIp())) {
+                                P2.playerWhoFollowMe.add(T);
+                                T.sendText("Vous suivez désormais les pas de " + P2.getName() + " !");
+                            }
+                        }
+
                         P2._Follower.put(T.getGuid(), T);
                     }
                 } else if (packet.charAt(2) == '-')// Ne plus suivre
@@ -1996,6 +2006,7 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_PF(T, "-");
                         T._Follows = null;
                         P2._Follower.remove(T.getGuid());
+                        P2.playerWhoFollowMe.clear();
                     }
                 }
                 break;
@@ -6432,6 +6443,69 @@ public class GameThread implements Runnable {
         }
     }
 
+    public synchronized void movePlayer(String path, GameAction ogGA) {
+        if (player.getFight() == null) {
+            int actionID;
+            try {
+                actionID = Integer.parseInt(ogGA._packet.substring(2, 5));
+            } catch (NumberFormatException e) {
+                return;
+            }
+
+            int nextGameActionID = 0;
+            if (actions.size() > 0) {
+                // On prend le plus haut GameActionID + 1
+                nextGameActionID = (Integer) (actions.keySet().toArray()[actions
+                        .size() - 1]) + 1;
+            }
+            GameAction GA = new GameAction(nextGameActionID, actionID, ogGA._packet);
+            if (player.getPodUsed() > player.getMaxPod()) {
+                SocketManager.GAME_SEND_Im_PACKET(player, "112");
+                SocketManager.GAME_SEND_GA_PACKET(out, "", "0", "", "");
+                removeAction(GA);
+                return;
+            }
+            /*AtomicReference<String> pathRef = new AtomicReference<String>(path);
+            int result = Pathfinding.isValidPath(player.getMap(), player
+                    .get_curCell().getID(), pathRef, null);
+            // Si déplacement inutile
+            if (result == 0) {
+                SocketManager.GAME_SEND_GA_PACKET(out, "", "0", "", "");
+                removeAction(GA);
+                return;
+            }
+            if (result != -1000 && result < 0)
+                result = -result;
+
+            // On prend en compte le nouveau path
+            path = pathRef.get();
+            // Si le path est invalide
+            if (result == -1000) {
+                GameServer.addToLog(player.getName() + "(" + player.getGuid()
+                        + ") Tentative de  deplacement avec un path invalide");
+                path = CryptManager.getHashedValueByInt(player
+                        .get_orientation())
+                        + CryptManager.cellID_To_Code(player.get_curCell()
+                        .getID());
+            }*/
+            // On sauvegarde le path dans la variable
+            GA._args = path;
+
+            SocketManager.GAME_SEND_GA_PACKET_TO_MAP(
+                    player.getMap(),
+                    "" + GA._id,
+                    1,
+                    player.getGuid() + "",
+                    "a"
+                            + CryptManager.cellID_To_Code(player.get_curCell()
+                            .getID()) + path);
+            addAction(GA);
+            if (player.isSitted())
+                player.setSitted(false);
+            player.set_away(true);
+        }
+    }
+
     private synchronized void game_parseDeplacementPacket(GameAction GA) {
         String path = GA._packet.substring(5);
         if (player.getFight() == null) {
@@ -6513,7 +6587,6 @@ public class GameThread implements Runnable {
             }
             // On sauvegarde le path dans la variable
             GA._args = path;
-
             SocketManager.GAME_SEND_GA_PACKET_TO_MAP(
                     player.getMap(),
                     "" + GA._id,
@@ -6523,6 +6596,18 @@ public class GameThread implements Runnable {
                             + CryptManager.cellID_To_Code(player.get_curCell()
                             .getID()) + path);
             addAction(GA);
+            ArrayList<Player> removeList = new ArrayList<Player>();
+            for (Player followMe : player.playerWhoFollowMe) {
+                if (followMe.getMap().get_id() != player.getMap().get_id()) {
+                    followMe.sendText("Vous ne suivez plus les pas de " + player.getName() + " !");
+                    removeList.add(followMe);
+                } else {
+                    followMe.getAccount().getGameThread().movePlayer(path, GA);
+                }
+            }
+            for (Player toRemove : removeList) {
+                player.playerWhoFollowMe.remove(toRemove);
+            }
             if (player.isSitted())
                 player.setSitted(false);
             player.set_away(true);

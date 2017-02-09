@@ -305,6 +305,8 @@ public class Player {
     // itemSetApplied
     private ArrayList<Integer> itemSetApplied = new ArrayList<Integer>();
 
+    // Follow group multi
+    public ArrayList<Player> playerWhoFollowMe = new ArrayList<Player>();
 
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
@@ -2878,6 +2880,13 @@ public class Player {
             //SocketManager.GAME_SEND_GA2_PACKET(PW,_GUID);
             SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(_curCarte, _GUID);
         }
+
+        for (Player followMe : playerWhoFollowMe) {
+            if (followMe.getFight() == null) {
+                followMe.teleport(newMapID, newCellID);
+            }
+        }
+
         _curCell.removePlayer(_GUID);
         _curCarte = World.getCarte(newMapID);
         _curCell = _curCarte.getCase(newCellID);

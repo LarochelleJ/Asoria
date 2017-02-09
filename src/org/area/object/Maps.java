@@ -1771,6 +1771,12 @@ public class Maps {
                     }
                     GameServer.addToLog(perso.getName() + " lance un combat contre le groupe " + group.getID() + " sur la map " + _id);
                     startFigthVersusMonstres(perso, group);
+                    Fight f = perso.getFight();
+                    if (f != null) {
+                        for (Player followMe : perso.playerWhoFollowMe) {
+                            f.joinFight(followMe, perso.getGuid());
+                        }
+                    }
                     return;
                 }
             }
