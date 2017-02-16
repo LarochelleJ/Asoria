@@ -295,6 +295,7 @@ public class Job {
 
         public void startAction(Player P, InteractiveObject IO, GameAction GA, Case cell) {
             _P = P;
+            SocketManager.GAME_SEND_POPUP(P, "La formargie n'est pas très stable actuellement, l'utilisation de l'atelier n'est pas recommandé, si toutefois vous prenez le risque et que vous perdez un item. Area ne sera pas responsable et aucun remboursement ne pourra être effectué !");
             if (!_isCraft) {
                 IO.setInteractive(false);
                 IO.setState(Constant.IOBJECT_STATE_EMPTYING);

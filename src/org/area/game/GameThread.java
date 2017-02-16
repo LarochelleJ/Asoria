@@ -96,6 +96,7 @@ public class GameThread implements Runnable {
         public int _actionID;
         public String _packet;
         public String _args;
+        public short _secondArgs;
 
         public GameAction(int aId, int aActionId, String aPacket) {
             _id = aId;
@@ -1980,11 +1981,14 @@ public class GameThread implements Runnable {
                     short mapID = P2.getMap().get_id();
                     int cellID = P2.get_curCell().getID();
                     for (Player T : g2.getPlayers()) {
-                        if (T.getGuid() == P2.getGuid())
+                        if (T.getGuid() == P2.getGuid()) {
                             continue;
+                        }
                         if (T._Follows != null) {
                             T._Follows._Follower.remove(player.getGuid());
+                            T._Follows.playerWhoFollowMe.remove(T);
                         }
+                        T.playerWhoFollowMe.clear();
                         SocketManager.GAME_SEND_FLAG_PACKET(T, P2);
                         SocketManager.GAME_SEND_PF(T, "+" + P2.getGuid());
                         T._Follows = P2;
@@ -1999,6 +2003,7 @@ public class GameThread implements Runnable {
                     }
                 } else if (packet.charAt(2) == '-')// Ne plus suivre
                 {
+                    P2.playerWhoFollowMe.clear();
                     for (Player T : g2.getPlayers()) {
                         if (T.getGuid() == P2.getGuid())
                             continue;
@@ -2006,7 +2011,6 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_PF(T, "-");
                         T._Follows = null;
                         P2._Follower.remove(T.getGuid());
-                        P2.playerWhoFollowMe.clear();
                     }
                 }
                 break;
@@ -2056,6 +2060,10 @@ public class GameThread implements Runnable {
         if (packet.length() == 2)// Si aucun guid est spécifié, alors c'est que
         // le joueur quitte
         {
+            player.playerWhoFollowMe.clear();
+            if (player._Follows != null && player._Follows.playerWhoFollowMe.contains(player)) {
+                player._Follows.playerWhoFollowMe.remove(player);
+            }
             g.leave(player);
             SocketManager.GAME_SEND_PV_PACKET(out, "");
             SocketManager.GAME_SEND_IH_PACKET(player, "");
@@ -2073,6 +2081,10 @@ public class GameThread implements Runnable {
                 return;
             Player t = World.getPlayer(guid);
             g.leave(t);
+            t.playerWhoFollowMe.clear();
+            if (t._Follows != null && t._Follows.playerWhoFollowMe.contains(t)) {
+                t._Follows.playerWhoFollowMe.remove(t);
+            }
             SocketManager.GAME_SEND_PV_PACKET(t.getAccount().getGameThread()
                     .getOut(), "" + player.getGuid());
             SocketManager.GAME_SEND_IH_PACKET(t, "");
@@ -5771,6 +5783,9 @@ public class GameThread implements Runnable {
                 if (isOk) {
                     // Hors Combat
                     if (player.getFight() == null) {
+                        if (player.getMap().get_id() != GA._secondArgs) {
+                            return;
+                        }
                         player.get_curCell().removePlayer(player.getGuid());
                         SocketManager.GAME_SEND_BN(out);
                         String path = GA._args;
@@ -6459,6 +6474,7 @@ public class GameThread implements Runnable {
                         .size() - 1]) + 1;
             }
             GameAction GA = new GameAction(nextGameActionID, actionID, ogGA._packet);
+            GA._secondArgs = ogGA._secondArgs;
             if (player.getPodUsed() > player.getMaxPod()) {
                 SocketManager.GAME_SEND_Im_PACKET(player, "112");
                 SocketManager.GAME_SEND_GA_PACKET(out, "", "0", "", "");
@@ -6587,6 +6603,7 @@ public class GameThread implements Runnable {
             }
             // On sauvegarde le path dans la variable
             GA._args = path;
+            GA._secondArgs = player.getMap().get_id();
             SocketManager.GAME_SEND_GA_PACKET_TO_MAP(
                     player.getMap(),
                     "" + GA._id,

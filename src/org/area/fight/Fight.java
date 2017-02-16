@@ -3666,7 +3666,7 @@ public class Fight {
                 }
                 if (!F.getPersonnage().isOnline()) {
                     if (_type != Constant.FIGHT_TYPE_CHALLENGE || _type != Constant.FIGHT_TYPE_PVT) {
-                        F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
+                        get_map().applyEndFightAction(_type, F.getPersonnage());
                     }
                     continue;
                 }
