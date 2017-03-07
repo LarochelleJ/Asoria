@@ -330,6 +330,9 @@ public class GmCommand {
                     case Constant.CLASS_PANDAWA:
                         mess += "Pan";
                         break;
+                    case Constant.CLASS_OUGINAK:
+                        mess += "Oug";
+                        break;
                     default:
                         mess += "Unk";
                 }
