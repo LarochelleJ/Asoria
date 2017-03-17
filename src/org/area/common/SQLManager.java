@@ -1471,7 +1471,9 @@ public class SQLManager {
             String type = stat[15].trim();
             int level = Integer.parseInt(stat[stat.length - 2].trim());
             boolean endTurn = stat[19].trim().equalsIgnoreCase("true");
-            stats = new SortStats(id, lvl, PACOST, POm, POM, TCC, TEC, line, LDV, emptyCell, MODPO, MaxByTurn, MaxByTarget, CoolDown, level, endTurn, effets, CCeffets, type);
+            int etatRequis = Integer.parseInt(stat[16].trim());
+            int etatInterdit = Integer.parseInt(stat[17].trim());
+            stats = new SortStats(id, lvl, PACOST, POm, POM, TCC, TEC, line, LDV, emptyCell, MODPO, MaxByTurn, MaxByTarget, CoolDown, level, endTurn, effets, CCeffets, type, etatRequis, etatInterdit);
             return stats;
         } catch (Exception e) {
             e.printStackTrace();

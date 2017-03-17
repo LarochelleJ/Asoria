@@ -283,7 +283,7 @@ public class Fighter {
         }
     }
 
-    private Stats getFightBuffStats() {
+    private Stats getFightBuffStats() { // Retourne les buffs qui seront accumulé sur les stats de bases du Fighter
         Stats stats = new Stats();
         for (SpellEffect entry : _fightBuffs) {
             stats.addOneStat(entry.getEffectID(), entry.getValue());
@@ -466,7 +466,7 @@ public class Fighter {
         return _state.get(id) != 0;
     }
 
-    public void decrementStates() {
+    /*public void decrementStates() {
         //Copie pour évident les modif concurrentes
         ArrayList<Entry<Integer, Integer>> entries = new ArrayList<Entry<Integer, Integer>>();
         entries.addAll(_state.entrySet());
@@ -486,7 +486,7 @@ public class Fighter {
             //Sinon on remet avec la nouvelle valeur
             _state.put(e.getKey(), nVal);
         }
-    }
+    }*/
 
     public int getPDV() {
         int pdv = _PDV + getBuffValue(Constant.STATS_ADD_VITA);
@@ -673,6 +673,22 @@ public class Fighter {
                 return;
             _fightBuffs.add(new SpellEffect(id, val, (_canPlay ? duration + 1 : duration), turns, debuff, caster, args, spellID, isPoison));
         } else {
+            // Système de limite de buff faiblesse %
+            if (id > 214 && id < 220) {
+                int curVal = 0;
+                for (SpellEffect se : _fightBuffs) {
+                    if (se.getEffectID() == id) {
+                        curVal += se.getValue();
+                    }
+                }
+                if (curVal < 150) {
+                    if (curVal + val > 150) {
+                        val -= curVal + val - 150;
+                    }
+                } else {
+                    val = 0;
+                }
+            }
             _fightBuffs.add(new SpellEffect(id, val, (_canPlay ? duration + 1 : duration), turns, debuff, caster, args, spellID, isPoison));
         }
 

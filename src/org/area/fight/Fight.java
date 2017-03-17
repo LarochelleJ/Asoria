@@ -1,5 +1,6 @@
 package org.area.fight;
 
+import java.net.Socket;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledFuture;
@@ -374,7 +375,7 @@ public class Fight {
         SocketManager.GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(this, 1, _map.get_placesStr(), 0);
         _st1 = 0;
         _st2 = 1;
-		/*}else
+        /*}else
 		{
 			_start0 = parsePlaces(1);
 			_start1 = parsePlaces(0);
@@ -785,8 +786,7 @@ public class Fight {
             if (!f.getPersonnage().hasSpell(59)) {
                 if (!f.getPersonnage().hasSpell(212162)) {
                     continue;
-                }
-                else {
+                } else {
                     f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(212162), 10);
                 }
                 continue;
@@ -2184,7 +2184,7 @@ public class Fight {
                         showCaseToAll(fighter.getGUID(), fighter.get_fightCell().getID());
                     }
                 }
-                //on applique les effets de l'arme
+                //on applique les effets de l'arme, lancement de sort
                 Spell.applySpellEffectToFight(this, fighter, Cell, isCC);
             }
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 102, fighter.getGUID() + "", fighter.getGUID() + ",-" + Spell.getPACost(fighter));
@@ -2342,8 +2342,33 @@ public class Fight {
 
     public synchronized boolean CanCastSpell(Fighter fighter, SortStats spell, Case cell, int launchCase) {
         // Vérification pour éviter des calculs inutiles @Flow
-        if (_ordreJeu == null || _curPlayer < 0)
+        if (_ordreJeu == null || _curPlayer < 0) {
             return false;
+        }
+        Player perso = null;
+        if (fighter != null) {
+            perso = fighter.getPersonnage();
+        }
+        // Etat requis ou interdit
+        if (spell.getEtatRequis() > -1) {
+            if (!fighter.isState(spell.getEtatRequis())) {
+                if (perso != null) {
+                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+                    SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+                }
+                return false;
+            }
+        }
+
+        if (spell.getEtatInterdit() > -1) {
+            if (fighter.isState(spell.getEtatInterdit())) {
+                if (perso != null) {
+                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+                    SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+                }
+                return false;
+            }
+        }
 
         int ValidlaunchCase;
         if (launchCase <= -1) {
@@ -2354,7 +2379,6 @@ public class Fight {
         if (_ordreJeu == null || _ordreJeu.isEmpty() || _ordreJeu.get(_curPlayer) == null) return false;
         Fighter f = _ordreJeu.get(_curPlayer);
         if (f == null) return false;
-        Player perso = fighter.getPersonnage();
         //Si le sort n'est pas existant
         if (spell == null) {
             if (Config.DEBUG) GameServer.addToLog("(" + _curPlayer + ") Sort non existant");
@@ -3666,7 +3690,11 @@ public class Fight {
                 }
                 if (!F.getPersonnage().isOnline()) {
                     if (_type != Constant.FIGHT_TYPE_CHALLENGE || _type != Constant.FIGHT_TYPE_PVT) {
-                        get_map().applyEndFightAction(_type, F.getPersonnage());
+                        try {
+                            F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
+                        } catch (Exception e) {
+                            SocketManager.GAME_SEND_MESSAGE_TO_ALL(e.toString(), Config.CONFIG_MOTD_COLOR);
+                        }
                     }
                     continue;
                 }

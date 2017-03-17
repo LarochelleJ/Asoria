@@ -487,6 +487,10 @@ public class ParseTool {
                     player.sendText("Impossible de quitter un combat en Kolizeum.");
                     break;
                 }
+                if (player.getFight() != null && !player.getFight().isFightStarted()) {
+                    player.sendText("Impossible d'utiliser le debug en préparation de combat.");
+                    break;
+                }
                 if (player.getFight() != null && player.getKolizeum() == null && player.getArena() == -1) {
                     player.getFight().leftFight(player, null, true);
                 }

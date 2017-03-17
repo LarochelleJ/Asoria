@@ -46,10 +46,12 @@ public class Spell {
 		private ArrayList<SpellEffect> effects;
 		private ArrayList<SpellEffect> CCeffects;
 		private String porteeType;
+		private int etatRequis;
+		private int etatInterdit;
 		
 		public SortStats(int AspellID,int Alevel,int cost, int minPO, int maxPO, int tauxCC,int tauxEC, boolean isLineLaunch, boolean hasLDV,
 				boolean isEmptyCell, boolean isModifPO, int maxLaunchbyTurn,int maxLaunchbyByTarget, int coolDown,
-				int reqLevel,boolean isEcEndTurn, String effects,String ceffects,String typePortee)
+				int reqLevel,boolean isEcEndTurn, String effects,String ceffects,String typePortee, int etatRequis, int etatInterdit)
 		{
 			this.spellID = AspellID;
 			this.level = Alevel;
@@ -70,6 +72,8 @@ public class Spell {
 			this.effects = parseEffect(effects);
 			this.CCeffects = parseEffect(ceffects);
 			this.porteeType = typePortee;
+			this.etatRequis = etatRequis;
+			this.etatInterdit = etatInterdit;
 		}
 		
 		private ArrayList<SpellEffect> parseEffect(String e)
@@ -92,6 +96,14 @@ public class Spell {
 
 		public int getSpellID() {
 			return spellID;
+		}
+
+		public int getEtatRequis() {
+			return etatRequis;
+		}
+
+		public int getEtatInterdit() {
+			return etatInterdit;
 		}
 		
 		public Spell getSpell()

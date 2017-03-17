@@ -2262,7 +2262,7 @@ return list;
                         continue;
 
                     infl = calculInfluence(fight, cSS, fighter, t.getValue());
-                    if (infl > maxInfl || fight.CanCastSpell(fighter, SS, t.getValue().get_fightCell(), -1)) {
+                    if (infl > maxInfl || fight.CanCastSpell(fighter, cSS, t.getValue().get_fightCell(), -1)) {
                         target = t.getValue();
 
                         maxInfl = infl;
@@ -2274,6 +2274,7 @@ return list;
                 for (Entry<Integer, SortStats> S : fighter.getMob().getSpells()
                         .entrySet()) // pour chaque sort du mob
                 {
+                    // TODO Etat sort condition
                     int targetVal = getBestTargetZone(fight, fighter, S.getValue(),
                             fighter.get_fightCell().getID()); // on dï¿½termine le
                     // meilleur
