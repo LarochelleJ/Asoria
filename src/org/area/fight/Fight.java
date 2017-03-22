@@ -2350,23 +2350,28 @@ public class Fight {
             perso = fighter.getPersonnage();
         }
         // Etat requis ou interdit
-        if (spell.getEtatRequis() > -1) {
-            if (!fighter.isState(spell.getEtatRequis())) {
-                if (perso != null) {
-                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
-                    SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+        if (!spell.getEtatRequis().isEmpty()) {
+
+            for (int etat : spell.getEtatRequis()) {
+                if (!fighter.isState(etat)) {
+                    if (perso != null) {
+                        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+                        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+                    }
+                    return false;
                 }
-                return false;
             }
         }
 
-        if (spell.getEtatInterdit() > -1) {
-            if (fighter.isState(spell.getEtatInterdit())) {
-                if (perso != null) {
-                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
-                    SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+        if (!spell.getEtatInterdit().isEmpty()) {
+            for (int etat : spell.getEtatInterdit()) {
+                if (fighter.isState(etat)) {
+                    if (perso != null) {
+                        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+                        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+                    }
+                    return false;
                 }
-                return false;
             }
         }
 

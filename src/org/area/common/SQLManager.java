@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.area.client.Account;
 import org.area.client.Player;
 import org.area.client.tools.RapidStuff;
@@ -1471,8 +1473,44 @@ public class SQLManager {
             String type = stat[15].trim();
             int level = Integer.parseInt(stat[stat.length - 2].trim());
             boolean endTurn = stat[19].trim().equalsIgnoreCase("true");
-            int etatRequis = Integer.parseInt(stat[16].trim());
-            int etatInterdit = Integer.parseInt(stat[17].trim());
+            List<Integer> etatRequis = new ArrayList<Integer>(), etatInterdit = new ArrayList<Integer>();
+            try {
+                String data = stat[16].replaceAll("\\s+","");
+                if (data.contains(";")) {
+                    String[] d1 = data.split(";");
+                    for (String s : d1) {
+                        int etat = Integer.parseInt(s);
+                        if (etat > -1) {
+                            etatRequis.add(etat);
+                        }
+                    }
+                } else {
+                    int etat = Integer.parseInt(data);
+                    if (etat > -1) {
+                        etatRequis.add(etat);
+                    }
+                }
+            } catch (Exception e) {
+
+            }
+            try {
+                String data = stat[17].replaceAll("\\s+","");
+                if (data.contains(";")) {
+                    String[] d2 = data.split(";");
+                    for (String s : d2) {
+                        int etat = Integer.parseInt(s);
+                        if (etat > -1) {
+                            etatInterdit.add(etat);
+                        }
+                    }
+                } else {
+                    int etat = Integer.parseInt(data);
+                    if (etat > -1) {
+                        etatInterdit.add(etat);
+                    }
+                }
+            } catch (Exception e) {
+            }
             stats = new SortStats(id, lvl, PACOST, POm, POM, TCC, TEC, line, LDV, emptyCell, MODPO, MaxByTurn, MaxByTarget, CoolDown, level, endTurn, effets, CCeffets, type, etatRequis, etatInterdit);
             return stats;
         } catch (Exception e) {

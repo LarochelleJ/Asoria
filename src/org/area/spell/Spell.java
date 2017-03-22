@@ -1,6 +1,7 @@
 package org.area.spell;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -46,12 +47,12 @@ public class Spell {
 		private ArrayList<SpellEffect> effects;
 		private ArrayList<SpellEffect> CCeffects;
 		private String porteeType;
-		private int etatRequis;
-		private int etatInterdit;
+		private List<Integer> etatRequis;
+		private List<Integer> etatInterdit;
 		
 		public SortStats(int AspellID,int Alevel,int cost, int minPO, int maxPO, int tauxCC,int tauxEC, boolean isLineLaunch, boolean hasLDV,
 				boolean isEmptyCell, boolean isModifPO, int maxLaunchbyTurn,int maxLaunchbyByTarget, int coolDown,
-				int reqLevel,boolean isEcEndTurn, String effects,String ceffects,String typePortee, int etatRequis, int etatInterdit)
+				int reqLevel,boolean isEcEndTurn, String effects,String ceffects,String typePortee, List<Integer> etatRequis, List<Integer> etatInterdit)
 		{
 			this.spellID = AspellID;
 			this.level = Alevel;
@@ -98,11 +99,11 @@ public class Spell {
 			return spellID;
 		}
 
-		public int getEtatRequis() {
+		public List<Integer> getEtatRequis() {
 			return etatRequis;
 		}
 
-		public int getEtatInterdit() {
+		public List<Integer> getEtatInterdit() {
 			return etatInterdit;
 		}
 		
