@@ -1149,19 +1149,21 @@ public class SocketManager {
     }
 
     public static void GAME_SEND_FIGHT_GIE_TO_FIGHT(Fight fight, int teams, int mType, int cible, int value, String mParam2, String mParam3, String mParam4, int turn, int spellID) {
-        StringBuilder packet = new StringBuilder();
-        packet.append("GIE").append(mType).append(";").append(cible).append(";").append(value).append(";").append(mParam2).append(";").append(mParam3).append(";").append(mParam4).append(";").append(turn).append(";").append(spellID);
-        for (Fighter f : fight.getFighters(teams)) {
-            if (f.hasLeft() || f.getPersonnage() == null) continue;
-            if (f.getPersonnage().isOnline())
-                send(f.getPersonnage(), packet.toString());
+        if (value > 0) {
+            StringBuilder packet = new StringBuilder();
+            packet.append("GIE").append(mType).append(";").append(cible).append(";").append(value).append(";").append(mParam2).append(";").append(mParam3).append(";").append(mParam4).append(";").append(turn).append(";").append(spellID);
+            for (Fighter f : fight.getFighters(teams)) {
+                if (f.hasLeft() || f.getPersonnage() == null) continue;
+                if (f.getPersonnage().isOnline())
+                    send(f.getPersonnage(), packet.toString());
+            }
+            try {
+                Thread.sleep(75);
+            } catch (Exception e) {
+            }
+            if (Config.DEBUG)
+                GameServer.addToSockLog("Game: Fight : Send>>" + packet.toString());
         }
-        try {
-            Thread.sleep(75);
-        } catch (Exception e) {
-        }
-        if (Config.DEBUG)
-            GameServer.addToSockLog("Game: Fight : Send>>" + packet.toString());
     }
 
     public static void GAME_SEND_MAP_FIGHT_GMS_PACKETS_TO_FIGHT(Fight fight, int teams, Maps map) {

@@ -1026,6 +1026,12 @@ public class Constant {
                     toReturn.add(steamerSpell[i]);
                 }
                 break;
+            case CLASS_OUGINAK:
+                int[] ouginakSpell = {3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015, 3016, 3017, 3018, 3019, 3020};
+                for (int i = 0; i < ouginakSpell.length; i++) {
+                    toReturn.add((ouginakSpell[i]));
+                }
+                break;
             default: // Classe non complétement intérgrée
                 break;
         }
@@ -1104,6 +1110,11 @@ public class Constant {
                 start.put(200000, World.getSort(200000).getStatsByLevel(1));//Détonateur
                 start.put(201000, World.getSort(201000).getStatsByLevel(1));//Extraction
                 start.put(202000, World.getSort(202000).getStatsByLevel(1));//Explobombe
+                break;
+            case CLASS_OUGINAK:
+                start.put(3000, World.getSort(3000).getStatsByLevel(1));//Déchainement
+                start.put(3001, World.getSort(3001).getStatsByLevel(1));//Cubitus
+                start.put(3002, World.getSort(3002).getStatsByLevel(1));//Etreinte
                 break;
             default: // Classe non complétement intérgrée
                 break;
@@ -2378,6 +2389,45 @@ public class Constant {
                     perso.learnSpell(219000, 1, true, false);//
                 if (lvl == 200)
                     perso.learnSpell(220000, 1, true, false);//Invocation du dopeul Roublard
+                break;
+
+            case CLASS_OUGINAK:
+                if (lvl == 3)
+                    perso.learnSpell(3003, 1, true, false);//Carcasse
+                if (lvl == 6)
+                    perso.learnSpell(3004, 1, true, false);//Épédigrée
+                if (lvl == 9)
+                    perso.learnSpell(3005, 1, true, false);//Fidélité
+                if (lvl == 13)
+                    perso.learnSpell(3006, 1, true, false);//Lance-roquet
+                if (lvl == 17)
+                    perso.learnSpell(3007, 1, true, false);//Trace
+                if (lvl == 21)
+                    perso.learnSpell(3008, 1, true, false);//Muselière
+                if (lvl == 26)
+                    perso.learnSpell(3009, 1, true, false);//Traque
+                if (lvl == 31)
+                    perso.learnSpell(3010, 1, true, false);//Limier
+                if (lvl == 36)
+                    perso.learnSpell(3011, 1, true, false);//Meute
+                if (lvl == 42)
+                    perso.learnSpell(3012, 1, true, false);//Pelage protecteur
+                if (lvl == 48)
+                    perso.learnSpell(3013, 1, true, false);//Os à moelle
+                if (lvl == 54)
+                    perso.learnSpell(3014, 1, true, false);//Cerbère
+                if (lvl == 60)
+                    perso.learnSpell(3015, 1, true, false);//Panique
+                if (lvl == 70)
+                    perso.learnSpell(3016, 1, true, false);//Promenade
+                if (lvl == 80)
+                    perso.learnSpell(3017, 1, true, false);//Tétanisation
+                if (lvl == 90)
+                    perso.learnSpell(3018, 1, true, false);//Aboiement
+                if (lvl == 100)
+                    perso.learnSpell(3019, 1, true, false);//Charogne
+                if (lvl == 200)
+                    perso.learnSpell(3020, 1, true, false);//Invocation du dopeul Roublard
                 break;
 
             default: // Classe non complétement implémentée

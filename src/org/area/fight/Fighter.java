@@ -681,15 +681,18 @@ public class Fighter {
                         curVal += se.getValue();
                     }
                 }
-                if (curVal < 150) {
-                    if (curVal + val > 150) {
-                        val -= curVal + val - 150;
+                int limite = this.getTotalStats().getEffect(id - 5) + 150;
+                if (curVal < limite) {
+                    if (curVal + val > limite) {
+                        val -= curVal + val - limite;
                     }
                 } else {
                     val = 0;
                 }
             }
-            _fightBuffs.add(new SpellEffect(id, val, (_canPlay ? duration + 1 : duration), turns, debuff, caster, args, spellID, isPoison));
+            if (val > 0) {
+                _fightBuffs.add(new SpellEffect(id, val, (_canPlay ? duration + 1 : duration), turns, debuff, caster, args, spellID, isPoison));
+            }
         }
 
         if (Config.DEBUG)

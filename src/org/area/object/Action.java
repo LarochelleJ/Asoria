@@ -126,7 +126,6 @@ public class Action {
                 } catch (Exception e) {
                     return;
                 }
-                ;
                 break;
 
             case 1://Discours NPC

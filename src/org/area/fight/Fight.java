@@ -376,7 +376,7 @@ public class Fight {
         _st1 = 0;
         _st2 = 1;
         /*}else
-		{
+        {
 			_start0 = parsePlaces(1);
 			_start1 = parsePlaces(0);
 			_st1 = 1;
@@ -2348,10 +2348,11 @@ public class Fight {
         Player perso = null;
         if (fighter != null) {
             perso = fighter.getPersonnage();
+        } else {
+            return false;
         }
         // Etat requis ou interdit
         if (!spell.getEtatRequis().isEmpty()) {
-
             for (int etat : spell.getEtatRequis()) {
                 if (!fighter.isState(etat)) {
                     if (perso != null) {
@@ -3694,12 +3695,8 @@ public class Fight {
                     continue;
                 }
                 if (!F.getPersonnage().isOnline()) {
-                    if (_type != Constant.FIGHT_TYPE_CHALLENGE || _type != Constant.FIGHT_TYPE_PVT) {
-                        try {
-                            F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
-                        } catch (Exception e) {
-                            SocketManager.GAME_SEND_MESSAGE_TO_ALL(e.toString(), Config.CONFIG_MOTD_COLOR);
-                        }
+                    if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
+                        F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
                     }
                     continue;
                 }
@@ -3721,7 +3718,7 @@ public class Fight {
                 } catch (Exception E) {
                 }
                 ;
-                if (_type != Constant.FIGHT_TYPE_CHALLENGE || _type != Constant.FIGHT_TYPE_PVT) {
+                if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
                     F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
                 }
 

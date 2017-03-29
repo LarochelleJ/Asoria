@@ -3,6 +3,7 @@ package org.area.object;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -1273,7 +1274,10 @@ public class Maps {
         if (_endFightAction.get(type) == null)
             return;
         for (Action A : _endFightAction.get(type)) {
-            A.apply(perso, null, -1, -1);
+            try {
+                A.apply(perso, null, -1, -1);
+            } catch (Exception e) {
+            }
         }
 
     }
