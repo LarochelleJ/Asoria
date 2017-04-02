@@ -489,8 +489,7 @@ public class Fighter {
     }*/
 
     public int getPDV() {
-        int pdv = _PDV + getBuffValue(Constant.STATS_ADD_VITA);
-        return pdv;
+        return _PDV + getBuffValue(Constant.STATS_ADD_VITA);
     }
 
     public void removePDV(int pdv) {
@@ -503,7 +502,7 @@ public class Fighter {
         _PDV -= pdv;
         if (_PDV > _PDVMAX)
             _PDV = _PDVMAX;
-        if (_PDV <= 0 && this.getPersonnage() != null) {
+        if (getPDV() <= 0 && this.getPersonnage() != null) {
             this.getPersonnage().getFight().onFighterDie(this, this);
         }
     }
@@ -1134,9 +1133,5 @@ public class Fighter {
 
     public void newTurn() {
         _tourRestants--;
-    }
-
-    public int getPDVWithBuff() {
-        return _PDV + getBuffValue(125);
     }
 }

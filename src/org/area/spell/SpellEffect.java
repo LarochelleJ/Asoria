@@ -219,11 +219,11 @@ public class SpellEffect {
                             finalDommage = (int) (coef * C);
                             if (finalDommage < 1)
                                 finalDommage = 1;
-                            if (finalDommage > target.getPDVWithBuff())
-                                finalDommage = target.getPDVWithBuff();
+                            if (finalDommage > target.getPDV())
+                                finalDommage = target.getPDV();
                             if (finalDommage > 0) {
                                 target.removePDV(finalDommage);
-                                if (target.getPDVWithBuff() <= 0) {
+                                if (target.getPDV() <= 0) {
                                     SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + ",-"
                                             + finalDommage);
                                     fight.onFighterDie(target, target);
@@ -265,13 +265,13 @@ public class SpellEffect {
                             int finalDamage = (finalDommage / 2);
                             if (finalDamage < 1)
                                 finalDamage = 1;
-                            if (finalDamage > affected.getPDVWithBuff())
-                                finalDamage = affected.getPDVWithBuff();
+                            if (finalDamage > affected.getPDV())
+                                finalDamage = affected.getPDV();
                             if (finalDamage > 0) {
                                 affected.removePDV(finalDamage);
                                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", affected.getGUID() + ",-"
                                         + finalDamage);
-                                if (affected.getPDVWithBuff() <= 0) {
+                                if (affected.getPDV() <= 0) {
                                     fight.onFighterDie(affected, affected);
                                 }
                             }
@@ -2771,11 +2771,11 @@ public class SpellEffect {
                     damageFinal = (int) (coef * c);
                     if (damageFinal < 1)
                         damageFinal = 1;
-                    if (damageFinal > cible.getPDVWithBuff())
-                        damageFinal = cible.getPDVWithBuff();
+                    if (damageFinal > cible.getPDV())
+                        damageFinal = cible.getPDV();
                     if (damageFinal > 0) {
                         cible.removePDV(damageFinal);
-                        if (cible.getPDVWithBuff() <= 0) {
+                        if (cible.getPDV() <= 0) {
                             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", cible.getGUID() + ",-"
                                     + damageFinal);
                             fight.onFighterDie(cible, caster);
@@ -2816,13 +2816,13 @@ public class SpellEffect {
                     int damageFinal2 = (damageFinal / 2);
                     if (damageFinal2 < 1)
                         damageFinal2 = 1;
-                    if (damageFinal2 > effect.getPDVWithBuff())
-                        damageFinal2 = effect.getPDVWithBuff();
+                    if (damageFinal2 > effect.getPDV())
+                        damageFinal2 = effect.getPDV();
                     if (damageFinal2 > 0) {
                         effect.removePDV(damageFinal2);
                         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", effect.getGUID() + ",-"
                                 + damageFinal2);
-                        if (effect.getPDVWithBuff() <= 0) {
+                        if (effect.getPDV() <= 0) {
                             fight.onFighterDie(effect, caster);
                         }
                     }
@@ -2873,11 +2873,11 @@ public class SpellEffect {
                     damageFinal = (int) (coef * c);
                     if (damageFinal < 1)
                         damageFinal = 1;
-                    if (damageFinal > cible.getPDVWithBuff())
-                        damageFinal = cible.getPDVWithBuff();
+                    if (damageFinal > cible.getPDV())
+                        damageFinal = cible.getPDV();
                     if (damageFinal > 0) {
                         cible.removePDV(damageFinal);
-                        if (cible.getPDVWithBuff() <= 0) {
+                        if (cible.getPDV() <= 0) {
                             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", cible.getGUID() + ",-" + damageFinal);
                             fight.onFighterDie(cible, caster);
                             continue;
@@ -2916,12 +2916,12 @@ public class SpellEffect {
                     int damageFinal2 = (damageFinal / 2);
                     if (damageFinal2 < 1)
                         damageFinal2 = 1;
-                    if (damageFinal2 > affectes.getPDVWithBuff())
-                        damageFinal2 = affectes.getPDVWithBuff();
+                    if (damageFinal2 > affectes.getPDV())
+                        damageFinal2 = affectes.getPDV();
                     if (damageFinal2 > 0) {
                         affectes.removePDV(damageFinal2);
                         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", affectes.getGUID() + ",-" + damageFinal2);
-                        if (affectes.getPDVWithBuff() <= 0) {
+                        if (affectes.getPDV() <= 0) {
                             fight.onFighterDie(affectes, caster);
                         }
                     }

@@ -677,20 +677,13 @@ public class GameThread implements Runnable {
              */
             case 'M': // @Flow - Optimisé
                 int points = Util.loadPointsByAccount(player.getAccount());
-                if (points >= 50) {
+                if (points > 49) {
                     String[] mim = packet.substring(2).split(";");
                     int baseItem = 0;
                     int skinItem = 0;
-                    String verif2 = "";
-                    try {
-                        String verif = mim[2];
 
-                        int verifLastIndex = verif.lastIndexOf(',');
-                        verif2 = verif.substring(0, verifLastIndex);
-
-                    } catch (Exception e) {
-                        player.sendText("Utilisez un item avec des statistiques !");
-                        return;
+                    if (mim.length != 4) { // Vieux core
+                        player.sendText("Vous devez mettre à jour votre client Area afin d'utiliser le service de Mimibiotage.");
                     }
 
                     try {
@@ -699,21 +692,35 @@ public class GameThread implements Runnable {
                     } catch (Exception e) {
                         return;
                     }
+
+                    Item statsObj = World.getObjet(baseItem);
+                    Item skinObj = World.getObjet(skinItem);
+
+                    if (statsObj != null && skinObj != null) {
+                        if (!(player.hasItemGuid(baseItem) && player.hasItemGuid(skinItem))) {
+                            player.sendText("Vous n'avez pas les objets requis.");
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+
+                    ObjTemplate targetItem = statsObj.getTemplate(true);
+                    ObjTemplate itemSkinVerif = skinObj.getTemplate(true);
+
                     try {
-                        int guidT = baseItem;
-                        if (World.EchangeItemValue(guidT) > 0) {
+                        if (World.EchangeItemValue(targetItem.getID()) > 0) { // Item v1
                             player.sendText("Impossible de mimibioter cet objet !");
                             return;
                         }
                     } catch (Exception e) {
                     }
-                    ObjTemplate targetItem = World.getObjTemplate(baseItem);
-                    ObjTemplate itemSkinVerif = World.getObjTemplate(skinItem);
+
                     if (targetItem.getType() != Constant.ITEM_TYPE_COIFFE
                             && targetItem.getType() != Constant.ITEM_TYPE_CAPE
-                            && targetItem.getType() != Constant.ITEM_TYPE_BOUCLIER) {
-                        // && targetItem.getType() != Constant.ITEM_TYPE_FAMILIER Pour les familiers #Meow... Useless
-                        player.sendText("Vous ne pouvez qu'associer des Capes, Chapeaux et Boucliers.");
+                            && targetItem.getType() != Constant.ITEM_TYPE_BOUCLIER
+                            && targetItem.getType() != Constant.ITEM_TYPE_FAMILIER) {
+                        player.sendText("Vous ne pouvez qu'associer des Capes, Chapeaux, Boucliers et Familiers");
                         return;
                     }
                     if (targetItem.getType() >= 2 && targetItem.getType() <= 8 || targetItem.getType() == Constant.ITEM_TYPE_HACHE) {
@@ -727,38 +734,28 @@ public class GameThread implements Runnable {
                         return;
                     }
 
-                    if (player.hasItemTemplate(baseItem, 1) && player.hasItemTemplate(skinItem, 1)) {
-                        //ObjTemplate OM2 = World.getObjTemplate(skinItem);
-                        ObjTemplate OM1 = World.getObjTemplate(baseItem);
-                        Item objetStats = SQLManager.verifStats(baseItem, verif2, player);
-                        if (objetStats == null) {
-                            player.sendText("Erreur: Packet corrompu ! Veuillez ré-essayer !");
-                            return;
-                        }
-                        //player.removeByTemplateID(baseItem, 1);
-                        player.removeByTemplateID(skinItem, 1);
-                        Item obj = Item.createNewMorphItem(skinItem, baseItem, verif2);
+                    //ObjTemplate OM2 = World.getObjTemplate(skinItem);
+                    //player.removeByTemplateID(baseItem, 1);
+                    player.removeItem(skinItem, 1, true, true);
+                    Item obj = Item.createNewMorphItem(itemSkinVerif.getID(), targetItem.getID(), statsObj.getStats().parseToItemSetStats());
 
-                        obj.getStats().setOneStat(9000, 1);//Non echangeable = 9000 @Flow
-                        /** Ajout d'une variable pour récupérer l'item stat de départ. Exemple bonus de panoplie **/
-                        if (objetStats.getStats().getEffect(616161) > 0) { // Si déjà mimibioté
-                            obj.getStats().setOneStat(616161, objetStats.getStats().getEffect(616161));
-                        } else {
-                            obj.getStats().setOneStat(616161, OM1.getID());
-                        }
-                        player.removeItem(objetStats.getGuid(), 1, true, true);
-                        obj.addTxtStat(970, Integer.toHexString(OM1.getID()));
-                        World.addObjet(obj, true);
-                        player.addObjet(obj);
-                        player.save(true);
-                        SocketManager.GAME_SEND_OAKO_PACKET(player, obj);
-                        SocketManager.GAME_SEND_Ow_PACKET(player);
-
-                        Util.updatePointsByAccount(player.getAccount(), points - 50);
-                        player.sendText("Le service <b>Mimibiote</b> vous a coûté 50 points.");
+                    obj.getStats().setOneStat(9000, 1);//Non echangeable = 9000 @Flow
+                    /** Ajout d'une variable pour récupérer l'item stat de départ. Exemple bonus de panoplie **/
+                    if (statsObj.getStats().getEffect(616161) > 0) { // Si déjà mimibioté
+                        obj.getStats().setOneStat(616161, statsObj.getStats().getEffect(616161));
                     } else {
-                        player.sendText("Impossible, nous n'avons pas trouvé l'item dans votre inventaire.");
+                        obj.getStats().setOneStat(616161, targetItem.getID());
                     }
+                    player.removeItem(statsObj.getGuid(), 1, true, true);
+                    obj.addTxtStat(970, Integer.toHexString(targetItem.getID()));
+                    World.addObjet(obj, true);
+                    player.addObjet(obj);
+                    player.save(true);
+                    SocketManager.GAME_SEND_OAKO_PACKET(player, obj);
+                    SocketManager.GAME_SEND_Ow_PACKET(player);
+
+                    Util.updatePointsByAccount(player.getAccount(), points - 50);
+                    player.sendText("Le service <b>Mimibiote</b> vous a coûté 50 points.");
                 } else {
                     player.sendText("Il vous faut 50 points pour effectuer ceci !");
 
@@ -1039,7 +1036,7 @@ public class GameThread implements Runnable {
             return;
         }
         if (player.getMap().getTempsPourPosePercepteur() > System.currentTimeMillis()) { // Restriction active
-            int minutesRestanteAvantPose = (int)(player.getMap().getTempsPourPosePercepteur() - System.currentTimeMillis()) / 60000 ;
+            int minutesRestanteAvantPose = (int) (player.getMap().getTempsPourPosePercepteur() - System.currentTimeMillis()) / 60000;
             player.sendText("Vous ne pouvez pas poser de percepteur sur cette carte. Il reste " + minutesRestanteAvantPose + " minutes avant de pouvoir poser un percepteur à nouveau sur cette carte.");
             return;
         }

@@ -538,27 +538,6 @@ public class Item {
         txtStats.put(i, s);
     }
 
-    public void setTxtStat(int i, String s) {
-        if (txtStats.containsKey(i)) {
-            txtStats.remove(i);
-        }
-        txtStats.put(i, s);
-    }
-
-    public String getTxtStat(int i) {
-        String stat = "";
-        try {
-            stat = (String) txtStats.get(Integer.valueOf(i));
-        } catch (Exception exception) {
-        }
-        if (stat == null) {
-            return "";
-        } else {
-            return stat;
-        }
-    }
-
-
     public String getTraquedName() {
         for (Entry<Integer, String> entry : txtStats.entrySet()) {
             if (Integer.toHexString(entry.getKey()).compareTo("3dd") == 0) {

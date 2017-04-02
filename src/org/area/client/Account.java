@@ -247,10 +247,6 @@ public class Account {
         return pass.equals(CryptManager.CryptPassword(hash, _pass));
     }
 
-    public int GET_PERSO_NUMBER() {
-        return players.size();
-    }
-
     public void addPerso(Player perso) {
         players.put(perso.getGuid(), perso);
     }
