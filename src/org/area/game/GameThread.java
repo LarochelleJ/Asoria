@@ -737,7 +737,7 @@ public class GameThread implements Runnable {
                     //ObjTemplate OM2 = World.getObjTemplate(skinItem);
                     //player.removeByTemplateID(baseItem, 1);
                     player.removeItem(skinItem, 1, true, true);
-                    Item obj = Item.createNewMorphItem(itemSkinVerif.getID(), targetItem.getID(), statsObj.getStats().parseToItemSetStats());
+                    Item obj = Item.createNewMorphItem(itemSkinVerif.getID(), targetItem.getID(), statsObj.parseStatsString());
 
                     obj.getStats().setOneStat(9000, 1);//Non echangeable = 9000 @Flow
                     /** Ajout d'une variable pour récupérer l'item stat de départ. Exemple bonus de panoplie **/
