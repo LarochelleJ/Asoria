@@ -1401,6 +1401,23 @@ public class SQLManager {
         }
     }
 
+    public static List<Integer> LOAD_NPC_SHOP_ITEMS() {
+        List<Integer> templateIds = new ArrayList<Integer>();
+        try {
+            String query = "SELECT `template` FROM shop WHERE servers = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, String.valueOf(GameServer.id));
+            ResultSet RS = ps.executeQuery();
+            while (RS.next()) {
+                templateIds.add(RS.getInt("template"));
+            }
+        } catch (SQLException e) {
+            Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
+            Reboot.reboot();
+        }
+        return templateIds;
+    }
+
     public static void LOAD_OBJ_TEMPLATE() {
         try {
             ResultSet RS = SQLManager.executeQuery("SELECT  * from item_template;", false);

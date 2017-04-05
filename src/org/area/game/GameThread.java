@@ -4623,13 +4623,18 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_BUY_ERROR_PACKET(out);
                 return;
             }
-            long prix = LongMath.checkedMultiply(template.getPrix(), qua); // ArithmeticException en cas d'erreur, donc échec achat
-            //int prix = Math.abs(template.getPrix() * qua); // Va recommencer à Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
+            long prix;
+            if (idPnj == 21215) {
+                prix = LongMath.checkedMultiply(ParseTool.getShop().get(tempID), qua);
+            } else {
+                prix = LongMath.checkedMultiply(template.getPrix(), qua); // ArithmeticException en cas d'erreur, donc échec achat
+                //int prix = Math.abs(template.getPrix() * qua); // Va recommencer à Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
+            }
 
             if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) {
                 int prixPierres = Ints.checkedCast(prix); // Cas d'erreur: IllegalArgumentException
                 if (!player.hasItemTemplate(470001, prixPierres)) {
-                    player.sendText("Vous n'avez pas assez de pierres précieuses pour effectuer cet achat !");
+                    SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de pierres précieuses pour effectuer cet achat !");
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
@@ -4644,7 +4649,7 @@ public class GameThread implements Runnable {
             } else if (idPnj == 50029) {
                 int prixKoli = Ints.checkedCast(prix);
                 if (!player.hasItemTemplate(11022, prixKoli)) {
-                    player.sendText("Vous n'avez pas assez de Kolizeton pour effectuer cet achat !");
+                    SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de Kolizeton pour effectuer cet achat !");
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
@@ -4659,11 +4664,29 @@ public class GameThread implements Runnable {
             } else if (idPnj == 816) {
                 int prixObj = Ints.checkedCast(prix);
                 if (!player.hasItemTemplate(1749, prixObj)) {
-                    player.sendText("Vous n'avez pas assez de jeton d'event pour effectuer cet achat !");
+                    SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de jeton d'event pour effectuer cet achat !");
                     return;
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
                     player.removeByTemplateID(1749, prixObj);
+                    if (player.addObjet(newObj, true))
+                        World.addObjet(newObj, true);
+                    SocketManager.GAME_SEND_BUY_OK_PACKET(out);
+                    SocketManager.GAME_SEND_STATS_PACKET(player);
+                    SocketManager.GAME_SEND_Ow_PACKET(player);
+                    return;
+                }
+            } else if (idPnj == 21215) {
+                int prixObjEnPoints = Ints.checkedCast(prix);
+                int points = Util.loadPointsByAccount(player.getAccount());
+                if (points < prixObjEnPoints) {
+                    SocketManager.GAME_SEND_POPUP(player, "Il vous manque " + (prixObjEnPoints - points) + " points !");
+                    return;
+                } else {
+                    Item newObj = template.createNewItem(qua, false, -1);
+                    int remaining = points - prixObjEnPoints;
+                    Util.updatePointsByAccount(player.getAccount(), remaining);
+                    player.send("000C" + remaining);
                     if (player.addObjet(newObj, true))
                         World.addObjet(newObj, true);
                     SocketManager.GAME_SEND_BUY_OK_PACKET(out);
@@ -4882,6 +4905,9 @@ public class GameThread implements Runnable {
                         return;
                     } else if (idPnj == 816) {
                         SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de jeton d'event Area requis");
+                        return;
+                    } else if (idPnj == 21215) {
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de points boutique requis");
                         return;
                     }
                 } catch (NumberFormatException e) {

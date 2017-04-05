@@ -40,7 +40,7 @@ public class Util {
 		
 	}
 	
-	public static String getActualDate() { //Leur calendar pourrit faut vraiment l'améliorer u_u 
+	public static String getActualDate() { //Leur calendar pourrit faut vraiment l'amÃ©liorer u_u 
 		
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		String mounth = String.valueOf((Calendar.getInstance().get(Calendar.MONTH)+1));
