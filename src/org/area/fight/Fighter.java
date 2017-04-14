@@ -1,6 +1,7 @@
 package org.area.fight;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -667,6 +668,7 @@ public class Fighter {
             }
         }
         //Si c'est le jouer actif qui s'autoBuff, on ajoute 1 a la durée
+        boolean affiche = true;
         if (id == 781) {
             if (caster.getGUID() == this.getGUID())
                 return;
@@ -674,6 +676,7 @@ public class Fighter {
         } else {
             // Système de limite de buff faiblesse %
             if (id > 214 && id < 220) {
+                affiche = false;
                 int curVal = 0;
                 for (SpellEffect se : _fightBuffs) {
                     if (se.getEffectID() == id) {
@@ -689,7 +692,15 @@ public class Fighter {
                     val = 0;
                 }
             }
-            if (val > 0) {
+            if (val > 0 || affiche) {
+                if (id == 293) {
+                    for (SpellEffect SE : getBuffsByEffectID(293)) {
+                        if (SE.getValue() == val) {
+                            val = 0;
+                            break;
+                        }
+                    }
+                }
                 _fightBuffs.add(new SpellEffect(id, val, (_canPlay ? duration + 1 : duration), turns, debuff, caster, args, spellID, isPoison));
             }
         }

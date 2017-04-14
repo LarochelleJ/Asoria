@@ -641,24 +641,28 @@ public class GmCommand {
                 return true;
             }
             Player P = _perso;
-            if (infos.length > 2)// Si un nom de perso est spécifié
-            {
-                P = World.getPersoByName(infos[2]);
-                if (P == null) {
-                    String str = "Le personnage n'a pas ete trouve";
-                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
-                    return true;
-                }
-            }
-            if (P.isOnline()) {
-                short mapID = P.getMap().get_id();
-                int cellID = P.get_curCell().getID();
-                target.teleport(mapID, cellID);
-                String str = "Le joueur a ete teleporte";
-                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+            if (!P.getMap().get_npcs().isEmpty() && P.getAccount().getGmLevel() < 5) {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
             } else {
-                String str = "Le joueur n'est pas en ligne";
-                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                if (infos.length > 2)// Si un nom de perso est spécifié
+                {
+                    P = World.getPersoByName(infos[2]);
+                    if (P == null) {
+                        String str = "Le personnage n'a pas ete trouve";
+                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                        return true;
+                    }
+                }
+                if (P.isOnline()) {
+                    short mapID = P.getMap().get_id();
+                    int cellID = P.get_curCell().getID();
+                    target.teleport(mapID, cellID);
+                    String str = "Le joueur a ete teleporte";
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                } else {
+                    String str = "Le joueur n'est pas en ligne";
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                }
             }
         } else if (command.equalsIgnoreCase("TELEPORT")) {
             short mapID = -1;
@@ -682,6 +686,10 @@ public class GmCommand {
             Player target = _perso;
             if (infos.length > 3)// Si un nom de perso est spécifié
             {
+                if (_perso.getAccount().getGmLevel() < 5) {
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter une personne autre que vous-même. Téléportez-vous d'abord et utilisez NAMEGO.");
+                    return true;
+                }
                 target = World.getPersoByName(infos[3]);
                 if (target == null || target.getFight() != null) {
                     String str = "Le personnage n'a pas ete trouve ou est en combat";

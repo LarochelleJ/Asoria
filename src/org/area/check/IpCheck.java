@@ -17,7 +17,7 @@ public class IpCheck {
     //Game
     private final static int GAME_REFUSE_LIMIT = 2;//On autorise une tentative toutes les 5 secondes
     private final static int GAME_DELAY = 60;//On remet le compteur à 0 au bout d'une minute d'inactivité
-    private final static int GAME_OVER_BAN = 500;//Si on fait plus de X connexions forcées à la suite on ban
+    private final static int GAME_OVER_BAN = 200;//Si on fait plus de X connexions forcées à la suite on ban
 
 
     //Surverillance du nombre de packets
@@ -131,9 +131,9 @@ public class IpCheck {
 
             if (cur_t - _Game_last <= GAME_REFUSE_LIMIT) {
                 _Game_over++;
-                r = false;
                 IpCheck.addToLog("Game Non respect de l'interval pour l'ip : " + _ip);
                 if (_Game_over >= GAME_OVER_BAN) {
+                    r = false;
                     IpCheck.addToLog("Game Ban définitif pour l'ip : " + _ip);
                     _banned = true;
                 }

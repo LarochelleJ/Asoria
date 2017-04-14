@@ -738,7 +738,7 @@ public class SpellEffect {
                 break;
 
             case 293://Augmente les d�g�ts de base du sort X de Y
-                applyEffect_293(fight);
+                applyEffect_293();
                 break;
 
             case 320://Vol de PO
@@ -1050,7 +1050,7 @@ public class SpellEffect {
 
     }
 
-    private void applyEffect_293(Fight fight) {
+    private void applyEffect_293() {
         caster.addBuff(effectID, value, turns, 1, false, spell, args, caster, poison);
     }
 
@@ -2983,6 +2983,11 @@ public class SpellEffect {
                     finalDommage = applyOnHitBuffs(finalDommage, target, caster, fight, poison);//S'il y a des buffs sp�ciaux
 
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3092,6 +3097,12 @@ public class SpellEffect {
                     finalDommage = applyOnHitBuffs(finalDommage, target, caster, fight, poison);//S'il y a des buffs sp�ciaux
 
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3181,6 +3192,12 @@ public class SpellEffect {
                     finalDommage = applyOnHitBuffs(finalDommage, target, caster, fight, poison);//S'il y a des buffs sp�ciaux
 
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3271,6 +3288,12 @@ public class SpellEffect {
                     finalDommage = applyOnHitBuffs(finalDommage, target, caster, fight, poison);//S'il y a des buffs sp�ciaux
 
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3360,6 +3383,12 @@ public class SpellEffect {
                     finalDommage = applyOnHitBuffs(finalDommage, target, caster, fight, poison);//S'il y a des buffs sp�ciaux
 
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3756,6 +3785,12 @@ public class SpellEffect {
                     }
                 }
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3862,6 +3897,12 @@ public class SpellEffect {
                     }
                 }
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -3993,6 +4034,12 @@ public class SpellEffect {
                     }
                 }
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -4101,6 +4148,12 @@ public class SpellEffect {
                     }
                 }
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);
@@ -4211,6 +4264,12 @@ public class SpellEffect {
                     }
                 }
                 if (finalDommage > target.getPDV()) finalDommage = target.getPDV();//Target va mourrir
+
+                if (target.hasBuff(184)) {
+                    finalDommage = finalDommage - target.getBuff(184).getValue();//R�duction physique
+                    SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID() + "", target.getGUID() + "," + target.getBuff(184).getValue());
+                }
+
                 target.removePDV(finalDommage);
                 finalDommage = -(finalDommage);
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 100, caster.getGUID() + "", target.getGUID() + "," + finalDommage);

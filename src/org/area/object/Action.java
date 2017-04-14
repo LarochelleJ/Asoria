@@ -152,63 +152,69 @@ public class Action {
                 break;
 
             case 4://Kamas
-                try {
-                    int count = Integer.parseInt(args);
-                    long curKamas = perso.get_kamas();
-                    long newKamas = curKamas + count;
-                    if (newKamas < 0) newKamas = 0;
-                    perso.set_kamas(newKamas);
+                if (perso.getAccount().getGmLevel() > 0 && perso.getAccount().getGmLevel() < 5) {
+                    perso.sendText("Vous ne pouvez pas avoir accès à cette récompense puisque vous utilisez votre personnage Staff !");
+                } else {
+                    try {
+                        int count = Integer.parseInt(args);
+                        long curKamas = perso.get_kamas();
+                        long newKamas = curKamas + count;
+                        if (newKamas < 0) newKamas = 0;
+                        perso.set_kamas(newKamas);
 
-                    //Si en ligne (normalement oui)
-                    if (perso.isOnline())
-                        SocketManager.GAME_SEND_STATS_PACKET(perso);
-                } catch (Exception e) {
-                    GameServer.addToLog(e.getMessage());
+                        //Si en ligne (normalement oui)
+                        if (perso.isOnline())
+                            SocketManager.GAME_SEND_STATS_PACKET(perso);
+                    } catch (Exception e) {
+                        GameServer.addToLog(e.getMessage());
+                    }
                 }
-                ;
                 break;
             case 5://objet
-                try {
-                    int tID = Integer.parseInt(args.split(",")[0]);
-                    int count = Integer.parseInt(args.split(",")[1]);
-                    boolean send = true;
-                    if (args.split(",").length > 2) send = args.split(",")[2].equals("1");
+                if (perso.getAccount().getGmLevel() > 0 && perso.getAccount().getGmLevel() < 5) {
+                    perso.sendText("Vous ne pouvez pas avoir accès à cette récompense puisque vous utilisez votre personnage Staff !");
+                } else {
+                    try {
+                        int tID = Integer.parseInt(args.split(",")[0]);
+                        int count = Integer.parseInt(args.split(",")[1]);
+                        boolean send = true;
+                        if (args.split(",").length > 2) send = args.split(",")[2].equals("1");
 
-                    //Si on ajoute
-                    if (count > 0) {
-                        ObjTemplate T = World.getObjTemplate(tID);
+                        //Si on ajoute
+                        if (count > 0) {
+                            ObjTemplate T = World.getObjTemplate(tID);
 
-                        if (T == null) return;
-                        Item O = T.createNewItem(count, false, -1);
-                        //Si retourne true, on l'ajoute au monde
-                        if (perso.addObjet(O, true))
-                            World.addObjet(O, true);
-                    } else {
+                            if (T == null) return;
+                            Item O = T.createNewItem(count, false, -1);
+                            //Si retourne true, on l'ajoute au monde
+                            if (perso.addObjet(O, true))
+                                World.addObjet(O, true);
+                        } else {
                         /* Action item perso */
-                        execute_item_action(tID, perso);
+                            execute_item_action(tID, perso);
 
-                        if (perso.getCandyUsed() != "") {
-                            perso.sendText("Un bonbon spécial est toujours actif.");
-                            return;
+                            if (perso.getCandyUsed() != "") {
+                                perso.sendText("Un bonbon spécial est toujours actif.");
+                                return;
+                            }
+                            perso.removeByTemplateID(tID, -count);
                         }
-                        perso.removeByTemplateID(tID, -count);
-                    }
-                    //Si en ligne (normalement oui)
-                    if (perso.isOnline())//on envoie le packet qui indique l'ajout//retrait d'un item
-                    {
-                        SocketManager.GAME_SEND_Ow_PACKET(perso);
-                        if (send) {
-                            if (count >= 0) {
-                                SocketManager.GAME_SEND_Im_PACKET(perso, "021;" + count + "~" + tID);
-                            } else if (count < 0) {
-                                SocketManager.GAME_SEND_Im_PACKET(perso, "022;" + -count + "~" + tID);
+                        //Si en ligne (normalement oui)
+                        if (perso.isOnline())//on envoie le packet qui indique l'ajout//retrait d'un item
+                        {
+                            SocketManager.GAME_SEND_Ow_PACKET(perso);
+                            if (send) {
+                                if (count >= 0) {
+                                    SocketManager.GAME_SEND_Im_PACKET(perso, "021;" + count + "~" + tID);
+                                } else if (count < 0) {
+                                    SocketManager.GAME_SEND_Im_PACKET(perso, "022;" + -count + "~" + tID);
+                                }
                             }
                         }
+                    } catch (Exception e) {
+                        GameServer.addToLog(e.getMessage());
                     }
-                } catch (Exception e) {
-                    GameServer.addToLog(e.getMessage());
                 }
-                ;
                 break;
             case 6://Apprendre un métier
                 try {
@@ -858,10 +864,10 @@ public class Action {
                 } catch (Exception e) {
                 }
                 break;
-            case 600:
+            /*case 600:
                 int levelWant = Integer.parseInt(args);
                 perso.goUpto(levelWant);
-                break;
+                break;*/
 
             case 212121://Changement apparence Dofus 2 @Flow
                 if (perso.getFight() != null) break;

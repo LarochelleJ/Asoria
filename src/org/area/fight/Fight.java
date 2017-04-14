@@ -2647,7 +2647,7 @@ public class Fight {
         for (int i = 0; i < TEAM1.size(); i++) {
             Fighter f = TEAM1.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this) {
+                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0) {
                     TEAM1.remove(i);
                 }
             }
@@ -2973,7 +2973,7 @@ public class Fight {
                             continue;
                         }
 
-                        int captChance = Formulas.totalAppriChance(5, f.getPersonnage()); // Je suis un canard orange
+                        int captChance = Formulas.totalAppriChance(5, f.getPersonnage());
 
                         if (Formulas.getRandomValue(1, 100) <= captChance)//Si le joueur obtiens la capture tengu
                         {
@@ -4228,7 +4228,7 @@ public class Fight {
                     Thread.sleep(500);
                 } catch (Exception e) {
                 }
-                endTurn();
+                //endTurn();
             }
 
             int PACost = arme.getTemplate(true).getPACost();
