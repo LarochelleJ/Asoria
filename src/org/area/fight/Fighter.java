@@ -55,6 +55,10 @@ public class Fighter {
     // Piège répulsif
     public int nbRepulsion = 0;
 
+    public int getType() {
+        return _type;
+    }
+
     public void setDefenseurs(String str) {
         _defenseurs = str;
     }

@@ -783,17 +783,18 @@ public class Fight {
             if (f == null || player == null) continue;
             f.setSpellStats();
             f.getPersonnage().sendLimitationIm();
-            if (!f.getPersonnage().hasSpell(59)) {
-                if (!f.getPersonnage().hasSpell(212162)) {
-                    continue;
-                } else {
-                    f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(212162), 10);
-                }
-                continue;
-            }
+            if (!f.getPersonnage().hasSpell(59)) continue;
             f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(59), 3);
-            if (!f.getPersonnage().hasSpell(212162)) continue;
-            f.addLaunchedFakeSort(null, f.getPersonnage().getSortStatBySortIfHas(212162), 10);
+        }
+
+        if (_type == Constant.FIGHT_TYPE_PVM) {
+            for (Fighter f : getAllFighters()) {
+                if (f.getType() == 2 ) { // C'est un mob
+                    if (f.getMob().getSpells().containsKey(4102)) {
+                        f.addLaunchedFakeSort(null, f.getMob().getSpells().get(4102), 10);
+                    }
+                }
+            }
         }
 
 
@@ -2548,7 +2549,6 @@ public class Fight {
             }
             return false;
         }
-        // Sort avec limitation - ne peut être lancé avant X tours @TODO - Faire un système qui calcule le nombre de tours afin d'appliquer la restriction
         //vérification nombre de lancer par tour
         int nbLancer = spell.getMaxLaunchbyTurn(fighter);
         if (nbLancer - LaunchedSort.getNbLaunch(fighter, spell.getSpellID()) <= 0 && nbLancer > 0) {
