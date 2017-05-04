@@ -3759,18 +3759,6 @@ public class SpellEffect {
                 int dmg = Formulas.getRandomJet(args.split(";")[5]);
                 dmg = getMaxMinSpell(target, dmg);
                 //Si le sort est boost� par un buff sp�cifique
-                for (SpellEffect SE : caster.getBuffsByEffectID(293)) {
-                    if (SE.getValue() == spell) {
-                        int add = -1;
-                        try {
-                            add = Integer.parseInt(SE.getArgs().split(";")[2]);
-                        } catch (Exception e) {
-                        }
-                        ;
-                        if (add <= 0) continue;
-                        dmg += add;
-                    }
-                }
                 int finalDommage = Formulas.calculFinalDommage(fight, caster, target, Constant.ELEMENT_EAU, dmg, false, true, spell, isBegin);
 
                 if (!isBegin)
@@ -3872,18 +3860,6 @@ public class SpellEffect {
                 int dmg = Formulas.getRandomJet(args.split(";")[5]);
                 dmg = getMaxMinSpell(target, dmg);
                 //Si le sort est boost� par un buff sp�cifique
-                for (SpellEffect SE : caster.getBuffsByEffectID(293)) {
-                    if (SE.getValue() == spell) {
-                        int add = -1;
-                        try {
-                            add = Integer.parseInt(SE.getArgs().split(";")[2]);
-                        } catch (Exception e) {
-                        }
-                        ;
-                        if (add <= 0) continue;
-                        dmg += add;
-                    }
-                }
                 int finalDommage = Formulas.calculFinalDommage(fight, caster, target, Constant.ELEMENT_TERRE, dmg, false, true, spell, isBegin);
                 if (!isBegin)
                     finalDommage = applyOnHitBuffs(finalDommage, target, caster, fight, poison);//S'il y a des buffs sp�ciaux
@@ -4008,18 +3984,6 @@ public class SpellEffect {
                 int dmg = Formulas.getRandomJet(args.split(";")[5]);
                 dmg = getMaxMinSpell(target, dmg);
                 //Si le sort est boost� par un buff sp�cifique
-                for (SpellEffect SE : caster.getBuffsByEffectID(293)) {
-                    if (SE.getValue() == spell) {
-                        int add = -1;
-                        try {
-                            add = Integer.parseInt(SE.getArgs().split(";")[2]);
-                        } catch (Exception e) {
-                        }
-                        ;
-                        if (add <= 0) continue;
-                        dmg += add;
-                    }
-                }
                 int finalDommage = Formulas.calculFinalDommage(fight, caster, target, Constant.ELEMENT_AIR, dmg, false, true, spell, isBegin);
 
                 if (!isBegin)
@@ -4122,18 +4086,6 @@ public class SpellEffect {
                 int dmg = Formulas.getRandomJet(args.split(";")[5]);
                 dmg = getMaxMinSpell(target, dmg);
                 //Si le sort est boost� par un buff sp�cifique
-                for (SpellEffect SE : caster.getBuffsByEffectID(293)) {
-                    if (SE.getValue() == spell) {
-                        int add = -1;
-                        try {
-                            add = Integer.parseInt(SE.getArgs().split(";")[2]);
-                        } catch (Exception e) {
-                        }
-                        ;
-                        if (add <= 0) continue;
-                        dmg += add;
-                    }
-                }
                 int finalDommage = Formulas.calculFinalDommage(fight, caster, target, Constant.ELEMENT_FEU, dmg, false, true, spell, isBegin);
 
                 if (!isBegin)
@@ -4238,18 +4190,6 @@ public class SpellEffect {
                 int dmg = Formulas.getRandomJet(args.split(";")[5]);
                 dmg = getMaxMinSpell(target, dmg);
                 //Si le sort est boost� par un buff sp�cifique
-                for (SpellEffect SE : caster.getBuffsByEffectID(293)) {
-                    if (SE.getValue() == spell) {
-                        int add = -1;
-                        try {
-                            add = Integer.parseInt(SE.getArgs().split(";")[2]);
-                        } catch (Exception e) {
-                        }
-                        ;
-                        if (add <= 0) continue;
-                        dmg += add;
-                    }
-                }
                 int finalDommage = Formulas.calculFinalDommage(fight, caster, target, Constant.ELEMENT_NEUTRE, dmg, false, true, spell, isBegin);
 
                 if (!isBegin)

@@ -2548,6 +2548,7 @@ public class Fight {
             }
             return false;
         }
+        // Sort avec limitation - ne peut être lancé avant X tours @TODO - Faire un système qui calcule le nombre de tours afin d'appliquer la restriction
         //vérification nombre de lancer par tour
         int nbLancer = spell.getMaxLaunchbyTurn(fighter);
         if (nbLancer - LaunchedSort.getNbLaunch(fighter, spell.getSpellID()) <= 0 && nbLancer > 0) {

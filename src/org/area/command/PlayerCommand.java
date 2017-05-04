@@ -1625,7 +1625,7 @@ public class PlayerCommand {
 							_perso.sendText("Options disponibles: .temporisation on | .temprosation off");
 						}
 						break;*/
-                        case 2012:
+                        case 2012: // création titre
                             try {
                                 String[] arg = msg.split(" ");
                                 int nombreDeCaracteres = 0;
@@ -1651,7 +1651,8 @@ public class PlayerCommand {
                                         _perso.sendText("Votre titre contient une séquence interdite !");
                                     } else {
                                         String couleur = "";
-                                        switch (arg[arg.length - 1].toUpperCase().substring(0, arg[arg.length - 1].length() - 1)) {
+                                        String couleurVoulue = arg[arg.length - 1].toUpperCase().substring(0, arg[arg.length - 1].length() - 1);
+                                        switch (couleurVoulue) {
                                             case "VERT":
                                                 couleur = "50944";
                                                 break;
@@ -1671,7 +1672,16 @@ public class PlayerCommand {
                                                 couleur = "16777215";
                                                 break;
                                             default:
-                                                _perso.sendText("Cette couleur n'est pas disponible, voici la liste des couleurs disponibles : Vert, Orange, Mauve, Rose-violet, Kaki, Blanc");
+                                                if (couleurVoulue.contains("#")) { // Couleur en hexa ?
+                                                    String code = couleurVoulue.trim().substring(1);
+                                                    if (code.length() == 6) { // code valide
+                                                        couleur = String.valueOf(Integer.parseInt(code, 16));
+                                                    } else {
+                                                        _perso.sendText("Si vous tentez d'utilisez un code couleur personnalisé en hexadécimal, le code est incorrect !");
+                                                    }
+                                                } else {
+                                                    _perso.sendText("Cette couleur n'est pas disponible, voici la liste des couleurs disponibles : Vert, Orange, Mauve, Rose-violet, Kaki, Blanc");
+                                                }
                                                 break;
                                         }
                                         if (!Objects.equals(couleur, "")) {
