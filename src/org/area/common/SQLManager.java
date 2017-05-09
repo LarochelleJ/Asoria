@@ -1794,8 +1794,13 @@ public class SQLManager {
                 int id = RS.getInt("template");
                 int type = RS.getInt("type");
                 String args = RS.getString("args");
+                int itemRequis = RS.getInt("itemRequis");
                 if (World.getObjTemplate(id) == null) continue;
-                World.getObjTemplate(id).addAction(new Action(type, args, ""));
+                ObjTemplate template = World.getObjTemplate(id);
+                template.addAction(new Action(type, args, ""));
+                if (itemRequis > 0) {
+                    template.setObjetRequisPourActions(itemRequis);
+                }
             }
             //if(i == 0) //Console.print("\r-items actions loaded : " + i, Color.GREEN);
             closeResultSet(RS);

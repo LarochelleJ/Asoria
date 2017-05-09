@@ -43,7 +43,6 @@ public class Action {
         this.cond = cond;
     }
 
-
     public void execute_item_action(int ID, Player perso) {
         switch (ID) {
             default:

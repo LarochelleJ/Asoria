@@ -1,5 +1,7 @@
 package org.area.fight;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.*;
 import java.util.Map.Entry;
@@ -789,7 +791,7 @@ public class Fight {
 
         if (_type == Constant.FIGHT_TYPE_PVM) {
             for (Fighter f : getAllFighters()) {
-                if (f.getType() == 2 ) { // C'est un mob
+                if (f.getType() == 2) { // C'est un mob
                     if (f.getMob().getSpells().containsKey(4102)) {
                         f.addLaunchedFakeSort(null, f.getMob().getSpells().get(4102), 10);
                     }
@@ -909,7 +911,7 @@ public class Fight {
         } catch (Exception localException) {
             localException.printStackTrace(System.out);
         }
-		/*for(Fighter F : getFighters(3)) // @Flow - État chevauchant, je l'ai pas vu encore #Doublon
+        /*for(Fighter F : getFighters(3)) // @Flow - État chevauchant, je l'ai pas vu encore #Doublon
 		{
 			Player perso1 = F.getPersonnage();
 			if(perso1 == null)continue;
@@ -2656,7 +2658,7 @@ public class Fight {
         for (int i = 0; i < TEAM2.size(); i++) {
             Fighter f = TEAM2.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this) {
+                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0) {
                     TEAM2.remove(i);
                 }
             }
@@ -3131,9 +3133,11 @@ public class Fight {
                 if (i.isInvocation() && i.getMob() != null && i.getMob().getTemplate().getID() != 285) continue;
                 long winxp = Formulas.getXpWinPvm2(i, TEAM1, TEAM2, totalXP);
                 // Taux suppresion xp dû au prestiges @Flow
-                int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
-                if (tauxDiminution != 0) {
-                    winxp -= (tauxDiminution * winxp / 100);
+                if (i.getPersonnage() != null) {
+                    int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
+                    if (tauxDiminution != 0) {
+                        winxp -= (tauxDiminution * winxp / 100);
+                    }
                 }
                 AtomicReference<Long> XP = new AtomicReference<Long>();
                 XP.set(winxp);

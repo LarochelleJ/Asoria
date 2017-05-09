@@ -37,6 +37,7 @@ public class Item {
         private int PACost, POmin, POmax, TauxCC, TauxEC, BonusCC;
         private boolean isTwoHanded;
         private ArrayList<Action> onUseActions = new ArrayList<Action>();
+        private int objetRequisPourActions = 0;
         private long sold;
         private int avgPrice;
         private boolean isArm = false;
@@ -119,6 +120,16 @@ public class Item {
 
         public void addAction(Action A) {
             onUseActions.add(A);
+        }
+
+        public void setObjetRequisPourActions(int id) {
+            if (objetRequisPourActions == 0) {
+                objetRequisPourActions = id;
+            }
+        }
+
+        public int obtenirObjetRequisPourActions() {
+            return objetRequisPourActions;
         }
 
         public boolean isTwoHanded() {

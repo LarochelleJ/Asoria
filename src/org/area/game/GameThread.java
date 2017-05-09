@@ -2314,7 +2314,11 @@ public class GameThread implements Runnable {
             return;
         }
         Console.print("\nObject use\n");
-        T.applyAction(player, Target, guid, cellID);
+        if (T.obtenirObjetRequisPourActions() > 0 && !player.hasItemTemplate(T.obtenirObjetRequisPourActions(),1)) {
+            player.sendText("Vous ne possédez pas l'objet requis :" + World.getObjTemplate(T.obtenirObjetRequisPourActions()).getName() + " !");
+        } else {
+            T.applyAction(player, Target, guid, cellID);
+        }
         // Objectif quÃƒÂªte : Utiliser l'objet x
         player.confirmObjective(8, T.getID() + "", null);
     }
