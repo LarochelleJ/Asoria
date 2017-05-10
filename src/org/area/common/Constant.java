@@ -3472,13 +3472,67 @@ public class Constant {
                 stats.addOneStat(STATS_ADD_INIT, 500);
                 stats.addOneStat(STATS_CREATURE, 1);
                 break;
+            //Phorrakna Feu
+            case 106:
+                stats.addOneStat(STATS_ADD_INTE, 170);
+                stats.addOneStat(STATS_ADD_PERDOM, 25);
+                stats.addOneStat(STATS_ADD_VITA, 300);
+                stats.addOneStat(STATS_ADD_PM, 1);
+                stats.addOneStat(STATS_ADD_SOIN, 50);
+                stats.addOneStat(STATS_ADD_PO, 2);
+                stats.addOneStat(STATS_ADD_RP_FEU, 10);
+                break;
+            //Phorrakna Terre
+            case 107:
+                stats.addOneStat(STATS_ADD_FORC, 170);
+                stats.addOneStat(STATS_ADD_PERDOM, 45);
+                stats.addOneStat(STATS_ADD_VITA, 300);
+                stats.addOneStat(STATS_ADD_PM, 1);
+                stats.addOneStat(STATS_ADD_PO, 2);
+                stats.addOneStat(STATS_ADD_RP_TER, 10);
+                break;
+            //Phorrakna Eau
+            case 108:
+                stats.addOneStat(STATS_ADD_CHAN, 170);
+                stats.addOneStat(STATS_ADD_PERDOM, 25);
+                stats.addOneStat(STATS_ADD_VITA, 300);
+                stats.addOneStat(STATS_ADD_PM, 1);
+                stats.addOneStat(STATS_ADD_PO, 2);
+                stats.addOneStat(STATS_CREATURE, 2);
+                stats.addOneStat(STATS_ADD_RP_EAU, 10);
+                break;
+            //Phorrakna Agi
+            case 109:
+                stats.addOneStat(STATS_ADD_AGIL, 170);
+                stats.addOneStat(STATS_ADD_PERDOM, 25);
+                stats.addOneStat(STATS_ADD_VITA, 300);
+                stats.addOneStat(STATS_ADD_PM, 1);
+                stats.addOneStat(STATS_ADD_PO, 2);
+                stats.addOneStat(STATS_ADD_CC, 4);
+                stats.addOneStat(STATS_ADD_RP_AIR, 10);
+                break;
+            //Phorrilax
+            case 110:
+                stats.addOneStat(STATS_ADD_PA, 2);
+                stats.addOneStat(STATS_ADD_VITA, 600);
+                stats.addOneStat(STATS_ADD_INTE, 100);
+                stats.addOneStat(STATS_ADD_FORC, 100);
+                stats.addOneStat(STATS_ADD_CHAN, 100);
+                stats.addOneStat(STATS_ADD_AGIL, 100);
+                stats.addOneStat(STATS_ADD_PM, 1);
+                break;
+            //Pholaine
+            case 111:
+                break;
+            //Boufgnard
+            case 112:
+                break;
             //Kwaltess
             case 98:
-				/*
-				stats.addOneStat(STATS_ADD_PA, lvl/100);
-				stats.addOneStat(STATS_ADD_VITA, lvl*6);
-				stats.addOneStat(STATS_ADD_PO, lvl/100);
-				*/
+                stats.addOneStat(STATS_ADD_PA, 2);
+                stats.addOneStat(STATS_ADD_VITA, 850);
+                stats.addOneStat(STATS_ADD_PERDOM, 90);
+                stats.addOneStat(STATS_ADD_INIT, 850);
                 break;
             //Blop Bleu Diamox
             case 99:
@@ -3773,6 +3827,27 @@ public class Constant {
             //Dardagnan
             case 105:
                 return World.getObjTemplate(895477);
+            //Phorrakna Feu
+            case 106:
+                return World.getObjTemplate(895663);
+            //Phorrakna Terre
+            case 107:
+                return World.getObjTemplate(895664);
+            //Phorrakna Eau
+            case 108:
+                return World.getObjTemplate(895665);
+            //Phorrakna Agi
+            case 109:
+                return World.getObjTemplate(895666);
+            //Phorrilax
+            case 110:
+                return World.getObjTemplate(895667);
+            //Pholaine
+            case 111:
+                return World.getObjTemplate(895668);
+            //Boufgnard
+            case 112:
+                return World.getObjTemplate(895669);
             //Kwaltess
             case 98:
                 return World.getObjTemplate(70043);
