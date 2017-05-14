@@ -3860,7 +3860,7 @@ public class Constant {
 
     public static int getMountColorByParchoTemplate(int tID) {
         // @Flow Faire attention à l'opérateur condition si ajout de DD
-        for (int a = 1; a < 106; a++)
+        for (int a = 1; a < 113; a++)
             if (getParchoTemplateByMountColor(a) != null) if (getParchoTemplateByMountColor(a).getID() == tID) return a;
         return -1;
     }

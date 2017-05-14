@@ -669,8 +669,15 @@ public class Action {
                         perso.sendText("IMPOSSIBLE : Votre personnage est déjà de cette classe.");
                         return;
                     }
+                    if (classe == 16 && perso.getPrestige() > 1) {
+                        perso.sendText("IMPOSSIBLE : Votre personnage doit être prestige 1 pour devenir un Rodarbal !");
+                        return;
+                    }
                     int niveau = perso.getLevel();
                     perso.set_classe(classe);
+                    if (perso.hasItemGuid(itemID)) {
+                        perso.removeItem(itemID, 1, true, true);
+                    }
                     Stats baseStats = perso.get_baseStats();
                     baseStats.addOneStat(125, -perso._baseStats.getEffect(125));
                     baseStats.addOneStat(124, -perso._baseStats.getEffect(124));

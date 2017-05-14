@@ -1031,7 +1031,7 @@ public class GameThread implements Runnable {
                 || player.is_away())
             return;
         short mapID = player.getMap().get_id();
-        if (mapID >= 17700 && mapID <= 17746 || mapID == 10812 || mapID >= 26105 && mapID <= 26108) { // Map interdite pour la pose
+        if (mapID >= 17700 && mapID <= 17746 || mapID == 10812 || mapID >= 26105 && mapID <= 26108 || mapID == 13057) { // Map interdite pour la pose
             player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
             return;
         }

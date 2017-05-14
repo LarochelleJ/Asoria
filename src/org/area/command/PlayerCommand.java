@@ -208,7 +208,7 @@ public class PlayerCommand {
                             SocketManager.GAME_SEND_POPUP(_perso, args);
                             break;
                         case 4: //Informations serveur
-                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.8</b>\n\n"
+                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.9</b>\n\n"
                                     + "\n   "
                                     + GameServer.uptime()
                                     + "Joueurs en ligne : <b>" + Main.gameServer.getPlayerNumber() + "</b>\n"
@@ -224,12 +224,12 @@ public class PlayerCommand {
                                     staff += "- <b><a href='asfunction:onHref,ShowPlayerPopupMenu," + World.getOnlinePlayers().get(i).getName() + "'>" + World.getOnlinePlayers().get(i).getName() + "</a></b> (";
                                     if (World.getOnlinePlayers().get(i).getAccID() == 6569) {
                                         staff += "Game designer)";
-                                    } else if (World.getOnlinePlayers().get(i).getAccID() == 6465) {
+                                    } else if (World.getOnlinePlayers().get(i).getAccID() == 2) {
                                         staff += "Administrateur / Développeur)";
                                     } else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 1)
-                                        staff += "Animateur)";
+                                        staff += "Maitre du Jeu en Test)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 2)
-                                        staff += "Modérateur)";
+                                        staff += "Maitre du Jeu)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 3)
                                         staff += "Community manager)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 4)

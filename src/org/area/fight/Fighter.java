@@ -662,8 +662,9 @@ public class Fighter {
 			/*debuff = true;
 		}*/
         if (id != 950) debuff = true;
+        if (id == 293) debuff = false;
         isPoison = true;
-        if (!debuff || Config.CONFIG_SORT_INDEBUFFABLE != null || !Config.CONFIG_SORT_INDEBUFFABLE.isEmpty()) {
+        if (Config.CONFIG_SORT_INDEBUFFABLE != null || !Config.CONFIG_SORT_INDEBUFFABLE.isEmpty()) {
             for (String split : Config.CONFIG_SORT_INDEBUFFABLE.split("\\|")) {
                 String[] infos = split.split(":");
                 int sortID = Integer.parseInt(infos[0]);
@@ -671,7 +672,7 @@ public class Fighter {
                     debuff = false;
             }
         }
-        //Si c'est le jouer actif qui s'autoBuff, on ajoute 1 a la durée
+        //Si c'est le joueur actif qui s'autoBuff, on ajoute 1 a la durée
         boolean affiche = true;
         if (id == 781) {
             if (caster.getGUID() == this.getGUID())
@@ -681,19 +682,13 @@ public class Fighter {
             // Système de limite de buff faiblesse %
             if (id > 214 && id < 220) {
                 affiche = false;
-                int curVal = 0;
-                for (SpellEffect se : _fightBuffs) {
-                    if (se.getEffectID() == id) {
-                        curVal += se.getValue();
-                    }
-                }
                 int limite = this.getTotalStats().getEffect(id - 5) + 150;
-                if (curVal < limite) {
-                    if (curVal + val > limite) {
-                        val -= curVal + val - limite;
-                    }
-                } else {
+                SocketManager.GAME_SEND_MESSAGE_TO_ALL("Limite de " + limite, Config.CONFIG_MOTD_COLOR);
+                if (limite < 1) {
                     val = 0;
+                }
+                else if (val > limite) {
+                    val -= val - limite;
                 }
             }
             if (val > 0 || affiche) {
