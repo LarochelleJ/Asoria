@@ -1998,13 +1998,13 @@ public class Player {
                 int cur_sagesse = total.getEffect(Constant.STATS_ADD_SAGE);
                 if (cur_sagesse > 800) total.addOneStat(Constant.STATS_ADD_SAGE, 800 - cur_sagesse);
                 int cur_force = total.getEffect(Constant.STATS_ADD_FORC);
-                if (cur_force > 1100) total.addOneStat(Constant.STATS_ADD_FORC, 1100 - cur_force);
+                if (cur_force > 1800) total.addOneStat(Constant.STATS_ADD_FORC, 1800 - cur_force);
                 int cur_intell = total.getEffect(Constant.STATS_ADD_INTE);
-                if (cur_intell > 1100) total.addOneStat(Constant.STATS_ADD_INTE, 1100 - cur_intell);
+                if (cur_intell > 1800) total.addOneStat(Constant.STATS_ADD_INTE, 1800 - cur_intell);
                 int cur_chance = total.getEffect(Constant.STATS_ADD_CHAN);
-                if (cur_chance > 1100) total.addOneStat(Constant.STATS_ADD_CHAN, 1100 - cur_chance);
+                if (cur_chance > 1800) total.addOneStat(Constant.STATS_ADD_CHAN, 1800 - cur_chance);
                 int cur_agi = total.getEffect(Constant.STATS_ADD_AGIL);
-                if (cur_agi > 1100) total.addOneStat(Constant.STATS_ADD_AGIL, 1100 - cur_agi);
+                if (cur_agi > 1800) total.addOneStat(Constant.STATS_ADD_AGIL, 1800 - cur_agi);
                 int cur_bonus_dmg = total.getEffect(Constant.STATS_ADD_PERDOM);
                 if (cur_bonus_dmg > 150) total.addOneStat(Constant.STATS_ADD_PERDOM, 150 - cur_bonus_dmg);
                 int cur_bonus_dmg_no_per = total.getEffect(Constant.STATS_ADD_DOMA);

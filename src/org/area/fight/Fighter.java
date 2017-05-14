@@ -101,13 +101,15 @@ public class Fighter {
             _perso = perso;
         }
         _id = perso.getGuid();
-        if (f.get_type() != Constant.FIGHT_TYPE_AGRESSION && f.get_type() != Constant.FIGHT_TYPE_CHALLENGE && f.get_type() != Constant.FIGHT_TYPE_PVT) {
+        _PDVMAX = perso.get_PDVMAX();
+        _PDV = perso.get_PDV();
+        /*if (f.get_type() != Constant.FIGHT_TYPE_AGRESSION && f.get_type() != Constant.FIGHT_TYPE_CHALLENGE && f.get_type() != Constant.FIGHT_TYPE_PVT) {
             _PDVMAX = perso.get_PDVMAX();
             _PDV = perso.get_PDV();
         } else {
             _PDVMAX = perso.get_classe() == Constant.CLASS_SACRIEUR ? 7500 : 6000;
             _PDV = perso.get_PDV() > _PDVMAX ? _PDVMAX : perso.get_PDV();
-        }
+        }*/
         _gfxID = getDefaultGfx();
     }
 
@@ -683,7 +685,6 @@ public class Fighter {
             if (id > 214 && id < 220) {
                 affiche = false;
                 int limite = this.getTotalStats().getEffect(id - 5) + 150;
-                SocketManager.GAME_SEND_MESSAGE_TO_ALL("Limite de " + limite, Config.CONFIG_MOTD_COLOR);
                 if (limite < 1) {
                     val = 0;
                 }
