@@ -675,7 +675,7 @@ public class Fighter {
             }
         }
         //Si c'est le joueur actif qui s'autoBuff, on ajoute 1 a la durée
-        boolean affiche = true;
+        boolean buffFaiblesse = false;
         if (id == 781) {
             if (caster.getGUID() == this.getGUID())
                 return;
@@ -683,7 +683,7 @@ public class Fighter {
         } else {
             // Système de limite de buff faiblesse %
             if (id > 214 && id < 220) {
-                affiche = false;
+                buffFaiblesse = true;
                 int limite = this.getTotalStats().getEffect(id - 5) + 150;
                 if (limite < 1) {
                     val = 0;
@@ -692,7 +692,7 @@ public class Fighter {
                     val -= val - limite;
                 }
             }
-            if (val > 0 || affiche) {
+            if (!buffFaiblesse || buffFaiblesse && val > 0) {
                 if (id == 293) {
                     for (SpellEffect SE : getBuffsByEffectID(293)) {
                         if (SE.getValue() == val) {
@@ -743,7 +743,9 @@ public class Fighter {
                 break;
 
             default:
-                SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(_fight, 7, id, getGUID(), val, "", "", "", duration, spellID);
+                if (!buffFaiblesse || buffFaiblesse && val > 0) {
+                    SocketManager.GAME_SEND_FIGHT_GIE_TO_FIGHT(_fight, 7, id, getGUID(), val, "", "", "", duration, spellID);
+                }
                 break;
         }
     }

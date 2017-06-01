@@ -4685,7 +4685,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_POPUP(player, "Il vous manque " + (prixObjEnPoints - points) + " points !");
                     return;
                 } else {
-                    Item newObj = template.createNewItem(qua, false, -1);
+                    Item newObj = template.createNewItem(qua, true, -1); // jet parfait pnj boutique
                     int remaining = points - prixObjEnPoints;
                     Util.updatePointsByAccount(player.getAccount(), remaining);
                     player.send("000C" + remaining);
