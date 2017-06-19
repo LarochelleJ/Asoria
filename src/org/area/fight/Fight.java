@@ -2650,7 +2650,7 @@ public class Fight {
         for (int i = 0; i < TEAM1.size(); i++) {
             Fighter f = TEAM1.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0) {
+                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) {
                     TEAM1.remove(i);
                 }
             }
@@ -2658,7 +2658,7 @@ public class Fight {
         for (int i = 0; i < TEAM2.size(); i++) {
             Fighter f = TEAM2.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0) {
+                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) {
                     TEAM2.remove(i);
                 }
             }
@@ -2735,14 +2735,15 @@ public class Fight {
                 }
             } catch (Exception e) {
             }
-            factChalDrop += _mobGroup.getStarBonus(); // on ajoute le bonus en étoiles
+            //factChalDrop += _mobGroup.getStarBonus(); // on ajoute le bonus en étoiles
         }
         factChalDrop /= 100;
         //Calcul de la PP de groupe
         int groupPP = 0, minkamas = 0, maxkamas = 0;
         for (Fighter F : TEAM1) {
-            if (!F.isInvocation() || (F.getMob() != null && F.getMob().getTemplate().getID() == 285))
+            if (!F.isInvocation() || (F.getMob() != null && F.getMob().getTemplate().getID() == 285)) {
                 groupPP += F.getTotalStats().getEffect(Constant.STATS_ADD_PROS);
+            }
         }
         if (groupPP < 0) groupPP = 0;
         groupPP *= factChalDrop;
@@ -3132,13 +3133,6 @@ public class Fight {
             if (type == Constant.FIGHT_TYPE_CHALLENGE) {
                 if (i.isInvocation() && i.getMob() != null && i.getMob().getTemplate().getID() != 285) continue;
                 long winxp = Formulas.getXpWinPvm2(i, TEAM1, TEAM2, totalXP);
-                // Taux suppresion xp dû au prestiges @Flow
-                if (i.getPersonnage() != null) {
-                    int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
-                    if (tauxDiminution != 0) {
-                        winxp -= (tauxDiminution * winxp / 100);
-                    }
-                }
                 AtomicReference<Long> XP = new AtomicReference<Long>();
                 XP.set(winxp);
                 long guildxp = Formulas.getGuildXpWin(i, XP);
@@ -3230,8 +3224,14 @@ public class Fight {
                 }
                 //fin drop system
                 winxp = XP.get();
-                if (winxp != 0 && i.getPersonnage() != null)
+                if (winxp != 0 && i.getPersonnage() != null) {
+                    // Taux suppresion xp dû au prestiges @Flow
+                        int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
+                        if (tauxDiminution != 0) {
+                            winxp -= (tauxDiminution * winxp / 100);
+                        }
                     i.getPersonnage().addXp(winxp);
+                }
                 if (winKamas != 0 && i.getPersonnage() != null)
                     i.getPersonnage().addKamas(winKamas);
                 else if (winKamas != 0 && i.isInvocation() && i.getInvocator().getPersonnage() != null)

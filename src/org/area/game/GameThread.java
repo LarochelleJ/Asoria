@@ -1027,6 +1027,10 @@ public class GameThread implements Runnable {
         if (player.get_guild() == null || player.getFight() != null
                 || player.is_away())
             return;
+        if (!Config.BETA) {
+            player.sendText("La pose de percepteur est temporairement désactivé suite à quelques bugs sur la défense des percepteurs, merci de votre compréhension !");
+            return;
+        }
         short mapID = player.getMap().get_id();
         List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018);
         if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108) { // Map interdite pour la pose
@@ -5601,7 +5605,7 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
                         return;
                     }
-                    if (target.getAccount().getGameThread() == null)// si le perso
+                    if (target.getAccount().getGameThread() == null || target.staffInvisible)// si le perso
                     // n'est pas co
                     {
                         SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);

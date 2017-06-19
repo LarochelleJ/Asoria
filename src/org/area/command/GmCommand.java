@@ -2116,6 +2116,9 @@ public class GmCommand {
                 String str = "Le canal global est maintenant activé !";
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
             }
+        } else if(command.equalsIgnoreCase("HIDEMYASS!")) {
+            _perso.staffInvisible = !_perso.staffInvisible;
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, _perso.staffInvisible ? "Invisible !" : "Plus invisible !");
         } else if (command.equalsIgnoreCase("ORNEMENT")) {
             Player cible = _perso;
             int ornement = Integer.parseInt(infos[1]);

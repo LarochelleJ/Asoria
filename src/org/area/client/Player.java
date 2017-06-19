@@ -308,6 +308,9 @@ public class Player {
     // Follow group multi
     public ArrayList<Player> playerWhoFollowMe = new ArrayList<Player>();
 
+    // Mode admin invisible
+    public boolean staffInvisible = false;
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;
@@ -2017,9 +2020,38 @@ public class Player {
                 int cur_renvoi_dommage = total.getEffect(Constant.STATS_RETDOM);
                 if (cur_renvoi_dommage > 5) total.addOneStat(Constant.STATS_RETDOM, 5 - cur_renvoi_dommage);
                 int cur_prospection = total.getEffect(Constant.STATS_ADD_PROS);
-                if (cur_prospection > 100) total.addOneStat(Constant.STATS_ADD_PROS, 100 - cur_prospection);
+                if (cur_prospection > 150) total.addOneStat(Constant.STATS_ADD_PROS, 150 - cur_prospection);
                 int cur_pa = total.getEffect(Constant.STATS_ADD_PA);
                 if (cur_pa > 30) total.addOneStat(Constant.STATS_ADD_PA, 30 - cur_pa);
+
+                int bonusProspection = 0;
+                switch (getPrestige()) {
+                    case 16:
+                        bonusProspection = 10;
+                        break;
+                    case 17:
+                        bonusProspection = 15;
+                        break;
+                    case 18:
+                        bonusProspection = 20;
+                        break;
+                    case 19:
+                        bonusProspection = 30;
+                        break;
+                    case 20:
+                        bonusProspection = 40;
+                        break;
+                    default:
+                        break;
+                }
+                if (getLevel() > 204) {
+                    bonusProspection += 10;
+                }
+
+                if (bonusProspection > 0) {
+                    int prospectionEnBonus = (bonusProspection/100) * total.getEffect(Constant.STATS_ADD_PROS);
+                    total.addOneStat(Constant.STATS_ADD_PROS, prospectionEnBonus);
+                }
 
                 if (getAccount().getGmLevel() < 1) {
                     int cur_sagesse = total.getEffect(Constant.STATS_ADD_SAGE);
@@ -2135,7 +2167,7 @@ public class Player {
             stats.addOneStat(125, 100);
         }
         if (gP > 14) {
-            stats.addOneStat(125, 100);
+            stats.addOneStat(Constant.STATS_ADD_VITA, 100);
             stats.addOneStat(Constant.STATS_ADD_DOMA, 15);
         }
         if (gP > 15) {

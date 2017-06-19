@@ -220,7 +220,7 @@ public class PlayerCommand {
                             boolean allOffline = true;
 
                             for (int i = 0; i < World.getOnlinePlayers().size(); i++) {
-                                if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() > 0) {
+                                if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() > 0 && !World.getOnlinePlayers().get(i).staffInvisible) {
                                     staff += "- <b><a href='asfunction:onHref,ShowPlayerPopupMenu," + World.getOnlinePlayers().get(i).getName() + "'>" + World.getOnlinePlayers().get(i).getName() + "</a></b> (";
                                     if (World.getOnlinePlayers().get(i).getAccID() == 6569) {
                                         staff += "Game designer)";
@@ -470,8 +470,8 @@ public class PlayerCommand {
                             } else {
                                 if (!_perso.isMuteFromGlobal) {
                                     long tempEcoule = (System.currentTimeMillis() - _perso.tempAncienMessage) / 1000;
-                                    if (tempEcoule < 30 && _perso.getAccount().getGmLevel() == 0) {
-                                        _perso.sendText("Ce canal est restreint pour améliorer sa lisibilité. Vous pourrez envoyer un nouveau message dans " + Math.abs(30 - tempEcoule) + " secondes.");
+                                    if (tempEcoule < 45 && _perso.getAccount().getGmLevel() == 0 && _perso.getAccount().getVip() == 0) {
+                                        _perso.sendText("Ce canal est restreint pour améliorer sa lisibilité. Vous pourrez envoyer un nouveau message dans " + Math.abs(45 - tempEcoule) + " secondes.");
                                     } else {
                                         _perso.tempAncienMessage = System.currentTimeMillis();
                                         String clicker_name = "<a href='asfunction:onHref,ShowPlayerPopupMenu," + _perso.getName() + "'>" + prefix + "</a>";
