@@ -1,6 +1,7 @@
 package org.area.fight.object;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -43,6 +44,9 @@ public class Collector
 	//Les logs
 	private Map<Integer,Item> _LogObjets = new TreeMap<Integer,Item>();
 	private long _LogXP = 0;
+
+	// Défenseurs
+	private List<Player> defenseurs = new ArrayList<Player>();
 	
 	public Collector(int guid, short map, int cellID, byte orientation, int GuildID, 
 			short N1, short N2, String items, long kamas, long xp)
@@ -338,7 +342,7 @@ public class Collector
 		{
 			if(perco.getValue().get_inFight() > 0 && perco.getValue().get_guildID() == guildID)
 			{
-				SocketManager.GAME_SEND_gITP_PACKET(perso, parseDefenseToGuild(perco.getValue().getGuid(), perco.getValue().get_mapID(), perco.getValue().get_inFightID()));
+				SocketManager.GAME_SEND_gITP_PACKET(perso, perco.getValue().parseDefenseToGuild());
 			}
 		}
 	}
@@ -368,7 +372,7 @@ public class Collector
 		return str.toString();
 	}
 	
-	public static String parseDefenseToGuild(int guid, short mapid, int fightid)
+	/*public static String parseDefenseToGuild(int guid, short mapid, int fightid)
 	{
 		StringBuilder str = new StringBuilder();
 		str.append("+").append(guid);
@@ -394,6 +398,26 @@ public class Collector
 					}
 				}
 		}
+		return str.toString();
+	}*/
+
+	public String parseDefenseToGuild() {
+		StringBuilder str = new StringBuilder();
+		str.append("+").append(getGuid());
+
+		for (Player player : defenseurs) {
+			if(player != null) {
+				str.append("|");
+				str.append(Integer.toString(player.getGuid(), 36)).append(";");
+				str.append(player.getName()).append(";");
+				str.append(player.get_gfxID()).append(";");
+				str.append(player.getLevel()).append(";");
+				str.append(Integer.toString(player.get_color1(), 36)).append(";");
+				str.append(Integer.toString(player.get_color2(), 36)).append(";");
+				str.append(Integer.toString(player.get_color3(), 36)).append(";");
+			}
+		}
+
 		return str.toString();
 	}
 	
@@ -553,6 +577,41 @@ public class Collector
 				continue;
 			}
 		}
+	}
+
+	public void addDefenseur(Player perso) {
+		if (!defenseurs.contains(perso)) {
+			defenseurs.add(perso);
+		}
+	}
+
+	public void removeDefenseur(Player perso) {
+		if (defenseurs.contains(perso)) {
+			defenseurs.remove(perso);
+			for (Player z : World.getGuild(get_guildID()).getMembers())
+			{
+				if (z == null) continue;
+				if (z.isOnline()) {
+					SocketManager.GAME_SEND_gITP_PACKET(perso, parseRemoveDefenseurToGuild(perso));
+				}
+			}
+		}
+	}
+
+	private String parseRemoveDefenseurToGuild(Player player) {
+		StringBuilder str = new StringBuilder();
+		str.append("-").append(getGuid());
+			if(player != null) {
+				str.append("|");
+				str.append(Integer.toString(player.getGuid(), 36)).append(";");
+				str.append(player.getName()).append(";");
+				str.append(player.get_gfxID()).append(";");
+				str.append(player.getLevel()).append(";");
+				str.append(Integer.toString(player.get_color1(), 36)).append(";");
+				str.append(Integer.toString(player.get_color2(), 36)).append(";");
+				str.append(Integer.toString(player.get_color3(), 36)).append(";");
+			}
+		return str.toString();
 	}
 
 	public void set_cellID(int cell){

@@ -972,15 +972,19 @@ public class GameThread implements Runnable {
                     return;
                 }
                 if (player.getFight() == null && !player.is_away()) {
-                    player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
+                    /*player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
                     Fight combat = World.getCarte(MapID).getFight(FightID); // FIXME getFight lorsqu'on tente de re-défendre retourne null
                     if (combat != null) {
                         combat.joinPercepteurFight(player, player.getGuid(), TiD);
                     }
                     if (player.getMap().get_id() != MapID) {
                         player.teleport(MapID, CellID);
-                    }
+                    }*/
+                    perco.addDefenseur(player);
                 }
+                break;
+            case 'V': // Quitter la défense
+                perco.removeDefenseur(player);
                 break;
         }
         for (Player z : World.getGuild(perco.get_guildID()).getMembers()) // @Flow FIXME
@@ -1033,7 +1037,7 @@ public class GameThread implements Runnable {
         }
         short mapID = player.getMap().get_id();
         List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018);
-        if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108) { // Map interdite pour la pose
+        if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108 || mapID >= 13120 && mapID <= 13125) { // Map interdite pour la pose
             player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
             return;
         }
