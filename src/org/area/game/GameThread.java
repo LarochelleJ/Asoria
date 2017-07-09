@@ -981,10 +981,25 @@ public class GameThread implements Runnable {
                         player.teleport(MapID, CellID);
                     }*/
                     perco.addDefenseur(player);
+                    if (perco.defenseursCanTP()) {
+                        if (player.getFight() == null && !player.is_away()) {
+                            player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
+                            Fight combat = perco.get_fight();
+                            if (combat != null) {
+                                if (player.getMap().get_id() != perco.get_mapID()) {
+                                    SocketManager.GAME_SEND_gITP_PACKET(player, perco.parseRemoveDefenseurToGuild(player)); // Éviter la popup "vous quitter la défense.."
+                                    player.teleport(perco.get_mapID(), perco.get_cellID());
+                                }
+                                combat.joinPercepteurFight(player, player.getGuid(), perco.getGuid(), perco);
+                            }
+                        }
+                    }
                 }
                 break;
             case 'V': // Quitter la défense
-                perco.removeDefenseur(player);
+                if (player.getFight() == null) {
+                    perco.removeDefenseur(player);
+                }
                 break;
         }
         for (Player z : World.getGuild(perco.get_guildID()).getMembers()) // @Flow FIXME

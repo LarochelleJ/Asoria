@@ -433,6 +433,7 @@ public class Fight {
         set_guildID(perco.get_guildID());
         perco.set_inFight((byte) 1);
         perco.set_inFightID((byte) id);
+        perco.set_fight(this);
 
         _type = Constant.FIGHT_TYPE_PVT; //(0: Défie) (4: Pvm) (1:PVP) 5:Perco
         _id = id;
@@ -448,7 +449,7 @@ public class Fight {
         Fighter percoF = new Fighter(this, perco);
         _team1.put(-1, percoF);
 
-        SocketManager.GAME_SEND_FIGHT_GJK_PACKET_TO_FIGHT(this, 1, 2, 0, 1, 0, 45000, _type); //  timer de combat
+        SocketManager.GAME_SEND_FIGHT_GJK_PACKET_TO_FIGHT(this, 1, 2, 0, 1, 0, 60000, _type); //  timer de combat
         scheduleTimer(60, false);     //Thread Timer
         Random teams = new Random();
         if (teams.nextBoolean()) {
@@ -514,10 +515,10 @@ public class Fight {
         for (Player z : World.getGuild(_guildID).getMembers()) {
             if (z == null) continue;
             if (z.isOnline()) {
-                SocketManager.GAME_SEND_gITM_PACKET(z, Collector.parsetoGuild(z.get_guild().get_id()));
-                Collector.parseAttaque(z, _guildID);
-                Collector.parseDefense(z, _guildID);
                 SocketManager.SEND_gA_PERCEPTEUR(z, str);
+                /*SocketManager.GAME_SEND_gITM_PACKET(z, Collector.parsetoGuild(z.get_guild().get_id()));
+                Collector.parseAttaque(z, _guildID);
+                Collector.parseDefense(z, _guildID);*/
                 //z.sendBox("ALERTE", Lang.LANG_114[z.getLang()]);
             }
         }
@@ -1759,7 +1760,7 @@ public class Fight {
         }, 700, TimeUnit.MILLISECONDS);
     }
 
-    public void joinPercepteurFight(final Player perso, int guid, final int percoID) {
+    public void joinPercepteurFight(final Player perso, int guid, final int percoID, final Collector perco) {
         final Fight fight = this;
         GameServer.fightExecutor.schedule(new Runnable() {
             public void run() {
@@ -1778,7 +1779,7 @@ public class Fight {
                 perso.set_fight(fight);
                 f.set_fightCell(cell);
                 f.get_fightCell().addFighter(f);
-                defenseursGuilde.add(f);
+                //defenseursGuilde.add(f);
                 SocketManager.GAME_SEND_ILF_PACKET(perso, 0);
 
                 perso.get_curCell().removePlayer(perso.getGuid());
@@ -1786,8 +1787,11 @@ public class Fight {
                 SocketManager.GAME_SEND_FIGHT_PLAYER_JOIN(fight, 7, current_Join);
                 SocketManager.GAME_SEND_MAP_FIGHT_GMS_PACKETS(fight, _map, perso);
                 SocketManager.GAME_SEND_GDF_PACKET_TO_FIGHT(perso, fight.get_map().GetCases().values());
+
+                // Fix "vous quitté la défense"
+                SocketManager.GAME_SEND_gITP_PACKET(perso, perco.parseDefenseToGuild());
             }
-        }, 700, TimeUnit.MILLISECONDS);
+        }, 1200, TimeUnit.MILLISECONDS);
     }
 
     public void toggleLockTeam(int guid) {
