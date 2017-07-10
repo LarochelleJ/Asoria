@@ -45,6 +45,10 @@ public class Collector {
     private boolean defenseursCanTP = false;
     private Fight fight = null;
 
+    // Drops pp
+    public int nbDePierresDrop = 0;
+    public int getNbDePierresDropTotal = 0;
+
     public Collector(int guid, short map, int cellID, byte orientation, int GuildID,
                      short N1, short N2, String items, long kamas, long xp) {
         _guid = guid;

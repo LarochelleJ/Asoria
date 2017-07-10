@@ -3138,7 +3138,14 @@ public class Fight {
 		    	Item obj = t.createNewItem(randomNum, false, -1);
 				if(i.getPersonnage().addObjet(obj, true))
 					World.addObjet(obj,true);*/
-                    nombreDePierresPrecieuses = randomNum;
+                    Collector perco = Collector.GetPercoByMapID(_map.get_id());
+                    if (perco != null && _type == 4) {
+                        int tauxCollectorPP = rand.nextInt(16) + 10;
+                        nombreDePierresPrecieuses = (100 - tauxCollectorPP) * randomNum / 100;
+                        perco.nbDePierresDrop += (randomNum - nombreDePierresPrecieuses);
+                    } else {
+                        nombreDePierresPrecieuses = randomNum;
+                    }
                 }
             }
 
@@ -3453,6 +3460,7 @@ public class Fight {
         }
         if (Collector.GetPercoByMapID(_map.get_id()) != null && _type == 4)//On a un percepteur ONLY PVM ?
         {
+
             Collector p = Collector.GetPercoByMapID(_map.get_id());
             long winxp = (int) Math.floor(Formulas.getXpWinPerco(p, TEAM1, TEAM2, totalXP) / 100);
             long winkamas = (int) Math.floor(Formulas.getKamasWinPerco(minkamas, maxkamas) / 100);
@@ -3485,6 +3493,12 @@ public class Fight {
                     if (D.get_max() == 0) possibleDrops.remove(D);
                 }
             }
+            // Drop pp
+            if (p.getNbDePierresDropTotal < 601) {
+                itemWon.put(470001, p.nbDePierresDrop);
+                p.getNbDePierresDropTotal += p.nbDePierresDrop;
+            }
+            p.nbDePierresDrop = 0;
             for (Entry<Integer, Integer> entry : itemWon.entrySet()) {
                 ObjTemplate OT = World.getObjTemplate(entry.getKey());
                 if (OT == null) continue;
