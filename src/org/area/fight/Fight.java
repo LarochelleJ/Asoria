@@ -673,6 +673,14 @@ public class Fight {
         return CryptManager.parseStartCell(_map, num);
     }
 
+    public int nombreDePlace(int equipe) {
+        if (equipe == 0) {
+            return _start0.size();
+        } else {
+            return _start1.size();
+        }
+    }
+
     public int get_id() {
         return _id;
     }
@@ -913,7 +921,7 @@ public class Fight {
             localException.printStackTrace(System.out);
         }
         /*for(Fighter F : getFighters(3)) // @Flow - État chevauchant, je l'ai pas vu encore #Doublon
-		{
+        {
 			Player perso1 = F.getPersonnage();
 			if(perso1 == null)continue;
 			if(perso1.isOnMount())
@@ -1791,7 +1799,7 @@ public class Fight {
                 // Fix "vous quitté la défense"
                 SocketManager.GAME_SEND_gITP_PACKET(perso, perco.parseDefenseToGuild());
             }
-        }, 1200, TimeUnit.MILLISECONDS);
+        }, 250, TimeUnit.MILLISECONDS);
     }
 
     public void toggleLockTeam(int guid) {
@@ -3230,10 +3238,10 @@ public class Fight {
                 winxp = XP.get();
                 if (winxp != 0 && i.getPersonnage() != null) {
                     // Taux suppresion xp dû au prestiges @Flow
-                        int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
-                        if (tauxDiminution != 0) {
-                            winxp -= (tauxDiminution * winxp / 100);
-                        }
+                    int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
+                    if (tauxDiminution != 0) {
+                        winxp -= (tauxDiminution * winxp / 100);
+                    }
                     i.getPersonnage().addXp(winxp);
                 }
                 if (winKamas != 0 && i.getPersonnage() != null)
@@ -3732,14 +3740,11 @@ public class Fight {
                 }
 
                 final Player player = F.getPersonnage();
-                final Fighter Fcopy = F;
                 GameServer.fightExecutor.schedule(new Runnable() {
                     public void run() {
                         player.mettreCombatBloque(false);
                         if (_type != Constant.FIGHT_TYPE_PVT) {
                             player.refreshMapAfterFight();
-                        } else if (defenseursGuilde.contains(Fcopy)) {
-                            player.teleport(player.getLastMapID(), player.getLastCellID());
                         }
                     }
                 }, 200, TimeUnit.MILLISECONDS);
@@ -3748,6 +3753,7 @@ public class Fight {
             for (Fighter F : looseTeam) {
 
                 if (F._Perco != null) {
+                    F._Perco.set_inFight((byte) 0);
                     _mapOld.RemoveNPC(F._Perco.getGuid());
                     SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(_mapOld, F._Perco.getGuid());
                     // Supression percepteur Edited @Flow
@@ -3791,17 +3797,12 @@ public class Fight {
                 }
                 if (F.getPersonnage() == null) continue;
                 if (F.isInvocation()) continue;
-                if (F.hasLeft() || !F.getPersonnage().isOnline()) {
+                if ((F.hasLeft() || !F.getPersonnage().isOnline()) && F.getPersonnage().getMap() == this.get_map()) {
                     F.getPersonnage().warpToSavePos();
                     continue;
                 }
 
-                if (_type == Constant.FIGHT_TYPE_PVT) {
-                    Player perso = F.getPersonnage();
-                    if (defenseursGuilde.contains(F)) {
-                        perso.teleport(perso.getLastMapID(), perso.getLastCellID());
-                    }
-                } else if (_type != Constant.FIGHT_TYPE_CHALLENGE) {
+                if (_type != Constant.FIGHT_TYPE_CHALLENGE && F.getPersonnage().getMap() == this.get_map()) {
                     F.getPersonnage().warpToSavePos();
                     F.getPersonnage().set_PDV(1);
                 }
@@ -4111,7 +4112,13 @@ public class Fight {
             if (target.isPerco()) {
                 for (Fighter f : this.getFighters(target.getTeam2())) {
                     if (f.isDead()) continue;
+                    try{
+                        Thread.sleep(500);
+                    } catch (Exception e) {}
                     this.onFighterDie(f, target);
+                    try{
+                        Thread.sleep(1000);
+                    } catch (Exception e) {}
                     verifIfTeamAllDead();
                 }
             }
@@ -4594,7 +4601,12 @@ public class Fight {
 									P.set_Ghosts();
 								}else
 								{*/
-                                P.warpToSavePos();
+                                if (P.percoDefendre != null && P.percoDefendre.get_fight() == this) { // Il s'agit d'une défense percepteur
+                                    P.teleport(P.getLastMapID(), P.getLastCellID());
+                                    P.percoDefendre = null;
+                                } else {
+                                    P.warpToSavePos();
+                                }
                                 P.set_PDV(1);
                                 // }
                             }

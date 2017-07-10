@@ -980,24 +980,18 @@ public class GameThread implements Runnable {
                     if (player.getMap().get_id() != MapID) {
                         player.teleport(MapID, CellID);
                     }*/
-                    perco.addDefenseur(player);
-                    if (perco.defenseursCanTP()) {
-                        if (player.getFight() == null && !player.is_away()) {
-                            player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
-                            Fight combat = perco.get_fight();
-                            if (combat != null) {
-                                if (player.getMap().get_id() != perco.get_mapID()) {
-                                    SocketManager.GAME_SEND_gITP_PACKET(player, perco.parseRemoveDefenseurToGuild(player)); // Éviter la popup "vous quitter la défense.."
-                                    player.teleport(perco.get_mapID(), perco.get_cellID());
-                                }
-                                combat.joinPercepteurFight(player, player.getGuid(), perco.getGuid(), perco);
+                    if (perco.get_inFight() == 1) { // Autrement combat déja démarré
+                        if (perco.nombreDeDefenseurs() + 1 < perco.get_fight().nombreDePlace(1)) {
+                            perco.addDefenseur(player);
+                            if (perco.defenseursCanTP()) {
+                                perco.rejoindreCombat(player);
                             }
                         }
                     }
                 }
                 break;
             case 'V': // Quitter la défense
-                if (player.getFight() == null) {
+                if (player.percoDefendre != perco) {
                     perco.removeDefenseur(player);
                 }
                 break;
@@ -5912,7 +5906,7 @@ public class GameThread implements Runnable {
 
     private void Game_on_GI_packet() {
         Maps map = player.getMap();
-        int debug = 0;
+        //int debug = 0;
 
         try {
             if (player.getFight() != null) {
@@ -5925,51 +5919,54 @@ public class GameThread implements Runnable {
 
             SocketManager.GAME_SEND_Rp_PACKET(this.player, this.player.getMap()
                     .getMountPark());
-            debug++;
+            //debug++;
 
             Houses.LoadHouse(this.player, this.player.getMap().get_id());
-            debug++;
+            //debug++;
 
             SocketManager.GAME_SEND_MAP_GMS_PACKETS(this.player.getMap(),
                     this.player);
-            debug++;
+           // debug++;
             SocketManager.GAME_SEND_MAP_MOBS_GMS_PACKETS(this.player
                             .getAccount().getGameThread().getOut(),
                     this.player.getMap(), player);
-            debug++;
+           // debug++;
             SocketManager.GAME_SEND_MAP_NPCS_GMS_PACKETS(this.out,
                     this.player.getMap());
-            debug++;
+           // debug++;
             SocketManager.GAME_SEND_MAP_PERCO_GMS_PACKETS(this.out,
                     this.player.getMap());
-            debug++;
+            //debug++;
 
             SocketManager.GAME_SEND_MAP_OBJECTS_GDS_PACKETS(this.out,
                     this.player.getMap());
-            debug++;
+          //  debug++;
             SocketManager.GAME_SEND_GDK_PACKET(this.out);
-            debug++;
+           // debug++;
             SocketManager.GAME_SEND_MAP_FIGHT_COUNT(this.out,
                     this.player.getMap());
-            debug++;
+            //debug++;
             SocketManager.GAME_SEND_MERCHANT_LIST(player, player.getMap()
                     .get_id());
-            debug++;
+           //debug++;
             SocketManager.SEND_GM_PRISME_TO_MAP(this.out, map);
-            debug++;
+           // debug++;
             Fight.FightStateAddFlag(this.player.getMap(), this.player);
-            debug++;
+           // debug++;
 
             this.player.getMap().sendFloorItems(this.player);
-            debug++;
+           // debug++;
             try {
                 Thread.sleep(360);
             } catch (Exception e) {
             }
             SocketManager.GAME_SEND_eUK_PACKET_TO_PLAYER(this.player.getMap(), this.player);
+            if (player.percoDefendre != null && player.getFight() == null && player.percoDefendre.get_mapID() == player.getMap().get_id()) {
+                player.percoDefendre.get_fight().joinPercepteurFight(player, player.getGuid(), player.percoDefendre.getGuid(), player.percoDefendre);
+            }
         } catch (Exception e) {
             SocketManager.send(this.player, "cC+i");
-            System.out.println("Erreur GI numéro: " + debug);
+            //System.out.println("Erreur GI numéro: " + debug);
         }
 
     }

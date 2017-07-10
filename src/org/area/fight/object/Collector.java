@@ -188,7 +188,6 @@ public class Collector {
 
     public void set_inFight(final byte fight) {
         _inFight = fight;
-        final Collector perco = this;
         if (fight == 1) {
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
@@ -196,17 +195,7 @@ public class Collector {
                         public void run() {
                             defenseursCanTP = true;
                             for (Player player : defenseurs) {
-                                if (player.getFight() == null && !player.is_away()) {
-                                    player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
-                                    Fight combat = get_fight();
-                                    if (combat != null) {
-                                        if (player.getMap().get_id() != get_mapID()) {
-                                            SocketManager.GAME_SEND_gITP_PACKET(player, parseRemoveDefenseurToGuild(player)); // Éviter la popup "vous quitter la défense.."
-                                            player.teleport(get_mapID(), get_cellID());
-                                        }
-                                        combat.joinPercepteurFight(player, player.getGuid(), getGuid(), perco);
-                                    }
-                                }
+                                rejoindreCombat(player);
                             }
                         }
                     },
@@ -216,10 +205,37 @@ public class Collector {
             if (fight == 0) {
                 for (Player perso : defenseurs) {
                     SocketManager.GAME_SEND_gITP_PACKET(perso, parseRemoveDefenseurToGuild(perso));
+                    if (perso.getFight() == get_fight()) { // Toujours dans le combat du perco
+                        perso.teleport(perso.getLastMapID(), perso.getLastCellID());
+                        perso.set_fight(null);
+                    }
+                    perso.percoDefendre = null;
                 }
                 defenseurs.clear();
             }
             defenseursCanTP = false;
+        }
+    }
+
+    public void rejoindreCombat(Player player) {
+        if (player.getFight() == null && !player.is_away()) {
+            player.setLastMapInfo(player.getCurCarte().get_id(), player.getCurCell().getID());
+            Fight combat = get_fight();
+            if (combat != null) {
+                SocketManager.GAME_SEND_gITP_PACKET(player, parseRemoveDefenseurToGuild(player)); // Éviter la popup "vous quitter la défense.."
+                player.percoDefendre = this;
+                try {
+                    Thread.sleep(100); // Pour être sûr que le client a traité le packet gITP
+                } catch (Exception e) {
+                }
+                if (player.getMap().get_id() != get_mapID()) {
+                    player.teleport(get_mapID(), get_cellID());
+                } else {
+                    combat.joinPercepteurFight(player, player.getGuid(), getGuid(), this);
+                }
+            }
+        } else {
+            removeDefenseur(player);
         }
     }
 
@@ -271,7 +287,8 @@ public class Collector {
                         packet.append(perco.getValue().get_fight().getRemaimingTime()).append(";");//TimerActuel
                     }
                     packet.append(60000).append(";");//TimerInit
-                    packet.append("7;");//Nombre de place maximum FIXME : En fonction de la map
+                    packet.append(String.valueOf(perco.getValue().get_fight().nombreDePlace(1)-1)); // -1 aux nombres de places fit que le perco en utilise une
+                    packet.append(";");
                     packet.append("?,?,");//?
                 } else {
                     packet.append("0;");
@@ -552,6 +569,10 @@ public class Collector {
         if (!defenseurs.contains(perso)) {
             defenseurs.add(perso);
         }
+    }
+
+    public int nombreDeDefenseurs() {
+        return defenseurs.size();
     }
 
     public void removeDefenseur(Player perso) {

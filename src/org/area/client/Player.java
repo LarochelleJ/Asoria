@@ -311,6 +311,9 @@ public class Player {
     // Mode admin invisible
     public boolean staffInvisible = false;
 
+    // Guilde defense peco
+    public Collector percoDefendre = null;
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;
