@@ -1464,6 +1464,9 @@ public class Player {
     }
 
     public void remove() {
+        synchronized (World.getPersos()) {
+            World.getPersos().remove(this);
+        }
         SQLManager.DELETE_PERSO_IN_BDD(this);
     }
 

@@ -1041,8 +1041,8 @@ public class GameThread implements Runnable {
                 || player.is_away())
             return;
         if (!Config.BETA) {
-            player.sendText("La pose de percepteur est temporairement désactivé suite à quelques bugs sur la défense des percepteurs, merci de votre compréhension !");
-            return;
+            player.sendText("Veuillez prendre note que la défense des attaques percepteurs n'a pas été complétement testé et qu'il est probable de rencontrer des bugs, n'hésitez surtout pas à nous le faire part ! :)");
+            //return;
         }
         short mapID = player.getMap().get_id();
         List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018);
@@ -4033,12 +4033,18 @@ public class GameThread implements Runnable {
 
                         HdvEntry toAdd = new HdvEntry(price, amount, player
                                 .getAccount().getGuid(), obj);
-                        curHdv.addEntry(toAdd); // Ajoute l'entry dans l'HDV
-                        SQLManager.SAVE_HDV_ITEM(toAdd, true);
 
-                        SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK(out, '+', "",
-                                toAdd.parseToEmK());
-                        SocketManager.GAME_SEND_STATS_PACKET(player); // Kamas update
+                        if (!curHdv.addEntry(toAdd)) { // Si l'ajout de l'entry en HDV génére une exception
+                            player.addObjet(obj);
+                            player.addKamas((long) taxes);
+                            player.sendText("Une erreur s'est produite en tentant de mettre à vente l'objet suivant : " + obj.getTemplate(false).getName() + " ! Contactez un administrateur si l'erreur persiste");
+                        } else { // Autrement c'est bon
+                            SQLManager.SAVE_HDV_ITEM(toAdd, true);
+
+                            SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK(out, '+', "",
+                                    toAdd.parseToEmK());
+                            SocketManager.GAME_SEND_STATS_PACKET(player); // Kamas update
+                        }
                         break;
                 }
             } else {//TODO:Baskwo Exchange with npc

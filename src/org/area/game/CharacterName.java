@@ -55,7 +55,7 @@ public class CharacterName {
 				SocketManager.send(out, "AAE");
 				return;
 			}
-			if(account.createPerso(infos[0], // FIXME @Flow #Fixé
+			if(account.createPerso(infos[0], // FIXME @Flow #FixÃ©
 					Integer.parseInt(infos[2]), 
 					Integer.parseInt(infos[1]), 
 					Integer.parseInt(infos[3]),
@@ -86,15 +86,15 @@ public class CharacterName {
 				name.toLowerCase().contains("/") ||
 				name.toLowerCase().contains(".") ||
 				name.toLowerCase().contains("'") ||
-				name.toLowerCase().contains("µ") ||
+				name.toLowerCase().contains("Âµ") ||
 				name.toLowerCase().contains("%") ||
 				name.toLowerCase().contains("$") ||
-				name.toLowerCase().contains("€") ||
+				name.toLowerCase().contains("Â€") ||
 				name.toLowerCase().contains("#") ||
-				name.toLowerCase().contains("ë") ||
+				name.toLowerCase().contains("Ã«") ||
 				name.toLowerCase().contains("*") ||
 				name.toLowerCase().contains("|") ||
-				name.toLowerCase().contains("¤") ||
+				name.toLowerCase().contains("Â¤") ||
 				name.toLowerCase().contains("<") ||
 				name.toLowerCase().contains(">") ||
 				name.toLowerCase().contains("?") ||

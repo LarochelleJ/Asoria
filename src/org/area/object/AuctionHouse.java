@@ -18,7 +18,7 @@ import org.area.common.World.Couple;
 public class AuctionHouse {
 	/**
 	 * Contient les liens associant les templatID au Map de template.
-	 * C'est une manière plus compréhensible d'écrire : <categID,Map<LigneID,Ligne>>.
+	 * C'est une maniÃ¨re plus comprÃ©hensible d'Ã©crire : <categID,Map<LigneID,Ligne>>.
 	 * @author Mathieu
 	 *
 	 */
@@ -98,8 +98,8 @@ public class AuctionHouse {
 		}
 	}
 	/**
-	 * Contient les liens associant les ID des Lignes à des objets "Ligne".
-	 * C'est une manière plus compréhensible d'écrire : <LigneID,Ligne>.
+	 * Contient les liens associant les ID des Lignes Ã  des objets "Ligne".
+	 * C'est une maniÃ¨re plus comprÃ©hensible d'Ã©crire : <LigneID,Ligne>.
 	 * @author Mathieu
 	 *
 	 */
@@ -117,14 +117,14 @@ public class AuctionHouse {
 		
 		public void addEntry(HdvEntry toAdd)
 		{
-			//TODO : Peut-être catché un nullPointerException à cause du for
-			for(Ligne curLine : _lignes.values())//Boucle dans toutes les lignes pour essayer de trouver des objets de mêmes stats
+			//TODO : Peut-Ãªtre catchÃ© un nullPointerException Ã  cause du for
+			for(Ligne curLine : _lignes.values())//Boucle dans toutes les lignes pour essayer de trouver des objets de mÃªmes stats
 			{
-				if(curLine.addEntry(toAdd))//Si une ligne l'accepte, arrête la méthode.
+				if(curLine.addEntry(toAdd))//Si une ligne l'accepte, arrÃªte la mÃ©thode.
 					return;
 			}
 
-			//Si aucune ligne ne l'a accepté, crée une nouvelle ligne.
+			//Si aucune ligne ne l'a acceptÃ©, crÃ©e une nouvelle ligne.
 			int ligneID = World.getNextLigneID();
 			_lignes.put(ligneID, new Ligne(ligneID, toAdd));
 		}
@@ -181,7 +181,7 @@ public class AuctionHouse {
 		}
 	}
 	/**
-	 * Contient des HdvEntry de même template et de même statistiques.
+	 * Contient des HdvEntry de mÃªme template et de mÃªme statistiques.
 	 * Les lignes sont des : ArrayList<HdvEntry>
 	 * @author Mathieu
 	 *
@@ -189,7 +189,7 @@ public class AuctionHouse {
 	public class Ligne
 	{
 		private int ligneID;
-		private ArrayList<ArrayList<HdvEntry>> _entries = new ArrayList<ArrayList<HdvEntry>>(3);//La première ArrayList est un tableau de 3 (0=1 1=10 2=100 de quantité)
+		private ArrayList<ArrayList<HdvEntry>> _entries = new ArrayList<ArrayList<HdvEntry>>(3);//La premiÃ¨re ArrayList est un tableau de 3 (0=1 1=10 2=100 de quantitÃ©)
 		private String _strStats;
 		private int templateID;
 		
@@ -212,9 +212,9 @@ public class AuctionHouse {
 		}
 		
 		/**
-		 * Méthode pour ajouter un HdvEntry à la ligne.
-		 * @param toAdd L'objet HdvEntry à ajouter à la ligne
-		 * @return Cette fonction retourne false dans le cas où l'objet à ajouter n'a pas les mêmes stats que la ligne. Dans tout les autres cas, elle retourne true.
+		 * MÃ©thode pour ajouter un HdvEntry Ã  la ligne.
+		 * @param toAdd L'objet HdvEntry Ã  ajouter Ã  la ligne
+		 * @return Cette fonction retourne false dans le cas oÃ¹ l'objet Ã  ajouter n'a pas les mÃªmes stats que la ligne. Dans tout les autres cas, elle retourne true.
 		 */
 		public boolean addEntry(HdvEntry toAdd)
 		{
@@ -227,12 +227,12 @@ public class AuctionHouse {
 			_entries.get(index).add(toAdd);
 			trier(index);
 			
-			return true;//Anonce que l'objet à été accepté
+			return true;//Anonce que l'objet Ã  Ã©tÃ© acceptÃ©
 		}
 		public boolean haveSameStats(HdvEntry toAdd)
 		{
 			return _strStats.equalsIgnoreCase(toAdd.getObjet().parseToSave())
-					&& toAdd.getObjet().getTemplate(false).getType() != 85;//Récupère les stats de l'objet et compare avec ceux de la ligne
+					&& toAdd.getObjet().getTemplate(false).getType() != 85;//RÃ©cupÃ¨re les stats de l'objet et compare avec ceux de la ligne
 		}
 		
 		public HdvEntry doYouHave(int amount, int price)
@@ -255,7 +255,7 @@ public class AuctionHouse {
 			for (int i = 0; i < _entries.size(); i++) 
 			{
 				try{
-					toReturn[i] = _entries.get(i).get(0).getPrice();//Récupère le premier objet de chaque liste
+					toReturn[i] = _entries.get(i).get(0).getPrice();//RÃ©cupÃ¨re le premier objet de chaque liste
 				}catch(IndexOutOfBoundsException e){toReturn[i] = 0;}
 			}
 			
@@ -263,11 +263,11 @@ public class AuctionHouse {
 		}
 		public ArrayList<HdvEntry> getAll()
 		{
-			//Additionne le nombre d'objet de chaque quantité
+			//Additionne le nombre d'objet de chaque quantitÃ©
 			int totalSize = _entries.get(0).size() + _entries.get(1).size() + _entries.get(2).size();
 			ArrayList<HdvEntry> toReturn = new ArrayList<HdvEntry>(totalSize);
 			
-			for (int qte = 0; qte < _entries.size(); qte++)//Boucler dans les quantité
+			for (int qte = 0; qte < _entries.size(); qte++)//Boucler dans les quantitÃ©
 			{
 				toReturn.addAll(_entries.get(qte));
 			}
@@ -322,7 +322,7 @@ public class AuctionHouse {
 			{
 				try
 				{
-					if(_entries.get(i).get(0) != null)//Vérifie s'il existe un objet dans chacune des 3 quantité
+					if(_entries.get(i).get(0) != null)//VÃ©rifie s'il existe un objet dans chacune des 3 quantitÃ©
 						return false;
 				}catch(IndexOutOfBoundsException e){}
 			}
@@ -333,10 +333,10 @@ public class AuctionHouse {
 	/**
 	 * Contient toutes les informations necessaire sur la vente d'un objet.
 	 * -Son prix
-	 * -Sa quantité
+	 * -Sa quantitÃ©
 	 * -Le nombres d'heures depuis la mise en vente
-	 * -Le propriétaire
-	 * -Une référence vers l'objet à vendre.
+	 * -Le propriÃ©taire
+	 * -Une rÃ©fÃ©rence vers l'objet Ã  vendre.
 	 * @author Mathieu
 	 *
 	 */
@@ -397,7 +397,7 @@ public class AuctionHouse {
 		{
 			StringBuilder toReturn = new StringBuilder();
 			
-			int count = getAmount(true);//Transfère dans le format (1,10,100) le montant qui etait dans le format (1,2,3)
+			int count = getAmount(true);//TransfÃ¨re dans le format (1,10,100) le montant qui etait dans le format (1,2,3)
 			toReturn.append(_ligneID).append(";").append(count).append(";").append(_obj.getTemplate(false).getID()).append(";").append(_obj.parseStatsString()).append(";").append(_price).append(";350");//350 = temps restant
 			
 			return toReturn.toString();
@@ -406,7 +406,7 @@ public class AuctionHouse {
 		{
 			StringBuilder toReturn = new StringBuilder();
 			
-			int count = getAmount(true);//Transfère dans le format (1,10,100) le montant qui etait dans le format (1,2,3)
+			int count = getAmount(true);//TransfÃ¨re dans le format (1,10,100) le montant qui etait dans le format (1,2,3)
 			toReturn.append(_obj.getGuid()).append("|").append(count).append("|").append(_obj.getTemplate(false).getID()).append("|").append(_obj.parseStatsString()).append("|").append(_price).append("|350");//350 = temps restant
 			
 			return toReturn.toString();
@@ -414,7 +414,7 @@ public class AuctionHouse {
 		/*
 		public String parseItem(char divider)
 		{
-			int count = getAmount(true);//Transfère dans le format (1,10,100) le montant qui etait dans le format (1,2,3)
+			int count = getAmount(true);//TransfÃ¨re dans le format (1,10,100) le montant qui etait dans le format (1,2,3)
 			return _ligneID+divider+count+divider+_obj.getTemplate().getID()+divider+_obj.parseStatsString()+divider+_price+divider+"350";//350 = temps restant
 		}
 		*/
@@ -526,15 +526,21 @@ public class AuctionHouse {
 		return toReturn;
 	}
 	
-	public void addEntry(HdvEntry toAdd)
+	public boolean addEntry(HdvEntry toAdd)
 	{
-		toAdd.setHdvID(this._hdvID);
-		int categ = toAdd.getObjet().getTemplate(false).getType();
-		int template = toAdd.getObjet().getTemplate(false).getID();
-		_categories.get(categ).addEntry(toAdd);
-		_path.put(toAdd.getLigneID(), new Couple<Integer, Integer>(categ, template));
-		
-		World.addHdvItem(toAdd.getOwner(), _hdvID, toAdd);
+		boolean succes = true;
+		try {
+			toAdd.setHdvID(this._hdvID);
+			int categ = toAdd.getObjet().getTemplate(false).getType();
+			int template = toAdd.getObjet().getTemplate(false).getID();
+			_categories.get(categ).addEntry(toAdd);
+			_path.put(toAdd.getLigneID(), new Couple<Integer, Integer>(categ, template));
+
+			World.addHdvItem(toAdd.getOwner(), _hdvID, toAdd);
+		} catch (Exception e) {
+			succes = false;
+		}
+		return succes;
 	}
 	public boolean delEntry(HdvEntry toDel)
 	{
@@ -561,7 +567,7 @@ public class AuctionHouse {
 			
 			HdvEntry toBuy = ligne.doYouHave(amount, price);
 			
-			newOwner.addKamas(price * -1);//Retire l'argent à l'acheteur (prix et taxe de vente)
+			newOwner.addKamas(price * -1);//Retire l'argent Ã  l'acheteur (prix et taxe de vente)
 			
 			if(toBuy.getOwner() != -1)
 			{
@@ -573,7 +579,7 @@ public class AuctionHouse {
 			}
 			SocketManager.GAME_SEND_STATS_PACKET(newOwner);//Met a jour les kamas de l'acheteur
 			
-			newOwner.addObjet(toBuy.getObjet(), true);//Ajoute l'objet au nouveau propriétaire
+			newOwner.addObjet(toBuy.getObjet(), true);//Ajoute l'objet au nouveau propriÃ©taire
 			toBuy.getObjet().getTemplate(false).newSold(toBuy.getAmount(true),price);//Ajoute la ventes au statistiques
 			
 			delEntry(toBuy);//Retire l'item de l'HDV ainsi que de la liste du vendeur
