@@ -9,6 +9,7 @@ import org.area.client.Player;
 import org.area.common.*;
 import org.area.exchange.ExchangeClient;
 import org.area.game.GameServer.SaveThread;
+import org.area.game.GameThread;
 import org.area.kernel.Config;
 import org.area.kernel.Console.Color;
 
@@ -103,8 +104,19 @@ public class ConsoleInputAnalyzer implements Runnable {
                 sendInfo("Debug desactive !");
             }
 
+        } else if (fct.equals("COMBATSACTIFS")) {
+            int nombreCombats = 0;
+            for (GameThread GT : Main.gameServer.getClients()) {
+                try {
+                    Player p = GT.getPlayer();
+                    if (p.getFight() != null) {
+                        nombreCombats++;
+                    }
+                } catch (Exception e) {
+                }
+                sendInfo("Nombre de personnes en combat : " + nombreCombats);
+            }
         } else if (fct.equals("TOOGLE_LOG")) {
-
             Config.LOGS = !Config.LOGS;
             if (Config.LOGS) {
                 sendInfo("Log active !");

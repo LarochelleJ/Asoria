@@ -1040,10 +1040,11 @@ public class GameThread implements Runnable {
         if (player.get_guild() == null || player.getFight() != null
                 || player.is_away())
             return;
-        if (!Config.BETA) {
-            player.sendText("Veuillez prendre note que la défense des attaques percepteurs n'a pas été complétement testé et qu'il est probable de rencontrer des bugs, n'hésitez surtout pas à nous le faire part ! :)");
-            //return;
-        }
+        /*if (!Config.BETA) {
+            //player.sendText("Veuillez prendre note que la défense des attaques percepteurs n'a pas été complétement testé et qu'il est probable de rencontrer des bugs, n'hésitez surtout pas à nous le faire part ! :)");
+            player.sendText("La pose perco est désactivé temporairement !");
+            return;
+        }*/
         short mapID = player.getMap().get_id();
         List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018);
         if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108 || mapID >= 13120 && mapID <= 13125) { // Map interdite pour la pose

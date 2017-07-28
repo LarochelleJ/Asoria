@@ -143,6 +143,9 @@ public class Fight {
     //Variables
     private byte _affectedTarget;
     private int _spellCastDelay;
+    // Formules xp
+    public int _lvlWinners = 0;
+    public int _lvlMax = 0;
 
     //Methodes
     public void setAffectedTarget(byte target) {
@@ -799,6 +802,12 @@ public class Fight {
         }
 
         if (_type == Constant.FIGHT_TYPE_PVM) {
+            // Formules xp pvm - variables
+            for (Fighter entry : _team0.values()) {
+                _lvlWinners += entry.get_lvl();
+                if (entry.get_lvl() > _lvlMax)
+                    _lvlMax = entry.get_lvl();
+            }
             for (Fighter f : getAllFighters()) {
                 if (f.getType() == 2) { // C'est un mob
                     if (f.getMob().getSpells().containsKey(4102)) {
@@ -941,7 +950,7 @@ public class Fight {
                 continue;
             _raulebaque.put(F.getGUID(), F.get_fightCell());
         }
-		/*startTurn();
+        /*startTurn();
 
 		for(Fighter F : getFighters(3)){
 			if (F == null)
@@ -1081,7 +1090,7 @@ public class Fight {
         SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(this, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN);
         scheduleTimer(45, true);
         GameServer.addToLog("(scheduledTime) startTurn():" + _curPlayer);
-		/*}else{
+        /*}else{
 		getTurnTimer().restart();
 		try {
 			Thread.sleep(650);
@@ -3151,13 +3160,26 @@ public class Fight {
 
             if (type == Constant.FIGHT_TYPE_CHALLENGE) {
                 if (i.isInvocation() && i.getMob() != null && i.getMob().getTemplate().getID() != 285) continue;
-                long winxp = Formulas.getXpWinPvm2(i, TEAM1, TEAM2, totalXP);
+                boolean canDropAndXp = true;
+                if (_type == Constant.FIGHT_TYPE_PVT) {
+                    if (i.isPerco()) {
+                        canDropAndXp = false;
+                    } else {
+                        Collector perco = Collector.GetPercoByMapID(_map.get_id());
+                        if (perco != null && i.getPersonnage() != null) {
+                            if (perco.GetPercoGuildID() == i.getPersonnage().get_guild().get_id()) { // Les défenseurs et le perco n'a pas de gains en défense perco
+                                canDropAndXp = false;
+                            }
+                        }
+                    }
+                }
+                long winxp = Formulas.getXpWinPvm2(i, TEAM1, TEAM2, totalXP, this);
                 AtomicReference<Long> XP = new AtomicReference<Long>();
                 XP.set(winxp);
-                long guildxp = Formulas.getGuildXpWin(i, XP);
+                long guildxp = canDropAndXp ? Formulas.getGuildXpWin(i, XP) : 0;
                 long mountxp = 0;
 
-                if (i.getPersonnage() != null && i.getPersonnage().isOnMount()) {
+                if (i.getPersonnage() != null && i.getPersonnage().isOnMount() && canDropAndXp) {
                     mountxp = Formulas.getMountXpWin(i, XP);
                     i.getPersonnage().getMount().addXp(mountxp);
                     SocketManager.GAME_SEND_Re_PACKET(i.getPersonnage(), "+", i.getPersonnage().getMount());
@@ -3198,7 +3220,7 @@ public class Fight {
                 Map<Integer, Integer> itemWon = new TreeMap<Integer, Integer>();
                 int PP = i.getTotalStats().getEffect(Constant.STATS_ADD_PROS);
                 boolean allIsDropped = false;
-                while (!allIsDropped) {
+                while (!allIsDropped && canDropAndXp) {
                     for (Drop D : temp) {
                         int t = (int) (D.get_taux() * PP);//Permet de gerer des taux>0.01
                         t = (int) ((double) t * factChalDrop);
@@ -3243,6 +3265,10 @@ public class Fight {
                 }
                 //fin drop system
                 winxp = XP.get();
+                if (!canDropAndXp) {
+                    winxp = 0;
+                    winKamas = 0;
+                }
                 if (winxp != 0 && i.getPersonnage() != null) {
                     // Taux suppresion xp dû au prestiges @Flow
                     int tauxDiminution = Constant.obtenir_taux_xp_prestige(i.getPersonnage().getPrestige());
@@ -3458,7 +3484,7 @@ public class Fight {
                 perso.get_curCell().addPerso(perso);
             }
         }
-        if (Collector.GetPercoByMapID(_map.get_id()) != null && _type == 4)//On a un percepteur ONLY PVM ?
+        if (Collector.GetPercoByMapID(_map.get_id()) != null && _type == 4)//On a un percepteur ONLY PVM ? Drop du percepteur
         {
 
             Collector p = Collector.GetPercoByMapID(_map.get_id());
@@ -3494,10 +3520,10 @@ public class Fight {
                 }
             }
             // Drop pp
-            if (p.getNbDePierresDropTotal < 601) {
+           /* if (p.getNbDePierresDropTotal < 601) {
                 itemWon.put(470001, p.nbDePierresDrop);
                 p.getNbDePierresDropTotal += p.nbDePierresDrop;
-            }
+            }*/
             p.nbDePierresDrop = 0;
             for (Entry<Integer, Integer> entry : itemWon.entrySet()) {
                 ObjTemplate OT = World.getObjTemplate(entry.getKey());
@@ -3811,12 +3837,12 @@ public class Fight {
                 }
                 if (F.getPersonnage() == null) continue;
                 if (F.isInvocation()) continue;
-                if ((F.hasLeft() || !F.getPersonnage().isOnline()) && F.getPersonnage().getMap() == this.get_map()) {
+                if ((F.hasLeft() || !F.getPersonnage().isOnline())) {
                     F.getPersonnage().warpToSavePos();
                     continue;
                 }
 
-                if (_type != Constant.FIGHT_TYPE_CHALLENGE && F.getPersonnage().getMap() == this.get_map()) {
+                if (_type != Constant.FIGHT_TYPE_CHALLENGE) {
                     F.getPersonnage().warpToSavePos();
                     F.getPersonnage().set_PDV(1);
                 }
@@ -4126,13 +4152,15 @@ public class Fight {
             if (target.isPerco()) {
                 for (Fighter f : this.getFighters(target.getTeam2())) {
                     if (f.isDead()) continue;
-                    try{
+                    try {
                         Thread.sleep(500);
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                     this.onFighterDie(f, target);
-                    try{
+                    try {
                         Thread.sleep(1000);
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                     verifIfTeamAllDead();
                 }
             }

@@ -202,7 +202,7 @@ public class Formulas {
 				//Ajout de la resist Magique
 				resfT += targetStats.getEffect(183);
 			break;
-			case Constant.ELEMENT_AIR://agilité
+			case Constant.ELEMENT_AIR://agilitÃ©
 				statC = casterStats.getEffect(Constant.STATS_ADD_AGIL);
 				resfT = targetStats.getEffect(Constant.STATS_ADD_R_AIR);
 				respT = targetStats.getEffect(Constant.STATS_ADD_RP_AIR);
@@ -217,7 +217,7 @@ public class Formulas {
 		}
 		//On bride la resistance a 50% si c'est un joueur 
 		if(target.getMob() == null && respT >50)respT = 50;
-		/** Lol, mais qui a mis ça pour les résistances fixe XDDD | Return/Skryn annuler !
+		/** Lol, mais qui a mis Ã§a pour les rÃ©sistances fixe XDDD | Return/Skryn annuler !
 		    if(target.getMob() == null){
 			resfT = (int) Math.ceil(Manager.REDUCTION * resfT);
 		}**/
@@ -279,7 +279,7 @@ public class Formulas {
 				a = (((100+i)/100)*(j/100));
 			}
 			
-			num = a*(jet * ((100 + statC + perdomC + (multiplier*100)) / 100 ))+ domC;//dégats bruts
+			num = a*(jet * ((100 + statC + perdomC + (multiplier*100)) / 100 ))+ domC;//dÃ©gats bruts
 			
 			
 		//Poisons
@@ -362,13 +362,13 @@ public class Formulas {
 		int armor = getArmorResist(target,statID);
 		if(!isHeal)num -= armor;
 		if(!isHeal)if(armor > 0)SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 105, caster.getGUID()+"", target.getGUID()+","+armor);
-		//dégats finaux
+		//dÃ©gats finaux
 		if(num < 1)num=0;
 		
-		// Début Formule pour les MOBs
+		// DÃ©but Formule pour les MOBs
 		if(caster.getPersonnage() == null && !caster.isPerco())
 		{
-			if(caster.getMob().getTemplate().getID() == 116)//Sacrifié Dommage = PDV*2
+			if(caster.getMob().getTemplate().getID() == 116)//SacrifiÃ© Dommage = PDV*2
 			{
 				return (int)((num/25)*caster.getPDVMAX());
 			}else
@@ -402,25 +402,25 @@ public class Formulas {
 				case 1://Armure incandescente
 					//Si pas element feu, on ignore l'armure
 					if(statID != Constant.ELEMENT_FEU)continue;
-					//Les stats du féca sont prises en compte
+					//Les stats du fÃ©ca sont prises en compte
 					fighter = SE.getCaster();
 				break;
 				case 6://Armure Terrestre
 					//Si pas element terre/neutre, on ignore l'armure
 					if(statID != Constant.ELEMENT_TERRE && statID != Constant.ELEMENT_NEUTRE)continue;
-					//Les stats du féca sont prises en compte
+					//Les stats du fÃ©ca sont prises en compte
 					fighter = SE.getCaster();
 				break;
 				case 14://Armure Venteuse
 					//Si pas element air, on ignore l'armure
 					if(statID != Constant.ELEMENT_AIR)continue;
-					//Les stats du féca sont prises en compte
+					//Les stats du fÃ©ca sont prises en compte
 					fighter = SE.getCaster();
 				break;
 				case 18://Armure aqueuse
 					//Si pas element eau, on ignore l'armure
 					if(statID != Constant.ELEMENT_EAU)continue;
-					//Les stats du féca sont prises en compte
+					//Les stats du fÃ©ca sont prises en compte
 					fighter = SE.getCaster();
 				break;
 				
@@ -569,7 +569,7 @@ public class Formulas {
 			return xpWin;	
 	}
 	
-	public static long getXpWinPvm2(Fighter perso, ArrayList<Fighter> winners,ArrayList<Fighter> loosers,long groupXP) // challenge @Flow
+	public static long getXpWinPvm2(Fighter perso, ArrayList<Fighter> winners,ArrayList<Fighter> loosers,long groupXP, Fight fight) // challenge @Flow
 	{
 		if(perso.getPersonnage()== null)return 0;
 		if(winners.contains(perso))//Si winner
@@ -578,12 +578,12 @@ public class Formulas {
 			float coef = (sag + 100)/100;
 			int taux = Config.RATE_PVM;
 			long xpWin = 0;
-			int lvlmax = 0;
-			for(Fighter entry : winners)
+			int lvlmax = fight._lvlMax;
+			/*for(Fighter entry : winners)
 			{
 				if(entry.get_lvl() > lvlmax)
 					lvlmax = entry.get_lvl();
-			}
+			}*/
 			int nbbonus = 0;
 			for(Fighter entry : winners)
 			{
@@ -610,9 +610,9 @@ public class Formulas {
 			int lvlLoosers = 0;
 			for(Fighter entry : loosers)
 				lvlLoosers += entry.get_lvl();
-			int lvlWinners = 0;
-			for(Fighter entry : winners)
-				lvlWinners += entry.get_lvl();
+			int lvlWinners = fight._lvlWinners;
+			/*for(Fighter entry : winners)
+				lvlWinners += entry.get_lvl();*/
 			double rapport = 1+((double)lvlLoosers/(double)lvlWinners);
 			if (rapport <= 1.3)
 				rapport = 1.3;
@@ -640,7 +640,7 @@ public class Formulas {
 		}
 		return 0;
 	}
-	public static int getPros(Fighter perso) // @Flow - On récupère juste la prospection finalement
+	public static int getPros(Fighter perso) // @Flow - On rÃ©cupÃ¨re juste la prospection finalement
 	{
 		int sag = perso.getTotalStats().getEffect(Constant.STATS_ADD_PROS);
 	 
@@ -671,7 +671,7 @@ public class Formulas {
 		return 0;
 	}
 	
-	public static long getXpWinPvm(Fighter perso, ArrayList<Fighter> team,ArrayList<Fighter> loose, long groupXP) // non utilisé @Flow
+	public static long getXpWinPvm(Fighter perso, ArrayList<Fighter> team,ArrayList<Fighter> loose, long groupXP) // non utilisÃ© @Flow
 	{
 		//int lvlwin = 0;
 		//for(Fighter entry : team)lvlwin += entry.get_lvl();
@@ -733,12 +733,12 @@ public class Formulas {
 		
 		double xp = (double)xpWin.get(), Lvl = perso.get_lvl(),LvlGuild = perso.getPersonnage().get_guild().get_lvl(),pXpGive = (double)gm.getPXpGive()/100;
 		
-		double maxP = xp * pXpGive * 0.10;	//Le maximum donné à la guilde est 10% du montant prélevé sur l'xp du combat
-		double diff = Math.abs(Lvl - LvlGuild);	//Calcul l'écart entre le niveau du personnage et le niveau de la guilde
+		double maxP = xp * pXpGive * 0.10;	//Le maximum donnÃ© Ã  la guilde est 10% du montant prÃ©levÃ© sur l'xp du combat
+		double diff = Math.abs(Lvl - LvlGuild);	//Calcul l'Ã©cart entre le niveau du personnage et le niveau de la guilde
 		double toGuild;
 		if(diff >= 70)
 		{
-			toGuild = maxP * 0.10;	//Si l'écart entre les deux level est de 70 ou plus, l'experience donnée a la guilde est de 10% la valeur maximum de don
+			toGuild = maxP * 0.10;	//Si l'Ã©cart entre les deux level est de 70 ou plus, l'experience donnÃ©e a la guilde est de 10% la valeur maximum de don
 		}
 		else if(diff >= 31 && diff <= 69)
 		{
@@ -748,7 +748,7 @@ public class Formulas {
 		{
 			toGuild = maxP - ((maxP * 0.20) * (Math.floor(diff/10))) ;
 		}
-		else	//Si la différence est [0,9]
+		else	//Si la diffÃ©rence est [0,9]
 		{
 			toGuild = maxP;
 		}
