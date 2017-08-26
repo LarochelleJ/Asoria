@@ -2169,7 +2169,7 @@ public class Fight {
                 GameServer.addToLog(fighter.getPacketsName() + " tentative de lancer le sort " + Spell.getSpellID() + " sur la case " + caseID);
             _curFighterPA -= Spell.getPACost(fighter);
             _curFighterUsedPA += Spell.getPACost(fighter);
-            SocketManager.GAME_SEND_GAS_PACKET_TO_FIGHT(this, 7, fighter.getGUID());
+            //SocketManager.GAME_SEND_GAS_PACKET_TO_FIGHT(this, 7, fighter.getGUID()); @Flow - Pas utile je crois
             boolean isEc = Spell.getTauxEC() != 0 && Formulas.getRandomValue(1, Spell.getTauxEC()) == Spell.getTauxEC();
             if (isEc) {
                 if (Config.DEBUG)
@@ -3625,7 +3625,7 @@ public class Fight {
             this._init0.getPersonnage().getMap().removeFight(this._id);
 
             try {
-                this.sendGE(winner); // Envoi des statistiques de fin de combat
+               // this.sendGE(winner); // Envoi des statistiques de fin de combat
             } catch (Exception e) {
             }
 
@@ -3776,7 +3776,7 @@ public class Fight {
                 }
                 ;
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
-                    F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
+                    //F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
                 }
 
                 final Player player = F.getPersonnage();
@@ -3784,7 +3784,7 @@ public class Fight {
                     public void run() {
                         player.mettreCombatBloque(false);
                         if (_type != Constant.FIGHT_TYPE_PVT) {
-                            player.refreshMapAfterFight();
+                            //player.refreshMapAfterFight();
                         }
                     }
                 }, 200, TimeUnit.MILLISECONDS);

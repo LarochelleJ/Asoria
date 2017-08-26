@@ -244,9 +244,10 @@ public class Mount {
 
 	public boolean isMountable()
 	{
-		if(_energie <10
+		/*if(_energie <10
 		|| _maturite < getMaxMatu()
 		|| _fatigue == 240)return false;
+		return true;*/
 		return true;
 	}
 

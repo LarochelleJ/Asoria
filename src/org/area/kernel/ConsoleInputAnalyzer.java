@@ -114,8 +114,8 @@ public class ConsoleInputAnalyzer implements Runnable {
                     }
                 } catch (Exception e) {
                 }
-                sendInfo("Nombre de personnes en combat : " + nombreCombats);
             }
+            sendInfo("Nombre de personnes en combat : " + nombreCombats);
         } else if (fct.equals("TOOGLE_LOG")) {
             Config.LOGS = !Config.LOGS;
             if (Config.LOGS) {
