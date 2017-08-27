@@ -990,12 +990,12 @@ public class SocketManager {
         String packet = "GA;" + actionID + ";" + s1;
         if (!s2.equals(""))
             packet += ";" + s2;
-        if (actionID == 100) {
+        /*if (actionID == 100) {
             try {
                 Thread.sleep(75);
             } catch (Exception e) {
             }
-        }
+        }*/
         for (Fighter f : fight.getFighters(teams)) {
             if (f.hasLeft()) continue;
             if (f.getPersonnage() == null || !f.getPersonnage().isOnline()) continue;

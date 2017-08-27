@@ -5657,7 +5657,7 @@ public class GameThread implements Runnable {
 
     private void Basic_send_Date_Hour() {
         SocketManager.GAME_SEND_SERVER_DATE(out);
-        SocketManager.GAME_SEND_SERVER_HOUR(out);
+        //SocketManager.GAME_SEND_SERVER_HOUR(out);
     }
 
     private void Basic_infosmessage(String packet) {

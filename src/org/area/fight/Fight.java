@@ -2162,14 +2162,15 @@ public class Fight {
         }
         if (CanCastSpell(fighter, Spell, Cell, -1) != false) // @Flow, ça foire ici. #Fixé
         {
-            if (fighter.getPersonnage() != null)
+            if (fighter.getPersonnage() != null) {
                 SocketManager.GAME_SEND_STATS_PACKET(fighter.getPersonnage());
+            }
 
             if (Config.DEBUG)
                 GameServer.addToLog(fighter.getPacketsName() + " tentative de lancer le sort " + Spell.getSpellID() + " sur la case " + caseID);
             _curFighterPA -= Spell.getPACost(fighter);
             _curFighterUsedPA += Spell.getPACost(fighter);
-            //SocketManager.GAME_SEND_GAS_PACKET_TO_FIGHT(this, 7, fighter.getGUID()); @Flow - Pas utile je crois
+            SocketManager.GAME_SEND_GAS_PACKET_TO_FIGHT(this, 7, fighter.getGUID());
             boolean isEc = Spell.getTauxEC() != 0 && Formulas.getRandomValue(1, Spell.getTauxEC()) == Spell.getTauxEC();
             if (isEc) {
                 if (Config.DEBUG)
@@ -2216,7 +2217,7 @@ public class Fight {
             //Refresh des Stats
             //refreshCurPlayerInfos();
             if (!isEc) fighter.addLaunchedSort(Cell.getFirstFighter(), Spell);
-            //fighter.addLaunchedSort(Cell.getFirstFighter(),Spell);
+            fighter.addLaunchedSort(Cell.getFirstFighter(),Spell);
             if (Spell.getSpellID() == 696) // @Flow - Si c'est le sort Chamrak on temporise
             {
                 addSpellCastDelay(2000);
@@ -3596,7 +3597,7 @@ public class Fight {
                 break;
             }
         }
-        if ((team0 || team1 || !verifyStillInFight()) && eventFinish()) {
+        if ((team0 || team1 || !verifyStillInFight()) && eventFinish()) { // Fin du combat
             try {
                 if ((this._type == 4) && (this._challenges.size() > 0)) {
                     for (Entry<Integer, Challenge> c : this._challenges.entrySet()) {
@@ -3625,7 +3626,7 @@ public class Fight {
             this._init0.getPersonnage().getMap().removeFight(this._id);
 
             try {
-               // this.sendGE(winner); // Envoi des statistiques de fin de combat
+               this.sendGE(winner); // Envoi des statistiques de fin de combat
             } catch (Exception e) {
             }
 
@@ -3774,9 +3775,15 @@ public class Fight {
 
                 } catch (Exception E) {
                 }
-                ;
+
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
-                    //F.getPersonnage().getMap().applyEndFightAction(_type, F.getPersonnage());
+                    final Player p = F.getPersonnage();
+                    final Maps map = p.getMap();
+                    GameServer.fightExecutor.schedule(new Runnable() {
+                        public void run() {
+                            map.applyEndFightAction(_type, p);
+                        }
+                    }, 2500, TimeUnit.MILLISECONDS); // Le temps que le client traite le packet GE et qu'il allège sa charge
                 }
 
                 final Player player = F.getPersonnage();
