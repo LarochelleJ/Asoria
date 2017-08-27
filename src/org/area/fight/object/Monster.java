@@ -65,7 +65,7 @@ public class Monster
 		{
 			id = Aid;
 			align = Aalign;
-			//Détermination du nombre de mob du groupe
+			//Dï¿½termination du nombre de mob du groupe
 			_creationDate = System.currentTimeMillis();
 
 			int rand = 0;
@@ -161,7 +161,7 @@ public class Monster
 						nbr = 8;
 					break;
 			}
-			//On vérifie qu'il existe des monstres de l'alignement demandé pour éviter les boucles infinies
+			//On vï¿½rifie qu'il existe des monstres de l'alignement demandï¿½ pour ï¿½viter les boucles infinies
 			boolean haveSameAlign = false;
 			for(MobGrade mob : possibles)
 			{
@@ -333,7 +333,7 @@ public class Monster
 			players.add(player);
 			XP_SHOW = Formulas.getXpWinPvm2ParseMob(player, players, _Mobs, xp); //Xp en solo
 			GROUPXP_SHOW += GROUPXP_SHOW * getStarBonus() / 100; //Ajout des bonus
-		    XP_SHOW += XP_SHOW * getStarBonus() / 100; //Des étoiles
+		    XP_SHOW += XP_SHOW * getStarBonus() / 100; //Des ï¿½toiles
 		    if (player != null && XP_SHOW > 0 && player.getLevel() < World.getExpLevelSize()) {
 			    long actualXpLevel = World.getPersoXpMax(player.getLevel()) - World.getPersoXpMax(player.getLevel()-1);
 			    int levelUp = 0;
@@ -460,7 +460,7 @@ public class Monster
 		public void setShutStars(boolean shutOrUp) {
 			shutStars = shutOrUp;
 		}	
-		// méthode utilisée pour avoir le bonus en étoiles
+		// mï¿½thode utilisï¿½e pour avoir le bonus en ï¿½toiles
 		public int getStarBonus() {
 			int max = Config.CONFIG_BONUS_MAX;
 			int toReturn = (int)get_timeElapsedInSeconds()/Config.CONFIG_SECONDS_FOR_BONUS;

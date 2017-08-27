@@ -2217,7 +2217,7 @@ public class Fight {
             //Refresh des Stats
             //refreshCurPlayerInfos();
             if (!isEc) fighter.addLaunchedSort(Cell.getFirstFighter(), Spell);
-            fighter.addLaunchedSort(Cell.getFirstFighter(),Spell);
+            //fighter.addLaunchedSort(Cell.getFirstFighter(),Spell);
             if (Spell.getSpellID() == 696) // @Flow - Si c'est le sort Chamrak on temporise
             {
                 addSpellCastDelay(2000);
@@ -3791,7 +3791,7 @@ public class Fight {
                     public void run() {
                         player.mettreCombatBloque(false);
                         if (_type != Constant.FIGHT_TYPE_PVT) {
-                            //player.refreshMapAfterFight();
+                            player.refreshMapAfterFight();
                         }
                     }
                 }, 200, TimeUnit.MILLISECONDS);
