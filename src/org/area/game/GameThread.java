@@ -2006,9 +2006,9 @@ public class GameThread implements Runnable {
                         SocketManager.GAME_SEND_PF(T, "+" + P2.getGuid());
                         T._Follows = P2;
                         if (T.getMap().get_id() == P2.getMap().get_id()) {
-                            if (false && T.getAccount().getCurIp().equalsIgnoreCase(P2.getAccount().getCurIp())) {
+                            if (T.getAccount().getCurIp().equalsIgnoreCase(P2.getAccount().getCurIp())) {
                                 P2.playerWhoFollowMe.add(T);
-                                T.sendText("Vous suivez désormais les pas de " + P2.getName() + " !");
+                                T.sendText("Vous suivez désormais les pas de " + P2.getName() + " ! Notez que cette fonctionnalité est en période de test et nous ne sommes pas responsables des bugs");
                             }
                         }
 

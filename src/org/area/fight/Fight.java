@@ -3777,13 +3777,15 @@ public class Fight {
                 }
 
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
-                    final Player p = F.getPersonnage();
-                    final Maps map = p.getMap();
-                    GameServer.fightExecutor.schedule(new Runnable() {
-                        public void run() {
-                            map.applyEndFightAction(_type, p);
+                    final Maps map = F.getPersonnage().getMap();
+                    final int fightType = _type;
+                    if (F.getPersonnage()._Follows != null) {
+                        if (!F.getPersonnage()._Follows.playerWhoFollowMe.contains(F.getPersonnage())) {
+                            F.getPersonnage().scheduleEndFighActions(map, fightType);
                         }
-                    }, 2500, TimeUnit.MILLISECONDS); // Le temps que le client traite le packet GE et qu'il allège sa charge
+                    } else {
+                        F.getPersonnage().scheduleEndFighActions(map, fightType);
+                    }
                 }
 
                 final Player player = F.getPersonnage();
@@ -4580,9 +4582,10 @@ public class Fight {
                 GameServer.addToLog(perso.getName() + " a quitter le combat");
             }
         }
-
         if (F != null && !F.hasLeft()) {
-
+            if (!F.getPersonnage().playerWhoFollowMe.isEmpty()) {
+                F.getPersonnage().playerWhoFollowMe.clear();
+            }
             switch (_type) {
                 case Constant.FIGHT_TYPE_CHALLENGE://Défie
                 case Constant.FIGHT_TYPE_AGRESSION://PVP

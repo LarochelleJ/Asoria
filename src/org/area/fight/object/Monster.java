@@ -405,7 +405,8 @@ public class Monster
 		    }
 		    	
 			toreturn.append("+").append(cellID).append(";").append(orientation).append(";");
-			toreturn.append(getStarBonus());
+			//toreturn.append(getStarBonus());
+			toreturn.append("100");
 			colors.append("|SHOWXP|" + XP_SHOW2);//Solo
 			colors.append("|GSHOWXP|" + GROUPX_SHOW2);//Group
 			toreturn.append(";").append(id).append(";").append(mobIDs).append(";-3;").append(mobGFX).append(";").append(mobLevels).append(";").append(colors);

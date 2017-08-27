@@ -19,6 +19,7 @@ import org.area.fight.object.Monster.MobGrade;
 import org.area.game.GameServer;
 import org.area.kernel.Config;
 import org.area.object.Guild;
+import org.area.object.Maps;
 import org.area.object.Maps.Case;
 import org.area.spell.SpellEffect;
 import org.area.spell.Spell.SortStats;

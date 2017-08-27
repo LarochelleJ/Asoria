@@ -1252,6 +1252,19 @@ public class Player {
         return _curCarte;
     }
 
+    public void scheduleEndFighActions(final Maps map, final int _type) {
+        final Player p = this;
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        map.applyEndFightAction(_type, p);
+                    }
+                },
+                2500 // Le temps que le client traite le packet GE et qu'il allège sa charge
+        );
+    }
+
     public String getName() {
         return _name;
     }
@@ -1983,7 +1996,7 @@ public class Player {
         total = Stats.cumulStat(total, getDonsStats());
         if (_fight != null) {
             if (_fight.get_type() == Constant.FIGHT_TYPE_AGRESSION || _fight.get_type() == Constant.FIGHT_TYPE_PVT || _fight.get_type() == Constant.FIGHT_TYPE_CHALLENGE || _fight.get_type() == Constant.FIGHT_TYPE_CONQUETE) {
-				/*if((getPvpMod() == 1)) {	// Mode Hardcore
+                /*if((getPvpMod() == 1)) {	// Mode Hardcore
 					if(!_fight.isFightStarted()) {
 						try
 						{
@@ -2055,7 +2068,7 @@ public class Player {
                 }
 
                 if (bonusProspection > 0) {
-                    int prospectionEnBonus = (bonusProspection/100) * total.getEffect(Constant.STATS_ADD_PROS);
+                    int prospectionEnBonus = (bonusProspection / 100) * total.getEffect(Constant.STATS_ADD_PROS);
                     total.addOneStat(Constant.STATS_ADD_PROS, prospectionEnBonus);
                 }
 

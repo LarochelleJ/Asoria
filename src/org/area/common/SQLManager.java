@@ -34,6 +34,7 @@ import org.area.game.tools.Util;
 import org.area.kernel.Config;
 import org.area.kernel.Console;
 import org.area.kernel.Console.Color;
+import org.area.kernel.Logs;
 import org.area.kernel.Reboot;
 import org.area.object.*;
 import org.area.object.AuctionHouse.HdvEntry;
@@ -2283,7 +2284,7 @@ public class SQLManager {
             RS.getStatement().close();
             RS.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logs.addToDebug(e.toString());
         }
 
         return player;

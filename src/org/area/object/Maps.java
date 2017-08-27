@@ -1774,11 +1774,15 @@ public class Maps {
                         return;
                     }
                     GameServer.addToLog(perso.getName() + " lance un combat contre le groupe " + group.getID() + " sur la map " + _id);
-                    startFigthVersusMonstres(perso, group);
+                    if ((perso._Follows != null && !perso._Follows.playerWhoFollowMe.contains(perso)) || perso._Follows == null) {
+                        startFigthVersusMonstres(perso, group);
+                    }
                     Fight f = perso.getFight();
                     if (f != null) {
                         for (Player followMe : perso.playerWhoFollowMe) {
-                            f.joinFight(followMe, perso.getGuid());
+                            if (followMe.getMap().get_id() == f.get_map().get_id()) {
+                                f.joinFight(followMe, perso.getGuid());
+                            }
                         }
                     }
                     return;
