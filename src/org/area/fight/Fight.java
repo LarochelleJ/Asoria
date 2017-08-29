@@ -1589,16 +1589,17 @@ public class Fight {
         SocketManager.GAME_SEND_MAP_FIGHT_GMS_PACKETS(this, _map, perso);
     }
 
-    public void joinFight(Player perso, int guid) {
+    public boolean joinFight(Player perso, int guid) {
+        boolean aRejoinsLeCombat = false;
         if (_state == Constant.FIGHT_STATE_ACTIVE || _state == Constant.FIGHT_STATE_FINISHED) {
             perso.getAccount().getGameThread().kick();
-            return;
+            return false;
         }
         Fighter current_Join = null;
         if (_team0.containsKey(guid)) {
             Case cell = getRandomCell(_start0);
             if (cell == null) {
-                return;
+                return false;
             }
 
             if (onlyGroup0) {
@@ -1606,29 +1607,29 @@ public class Fight {
                 if (g != null) {
                     if (!g.getPlayers().contains(perso)) {
                         SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                        return;
+                        return false;
                     }
                 }
             }
             if (_type == Constant.FIGHT_TYPE_AGRESSION || _type == Constant.FIGHT_TYPE_CONQUETE) {
                 if (perso.get_align() == Constant.ALIGNEMENT_NEUTRE) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                    return;
+                    return false;
                 }
                 if (_init0.getPersonnage().get_align() != perso.get_align()) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                    return;
+                    return false;
                 }
             }
             if (_guildID > -1 && perso.get_guild() != null) {
                 if (get_guildID() == perso.get_guild().get_id()) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                    return;
+                    return false;
                 }
             }
             if (locked0) {
                 SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                return;
+                return false;
             }
             if (_type == Constant.FIGHT_TYPE_CHALLENGE) {
                 if (perso.getArena() != -1 || (perso.getKolizeum() != null && perso.getKolizeum().isStarted()))
@@ -1654,13 +1655,14 @@ public class Fight {
             perso.set_fight(this);
             f.set_fightCell(cell);
             f.get_fightCell().addFighter(f);
+            aRejoinsLeCombat = true;
             //Désactive le timer de regen
             SocketManager.GAME_SEND_ILF_PACKET(perso, 0);
         } else if (_team1.containsKey(guid)) {
             Case cell = getRandomCell(_start1);
             if (cell == null) {
                 perso.sendText("Grosse merde #2");
-                return;
+                return false;
             }
 
             if (onlyGroup1) {
@@ -1668,40 +1670,40 @@ public class Fight {
                 if (g != null) {
                     if (!g.getPlayers().contains(perso)) {
                         SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                        return;
+                        return false;
                     }
                 }
             }
             if (_type == Constant.FIGHT_TYPE_AGRESSION) {
                 if (perso.get_align() == Constant.ALIGNEMENT_NEUTRE) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                    return;
+                    return false;
                 }
                 if (_init1.getPersonnage().get_align() != perso.get_align()) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                    return;
+                    return false;
                 }
             }
             if (_type == Constant.FIGHT_TYPE_CONQUETE) {
                 if (perso.get_align() == Constant.ALIGNEMENT_NEUTRE) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'a', guid);
-                    return;
+                    return false;
                 }
                 if (_init1.getPrisme().getalignement() != perso.get_align()) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'a', guid);
-                    return;
+                    return false;
                 }
                 perso.toggleWings('+');
             }
             if (_guildID > -1 && perso.get_guild() != null) {
                 if (get_guildID() == perso.get_guild().get_id()) {
                     SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                    return;
+                    return false;
                 }
             }
             if (locked1) {
                 SocketManager.GAME_SEND_GA903_ERROR_PACKET(perso.getAccount().getGameThread().getOut(), 'f', guid);
-                return;
+                return false;
             }
             if (_type == Constant.FIGHT_TYPE_CHALLENGE) {
                 if (perso.getArena() != -1 || (perso.getKolizeum() != null && perso.getKolizeum().isStarted()))
@@ -1722,6 +1724,7 @@ public class Fight {
             perso.set_fight(this);
             f.set_fightCell(cell);
             f.get_fightCell().addFighter(f);
+            aRejoinsLeCombat = true;
         }
         perso.get_curCell().removePlayer(perso.getGuid());
         SocketManager.GAME_SEND_ADD_IN_TEAM_PACKET_TO_MAP(perso.getMap(), (current_Join.getTeam() == 0 ? _init0 : _init1).getGUID(), current_Join);
@@ -1744,6 +1747,7 @@ public class Fight {
                 Prism.parseAttack(perso);
             }
         }
+        return aRejoinsLeCombat;
     }
 
     public void joinPrismeFight(final Player perso, int id, final int PrismeID) {
@@ -3748,7 +3752,7 @@ public class Fight {
                 }
                 if (F.getPersonnage() == null) continue;
                 if (F.isInvocation()) continue;
-                if (F.hasLeft()) {
+                if (F.hasLeft() && _type != Constant.FIGHT_TYPE_PVT) {
                     F.getPersonnage().warpToSavePos();
                     continue;
                 }
@@ -3846,12 +3850,12 @@ public class Fight {
                 }
                 if (F.getPersonnage() == null) continue;
                 if (F.isInvocation()) continue;
-                if ((F.hasLeft() || !F.getPersonnage().isOnline())) {
+                if ((F.hasLeft() || !F.getPersonnage().isOnline()) && _type != Constant.FIGHT_TYPE_PVT) {
                     F.getPersonnage().warpToSavePos();
                     continue;
                 }
 
-                if (_type != Constant.FIGHT_TYPE_CHALLENGE) {
+                if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
                     F.getPersonnage().warpToSavePos();
                     F.getPersonnage().set_PDV(1);
                 }

@@ -1781,7 +1781,9 @@ public class Maps {
                     if (f != null) {
                         for (Player followMe : perso.playerWhoFollowMe) {
                             if (followMe.getMap().get_id() == f.get_map().get_id()) {
-                                f.joinFight(followMe, perso.getGuid());
+                                if (f.joinFight(followMe, perso.getGuid())) {
+                                    perso.playerWhoFightWithMe.add(followMe);
+                                }
                             }
                         }
                     }

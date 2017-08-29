@@ -307,6 +307,9 @@ public class Player {
 
     // Follow group multi
     public ArrayList<Player> playerWhoFollowMe = new ArrayList<Player>();
+    public int templateObjeRequisPourDonjon = 0;
+    public boolean endfigh = false;
+    public ArrayList<Player> playerWhoFightWithMe = new ArrayList<Player>();
 
     // Mode admin invisible
     public boolean staffInvisible = false;
@@ -1254,6 +1257,9 @@ public class Player {
 
     public void scheduleEndFighActions(final Maps map, final int _type) {
         final Player p = this;
+        if (_type == Constant.FIGHT_TYPE_PVM) { // Seulement pvm
+            p.endfigh = true;
+        }
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -2933,10 +2939,32 @@ public class Player {
         }
 
         for (Player followMe : playerWhoFollowMe) {
-            if (followMe.getFight() == null) {
-                followMe.teleport(newMapID, newCellID);
+            if (followMe.getFight() == null && followMe.getMap().get_id() == getMap().get_id()) {
+                if (templateObjeRequisPourDonjon != 0) {
+                    if (followMe.hasItemTemplate(templateObjeRequisPourDonjon, 1)) {
+                        followMe.teleport(newMapID, newCellID);
+                        followMe.removeByTemplateID(templateObjeRequisPourDonjon, 1);
+                        SocketManager.GAME_SEND_Ow_PACKET(followMe);
+                    } else { // Le personnage suiveur n'a pas l'objet
+                        SocketManager.GAME_SEND_MESSAGE(followMe, "Vous ne possedez pas l'objet necessaire : " + World.getObjTemplate(templateObjeRequisPourDonjon).getName(), "009900");
+                    }
+                } else { // Pas besoin d'objet pour tp
+                    if (endfigh) { // Vient de terminer un combat pvm, donc il se fait téléporter à la prochaine salle
+                        if (playerWhoFightWithMe.contains(followMe)) {
+                            followMe.teleport(newMapID, newCellID);
+                        } else { // Le suiveur était sur la même carte, mais n'a pas combattu
+                            SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneur a continué le donjon sans vous ! ", "009900");
+                        }
+                    } else { // Changement de carte normal
+                        followMe.teleport(newMapID, newCellID);
+                    }
+                }
             }
         }
+        endfigh = false;
+        templateObjeRequisPourDonjon = 0;
+        playerWhoFightWithMe.clear();
+
 
         _curCell.removePlayer(_GUID);
         _curCarte = World.getCarte(newMapID);
@@ -3609,6 +3637,9 @@ public class Player {
         _isAbsent = false;
         _isInvisible = false;
         _Follower.clear();
+        if (_Follows != null && _Follows.playerWhoFollowMe != null && _Follows.playerWhoFollowMe.contains(this)) {
+            _Follows.playerWhoFollowMe.remove(this);
+        }
         _Follows = null;
         _curTrunk = null;
         _curHouse = null;

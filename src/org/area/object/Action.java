@@ -426,6 +426,7 @@ public class Action {
                                 //Le perso a l'item
                                 //Le perso est sur la bonne map
                                 //On téléporte, on supprime après
+                                perso.templateObjeRequisPourDonjon = ObjetNeed;
                                 perso.teleport(newMapID, newCellID);
                                 perso.removeByTemplateID(ObjetNeed, 1);
                                 SocketManager.GAME_SEND_Ow_PACKET(perso);
@@ -434,7 +435,7 @@ public class Action {
                                 SocketManager.GAME_SEND_MESSAGE(perso, "Vous n'etes pas sur la bonne map du donjon pour etre teleporter.", "009900");
                             } else {
                                 //Le perso ne possède pas l'item
-                                SocketManager.GAME_SEND_MESSAGE(perso, "Vous ne possedez pas l'objet necessaire.", "009900"); // Je voudrais modifier "clef" par le nom de l'item en question, tu sais comment faire ? je regarde vite fais
+                                SocketManager.GAME_SEND_MESSAGE(perso, "Vous ne possedez pas l'objet necessaire : " + World.getObjTemplate(ObjetNeed).getName(), "009900");
                             }
                         }
                     }

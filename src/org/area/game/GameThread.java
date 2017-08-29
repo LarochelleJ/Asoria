@@ -1828,6 +1828,9 @@ public class GameThread implements Runnable {
                     Wife._Follower.put(player.getGuid(), player);
                 } else {// On arrete de suivre
                     SocketManager.GAME_SEND_DELETE_FLAG_PACKET(player);
+                    if (player._Follows != null && player._Follows.playerWhoFollowMe != null && player._Follows.playerWhoFollowMe.contains(player)) {
+                        player._Follows.playerWhoFollowMe.remove(player);
+                    }
                     player._Follows = null;
                     Wife._Follower.remove(player.getGuid());
                 }
@@ -1963,6 +1966,9 @@ public class GameThread implements Runnable {
                 {
                     SocketManager.GAME_SEND_DELETE_FLAG_PACKET(player);
                     SocketManager.GAME_SEND_PF(player, "-");
+                    if (player._Follows != null && player._Follows.playerWhoFollowMe != null && player._Follows.playerWhoFollowMe.contains(player)) {
+                        player._Follows.playerWhoFollowMe.remove(player);
+                    }
                     player._Follows = null;
                     P._Follower.remove(player.getGuid());
                 }
@@ -5781,6 +5787,11 @@ public class GameThread implements Runnable {
         if (player.getFight().get_state() != Constant.FIGHT_STATE_PLACE)
             return;
         player.set_ready(packet.substring(2).equalsIgnoreCase("1"));
+        if (!player.playerWhoFightWithMe.isEmpty()) {
+            for (Player p : player.playerWhoFightWithMe) {
+                p.set_ready(packet.substring(2).equalsIgnoreCase("1"));
+            }
+        }
         player.getFight().verifIfAllReady();
         SocketManager.GAME_SEND_FIGHT_PLAYER_READY_TO_FIGHT(player.getFight(),
                 3, player.getGuid(), packet.substring(2).equalsIgnoreCase("1"));
@@ -6668,7 +6679,9 @@ public class GameThread implements Runnable {
             ArrayList<Player> removeList = new ArrayList<Player>();
             for (Player followMe : player.playerWhoFollowMe) {
                 if (followMe.getMap().get_id() != player.getMap().get_id()) {
-                    followMe.sendText("Vous ne suivez plus les pas de " + player.getName() + " !");
+                    SocketManager.GAME_SEND_MESSAGE(followMe, "Vous ne suivez plus les pas de " + player.getName() + " !", "009900");
+                    SocketManager.GAME_SEND_DELETE_FLAG_PACKET(followMe);
+                    SocketManager.GAME_SEND_PF(followMe, "-");
                     removeList.add(followMe);
                 } else {
                     followMe.getAccount().getGameThread().movePlayer(path, GA);

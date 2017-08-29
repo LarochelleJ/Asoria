@@ -303,8 +303,13 @@ public class Account {
             SQLManager.SETOFFLINE(getGuid());
             resetAllChars(true);
             SQLManager.UPDATE_ACCOUNT_DATA(this);
-            for (Player character : this.players.values())
-                SQLManager.SAVE_PERSONNAGE(character, true);
+            for (Player player : this.players.values()) {
+                if (player._Follows != null && player._Follows.playerWhoFollowMe != null && player._Follows.playerWhoFollowMe.contains(player)) {
+                    player._Follows.playerWhoFollowMe.remove(player);
+                }
+                player.playerWhoFollowMe.clear();
+                SQLManager.SAVE_PERSONNAGE(player, true);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
