@@ -208,6 +208,7 @@ public class Collector {
         } else {
             if (fight == 0) {
                 for (Player perso : defenseurs) {
+                    perso.endfigh = true;
                     SocketManager.GAME_SEND_gITP_PACKET(perso, parseRemoveDefenseurToGuild(perso));
                     if (perso.getFight() == get_fight()) { // Toujours dans le combat du perco
                         perso.teleport(perso.getLastMapID(), perso.getLastCellID());
@@ -228,6 +229,10 @@ public class Collector {
             if (combat != null) {
                 SocketManager.GAME_SEND_gITP_PACKET(player, parseRemoveDefenseurToGuild(player)); // Éviter la popup "vous quitter la défense.."
                 player.percoDefendre = this;
+                if (!player.playerWhoFollowMe.isEmpty()) {
+                    SocketManager.GAME_SEND_MESSAGE(player, "Vos personnages suiveurs ne vous suivront plus puisque que vous avez rejoins une défense percepteur", "009900");
+                    player.playerWhoFollowMe.clear();
+                }
                 try {
                     Thread.sleep(100); // Pour être sûr que le client a traité le packet gITP
                 } catch (Exception e) {

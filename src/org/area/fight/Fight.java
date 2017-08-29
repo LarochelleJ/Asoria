@@ -3805,7 +3805,7 @@ public class Fight {
             //Pour les perdant on TP au point de sauvegarde
             for (Fighter F : looseTeam) {
 
-                if (F._Perco != null) {
+                if (F._Perco != null) { // Défense percepteur
                     F._Perco.set_inFight((byte) 0);
                     _mapOld.RemoveNPC(F._Perco.getGuid());
                     SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(_mapOld, F._Perco.getGuid());
@@ -3862,7 +3862,9 @@ public class Fight {
                 final Player player = F.getPersonnage();
                 GameServer.fightExecutor.schedule(new Runnable() {
                     public void run() {
-                        player.refreshMapAfterFight();
+                        if (_type != Constant.FIGHT_TYPE_PVT) {
+                            player.refreshMapAfterFight();
+                        }
                         player.mettreCombatBloque(false);
                     }
                 }, 200, TimeUnit.MILLISECONDS);

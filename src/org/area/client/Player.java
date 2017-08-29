@@ -2003,7 +2003,7 @@ public class Player {
         if (_fight != null) {
             if (_fight.get_type() == Constant.FIGHT_TYPE_AGRESSION || _fight.get_type() == Constant.FIGHT_TYPE_PVT || _fight.get_type() == Constant.FIGHT_TYPE_CHALLENGE || _fight.get_type() == Constant.FIGHT_TYPE_CONQUETE) {
                 /*if((getPvpMod() == 1)) {	// Mode Hardcore
-					if(!_fight.isFightStarted()) {
+                    if(!_fight.isFightStarted()) {
 						try
 						{
 							_fight.getFighterByPerso(this).set_PDV(_fight.getFighterByPerso(this).getPDVMAX() / 2);
@@ -2953,7 +2953,7 @@ public class Player {
                         if (playerWhoFightWithMe.contains(followMe)) {
                             followMe.teleport(newMapID, newCellID);
                         } else { // Le suiveur était sur la même carte, mais n'a pas combattu
-                            SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneur a continué le donjon sans vous ! ", "009900");
+                            SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneu a continué son chemin sans vous ! ", "009900");
                         }
                     } else { // Changement de carte normal
                         followMe.teleport(newMapID, newCellID);
