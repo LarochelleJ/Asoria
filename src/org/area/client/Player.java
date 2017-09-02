@@ -1595,6 +1595,20 @@ public class Player {
             }
             Event.getDisconnectedPlayers().remove(this.getGuid());
         }
+
+        //  Nouveau joueur
+        if (isNew()) {
+            String message = "Bienvenue sur area-serveur.eu !\n\n" +
+                    "Nous tenons à nous présenter, nous pensons qu'une bonne présentation est le début d'une bonne expérience de jeu\n" +
+                    "Area est avant tout un serveur orienté PvM, l'économie du serveur repose principalement sur les pierres précieuses qui permettent d'avancer dans le jeu, les kamas eux servent plutôt pour le commerce\n" +
+                    "Dans vos débuts, vous n'aurez pas besoin de vous souciez des kamas, tous les items, à l'exception des items 2.0 et des Dofus, sont gratuits ! Nous conseillons aussi aux joueurs de jouer en équipe afin de favoriser les interactions sociales ;" +
+                    " les meilleurs joueurs sont ceux qui jouent en équipe !\n\n" +
+                    "Nous aimerions tout vous expliquer sur notre serveur, mais celui-ci est si particulier que nous pourrions prendre une bonne heure à tout vous présenter, nous vous invitons à consulter : " +
+                    "\n<A HREF=\"https://area-serveur.eu/forum/index.php?/topic/1619-guide-moi-d%C3%A9butant-le-guide-des-premiers-r%C3%A9flexes-juin-2017/\">Guide du débutant</A>" +
+            "\n\n D'autres tutoriels sont à votre dispositions sur note forum, bonne chance et bon jeu à vous ! ";
+            SocketManager.GAME_SEND_POPUP(this, message);
+            setIsNew(false);
+        }
     }
 
     public void SetSeeFriendOnline(boolean bool) {
@@ -2937,7 +2951,10 @@ public class Player {
             //SocketManager.GAME_SEND_GA2_PACKET(PW,_GUID);
             SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(_curCarte, _GUID);
         }
-
+        if (!playerWhoFollowMe.isEmpty() && !Config.MENEUR_SUIVEUR_ACTIVE) {
+            SocketManager.GAME_SEND_MESSAGE(this, "Le staff a désactivé la fonctionnalité meneur-suiveur", "009900");
+            playerWhoFollowMe.clear();
+        }
         for (Player followMe : playerWhoFollowMe) {
             if (followMe.getFight() == null && followMe.getMap().get_id() == getMap().get_id()) {
                 if (templateObjeRequisPourDonjon != 0) {
@@ -3013,10 +3030,11 @@ public class Player {
             if (!_Follower.isEmpty())//On met a jour la carte des personnages qui nous suivent
             {
                 for (Player t : _Follower.values()) {
-                    if (t.isOnline())
-                        SocketManager.GAME_SEND_FLAG_PACKET(t, this);
-                    else
+                    /*if (t.isOnline())
+                        SocketManager.GAME_SEND_FLAG_PACKET(t, this);*/
+                    if (!t._isOnline) {
                         _Follower.remove(t.getGuid());
+                    }
                 }
             }
         }

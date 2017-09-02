@@ -117,6 +117,9 @@ public class Config {
 	public static boolean ORNEMENT = false;
 	public static String ORNEMENT_EXCLUS = "";
 
+	// Fonctionnalité Meneur Suiveur
+	public static boolean MENEUR_SUIVEUR_ACTIVE = true;
+
 	/** Prestiges **/
 	public static int MAX_PRESTIGES = 15;
 	

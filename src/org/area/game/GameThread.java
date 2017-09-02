@@ -1999,6 +1999,7 @@ public class GameThread implements Runnable {
                 {
                     short mapID = P2.getMap().get_id();
                     int cellID = P2.get_curCell().getID();
+                    boolean meneur_suiveur_off = false;
                     for (Player T : g2.getPlayers()) {
                         if (T.getGuid() == P2.getGuid()) {
                             continue;
@@ -2008,17 +2009,24 @@ public class GameThread implements Runnable {
                             T._Follows.playerWhoFollowMe.remove(T);
                         }
                         T.playerWhoFollowMe.clear();
-                        SocketManager.GAME_SEND_FLAG_PACKET(T, P2);
+                        //SocketManager.GAME_SEND_FLAG_PACKET(T, P2);
                         SocketManager.GAME_SEND_PF(T, "+" + P2.getGuid());
                         T._Follows = P2;
                         if (T.getMap().get_id() == P2.getMap().get_id()) {
                             if (T.getAccount().getCurIp().equalsIgnoreCase(P2.getAccount().getCurIp())) {
-                                P2.playerWhoFollowMe.add(T);
-                                T.sendText("Vous suivez désormais les pas de " + P2.getName() + " ! Notez que cette fonctionnalité est en période de test et nous ne sommes pas responsables des bugs");
+                                if (Config.MENEUR_SUIVEUR_ACTIVE) {
+                                    P2.playerWhoFollowMe.add(T);
+                                    T.sendText("Vous suivez désormais les pas de " + P2.getName() + " ! Notez que cette fonctionnalité est en période de test et nous ne sommes pas responsables des bugs");
+                                } else {
+                                    meneur_suiveur_off = true;
+                                }
                             }
                         }
 
                         P2._Follower.put(T.getGuid(), T);
+                    }
+                    if (meneur_suiveur_off) {
+                        SocketManager.GAME_SEND_MESSAGE(player, "Le staff a désactivé la fonctionnalité meneur-suiveur", "009900");
                     }
                 } else if (packet.charAt(2) == '-')// Ne plus suivre
                 {
@@ -2336,7 +2344,7 @@ public class GameThread implements Runnable {
             return;
         }
         Console.print("\nObject use\n");
-        if (T.obtenirObjetRequisPourActions() > 0 && !player.hasItemTemplate(T.obtenirObjetRequisPourActions(),1)) {
+        if (T.obtenirObjetRequisPourActions() > 0 && !player.hasItemTemplate(T.obtenirObjetRequisPourActions(), 1)) {
             player.sendText("Vous ne possédez pas l'objet requis :" + World.getObjTemplate(T.obtenirObjetRequisPourActions()).getName() + " !");
         } else {
             T.applyAction(player, Target, guid, cellID);
@@ -5790,6 +5798,8 @@ public class GameThread implements Runnable {
         if (!player.playerWhoFightWithMe.isEmpty()) {
             for (Player p : player.playerWhoFightWithMe) {
                 p.set_ready(packet.substring(2).equalsIgnoreCase("1"));
+                SocketManager.GAME_SEND_FIGHT_PLAYER_READY_TO_FIGHT(player.getFight(),
+                        3, p.getGuid(), packet.substring(2).equalsIgnoreCase("1"));
             }
         }
         player.getFight().verifIfAllReady();
@@ -5944,36 +5954,36 @@ public class GameThread implements Runnable {
 
             SocketManager.GAME_SEND_MAP_GMS_PACKETS(this.player.getMap(),
                     this.player);
-           // debug++;
+            // debug++;
             SocketManager.GAME_SEND_MAP_MOBS_GMS_PACKETS(this.player
                             .getAccount().getGameThread().getOut(),
                     this.player.getMap(), player);
-           // debug++;
+            // debug++;
             SocketManager.GAME_SEND_MAP_NPCS_GMS_PACKETS(this.out,
                     this.player.getMap());
-           // debug++;
+            // debug++;
             SocketManager.GAME_SEND_MAP_PERCO_GMS_PACKETS(this.out,
                     this.player.getMap());
             //debug++;
 
             SocketManager.GAME_SEND_MAP_OBJECTS_GDS_PACKETS(this.out,
                     this.player.getMap());
-          //  debug++;
+            //  debug++;
             SocketManager.GAME_SEND_GDK_PACKET(this.out);
-           // debug++;
+            // debug++;
             SocketManager.GAME_SEND_MAP_FIGHT_COUNT(this.out,
                     this.player.getMap());
             //debug++;
             SocketManager.GAME_SEND_MERCHANT_LIST(player, player.getMap()
                     .get_id());
-           //debug++;
+            //debug++;
             SocketManager.SEND_GM_PRISME_TO_MAP(this.out, map);
-           // debug++;
+            // debug++;
             Fight.FightStateAddFlag(this.player.getMap(), this.player);
-           // debug++;
+            // debug++;
 
             this.player.getMap().sendFloorItems(this.player);
-           // debug++;
+            // debug++;
             try {
                 Thread.sleep(360);
             } catch (Exception e) {

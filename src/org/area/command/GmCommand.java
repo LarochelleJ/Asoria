@@ -628,6 +628,9 @@ public class GmCommand {
             target.teleport(mapID, cellID);
             String str = "Le joueur a ete teleporte";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+        } else if (command.equalsIgnoreCase("MENEUR-SUIVEUR")) {
+            Config.MENEUR_SUIVEUR_ACTIVE = !Config.MENEUR_SUIVEUR_ACTIVE;
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, Config.MENEUR_SUIVEUR_ACTIVE ? "La fonctionnalité Meneur-suiveur est activé !" : "La fonctionnalité Meneur-suiveur est désactivé !");
         } else if (command.equalsIgnoreCase("NAMEGO")) {
             Player target = World.getPersoByName(infos[1]);
             if (target == null) {
