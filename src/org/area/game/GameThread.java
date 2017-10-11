@@ -703,7 +703,7 @@ public class GameThread implements Runnable {
                     }
 
                     ObjTemplate targetItem = statsObj.getTemplate(true);
-                    ObjTemplate itemSkinVerif = skinObj.getTemplate(true);
+                    ObjTemplate itemSkinVerif = skinObj.getTemplate(false);
 
                     try {
                         if (World.EchangeItemValue(targetItem.getID()) > 0) { // Item v1
@@ -4734,6 +4734,21 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Ow_PACKET(player);
                     return;
                 }
+            } else if(idPnj == 50075){
+                int prixObj = Ints.checkedCast(prix);
+                if (!player.hasItemTemplate(895607, prixObj)) {
+                    SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de fragments provenant d'Anachore pour effectuer cet achat !");
+                    return;
+                } else {
+                    Item newObj = template.createNewItem(qua, false, -1);
+                    player.removeByTemplateID(895607, prixObj);
+                    if (player.addObjet(newObj, true))
+                        World.addObjet(newObj, true);
+                    SocketManager.GAME_SEND_BUY_OK_PACKET(out);
+                    SocketManager.GAME_SEND_STATS_PACKET(player);
+                    SocketManager.GAME_SEND_Ow_PACKET(player);
+                    return;
+                }
             } else if (player.get_kamas() < prix)// Si le joueur n'a pas assez de kamas et que le npc demande des kamas
             {
                 GameServer.addToLog(player.getName()
@@ -4948,6 +4963,9 @@ public class GameThread implements Runnable {
                         return;
                     } else if (idPnj == 21215) {
                         SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de points boutique requis");
+                        return;
+                    } else if (idPnj == 50075) {
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de fragments requis");
                         return;
                     }
                 } catch (NumberFormatException e) {
@@ -6790,9 +6808,7 @@ public class GameThread implements Runnable {
                 String reponse = split.length > 1 ? split[1] : "";
 
                 if (account.getPlayers().containsKey(GUID)) {
-                    if (account.getPlayers().get(GUID).getLevel() < 20
-                            || (account.getPlayers().get(GUID).getLevel() >= 20 && reponse
-                            .equals(account.getAnwser()))) {
+                    if (reponse.equalsIgnoreCase(account.getAnwser())) {
                         account.deletePerso(GUID);
                         SocketManager.GAME_SEND_PERSO_LIST(out,
                                 account.getPlayers());

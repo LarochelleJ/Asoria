@@ -16,6 +16,7 @@ import org.area.event.Event;
 import org.area.fight.object.Stalk;
 import org.area.game.GameThread;
 import org.area.kernel.Config;
+import org.area.kernel.Console;
 import org.area.kolizeum.Kolizeum;
 import org.area.object.AuctionHouse.HdvEntry;
 import org.area.object.Item;
@@ -57,6 +58,9 @@ public class Account {
     private int _vote;
 
     byte state;
+
+    // staff
+    public int kamasGiven = 0;
 
     public boolean isAFlooder() {
         return isAFlooder;
@@ -267,23 +271,12 @@ public class Account {
 
     public void deletePerso(int guid) {
         if (!players.containsKey(guid)) return;
-        World.deletePerso(players.get(guid));
-        players.remove(guid);
+            World.deletePerso(players.get(guid));
+            players.remove(guid);
     }
 
     public void setCurPerso(Player perso) {
         currentPlayer = perso;
-    }
-
-    public void updateInfos(int aGUID, String aName, String aPass, String aPseudo, String aQuestion, String aReponse, int aGmLvl, boolean aBanned) {
-        this._GUID = aGUID;
-        this._name = aName;
-        this._pass = aPass;
-        this._pseudo = aPseudo;
-        this._question = aQuestion;
-        this._reponse = aReponse;
-        this._gmLvl = aGmLvl;
-        this._banned = aBanned;
     }
 
     public void deconnexion() {

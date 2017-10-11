@@ -1504,7 +1504,7 @@ public class World {
 
     public static String getSousZoneStateString() {
         String data = "";
-		/* TODO: Sous Zone Alignement */
+        /* TODO: Sous Zone Alignement */
         return data;
     }
 
@@ -2036,7 +2036,7 @@ public class World {
     }
 
     public static void unloadPerso(int g) {
-        Player toRem = null;
+        Player toRem;
         synchronized (getPersos()) {
             toRem = getPersos().get(g);
         }
@@ -2047,7 +2047,6 @@ public class World {
                 getObjets().remove(curObj.getKey());
             }
         }
-        toRem = null;
         // Persos.remove(g);
     }
 

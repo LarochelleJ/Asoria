@@ -30,6 +30,7 @@ import org.area.game.tools.AllColor;
 import org.area.game.tools.ParseTool;
 import org.area.game.tools.Util;
 import org.area.kernel.Config;
+import org.area.kernel.Logs;
 import org.area.kernel.Main;
 import org.area.kernel.Reboot;
 import org.area.object.*;
@@ -1154,10 +1155,10 @@ public class GmCommand {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le compte du personnage n'existe plus.");
                 return true;
             }
-            if (P.getAccount().getGmLevel() >= _perso.getAccount().getGmLevel()) {
+            /*if (P.getAccount().getGmLevel() >= _perso.getAccount().getGmLevel()) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Impossible sur un GM supérieur ou égal à vous");
                 return true;
-            }
+            }*/
             //On peut le bannir pour de bon
             StringBuilder im_mess = new StringBuilder("1241;").append(P.getName()).append("~").append(_perso.getName()).append("~");
             if (nb_heures != 0) {
@@ -1224,7 +1225,13 @@ public class GmCommand {
             }
             if (count == 0)
                 return true;
-
+            if (_perso.getAccount().getGmLevel() < 4) {
+                if (_perso.getAccount().kamasGiven > 199999) {
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out,
+                            "Vous avez atteint la limite de kamas que vous pouvez distribuer");
+                    return true;
+                }
+            }
             Player perso = _perso;
             if (infos.length == 3)// Si le nom du perso est spécifié
             {
@@ -1234,6 +1241,8 @@ public class GmCommand {
                     perso = _perso;
             }
             perso.addKamas(count);
+            _perso.getAccount().kamasGiven += count;
+            Logs.addToMjLog(_perso.getName() + " a distribué " + count + "kamas à " + perso.getAccount().getGuid());
             if (perso.isOnline())
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
             String mess = "Vous avez ";

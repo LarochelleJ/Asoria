@@ -1484,7 +1484,7 @@ public class Player {
 
     public void remove() {
         synchronized (World.getPersos()) {
-            World.getPersos().remove(this);
+            World.getPersos().remove(this.getGuid());
         }
         SQLManager.DELETE_PERSO_IN_BDD(this);
     }
@@ -1605,7 +1605,7 @@ public class Player {
                     " les meilleurs joueurs sont ceux qui jouent en équipe !\n\n" +
                     "Nous aimerions tout vous expliquer sur notre serveur, mais celui-ci est si particulier que nous pourrions prendre une bonne heure à tout vous présenter, nous vous invitons à consulter : " +
                     "\n<A HREF=\"https://area-serveur.eu/forum/index.php?/topic/1619-guide-moi-d%C3%A9butant-le-guide-des-premiers-r%C3%A9flexes-juin-2017/\">Guide du débutant</A>" +
-            "\n\n D'autres tutoriels sont à votre dispositions sur note forum, bonne chance et bon jeu à vous ! ";
+                    "\n\n D'autres tutoriels sont à votre dispositions sur note forum, bonne chance et bon jeu à vous ! ";
             SocketManager.GAME_SEND_POPUP(this, message);
             setIsNew(false);
         }
@@ -2139,8 +2139,8 @@ public class Player {
 
         if (_fight != null) {
             if (_fight.get_type() == Constant.FIGHT_TYPE_AGRESSION || _fight.get_type() == Constant.FIGHT_TYPE_PVT || _fight.get_type() == Constant.FIGHT_TYPE_CHALLENGE || _fight.get_type() == Constant.FIGHT_TYPE_CONQUETE) {
-				/*Stats total = new Stats(false,null);
-				total = Stats.cumulStat(total,_baseStats);
+                /*Stats total = new Stats(false,null);
+                total = Stats.cumulStat(total,_baseStats);
 				total = Stats.cumulStat(total,getStuffStats());
 				total = Stats.cumulStat(total,getDonsStats());
 				if(total.getEffect(Constant.STATS_ADD_PA) > 12 || total.getEffect(Constant.STATS_ADD_PM) > 6 || total.getEffect(Constant.STATS_ADD_PO) > 9)
@@ -3100,7 +3100,7 @@ public class Player {
     }
 
 	/*public void addInBank(int guid, int qua)
-	{
+    {
 		Item PersoObj = World.getObjet(guid);
 
 		//Si le joueur n'a pas l'item dans son sac ...
