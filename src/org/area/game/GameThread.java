@@ -1046,7 +1046,7 @@ public class GameThread implements Runnable {
             return;
         }*/
         short mapID = player.getMap().get_id();
-        List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018);
+        List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018, 8316, 8318, 8319, 8320, 10050, 10051, 10052, 10053, 10054, 10055);
         if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108 || mapID >= 13120 && mapID <= 13125) { // Map interdite pour la pose
             player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
             return;

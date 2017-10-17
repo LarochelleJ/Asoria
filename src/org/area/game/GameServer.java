@@ -170,7 +170,7 @@ public class GameServer implements Runnable{
 				if(!IpCheck.canGameConnect(socket.getInetAddress().getHostAddress()))
 					socket.close();
 				else {
-					socket.setSoTimeout(1200000); // 1200000 = 20 minutes
+					//socket.setSoTimeout(1200000); // 1200000 = 20 minutes *** Inactivité
 					GameThread gamethread = new GameThread(socket);
 
 					getClients().add(gamethread);

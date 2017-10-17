@@ -2161,9 +2161,9 @@ public class Fight {
         Case Cell = _map.getCase(caseID);
         _curAction = "casting";
         _spellCastDelay = 50;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
-        if (fighter.getMob() != null) {
+        /*if (fighter.getMob() != null) {
             addSpellCastDelay(1000);
-        }
+        }*/
         if (CanCastSpell(fighter, Spell, Cell, -1) != false) // @Flow, ça foire ici. #Fixé
         {
             if (fighter.getPersonnage() != null) {
@@ -2226,11 +2226,10 @@ public class Fight {
             {
                 addSpellCastDelay(2000);
             }
-            try {
+            /*try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-            }
-            ;
+            }*/
             if ((isEc && Spell.isEcEndTurn())) {
                 _curAction = "";
                 try {
