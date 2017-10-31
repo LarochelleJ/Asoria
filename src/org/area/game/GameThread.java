@@ -4734,7 +4734,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Ow_PACKET(player);
                     return;
                 }
-            } else if(idPnj == 50075){
+            } else if (idPnj == 50075) {
                 int prixObj = Ints.checkedCast(prix);
                 if (!player.hasItemTemplate(895607, prixObj)) {
                     SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de fragments provenant d'Anachore pour effectuer cet achat !");
@@ -6396,17 +6396,19 @@ public class GameThread implements Runnable {
                     return;
                 }
                 boolean canLaunch = true;
-                if (player.getFight().get_type() != Constant.FIGHT_TYPE_PVM) {
-                    if (Constant.SORTS_INTERDITS_PVP != null) {
-                        if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
-                            canLaunch = false;
-                        }
+                if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION) {
+                    if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
+                        canLaunch = false;
+                    }
+                } else if (player.getFight().get_type() == Constant.FIGHT_TYPE_PVM) {
+                    if (Constant.SORTS_INTERDITS_PVM.contains(spellID)) {
+                        canLaunch = false;
                     }
                 }
                 if (canLaunch) {
                     player.getFight().tryCastSpell(player.getFight().getFighterByPerso(player), SS, caseID);
                 } else {
-                    player.sendText("Vous ne pouvez utilisez ce sort uniquement en PvM.");
+                    player.sendText("Vous ne pouvez pas utilisé ce sort pour ce type de combat !");
                     SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
                 }
             }

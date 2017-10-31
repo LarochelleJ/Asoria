@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang.ArrayUtils;
 import org.area.client.Account;
 import org.area.client.Player;
@@ -1121,11 +1122,27 @@ public class SQLManager {
         try {
             String query = "SELECT * from sorts_interdits;";
             ResultSet RS = executeQuery(query, true);
-            List<Integer> toSend = new ArrayList<Integer>();
+            List<Integer> pvp = new ArrayList<Integer>();
+            List<Integer> pvm = new ArrayList<Integer>();
             while (RS.next()) {
-                toSend.add(RS.getInt("idSort"));
+                int idSort = RS.getInt("idSort");
+                switch (RS.getInt("type")) {
+                    case 1:
+                        pvp.add(idSort);
+                        break;
+                    case 2:
+                        pvm.add(idSort);
+                        break;
+                    case 3:
+                        pvm.add(idSort);
+                        pvp.add(idSort);
+                        break;
+                    default:
+                        break;
+                }
             }
-            Constant.SORTS_INTERDITS_PVP = toSend;
+            Constant.SORTS_INTERDITS_PVP = pvp;
+            Constant.SORTS_INTERDITS_PVM = pvm;
             closeResultSet(RS);
         } catch (SQLException e) {
             GameServer.addToLog("SQL ERROR: " + e);

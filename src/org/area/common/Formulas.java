@@ -162,7 +162,7 @@ public class Formulas {
 				//on ajoute les dom Physique
 				domC += casterStats.getEffect(142);
 				//Ajout de la resist Physique
-				resfT += targetStats.getEffect(184);
+				//resfT += targetStats.getEffect(184);
 			break;
 			case Constant.ELEMENT_TERRE://force
 				statC = casterStats.getEffect(Constant.STATS_ADD_FORC);
@@ -176,7 +176,7 @@ public class Formulas {
 				//on ajout les dom Physique
 				domC += casterStats.getEffect(142);
 				//Ajout de la resist Physique
-				resfT += targetStats.getEffect(184);
+				//resfT += targetStats.getEffect(184);
 			break;
 			case Constant.ELEMENT_EAU://chance
 				statC = casterStats.getEffect(Constant.STATS_ADD_CHAN);

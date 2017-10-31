@@ -1607,6 +1607,12 @@ public class Player {
                     "\n<A HREF=\"https://area-serveur.eu/forum/index.php?/topic/1619-guide-moi-d%C3%A9butant-le-guide-des-premiers-r%C3%A9flexes-juin-2017/\">Guide du débutant</A>" +
                     "\n\n D'autres tutoriels sont à votre dispositions sur note forum, bonne chance et bon jeu à vous ! ";
             SocketManager.GAME_SEND_POPUP(this, message);
+            Item bienvenue = World.getObjTemplate(6962).createNewItem(1, true, -1);
+            if (addObjet(bienvenue, true)) {
+                World.addObjet(bienvenue, true);
+            }
+            sendText("Un cadeau a été ajouté à votre compte !");
+            SocketManager.GAME_SEND_Ow_PACKET(this);
             setIsNew(false);
         }
     }

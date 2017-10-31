@@ -501,8 +501,9 @@ public class Constant {
     public static final int STATS_BOOST_SPELL_MAXPERTARGET = 291;
     public static final int STATS_BOOST_SPELL_SET_INTVL = 292;
 
-    // Sorts interdits en PvP
-    public static List<Integer> SORTS_INTERDITS_PVP = null;
+    // Sorts interdits
+    public static List<Integer> SORTS_INTERDITS_PVP = new ArrayList<Integer>();
+    public static List<Integer> SORTS_INTERDITS_PVM = new ArrayList<Integer>();
 
     // Prisme empêcher téléportation
     public static final List<Integer> DONJONS_TELEPORTATION_INTERDITE = Arrays.asList(
@@ -3572,6 +3573,9 @@ public class Constant {
             	stats.addOneStat(STATS_ADD_VITA, lvl*2);
             	stats.addOneStat(STATS_ADD_PM, lvl/100);
             	break;   */
+            // Bouftou D'halouine
+            case 113:
+                break;
         }
         return stats;
     }
@@ -3853,14 +3857,17 @@ public class Constant {
                 return World.getObjTemplate(70043);
             //Bloupon griotte
             //case 105: return World.getObjTemplate(895472);
-
+            // Bouftou D'halouine
+            case 113:
+                return World.getObjTemplate(895726);
         }
         return null;
     }
 
     public static int getMountColorByParchoTemplate(int tID) {
         // @Flow Faire attention à l'opérateur condition si ajout de DD
-        for (int a = 1; a < 113; a++)
+        // TODO Recoder cette méthode car c'est dégeulasse !
+        for (int a = 1; a < 114; a++)
             if (getParchoTemplateByMountColor(a) != null) if (getParchoTemplateByMountColor(a).getID() == tID) return a;
         return -1;
     }

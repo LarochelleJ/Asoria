@@ -177,9 +177,9 @@ public class IA {
                     try {
                         if (_fighter.getMob().getTemplate().getIAType() == 0) {
                             Thread.sleep(250L);
-                        } /*else {
+                        } else {
                             Thread.sleep(500L);
-                        }*/
+                        }
                     } catch (InterruptedException localInterruptedException3) {
                     }
                     if (!_fighter.isDead()) {
