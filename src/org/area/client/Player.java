@@ -1677,7 +1677,19 @@ public class Player {
                 if (hasEquiped(10054) || hasEquiped(10055) || hasEquiped(10056) || hasEquiped(10058) || hasEquiped(10061) || hasEquiped(10102)) {
                     str.append(3).append(";");
                 } else {
-                    str.append((_lvl > 99 ? (_lvl > 199 ? (2) : (1)) : (0))).append(";");
+                    int aura = 0;
+                    if (_lvl > 249) {
+                        aura = 6;
+                    } else if (_lvl > 229) {
+                        aura = 5;
+                    } else if (_lvl > 209) {
+                        aura = 4;
+                    } else if (_lvl > 199) {
+                        aura = 2;
+                    } else if (_lvl > 99){
+                        aura = 1;
+                    }
+                    str.append(aura).append(";");
                 }
             } else {
                 str.append("0;");
@@ -3033,14 +3045,18 @@ public class Player {
         }
         this.setSitted(false);
         synchronized (_Follower) {
+            List<Integer> remove = new ArrayList<Integer>();
             if (!_Follower.isEmpty())//On met a jour la carte des personnages qui nous suivent
             {
                 for (Player t : _Follower.values()) {
                     /*if (t.isOnline())
                         SocketManager.GAME_SEND_FLAG_PACKET(t, this);*/
                     if (!t._isOnline) {
-                        _Follower.remove(t.getGuid());
+                        remove.add(t.getGuid());
                     }
+                }
+                for (int i : remove) {
+                    _Follower.remove(i);
                 }
             }
         }

@@ -1156,10 +1156,10 @@ public class SocketManager {
             if (f.getPersonnage().isOnline())
                 send(f.getPersonnage(), packet.toString());
         }
-        try {
+        /*try {
             Thread.sleep(75);
         } catch (Exception e) {
-        }
+        }*/
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Fight : Send>>" + packet.toString());
     }

@@ -141,16 +141,10 @@ public class Fight {
 
     //Temporisation des Actions
     //Variables
-    private byte _affectedTarget;
     private int _spellCastDelay;
     // Formules xp
     public int _lvlWinners = 0;
     public int _lvlMax = 0;
-
-    //Methodes
-    public void setAffectedTarget(byte target) {
-        _affectedTarget = target;
-    }
 
     public void addSpellCastDelay(int delay) {
         _spellCastDelay += delay;
@@ -980,7 +974,6 @@ public class Fight {
         if (_curPlayer >= _ordreJeu.size())
             _curPlayer = 0;
         //on reset a chaque debut de tours
-        _affectedTarget = 0; // @Flow #Temporisation
         _curFighterPA = _ordreJeu.get(_curPlayer).getPA();
         _curFighterPM = _ordreJeu.get(_curPlayer).getPM();
         _curFighterUsedPA = 0;
@@ -2079,7 +2072,6 @@ public class Fight {
                 Thread.sleep(1000 + 150 * nStep);//Estimation de la durée du déplacement
             } catch (InterruptedException e) {
             }
-            ;
 
             SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this, 7, _curAction);
             _curAction = "";
@@ -2160,9 +2152,9 @@ public class Fight {
         }
         Case Cell = _map.getCase(caseID);
         _curAction = "casting";
-        _spellCastDelay = 50;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
+        _spellCastDelay = 80;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
         if (fighter.getMob() != null) {
-            addSpellCastDelay(1000);
+            addSpellCastDelay(500);
         }
         if (CanCastSpell(fighter, Spell, Cell, -1) != false) // @Flow, ça foire ici. #Fixé
         {
@@ -2249,11 +2241,10 @@ public class Fight {
         } else if (fighter.getMob() != null || fighter.isInvocation()) {
             return 10;
         }
-        try {
+       try {
             Thread.sleep(_spellCastDelay);
         } catch (InterruptedException e) {
         }
-        ;
         _curAction = "";
         return 0;
     }
@@ -2409,6 +2400,9 @@ public class Fight {
             ValidlaunchCase = fighter.get_fightCell().getID();
         } else {
             ValidlaunchCase = launchCase;
+        }
+        if (_curPlayer >= _ordreJeu.size()) { // index out of bound
+            return false;
         }
         if (_ordreJeu == null || _ordreJeu.isEmpty() || _ordreJeu.get(_curPlayer) == null) return false;
         Fighter f = _ordreJeu.get(_curPlayer);
@@ -3634,7 +3628,7 @@ public class Fight {
             }
 
             try {
-                Thread.sleep(1600);
+                Thread.sleep(1000);
             } catch (Exception e) {
             }
             //SocketManager.GAME_SEND_FIGHT_GE_PACKET_TO_FIGHT(this,7,winner);
@@ -3771,12 +3765,6 @@ public class Fight {
                     } else {
                         F.getPersonnage().set_PDV(F.getPDV());
                     }
-                }
-                try // @Flow #Temporisation
-                {
-                    Thread.sleep(500 * _affectedTarget);
-
-                } catch (Exception E) {
                 }
 
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
@@ -4188,11 +4176,10 @@ public class Fight {
         } catch (NullPointerException e) {
         }
         ;
-        try { // @Flow - Tant qu'a faire de la temporisation ^^
+       /* try { // @Flow - Tant qu'a faire de la temporisation ^^
             Thread.sleep(500);
         } catch (InterruptedException e) {
-        }
-        ;
+        }*/
     }
 
     public Map<Integer, Fighter> get_team1() {
@@ -4575,7 +4562,6 @@ public class Fight {
     {
         if (perso == null || _ordreJeu == null || _curPlayer < 0) return; // @Flow
         if (_curPlayer >= _ordreJeu.size()) _curPlayer = 0; // Tout simple
-        _affectedTarget = 1; // @Flow #Temporisation
         Fighter F = this.getFighterByPerso(perso);
         Fighter T = null;
         if (target != null) T = this.getFighterByPerso(target);

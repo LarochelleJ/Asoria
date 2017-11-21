@@ -1767,7 +1767,8 @@ public class Maps {
             {
                 if ((group.getAlignement() == -1 || ((perso.get_align() == 1 || perso.get_align() == 2) && (perso.get_align() != group.getAlignement()))) && ConditionParser.validConditions(perso, group.getCondition())) {
                     if (Constant.COMBAT_BLOQUE) {
-                        perso.sendText("Les combats sont bloqués par les administrateurs, un redémarrage du serveur va avoir lieu une fois les combats terminés");
+                        //perso.sendText("Les combats sont bloqués par les administrateurs, un redémarrage du serveur va avoir lieu une fois les combats terminés");
+                        SocketManager.GAME_SEND_POPUP(perso, "Les combats sont bloqués par les administrateurs, un redémarrage du serveur va avoir lieu une fois les combats terminés !");
                         return;
                     } else if (perso.estBloqueCombat()) {
                         perso.sendText("Temporisation en cours... Veuillez patienter...");
