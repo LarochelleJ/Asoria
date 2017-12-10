@@ -2099,8 +2099,12 @@ public class Fight {
     }
 
     public void onGK(Player perso) {
-        if (_curAction.equals("") || _ordreJeu.get(_curPlayer).getGUID() != perso.getGuid() || _state != Constant.FIGHT_STATE_ACTIVE)
+        try {
+            if (_curAction.equals("") || _ordreJeu.get(_curPlayer).getGUID() != perso.getGuid() || _state != Constant.FIGHT_STATE_ACTIVE)
+                return;
+        } catch (Exception e) {
             return;
+        }
         if (Config.DEBUG)
             GameServer.addToLog("(" + _curPlayer + ")Fin du deplacement de Fighter ID= " + perso.getGuid());
         SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this, 7, _curAction);

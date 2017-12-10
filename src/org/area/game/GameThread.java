@@ -4749,6 +4749,21 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Ow_PACKET(player);
                     return;
                 }
+            } else if (idPnj == 50086) {
+                int prixObj = Ints.checkedCast(prix);
+                if (!player.hasItemTemplate(895734, prixObj)) {
+                    SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de kamas de Nowel effectuer cet achat !");
+                    return;
+                } else {
+                    Item newObj = template.createNewItem(qua, false, -1);
+                    player.removeByTemplateID(895734, prixObj);
+                    if (player.addObjet(newObj, true))
+                        World.addObjet(newObj, true);
+                    SocketManager.GAME_SEND_BUY_OK_PACKET(out);
+                    SocketManager.GAME_SEND_STATS_PACKET(player);
+                    SocketManager.GAME_SEND_Ow_PACKET(player);
+                    return;
+                }
             } else if (player.get_kamas() < prix)// Si le joueur n'a pas assez de kamas et que le npc demande des kamas
             {
                 GameServer.addToLog(player.getName()
@@ -4966,6 +4981,9 @@ public class GameThread implements Runnable {
                         return;
                     } else if (idPnj == 50075) {
                         SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de fragments requis");
+                        return;
+                    } else if (idPnj == 50086) {
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Kamas de Nowel requis");
                         return;
                     }
                 } catch (NumberFormatException e) {
