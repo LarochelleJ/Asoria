@@ -413,36 +413,39 @@ public class Action {
                     int newCellID = Integer.parseInt(args.split(",")[1]);
                     int ObjetNeed = Integer.parseInt(args.split(",")[2]);
                     int MapNeed = Integer.parseInt(args.split(",")[3]);
-                    if (ObjetNeed == 0) {
-                        //Téléportation sans objets
-                        perso.teleport(newMapID, newCellID);
-                    } else if (ObjetNeed > 0) {
+                    boolean error = false;
+                    if (ObjetNeed > 0) {
+                        perso.templateObjeRequisPourDonjon = ObjetNeed;
+                        if (!perso.hasItemTemplate(ObjetNeed, 1)) {
+                            //Le perso ne possède pas l'item
+                            SocketManager.GAME_SEND_MESSAGE(perso, "Vous ne possedez pas l'objet necessaire : " + World.getObjTemplate(ObjetNeed).getName(), "009900");
+                            error = true;
+                        }
+                    }
+                    if (!error) {
                         if (MapNeed == 0) {
                             //Téléportation sans map
                             perso.teleport(newMapID, newCellID);
                         } else if (MapNeed > 0) {
-                            if (perso.hasItemTemplate(ObjetNeed, 1) && perso.getMap().get_id() == MapNeed) // Le object need c'est juste l'id de l'objet, sinon c'ets pas grave, c'est pas trés important, a la place de "clef on met "objet" et puis c'est tout ^^ Ou sinon encore plus simple
+                            if (perso.getMap().get_id() == MapNeed)
                             {
-                                //Le perso a l'item
-                                //Le perso est sur la bonne map
-                                //On téléporte, on supprime après
-                                perso.templateObjeRequisPourDonjon = ObjetNeed;
                                 perso.teleport(newMapID, newCellID);
-                                perso.removeByTemplateID(ObjetNeed, 1);
-                                SocketManager.GAME_SEND_Ow_PACKET(perso);
                             } else if (perso.getMap().get_id() != MapNeed) {
                                 //Le perso n'est pas sur la bonne map
                                 SocketManager.GAME_SEND_MESSAGE(perso, "Vous n'etes pas sur la bonne map du donjon pour etre teleporter.", "009900");
-                            } else {
-                                //Le perso ne possède pas l'item
-                                SocketManager.GAME_SEND_MESSAGE(perso, "Vous ne possedez pas l'objet necessaire : " + World.getObjTemplate(ObjetNeed).getName(), "009900");
+                                error = true;
                             }
                         }
+                    }
+
+                    if (ObjetNeed > 0 && !error) { // Pas d'erreur pendant la tp
+                        perso.teleport(newMapID, newCellID);
+                        perso.removeByTemplateID(ObjetNeed, 1);
+                        SocketManager.GAME_SEND_Ow_PACKET(perso);
                     }
                 } catch (Exception e) {
                     GameServer.addToLog(e.getMessage());
                 }
-                ;
                 break;
             case 16://Ajout d'honneur HonorValue
                 try {

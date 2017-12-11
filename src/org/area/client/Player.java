@@ -2988,7 +2988,7 @@ public class Player {
                         if (playerWhoFightWithMe.contains(followMe)) {
                             followMe.teleport(newMapID, newCellID);
                         } else { // Le suiveur était sur la même carte, mais n'a pas combattu
-                            SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneu a continué son chemin sans vous ! ", "009900");
+                            SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneur a continué son chemin sans vous ! ", "009900");
                         }
                     } else { // Changement de carte normal
                         followMe.teleport(newMapID, newCellID);
@@ -5115,8 +5115,16 @@ public class Player {
                 savedSpells.add(spellID);
             }
         }
-        set_lvl(Config.START_LEVEL);
-        set_curExp(World.getPersoXpMin(Config.START_LEVEL));
+        setPrestige(getPrestige() + 1);
+        // Calcul formule xp en tenant compte des malus xp des prestiges
+        int malus = Constant.obtenir_taux_xp_prestige(getPrestige());
+        long xp = (100 - malus) * (get_curExp() - World.getPersoXpMin(getLevel())) / 100;
+        set_curExp(xp);
+        set_lvl(1);
+        while (_curExp >= World.getPersoXpMax(_lvl) && _lvl < World.getExpLevelSize()) {
+            levelUp(false, false);
+            if (_lvl == 200 & prestige != 20) break;
+        }
         _sorts = Constant.getStartSorts(_classe);
         for (int a = 1; a <= getLevel(); a++)
             Constant.onLevelUpSpells(this, a);
@@ -5125,9 +5133,6 @@ public class Player {
         _baseStats = new Stats(true, this);
         _spellPts = _lvl - 1;
         _capital = _lvl * 5;
-
-        setPrestige(getPrestige() + 1);
-
 
         if (_isOnline) {
             SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte.getGameThread().getOut(), _lvl);
