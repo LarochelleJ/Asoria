@@ -121,6 +121,9 @@ public class World {
     // Liste des runes avec id
     private static HashMap<Integer, Rune> runes;
 
+    // Listes des cadeaux
+    public static HashMap<Integer, Gift> cadeaux = new HashMap<Integer, Gift>();
+
     private static int nextHdvID; // Contient le derniere ID utilisé pour crée
     // un HDV, pour obtenir un ID non utilisé il
     // faut impérativement l'incrémenter
@@ -1186,7 +1189,11 @@ public class World {
         SQLManager.LOAD_HDVS_ITEMS();
         Console.println("|| Item hdvs : Ok !", Color.CYAN);
         SQLManager.RESET_MOUNTPARKS();
+        Console.println("|| Montures en enclos : Ok !", Color.CYAN);
         SQLManager.LOAD_SORTS_INTERDITS();
+        Console.println("|| Sorts interdits : Ok !", Color.CYAN);
+        SQLManager.LOAD_GIFTS();
+        Console.println("|| Cadeaux : Ok !", Color.CYAN);
         //nextObjetID = SQLManager.getNextObjetID()+1;
         updateListeEchangeItem(); // @Flow
         Constant.initialiserTableauPoidsParPuissance();

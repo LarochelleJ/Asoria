@@ -1061,6 +1061,24 @@ public class SQLManager {
         }
     }
 
+    public static void LOAD_GIFTS() {
+        try {
+            String query = "SELECT * from gifts ORDER BY giftTemplate ASC, chance ASC;";
+            ResultSet RS = executeQuery(query, false);
+            while (RS.next()) {
+                if (!World.cadeaux.containsKey(RS.getInt("giftTemplate"))) {
+                    new Gift(RS.getInt("giftTemplate"), RS.getInt("template"), RS.getInt("limit"), RS.getInt("gain"), RS.getFloat("chance"));
+                } else {
+                    World.cadeaux.get(RS.getInt("giftTemplate")).addProb(RS.getInt("template"), RS.getInt("limit"), RS.getInt("gain"), RS.getFloat("chance"));
+                }
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e);
+            e.printStackTrace();
+        }
+    }
+
     public static void LOAD_MAPS() {
         try {
             ResultSet RS;
@@ -1364,8 +1382,27 @@ public class SQLManager {
             Console.println("Requete: " + baseQuery);
             Console.println("Le personnage n'a pas ete sauvegarde");
         }
-        ;
+        closePreparedStatement(p);
+        return fine;
+    }
 
+    public static boolean SAVE_GIFT_GAIN(int giftTemplate, int template, int gain) {
+        String baseQuery = "UPDATE gifts SET gain = ? WHERE giftTemplate = ? AND template = ?;";
+
+        PreparedStatement p = null;
+        boolean fine = true;
+        try {
+            p = newTransact(baseQuery, Connection(true));
+            p.setInt(1, gain);
+            p.setInt(2, giftTemplate);
+            p.setInt(3, template);
+
+            p.executeUpdate();
+        } catch (Exception e) {
+            fine = false;
+            Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
+            Console.println("Requete: " + baseQuery);
+        }
         closePreparedStatement(p);
         return fine;
     }

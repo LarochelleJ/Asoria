@@ -427,8 +427,7 @@ public class Action {
                             //Téléportation sans map
                             perso.teleport(newMapID, newCellID);
                         } else if (MapNeed > 0) {
-                            if (perso.getMap().get_id() == MapNeed)
-                            {
+                            if (perso.getMap().get_id() == MapNeed) {
                                 perso.teleport(newMapID, newCellID);
                             } else if (perso.getMap().get_id() != MapNeed) {
                                 //Le perso n'est pas sur la bonne map
@@ -800,8 +799,7 @@ public class Action {
                                 perso.teleport(Short.parseShort(donnes[2]), Integer.parseInt(donnes[3]));
                             }
                             perso.sendText("Vous avez reçu " + qtaVoulue + " X [" + newObj.getTemplate(false).getName() + "]");
-                        }
-                        else {
+                        } else {
                             perso.sendText("Vous ne possèdez pas les objets requis.");
                         }
                     }
@@ -910,6 +908,31 @@ public class Action {
                     perso.set_ornement(ornement);
                     perso.save(false);
                     perso.sendText("Vous avez obtenu un nouvel ornement !");
+                }
+                break;
+
+            case 212125: // Cadeau
+                try {
+                    int templateCadeau = World.getObjet(itemID).getTemplate(true).getID();
+                    Gift cadeau = World.cadeaux.get(templateCadeau);
+                    ObjTemplate itemWon;
+                    synchronized (cadeau) {
+                        itemWon = cadeau.open();
+                    }
+                    Item O = itemWon.createNewItem(1, false, -1);
+                    //Si retourne true, on l'ajoute au monde
+                    if (perso.addObjet(O, true))
+                        World.addObjet(O, true);
+                    // Retrait cadeau
+                    perso.removeByTemplateID(templateCadeau, 1);
+                    //Si en ligne (normalement oui)
+                    if (perso.isOnline()) {
+                        SocketManager.GAME_SEND_Ow_PACKET(perso);
+                        SocketManager.GAME_SEND_Im_PACKET(perso, "022;" + 1 + "~" + templateCadeau);
+                        SocketManager.GAME_SEND_MESSAGE(perso, "Vous avez obtenu : " + itemWon.getName() + " !", "009900");
+                    }
+                } catch (Exception e) {
+                    SocketManager.GAME_SEND_POPUP(perso, "Une erreur s'est produite à l'ouverture de votre cadeau... :(");
                 }
                 break;
 
