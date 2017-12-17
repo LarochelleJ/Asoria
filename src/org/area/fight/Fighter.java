@@ -697,8 +697,10 @@ public class Fighter {
                 if (id == 293) {
                     for (SpellEffect SE : getBuffsByEffectID(293)) {
                         if (SE.getValue() == val) {
-                            val = 0;
-                            break;
+                            if (SE.decrementDuration() > 0) {
+                                val = 0;
+                                break;
+                            }
                         }
                     }
                 }

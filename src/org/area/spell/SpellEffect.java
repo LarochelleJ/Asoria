@@ -79,7 +79,6 @@ public class SpellEffect {
             jet = args.split(";")[5];
         } catch (Exception e) {
         }
-        ;
     }
 
     public boolean getSpell2(int id) {
@@ -3811,7 +3810,6 @@ public class SpellEffect {
                             add = Integer.parseInt(SE.getArgs().split(";")[2]);
                         } catch (Exception e) {
                         }
-                        ;
                         if (add <= 0) continue;
                         dmg += add;
                     }
