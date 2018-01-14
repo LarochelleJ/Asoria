@@ -113,16 +113,14 @@ public class PlayerCommand {
                                     + "\n   ";
                             String List5 = "\n <b> Les Diverses Commandes :</b>"
                                     + "\n   "
-                                    + "\n .safe - EmpÃªcher les crashs de fin de combat"
                                     + "\n .save - Sauvegarde votre personnage"
                                     + "\n .savetitre - Sauvegarder son titre actuel [5 pts]"
                                     + "\n .mestitres - Voir ses titres sauvegardés"
                                     + "\n .creationtitre - Créer un titre personnalisé [60 pts]"
                                     + "\n .changercouleurtitre - [15 pts]"
                                     + "\n .vie - Récupérer sa vie au complet"
-                                    + "\n .ticket + [Message] - Contacter l'équipe"
                                     + "\n .points - Permet de consulter son nombre de Points"
-                                    + "\n .m - Ceci est le chat sans limitation"
+                                    + "\n .m - Ceci est le chat global du serveur"
                                     + "\n .banque - Ouvre votre compte bancaire"
                                     + "\n .staff - Membre de l'équipe en ligne"
                                     + "\n .infos - Informations sur le serveur"
@@ -130,8 +128,9 @@ public class PlayerCommand {
                                     + "\n .guilde - Vous permet de créer une guilde"
                                     + "\n .rapidstuff - Commande de stuff rapide."
                                     + "\n   ";
-                            String List6 = "\n <b> Les Commandes FM [100 pts] :</b> "
+                            String List6 = "\n <b> Les Commandes FM [100 pts à l'exception de .fmcac] :</b> "
                                     + "\n   "
+                                    + "\n .fmcac + element - FM votre CaC selon l'élément demandé [10 pts]"
                                     + "\n .fmpm coiffe - FM votre coiffe + 1PM"
                                     + "\n .fmpa coiffe - FM votre coiffe + 1PA"
                                     + "\n .fmpa cape - FM votre cape + 1PA"
@@ -208,7 +207,7 @@ public class PlayerCommand {
                             SocketManager.GAME_SEND_POPUP(_perso, args);
                             break;
                         case 4: //Informations serveur
-                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.9.5</b>\n\n"
+                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.10 REV1</b>\n\n"
                                     + "\n   "
                                     + GameServer.uptime()
                                     + "Joueurs en ligne : <b>" + Main.gameServer.getPlayerNumber() + "</b>\n"
@@ -227,7 +226,7 @@ public class PlayerCommand {
                                     } else if (World.getOnlinePlayers().get(i).getAccID() == 2) {
                                         staff += "Administrateur / Développeur)";
                                     } else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 1)
-                                        staff += "Maitre du Jeu en Test)";
+                                        staff += "Animateur)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 2)
                                         staff += "Maitre du Jeu)";
                                     else if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() == 3)

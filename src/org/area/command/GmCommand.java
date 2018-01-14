@@ -1,5 +1,7 @@
 package org.area.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -2528,8 +2530,13 @@ public class GmCommand {
                 regalo = Integer.parseInt(infos[1]);
             } catch (Exception e) {
             }
+            List<String> ips = new ArrayList<String>();
             for (Player pj : World.getOnlinePlayers()) {
-                pj.getAccount().setCadeau(regalo);
+                String ip = pj.getAccount().getCurIp();
+                if (!ips.contains(ip)) {
+                    pj.getAccount().setCadeau(regalo);
+                    ips.add(pj.getAccount().getCurIp());
+                }
             }
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Don de "
                     + regalo + " à tous les joueurs en ligne.");

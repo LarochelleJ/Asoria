@@ -897,6 +897,19 @@ public class Maps {
             }
         }
 
+        public boolean containsTrigger() {
+            boolean containsTrigger = false;
+            if (_onCellStop != null) {
+                for (Action act : _onCellStop) {
+                    if (act.getID() == 0) {
+                        containsTrigger = true;
+                        break;
+                    }
+                }
+            }
+            return containsTrigger;
+        }
+
         public synchronized void addPerso(Player perso) {
             if (_persos == null) _persos = new TreeMap<Integer, Player>();
             _persos.put(perso.getGuid(), perso);

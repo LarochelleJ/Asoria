@@ -758,31 +758,54 @@ public class GameThread implements Runnable {
 
                 }
                 break;
+            case 'B':
+                int idJoueur = Integer.valueOf(packet.substring(2));
+                Player perso = World.getPlayer(idJoueur);
+                if (perso != null && perso.getFight() != null) {
+                    if (perso._Follows == player || perso.playerWhoFollowMe.contains(player)) {
+                        Fighter f = perso.getFight().getFighterByPerso(perso);
+                        Fighter p = player.getFight().getFighterByPerso(player);
+                        if (f != null) {
+                            int cell = f.get_fightCell().getID();
+                            int cellP = p.get_fightCell().getID();
+                            f.get_fightCell().getFighters().clear();
+                            player.getFight().changePlace(player, cell);
+                            player.getFight().changePlace(perso, cellP);
+                        }
+                    } else {
+                        SocketManager.GAME_SEND_POPUP(player, "Vous pouvez changer de place uniquement avec un meneur ou une de vos mules !");
+                    }
+                }
+                break;
             case 'C':
                 points = Util.loadPointsByAccount(player.getAccount());
                 if (points < 60 && !(player.getAccount().getGmLevel() > 0)) {
                     player.sendText("Vous n'avez pas assez de points, il vous en manque" + (60 - points) + " !");
                 } else {
-                    try {
-                        String realPacket = packet.substring(2);
-                        String[] donnees = realPacket.split(";");
-                        player.set_colors(Integer.valueOf(donnees[0]), Integer.valueOf(donnees[1]), Integer.valueOf(donnees[2]));
-                        if (player.isOnline()) {
-                            if (!(player.getAccount().getGmLevel() > 0)) {
-                                Util.updatePointsByAccount(player.getAccount(), points - 60);
-                                player.send("000C" + (points - 60));
-                                player.sendText("Vous avez perdu 60 points suite à votre changement de couleur !");
-                            }
+                    if (player.get_classe() == 16 && player.get_sexe() == 1) { // Rodarbal femelle
+                        SocketManager.GAME_SEND_POPUP(player, "Impossible de changer les couleurs d'un rodarbal femelle !");
+                    } else {
+                        try {
+                            String realPacket = packet.substring(2);
+                            String[] donnees = realPacket.split(";");
+                            player.set_colors(Integer.valueOf(donnees[0]), Integer.valueOf(donnees[1]), Integer.valueOf(donnees[2]));
+                            if (player.isOnline()) {
+                                if (!(player.getAccount().getGmLevel() > 0)) {
+                                    Util.updatePointsByAccount(player.getAccount(), points - 60);
+                                    player.send("000C" + (points - 60));
+                                    player.sendText("Vous avez perdu 60 points suite à votre changement de couleur !");
+                                }
 
-                            if (player.getFight() == null) {
-                                player.teleport(player.getMap().get_id(), player.get_curCell().getID());
-                                SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
-                                player.get_curCell().addPerso(player);
-                                SQLManager.SAVE_PERSONNAGE_COLORS(player);
+                                if (player.getFight() == null) {
+                                    player.teleport(player.getMap().get_id(), player.get_curCell().getID());
+                                    SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
+                                    player.get_curCell().addPerso(player);
+                                    SQLManager.SAVE_PERSONNAGE_COLORS(player);
+                                }
                             }
+                        } catch (Exception e) {
+                            player.sendText("Il y a eu une erreur lors de la tentative de changement de couleur !");
                         }
-                    } catch (Exception e) {
-                        player.sendText("Il y a eu une erreur lors de la tentative de changement de couleur !");
                     }
                 }
                 break;
@@ -1046,8 +1069,8 @@ public class GameThread implements Runnable {
             return;
         }*/
         short mapID = player.getMap().get_id();
-        List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018, 8316, 8318, 8319, 8320, 10050, 10051, 10052, 10053, 10054, 10055);
-        if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108 || mapID >= 13120 && mapID <= 13125) { // Map interdite pour la pose
+        List<Integer> mapInterditePose = Arrays.asList(10812, 13057, 13036, 13018, 8316, 8318, 8319, 8320, 10050, 10051, 10052, 10053, 10054, 10055, 27012, 10191, 10194, 10195, 10197, 10196);
+        if (mapInterditePose.contains(mapID) || mapID >= 17700 && mapID <= 17746 || mapID >= 26105 && mapID <= 26108 || mapID >= 13120 && mapID <= 13125 || mapID >= 13090 && mapID <= 13095 || mapID >= 10090 && mapID <= 10096) { // Map interdite pour la pose
             player.sendText("Il est interdit de poser un percepteur sur cet carte. Contacter un administrateur si vous souhaitez en connaître la raison.");
             return;
         }
@@ -6642,7 +6665,7 @@ public class GameThread implements Runnable {
                 removeAction(GA);
                 return;
             }
-            if (player.getAccount().getGmLevel() > 0 && player.isGodmode()) {
+            /*if (player.getAccount().getGmLevel() > 0 && player.isGodmode()) {
                 player.get_curCell().removePlayer(player.getGuid());
                 SocketManager.GAME_SEND_BN(out);
                 // On prend la case ciblÃ¯Â¿Â½e
@@ -6687,7 +6710,7 @@ public class GameThread implements Runnable {
 
                 removeAction(GA);
                 return;
-            }
+            }*/
             AtomicReference<String> pathRef = new AtomicReference<String>(path);
             int result = Pathfinding.isValidPath(player.getMap(), player
                     .get_curCell().getID(), pathRef, null);

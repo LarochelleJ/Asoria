@@ -2985,9 +2985,10 @@ public class Player {
                     }
                 } else { // Pas besoin d'objet pour tp
                     if (endfigh) { // Vient de terminer un combat pvm, donc il se fait téléporter à la prochaine salle
-                        if (playerWhoFightWithMe.contains(followMe)) {
+                        /*if (!playerWhoFightWithMe.contains(followMe)) {
                             followMe.teleport(newMapID, newCellID);
-                        } else { // Le suiveur était sur la même carte, mais n'a pas combattu
+                        }*/
+                        if (!playerWhoFightWithMe.contains(followMe)) { // Le suiveur était sur la même carte, mais n'a pas combattu
                             SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneur a continué son chemin sans vous ! ", "009900");
                         }
                     } else { // Changement de carte normal

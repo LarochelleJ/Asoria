@@ -406,7 +406,7 @@ public class Guild {
 	public void addXp(long xp)
 	{
 		_xp += xp;		
-		while(_xp >= World.getGuildXpMax(_lvl) && _lvl<250)
+		while(_xp >= World.getGuildXpMax(_lvl) && _lvl<205)
 			levelUp();
 	}
 	

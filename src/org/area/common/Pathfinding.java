@@ -1,12 +1,15 @@
 package org.area.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.area.fight.Fight;
 import org.area.fight.Fighter;
 import org.area.fight.object.Piege;
 import org.area.game.GameServer;
+import org.area.kernel.Config;
 import org.area.kernel.Logs;
 import org.area.object.Maps;
 import org.area.object.Item;
@@ -24,7 +27,12 @@ public class Pathfinding {
             int Steps = 0;
             String path = pathRef.get();
             String newPath = "";
+            boolean stop = false;
             for (int i = 0; i < path.length(); i += 3) {
+                if (stop) {
+                    pathRef.set(newPath);
+                    return Steps;
+                }
                 String SmallPath = path.substring(i, i + 3);
                 char dir = SmallPath.charAt(0);
                 int dirCaseID = CryptManager.cellCode_To_ID(SmallPath.substring(1));
@@ -50,6 +58,19 @@ public class Pathfinding {
                             //on arrete le d�placement sur la 1ere case du piege
                             pathRef.set(newPath);
                             return Steps;
+                        }
+                    }
+                }
+
+                if (map.get_id() == 13088 && fight == null) {
+                    int cell = newPos;
+                    for (int a = 0; a < 64; a++) {
+                        cell = GetCaseIDFromDirrection(cell, dir, map, false);
+                        if (cell == -1 || map.getCase(cell) == null || cell == dirCaseID) break;
+                        if (map.getCase(cell).containsTrigger()) {
+                            stop = true;
+                            dirCaseID = cell;
+                            break;
                         }
                     }
                 }
@@ -394,6 +415,41 @@ public class Pathfinding {
             }
         }
         return 0;
+    }
+
+    public static char getDirBetweenTwoCaseTest(int cell1ID, int cell2ID, Maps map, boolean Combat) {
+        // ne permet d'avoir que les directions uniques (pas de composition de direction)
+        ArrayList<Character> dirs = new ArrayList<Character>();
+        dirs.add('b');
+        dirs.add('d');
+        dirs.add('f');
+        dirs.add('h');
+        if (!Combat) {
+            dirs.add('a');
+            dirs.add('c');
+            dirs.add('e');
+            dirs.add('g');
+        }
+        HashMap<Character, Integer> directionPossibles = new HashMap<Character, Integer>();
+        for (char c : dirs) // pour chaque direction
+        {
+            int cell = cell1ID; // on consid�re la case de d�part
+            for (int i = 0; i <= 64; i++) {
+                if (GetCaseIDFromDirrection(cell, c, map, Combat) == cell2ID) { // si pour cette direction la prochaine case est l'arriv�e
+                    directionPossibles.put(c, i);
+                }
+                cell = GetCaseIDFromDirrection(cell, c, map, Combat); // on continue dans cette direction
+            }
+        }
+        int shorter = 66;
+        char direction = 0;
+        for (Map.Entry<Character, Integer> c : directionPossibles.entrySet()) {
+            if (c.getValue() < shorter) {
+                shorter = c.getValue();
+                direction = c.getKey();
+            }
+        }
+        return direction;
     }
 
     public static ArrayList<Case> getCellListFromAreaString(Maps map, int cellID, int castCellID, String zoneStr, int PONum, boolean isCC) {

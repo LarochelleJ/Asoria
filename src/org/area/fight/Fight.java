@@ -2158,7 +2158,7 @@ public class Fight {
         _curAction = "casting";
         _spellCastDelay = 80;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
         if (fighter.getMob() != null) {
-            addSpellCastDelay(500);
+            addSpellCastDelay(900);
         }
         if (CanCastSpell(fighter, Spell, Cell, -1) != false) // @Flow, ça foire ici. #Fixé
         {
@@ -3711,7 +3711,22 @@ public class Fight {
             String str = "";
             if (prism != null)
                 str = prism.getCarte() + "|" + prism.getX() + "|" + prism.getY();
+
+            // Trier
+            LinkedList<Fighter> winTeamOrder = new LinkedList<Fighter>();
+            ArrayList<Fighter> addAtLast = new ArrayList<Fighter>();
             for (Fighter F : winTeam) {
+                if (!F.getPersonnage().playerWhoFollowMe.isEmpty()) { // si meneur
+                    addAtLast.add(F);
+                } else {
+                    winTeamOrder.add(F);
+                }
+            }
+            for (Fighter F : addAtLast) {
+                winTeamOrder.add(F);
+            }
+
+            for (Fighter F : winTeamOrder) {
 
                 if (F._Perco != null) {
                     //On actualise la guilde+Message d'attaque
@@ -3774,13 +3789,14 @@ public class Fight {
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
                     final Maps map = F.getPersonnage().getMap();
                     final int fightType = _type;
-                    if (F.getPersonnage()._Follows != null) {
-                        if (!F.getPersonnage()._Follows.playerWhoFollowMe.contains(F.getPersonnage())) {
+                    F.getPersonnage().scheduleEndFighActions(map, fightType);
+                    /*if (F.getPersonnage()._Follows != null) {
+                        if (!F.getPersonnage()._Follows.playerWhoFollowMe.contains(F.getPersonnage())) { // si c'est pas un suiveur
                             F.getPersonnage().scheduleEndFighActions(map, fightType);
                         }
                     } else {
                         F.getPersonnage().scheduleEndFighActions(map, fightType);
-                    }
+                    }*/
                 }
 
                 final Player player = F.getPersonnage();
@@ -4581,6 +4597,7 @@ public class Fight {
             if (!F.getPersonnage().playerWhoFollowMe.isEmpty()) {
                 F.getPersonnage().playerWhoFollowMe.clear();
             }
+            F.getPersonnage().mettreCombatBloque(false);
             switch (_type) {
                 case Constant.FIGHT_TYPE_CHALLENGE://Défie
                 case Constant.FIGHT_TYPE_AGRESSION://PVP
