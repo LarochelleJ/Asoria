@@ -820,7 +820,7 @@ public class Fight {
                 _team1.get(_team1.keySet().toArray()[0]).getMob().getTemplate().getAlign();
             }
             //Si groupe non fixe
-            if (!_mobGroup.isFix())
+            if (!_mobGroup.isFix() && !_mobGroup.haveSpawnTime())
                 World.getCarte(_map.get_id()).spawnGroup(align, 1, true, _mobGroup.getCellID());//Respawn d'un groupe
         }
         if (_type == Constant.FIGHT_TYPE_CONQUETE) {
@@ -3716,7 +3716,7 @@ public class Fight {
             LinkedList<Fighter> winTeamOrder = new LinkedList<Fighter>();
             ArrayList<Fighter> addAtLast = new ArrayList<Fighter>();
             for (Fighter F : winTeam) {
-                if (!F.getPersonnage().playerWhoFollowMe.isEmpty()) { // si meneur
+                if (F.getPersonnage() != null && !F.getPersonnage().playerWhoFollowMe.isEmpty()) { // si meneur
                     addAtLast.add(F);
                 } else {
                     winTeamOrder.add(F);
@@ -4896,7 +4896,7 @@ public class Fight {
                                         _team1.get(_team1.keySet().toArray()[0]).getMob().getTemplate().getAlign();
                                     }
                                     //Si groupe non fixe
-                                    if (!_mobGroup.isFix())
+                                    if (!_mobGroup.isFix() && !_mobGroup.haveSpawnTime())
                                         World.getCarte(_map.get_id()).spawnGroup(align, 1, true, _mobGroup.getCellID());//Respawn d'un groupe
                                 }
                                 _map = null;

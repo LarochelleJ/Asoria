@@ -4694,7 +4694,7 @@ public class GameThread implements Runnable {
                 //int prix = Math.abs(template.getPrix() * qua); // Va recommencer à Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
             }
 
-            if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) {
+            if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031 || idPnj == 50099) {
                 int prixPierres = Ints.checkedCast(prix); // Cas d'erreur: IllegalArgumentException
                 if (!player.hasItemTemplate(470001, prixPierres)) {
                     SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de pierres précieuses pour effectuer cet achat !");
@@ -4732,6 +4732,21 @@ public class GameThread implements Runnable {
                 } else {
                     Item newObj = template.createNewItem(qua, false, -1);
                     player.removeByTemplateID(1749, prixObj);
+                    if (player.addObjet(newObj, true))
+                        World.addObjet(newObj, true);
+                    SocketManager.GAME_SEND_BUY_OK_PACKET(out);
+                    SocketManager.GAME_SEND_STATS_PACKET(player);
+                    SocketManager.GAME_SEND_Ow_PACKET(player);
+                    return;
+                }
+            } else if (idPnj == 50100) {
+                int prixObj = Ints.checkedCast(prix);
+                if (!player.hasItemTemplate(895783, prixObj)) {
+                    SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de Relique Déese Anachore pour effectuer cet achat !");
+                    return;
+                } else {
+                    Item newObj = template.createNewItem(qua, false, -1);
+                    player.removeByTemplateID(895783, prixObj);
                     if (player.addObjet(newObj, true))
                         World.addObjet(newObj, true);
                     SocketManager.GAME_SEND_BUY_OK_PACKET(out);
@@ -5007,6 +5022,9 @@ public class GameThread implements Runnable {
                         return;
                     } else if (idPnj == 50086) {
                         SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Kamas de Nowel requis");
+                        return;
+                    } else if (idPnj == 50100) {
+                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Relique Déese Anachore requis");
                         return;
                     }
                 } catch (NumberFormatException e) {

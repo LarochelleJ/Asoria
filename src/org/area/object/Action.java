@@ -577,7 +577,7 @@ public class Action {
                         ValidMobGroup += monsterID + "," + monsterLevel + "," + monsterLevel + ";";
                     }
                     if (ValidMobGroup.isEmpty()) return;
-                    MobGroup group = new MobGroup(perso.getMap().get_nextObjectID(), perso.get_curCell().getID(), ValidMobGroup);
+                    MobGroup group = new MobGroup(perso.getMap().get_nextObjectID(), perso.get_curCell().getID(), ValidMobGroup, 0, 0, 0);
                     perso.getMap().startFigthVersusMonstres(perso, group);
                 } catch (Exception e) {
                     GameServer.addToLog(e.getMessage());

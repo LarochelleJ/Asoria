@@ -1109,7 +1109,18 @@ public class SQLManager {
                 Maps c = World.getCarte(RS.getShort("mapid"));
                 if (c == null) continue;
                 if (c.getCase(RS.getInt("cellid")) == null) continue;
-                c.addStaticGroup(RS.getInt("cellid"), RS.getString("groupData"));
+                String args = RS.getString("spawnTime");
+                int spawnTimeMin = 0;
+                int spawnTimeMax = 0;
+                int ellap = RS.getInt("ellap");
+                if (args.contains(";")) { // min / max set
+                    String[] minMax = args.split(";");
+                    spawnTimeMin = Integer.valueOf(minMax[0]);
+                    spawnTimeMax = Integer.valueOf(minMax[1]);
+                } else {
+                    spawnTimeMin = Integer.valueOf(args);
+                }
+                c.addStaticGroup(RS.getInt("cellid"), RS.getString("groupData"), spawnTimeMin, spawnTimeMax, ellap);
             }
             SQLManager.closeResultSet(RS);
         } catch (SQLException e) {
@@ -1760,14 +1771,33 @@ public class SQLManager {
         return -1;
     }
 
-    public static boolean SAVE_NEW_FIXGROUP(int mapID, int cellID, String groupData) {
+    public static boolean SAVE_NEW_FIXGROUP(int mapID, int cellID, String groupData, int ellap) {
         try {
-            String baseQuery = "REPLACE INTO `mobgroups_fix` VALUES(?,?,?)";
+            String baseQuery = "REPLACE INTO mobgroups_fix(mapid, cellid, groupData) VALUES(?,?,?)";
             PreparedStatement p = newTransact(baseQuery, Connection(false));
 
             p.setInt(1, mapID);
             p.setInt(2, cellID);
-            p.setString(3, groupData);
+            p.setString(3, groupData);;
+
+            p.execute();
+            closePreparedStatement(p);
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean SAVE_FIXGROUP(int mapID, int cellID, String groupData, int ellap) {
+        try {
+            String baseQuery = "UPDATE mobgroups_fix SET ellap = ? WHERE mapID = ? AND groupData = ?;";
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
+
+            p.setInt(1, ellap);
+            p.setInt(2, mapID);
+            p.setString(3, groupData);;
 
             p.execute();
             closePreparedStatement(p);

@@ -1,12 +1,7 @@
 package org.area.fight.object;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
 
 import org.area.client.Player;
 import org.area.client.Player.Stats;
@@ -51,6 +46,7 @@ public class Monster
 	public static class MobGroup
 	{
 		private int id;
+        private Maps map;
 		private int cellID;
 		private int orientation = 2;
 		private int align = -1;
@@ -61,6 +57,15 @@ public class Monster
 		private Timer _condTimer;
 		private long _creationDate;
 		private boolean shutStars = false;
+
+		// None fixed mob group spawn
+        private int spawnTimeMin = 0;
+        private int spawnTimeMax = 0;
+        public int spawnTimeFix = 0;
+        public int ellaps = 0;
+        public MobGroup child = null;
+        public String groupD;
+
 		public MobGroup(int Aid,int Aalign, ArrayList<MobGrade> possibles,Maps Map,int cell,int maxSize)
 		{
 			id = Aid;
@@ -200,12 +205,23 @@ public class Monster
 			isFix = false;
 		}
 		
-		public MobGroup(int Aid, int cID, String groupData)
+		public MobGroup(int Aid, int cID, String groupData, int spawnTimeMin, int spawnTimeMax, int ellap)
 		{
 			int maxLevel = 0;
 			id = Aid;
 			align = Constant.ALIGNEMENT_NEUTRE;
 			cellID = cID;
+            this.spawnTimeMin = spawnTimeMin;
+            this.spawnTimeMax = spawnTimeMax;
+            this.groupD = groupData;
+            ellaps = ellap;
+            if (haveSpawnTime()) {
+                if (haveVariableSpawnTime()) {
+                    this.spawnTimeFix = generateRandomSpawnTime();
+                } else {
+                    this.spawnTimeFix = spawnTimeMin;
+                }
+            }
 			aggroDistance = Constant.getAggroByLevel(maxLevel);
 			isFix = true;
 			_creationDate = System.currentTimeMillis();
@@ -230,6 +246,28 @@ public class Monster
 			}
 			orientation = (Formulas.getRandomValue(0, 3)*2)+1;
 		}
+
+        public int generateRandomSpawnTime() {
+            Random r = new Random();
+            int alea = r.nextInt((spawnTimeMax - spawnTimeMin)+1) + spawnTimeMin;
+            return alea;
+        }
+
+        public boolean haveVariableSpawnTime() {
+            return spawnTimeMax > 0 ? true : false;
+        }
+
+        public boolean haveSpawnTime() {
+            return spawnTimeMin > 0 ? true : false;
+        }
+
+        public void setMap(Maps map) {
+            this.map = map;
+        }
+
+        public Maps getMap() {
+            return map;
+        }
 
 		public int getID()
 		{

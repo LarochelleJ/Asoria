@@ -1544,11 +1544,11 @@ public class GmCommand {
             String groupData = infos[1];
 
             _perso.getMap().addStaticGroup(_perso.get_curCell().getID(),
-                    groupData);
+                    groupData, 0, 0, 0);
             String str = "Le grouppe a ete fixe";
             // Sauvegarde DB de la modif
             if (SQLManager.SAVE_NEW_FIXGROUP(_perso.getMap().get_id(),
-                    _perso.get_curCell().getID(), groupData))
+                    _perso.get_curCell().getID(), groupData, 0))
                 str += " et a ete sauvegarde dans la BDD";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
             return true;

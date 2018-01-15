@@ -21,7 +21,7 @@ public class EventSurvivor extends Thread{
 	public void run() {
 		SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(EventConstant.MAP_SURVIVANT, "", guid(EventConstant.MAP_SURVIVANT), "Event", Lang.text(Lang.LANG_82));
 		pause(4000);
-		MobGroup group  = new MobGroup(EventConstant.MAP_SURVIVANT.get_nextObjectID(),EventConstant.CELL_SURVIVANT,"236,1,1");
+		MobGroup group  = new MobGroup(EventConstant.MAP_SURVIVANT.get_nextObjectID(),EventConstant.CELL_SURVIVANT,"236,1,1", 0, 0, 0);
 		EventConstant.MAP_SURVIVANT.startEventFight(group, getEvent());
 		SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(EventConstant.MAP_SURVIVANT, "", guid(EventConstant.MAP_SURVIVANT), "Event", Lang.text(Lang.LANG_83));
 		pause(3000);

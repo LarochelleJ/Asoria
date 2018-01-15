@@ -1373,7 +1373,7 @@ public class Maps {
     }
 
     public void spawnNewGroup(boolean timer, int cellID, String groupData, String condition) {
-        MobGroup group = new MobGroup(nextObjectID, cellID, groupData);
+        MobGroup group = new MobGroup(nextObjectID, cellID, groupData, 0, 0, 0);
         if (group.getMobs().isEmpty()) return;
         _mobGroups.put(nextObjectID, group);
         group.setCondition(condition);
@@ -1388,9 +1388,9 @@ public class Maps {
             group.startCondTimer();
     }
 
-    public void spawnGroupOnCommand(int cellID, String groupData) {
-        MobGroup group = new MobGroup(nextObjectID, cellID, groupData);
-        if (group.getMobs().isEmpty()) return;
+    public MobGroup spawnGroupOnCommand(int cellID, String groupData) {
+        MobGroup group = new MobGroup(nextObjectID, cellID, groupData, 0, 0, 0);
+        if (group.getMobs().isEmpty()) return null;
         _mobGroups.put(nextObjectID, group);
         group.setIsFix(false);
 
@@ -1398,11 +1398,18 @@ public class Maps {
 
         SocketManager.GAME_SEND_MAP_MOBS_GM_PACKET(this, group);
         nextObjectID--;
+
+        return group;
     }
 
-    public void addStaticGroup(int cellID, String groupData) {
-        MobGroup group = new MobGroup(nextObjectID, cellID, groupData);
+    public void addStaticGroup(int cellID, String groupData, int minSpawnTime, int maxSpawnTime, int ellap) {
+        MobGroup group = new MobGroup(nextObjectID, cellID, groupData, minSpawnTime, maxSpawnTime, ellap);
         if (group.getMobs().isEmpty()) return;
+        group.setMap(this);
+        if (group.haveSpawnTime()) {
+            World.variableMobGroup.add(group);
+            return;
+        }
         _mobGroups.put(nextObjectID, group);
         nextObjectID--;
         _fixMobGroups.put(-1000 + nextObjectID, group);

@@ -115,6 +115,9 @@ public class World {
     private static Map<Integer, Map<String, String>> questSteps = new HashMap<Integer, Map<String, String>>();
     private static Map<Integer, Map<String, String>> questObjetives = new HashMap<Integer, Map<String, String>>();
 
+    // Liste des mobs avec spawnTime variables
+    public static List<Monster.MobGroup> variableMobGroup = new ArrayList<Monster.MobGroup>();
+
     // Liste des objets boutiques
     private static Map<Integer, Integer> _listeEchangeItem = new HashMap<Integer, Integer>();
 

@@ -21,12 +21,14 @@ import org.area.common.Formulas;
 import org.area.common.SQLManager;
 import org.area.common.SocketManager;
 import org.area.common.World;
+import org.area.fight.object.Monster;
 import org.area.kernel.Config;
 import org.area.kernel.Logs;
 import org.area.kernel.Main;
 import org.area.kernel.Reboot;
 
 import com.mysql.jdbc.PreparedStatement;
+import org.area.object.Maps;
 import org.joda.time.DateTime;
 
 public class GameServer implements Runnable{
@@ -64,6 +66,27 @@ public class GameServer implements Runnable{
 					SocketManager.GAME_SEND_Im_PACKET_TO_ALL("1165");
 				}
 			}, 30, 30, TimeUnit.MINUTES);
+
+            /** @Automatic MobGroup spawn **/
+			executorTimer.scheduleWithFixedDelay(new Runnable() {
+				public void run() {
+                    for (Monster.MobGroup group : World.variableMobGroup) {
+                        Maps m = group.getMap();
+                        boolean couldSpawn = (group.child == null || !m.getMobGroups().containsValue(group.child));
+                        if (couldSpawn) { // on incremente seulement si le groupe n'existe pas
+                            group.ellaps++;
+                        }
+                        if (group.ellaps >= group.spawnTimeFix && couldSpawn) { // va spawn et n'est pas déjà spawn
+                            group.ellaps = 0;
+                            if (group.haveVariableSpawnTime()) {
+                                group.spawnTimeFix = group.generateRandomSpawnTime();
+                            }
+                            group.child = m.spawnGroupOnCommand(group.getCellID(), group.groupD);
+                        }
+                        SQLManager.SAVE_FIXGROUP(m.get_id(), group.getCellID(), group.groupD, group.ellaps);
+                    }
+				}
+			}, 1, 1, TimeUnit.MINUTES);
 
 			/** @Automatic pub **/
 			executorTimer.scheduleWithFixedDelay(new Runnable() {
