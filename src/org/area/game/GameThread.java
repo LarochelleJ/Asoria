@@ -5004,7 +5004,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_ITEM_VENDOR_LIST_PACKET(player, npc);
                     player.set_isTradingWith(npcID);
                     int idPnj = player.getMap().getNPC(player.get_isTradingWith()).get_template().get_id(); // je récupère la vrai id du pnj et non l'id qu'il a sur la map comme le fait NpcID
-                    if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031) // message notif pierres précieuses @Flow
+                    if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031 || idPnj == 50099) // message notif pierres précieuses @Flow
                     {
                         SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de pierres précieuses requis");
                         return;
