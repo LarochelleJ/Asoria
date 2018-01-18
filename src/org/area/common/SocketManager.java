@@ -936,8 +936,8 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Fight : Send>>" + packet.toString());
     }
 
-    public static void GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(Fight fight, int teams, int guid, int time) {
-        String packet = "GTS" + guid + "|" + time;
+    public static void GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(Fight fight, int teams, int guid, int time, int guidControl) {
+        String packet = "GTS" + guid + "|" + time + "|" + guidControl;
         for (Fighter f : fight.getFighters(teams)) {
             if (f.hasLeft()) continue;
             if (f.getPersonnage() == null || !f.getPersonnage().isOnline()) continue;
@@ -947,8 +947,8 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Fight : Send>>" + packet);
     }
 
-    public static void GAME_SEND_GAMETURNSTART_PACKET(Player P, int guid, int time) {
-        String packet = "GTS" + guid + "|" + time;
+    public static void GAME_SEND_GAMETURNSTART_PACKET(Player P, int guid, int time, int guidControl) {
+        String packet = "GTS" + guid + "|" + time + "|" + guidControl;
         send(P, packet);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Fight : Send>>" + packet);

@@ -1080,7 +1080,7 @@ public class Fight {
         }
         if (Config.DEBUG)
             GameServer.addToLog("(" + _curPlayer + ")Debut du tour de Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID());
-        SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(this, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN);
+        SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(this, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN, _ordreJeu.get(_curPlayer).estInvocationControllable() ? _ordreJeu.get(_curPlayer).getInvocator().getGUID() : _ordreJeu.get(_curPlayer).getGUID());
         scheduleTimer(45, true);
         GameServer.addToLog("(scheduledTime) startTurn():" + _curPlayer);
         /*}else{
@@ -1115,7 +1115,7 @@ public class Fight {
     }
 
     @Deprecated
-    protected synchronized void startTurn2() // Nouveau startTurn() @Flow
+   /* protected synchronized void startTurn2() // Nouveau startTurn() @Flow
     {
         setHasUsedCoopTranspo(false);
         if (Thread.interrupted()) {
@@ -1251,7 +1251,7 @@ public class Fight {
         }
         if (Config.DEBUG)
             GameServer.addToLog("(" + _curPlayer + ")Debut du tour de Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID());
-        SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(fight, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN);
+        SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(fight, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN, _ordreJeu.get(_curPlayer).getGUID());
         scheduleTimer(60, true);
         verifIfTeamAllDead();
 
@@ -1280,7 +1280,7 @@ public class Fight {
     }
     //}, 500, TimeUnit.MILLISECONDS);
 
-    //}
+    //}*/
 
     public synchronized void endTurn() // Révision de la fonction endTurn() @Flow
     {
@@ -1919,6 +1919,7 @@ public class Fight {
         }
         if (_ordreJeu.size() <= _curPlayer) return false;
         if (_ordreJeu.get(_curPlayer) == null) return false;
+
         if (Config.DEBUG)
             GameServer.addToLog("(" + _curPlayer + ")Tentative de deplacement de Fighter ID= " + f.getGUID() + " a partir de la case " + f.get_fightCell().getID());
         if (Config.DEBUG) GameServer.addToLog("Path: " + path);
@@ -1972,11 +1973,16 @@ public class Fight {
         AtomicReference<String> pathRef = new AtomicReference<String>(path);
         int nStep = Pathfinding.isValidPath(_map, f.get_fightCell().getID(), pathRef, this);
         String newPath = pathRef.get();
+
+        Player client = f.getPersonnage();
+        if (f.estInvocationControllable()) {
+            client = f.getInvocator().getPersonnage();
+        }
         if (nStep > _curFighterPM || nStep == -1000) {
             if (Config.DEBUG)
                 GameServer.addToLog("(" + _curPlayer + ") Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID() + " a demander un chemin inaccessible ou trop loin");
-            if (f.getPersonnage() != null && f.getPersonnage().getAccount() != null && f.getPersonnage().getAccount().getGameThread() != null) {
-                SocketManager.GAME_SEND_GA_PACKET(f.getPersonnage().getAccount().getGameThread().getOut(), "" + 151, "" + f.getGUID(), "-1", "");
+            if (client != null && client.getAccount() != null && client.getAccount().getGameThread() != null) {
+                SocketManager.GAME_SEND_GA_PACKET(client.getAccount().getGameThread().getOut(), "" + 151, "" + f.getGUID(), "-1", "");
             }
             return false;
         }
@@ -2065,28 +2071,30 @@ public class Fight {
         }
         }
         catch(Exception e){}*/
+        client.getAccount().getGameThread().addAction(GA);
 
-        if (f.getPersonnage() == null) // Pour les mobs @Flow Modifications nécessaires #Temporisation
+        if (client == null || f.estInvocationControllable()) // Pour les mobs @Flow Modifications nécessaires #Temporisation
         {
-            try {
-                Thread.sleep(1000 + 150 * nStep);//Estimation de la durée du déplacement
-            } catch (InterruptedException e) {
+            if (client == null) {
+                try {
+                    Thread.sleep(1000 + 150 * nStep);//Estimation de la durée du déplacement
+                } catch (InterruptedException e) {
+                }
             }
 
             SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this, 7, _curAction);
             _curAction = "";
             ArrayList<Piege> P = new ArrayList<Piege>();
             P.addAll(_traps);
-            for (Piege p : P) {
+            for (Piege pi : P) {
                 Fighter F = _ordreJeu.get(_curPlayer);
-                int dist = Pathfinding.getDistanceBetween(_map, p.get_cell().getID(), F.get_fightCell().getID());
+                int dist = Pathfinding.getDistanceBetween(_map, pi.get_cell().getID(), F.get_fightCell().getID());
                 //on active le piege
-                if (dist <= p.get_size()) p.onTraped(F);
+                if (dist <= pi.get_size()) pi.onTraped(F);
             }
             return true;
         }
 
-        f.getPersonnage().getAccount().getGameThread().addAction(GA);
         if ((this._type == 4) && (this._challenges.size() > 0) && !this._ordreJeu.get(this._curPlayer).isInvocation() && !this._ordreJeu.get(this._curPlayer).isDouble() && !this._ordreJeu.get(this._curPlayer).isPerco()) {
             for (Entry<Integer, Challenge> c : this._challenges.entrySet()) {
                 if (c.getValue() == null)
@@ -2125,6 +2133,11 @@ public class Fight {
 
     public void playerPass(Player _perso) {
         Fighter f = getFighterByPerso(_perso);
+        Fighter cur = _perso.getFight().getCurFighter();
+        if (cur == null) return;
+        if (cur.isInvocation() && cur.getInvocator() == f && cur.estInvocationControllable()) {
+            f = _perso.getFight().getCurFighter();
+        }
         if (f == null) return;
         if (!f.canPlay()) return;
         if (!_curAction.equals("")) return;
@@ -4521,7 +4534,7 @@ public class Fight {
                                         } else {
                                             SocketManager.GAME_SEND_GS_PACKET(perso);//Début du jeu
                                             SocketManager.GAME_SEND_GTL_PACKET(perso, fight);//Liste des tours
-                                            SocketManager.GAME_SEND_GAMETURNSTART_PACKET(perso, _ordreJeu.get(_curPlayer).getGUID(), (int) getRemaimingTime());
+                                            SocketManager.GAME_SEND_GAMETURNSTART_PACKET(perso, _ordreJeu.get(_curPlayer).getGUID(), (int) getRemaimingTime(), _ordreJeu.get(_curPlayer).getGUID());
                                             for (Entry<Integer, Challenge> c : fight._challenges.entrySet()) {
                                                 if (c.getValue() == null)
                                                     continue;
@@ -5135,7 +5148,7 @@ public class Fight {
         SocketManager.GAME_SEND_GTL_PACKET(p, this);
         SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(p.getMap(), p.getGuid());
         SocketManager.GAME_SEND_MAP_FIGHT_GMS_PACKETS(this, _map, p);
-        SocketManager.GAME_SEND_GAMETURNSTART_PACKET(p, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN);
+        SocketManager.GAME_SEND_GAMETURNSTART_PACKET(p, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN, _ordreJeu.get(_curPlayer).getGUID());
         _spec.put(p.getGuid(), p);
         p.set_fight(this);
         SocketManager.GAME_SEND_Im_PACKET_TO_FIGHT(this, 7, "036;" + p.getName());

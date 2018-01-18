@@ -112,6 +112,9 @@ public class IA {
                 try {
 
                     switch (_fighter.getMob().getTemplate().getIAType()) {
+                        case -1: // Ne rien faire et ne pas passé son tour (invocation controllable)
+                            apply_nothing(_fighter);
+                            break;
                         case 0:// Ne rien faire
                             apply_type0(_fighter, _fight);
                             break;
@@ -194,6 +197,11 @@ public class IA {
         private static void apply_type0(Fighter F, Fight fight) {
             while (!stop && F.canPlay()) {
                 stop = true;
+            }
+        }
+
+        private static void apply_nothing(Fighter F) {
+            while (F.canPlay()) {
             }
         }
 

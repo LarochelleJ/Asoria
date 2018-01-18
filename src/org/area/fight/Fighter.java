@@ -72,6 +72,9 @@ public class Fighter {
     private int _tourRestants = 0;
     private int _nbDeco = 0;
 
+    // Contrôle invocation
+    private boolean invocationControllable = false;
+
     private Player.BoostSpellStats _SpellBoost = null;
 
     public Fighter get_oldCible() {
@@ -1131,6 +1134,14 @@ public class Fighter {
 
     public int getNBDeco() {
         return _nbDeco;
+    }
+
+    public boolean estInvocationControllable() {
+        return invocationControllable;
+    }
+
+    public void setInvocationControler(boolean bool) {
+        invocationControllable = bool;
     }
 
     public void Reconnect() {

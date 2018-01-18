@@ -6784,6 +6784,12 @@ public class GameThread implements Runnable {
             player.set_away(true);
         } else {
             Fighter F = player.getFight().getFighterByPerso(player);
+            Fighter cur = player.getFight().getCurFighter();
+            if (cur == null) return;
+            if (cur.isInvocation() && cur.getInvocator() == F && cur.estInvocationControllable()) {
+                player.sendText("Déplacements pour l'invocation");
+                F = player.getFight().getCurFighter();
+            }
             if (F == null)
                 return;
             GA._args = path;
