@@ -2051,11 +2051,9 @@ public class SpellEffect {
         Fighter F = new Fighter(fight, MG);
         F.setTeam(caster.getTeam());
         F.setInvocator(caster);
-        if (mobID == 43) { // Test invocation controllable - tofu
+        if (mobID == 43 && caster.getPersonnage() != null) { // Test invocation controllable - tofu
             F.setInvocationControler(true);
-            if (caster.getPersonnage() != null) {
-                caster.getPersonnage().sendText("Test des activations controlable sur le tofu");
-            }
+            caster.getPersonnage().sendText("Test des activations controlable sur le tofu");
         }
         fight.get_map().getCase(cell).addFighter(F);
         F.set_fightCell(fight.get_map().getCase(cell));

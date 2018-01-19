@@ -2071,7 +2071,6 @@ public class Fight {
         }
         }
         catch(Exception e){}*/
-        client.getAccount().getGameThread().addAction(GA);
 
         if (client == null || f.estInvocationControllable()) // Pour les mobs @Flow Modifications nécessaires #Temporisation
         {
@@ -2094,6 +2093,8 @@ public class Fight {
             }
             return true;
         }
+
+        client.getAccount().getGameThread().addAction(GA);
 
         if ((this._type == 4) && (this._challenges.size() > 0) && !this._ordreJeu.get(this._curPlayer).isInvocation() && !this._ordreJeu.get(this._curPlayer).isDouble() && !this._ordreJeu.get(this._curPlayer).isPerco()) {
             for (Entry<Integer, Challenge> c : this._challenges.entrySet()) {
