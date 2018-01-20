@@ -135,6 +135,9 @@ public class Player {
     //GvG
     private int GvG = -1;
 
+    // invocation controllable
+    public boolean controleUneInvocation = false;
+
     public NpcExchange getNpcExchange() {
         return npcExchange;
     }
@@ -1259,6 +1262,10 @@ public class Player {
         final Player p = this;
         if (_type == Constant.FIGHT_TYPE_PVM) { // Seulement pvm
             p.endfigh = true;
+            if (p.controleUneInvocation) {
+                SocketManager.GAME_SEND_SPELL_LIST(p);
+                p.controleUneInvocation = false;
+            }
         }
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {

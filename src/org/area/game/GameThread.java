@@ -6446,29 +6446,35 @@ public class GameThread implements Runnable {
             int spellID = Integer.parseInt(splt[0].substring(5));
             int caseID = Integer.parseInt(splt[1]);
             if (player.getFight() != null) {
-
-                SortStats SS = player.getSortStatBySortIfHas(spellID);
-                if (SS == null) {
-                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
-                    SocketManager.GAME_SEND_Im_PACKET(player, "1169");
-                    SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(player.getFight(), 7, 0, player.getGuid());
-                    return;
-                }
-                boolean canLaunch = true;
-                if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION) {
-                    if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
-                        canLaunch = false;
+                Fighter cur = player.getFight().getCurFighter();
+                if (cur.estInvocationControllable() && cur.getInvocator().getPersonnage() == player) {
+                    if (cur.getMob().getSpells().containsKey(spellID)) {
+                        player.getFight().tryCastSpell(cur, cur.getMob().getSpells().get(spellID), caseID);
                     }
-                } else if (player.getFight().get_type() == Constant.FIGHT_TYPE_PVM) {
-                    if (Constant.SORTS_INTERDITS_PVM.contains(spellID)) {
-                        canLaunch = false;
-                    }
-                }
-                if (canLaunch) {
-                    player.getFight().tryCastSpell(player.getFight().getFighterByPerso(player), SS, caseID);
                 } else {
-                    player.sendText("Vous ne pouvez pas utilisé ce sort pour ce type de combat !");
-                    SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
+                    SortStats SS = player.getSortStatBySortIfHas(spellID);
+                    if (SS == null) {
+                        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
+                        SocketManager.GAME_SEND_Im_PACKET(player, "1169");
+                        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(player.getFight(), 7, 0, player.getGuid());
+                        return;
+                    }
+                    boolean canLaunch = true;
+                    if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION) {
+                        if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
+                            canLaunch = false;
+                        }
+                    } else if (player.getFight().get_type() == Constant.FIGHT_TYPE_PVM) {
+                        if (Constant.SORTS_INTERDITS_PVM.contains(spellID)) {
+                            canLaunch = false;
+                        }
+                    }
+                    if (canLaunch) {
+                        player.getFight().tryCastSpell(player.getFight().getFighterByPerso(player), SS, caseID);
+                    } else {
+                        player.sendText("Vous ne pouvez pas utilisé ce sort pour ce type de combat !");
+                        SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
+                    }
                 }
             }
         } catch (NumberFormatException e) {
@@ -6786,7 +6792,7 @@ public class GameThread implements Runnable {
             Fighter F = player.getFight().getFighterByPerso(player);
             Fighter cur = player.getFight().getCurFighter();
             if (cur == null) return;
-            if (cur.isInvocation() && cur.getInvocator() == F && cur.estInvocationControllable()) {
+            if (cur.estInvocationControllable() && cur.getInvocator() == F) {
                 F = player.getFight().getCurFighter();
             }
             if (F == null)

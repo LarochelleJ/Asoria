@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import org.area.client.Player;
 import org.area.client.Player.Stats;
 import org.area.common.Constant;
+import org.area.common.CryptManager;
 import org.area.common.Formulas;
 import org.area.common.World;
 import org.area.common.World.Drop;
@@ -644,6 +645,18 @@ public class Monster
 		public Stats getStats()
 		{
 			return new Stats(stats);
+		}
+
+		public String parseSpellList() {
+			StringBuilder packet = new StringBuilder();
+			packet.append("SL");
+            int sortPlace = 1;
+			for (Iterator<SortStats> i = spells.values().iterator(); i.hasNext(); ) {
+				SortStats SS = i.next();
+				packet.append(SS.getSpellID()).append("~").append(SS.getLevel()).append("~").append(CryptManager.getHashedValueByInt(sortPlace)).append(";");
+                sortPlace++;
+			}
+			return packet.toString();
 		}
 		
 		public int getLevel()

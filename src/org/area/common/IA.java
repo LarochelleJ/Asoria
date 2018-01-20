@@ -110,57 +110,57 @@ public class IA {
                 _fight.endTurn();
             } else {
                 try {
-
-                    switch (_fighter.getMob().getTemplate().getIAType()) {
-                        case -1: // Ne rien faire et ne pas passé son tour (invocation controllable)
-                            apply_nothing(_fighter);
-                            break;
-                        case 0:// Ne rien faire
-                            apply_type0(_fighter, _fight);
-                            break;
-                        case 1:// Attaque, Buff soi-mï¿½me, Buff Alliï¿½s, Avancer
-                            // vers ennemis.
-                            apply_type1(_fighter, _fight);
-                            break;
-                        case 2:// Soutien
-                            apply_type2(_fighter, _fight);
-                            break;
-                        case 3:// Avancer vers Alliï¿½s, Buff Alliï¿½s, Buff sois
-                            // mï¿½me
-                            apply_type3(_fighter, _fight);
-                            break;
-                        case 4:// Attaque, Fuite, Buff Alliï¿½s, Buff sois mï¿½me
-                            apply_type4(_fighter, _fight);
-                            break;
-                        case 5:// Avancer vers ennemis
-                            apply_type5(_fighter, _fight);
-                            break;
-                        case 6:// IA type invocations
-                            apply_type6(_fighter, _fight);
-                            break;
-                        case 7: //IA type Tonneau
-                            apply_type7(_fighter, _fight);
-                            break;
-                        case 8: //IA type Cadran Xelor
-                            apply_type8(_fighter, _fight);
-                            break;
-                        case 9: //IA type Pandawasta
-                            apply_type9(_fighter, _fight);
-                        case 10: //IA Surpuissante, invocation + buff + fuite
-                            apply_type10(_fighter, _fight);
-                            break;
-                        case 11: //IA Fourbe, attaque + fuite
-                            apply_type11(_fighter, _fight);
-                            break;
-                        case 12: // Vortex
-                            apply_type12(_fighter, _fight);
-                            break;
-                        case 13: // Dragonnet rouge Attaque + fuit
-                            apply_type13(_fighter, _fight);
-                            break;
-                        default: // F.
-                            apply_type1(_fighter, _fight);
-                            break;
+                    if (_fighter.estInvocationControllable()) {
+                        apply_nothing(_fighter);
+                    } else {
+                        switch (_fighter.getMob().getTemplate().getIAType()) {
+                            case 0:// Ne rien faire
+                                apply_type0(_fighter, _fight);
+                                break;
+                            case 1:// Attaque, Buff soi-mï¿½me, Buff Alliï¿½s, Avancer
+                                // vers ennemis.
+                                apply_type1(_fighter, _fight);
+                                break;
+                            case 2:// Soutien
+                                apply_type2(_fighter, _fight);
+                                break;
+                            case 3:// Avancer vers Alliï¿½s, Buff Alliï¿½s, Buff sois
+                                // mï¿½me
+                                apply_type3(_fighter, _fight);
+                                break;
+                            case 4:// Attaque, Fuite, Buff Alliï¿½s, Buff sois mï¿½me
+                                apply_type4(_fighter, _fight);
+                                break;
+                            case 5:// Avancer vers ennemis
+                                apply_type5(_fighter, _fight);
+                                break;
+                            case 6:// IA type invocations
+                                apply_type6(_fighter, _fight);
+                                break;
+                            case 7: //IA type Tonneau
+                                apply_type7(_fighter, _fight);
+                                break;
+                            case 8: //IA type Cadran Xelor
+                                apply_type8(_fighter, _fight);
+                                break;
+                            case 9: //IA type Pandawasta
+                                apply_type9(_fighter, _fight);
+                            case 10: //IA Surpuissante, invocation + buff + fuite
+                                apply_type10(_fighter, _fight);
+                                break;
+                            case 11: //IA Fourbe, attaque + fuite
+                                apply_type11(_fighter, _fight);
+                                break;
+                            case 12: // Vortex
+                                apply_type12(_fighter, _fight);
+                                break;
+                            case 13: // Dragonnet rouge Attaque + fuit
+                                apply_type13(_fighter, _fight);
+                                break;
+                            default: // F.
+                                apply_type1(_fighter, _fight);
+                                break;
+                        }
                     }
                     /**try {
                      Thread.sleep(2000); // C'est si lent dofus =O | Et ta soeur elle est lente ?

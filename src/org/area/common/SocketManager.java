@@ -13,6 +13,7 @@ import org.area.common.World.ItemSet;
 import org.area.fight.Fight;
 import org.area.fight.Fighter;
 import org.area.fight.object.Collector;
+import org.area.fight.object.Monster;
 import org.area.fight.object.Monster.MobGroup;
 import org.area.fight.object.Prism;
 import org.area.game.GameSendThread;
@@ -1107,6 +1108,13 @@ public class SocketManager {
 
     public static void GAME_SEND_SPELL_LIST(Player perso) {
         String packet = perso.parseSpellList();
+        send(perso, packet);
+        if (Config.DEBUG)
+            GameServer.addToSockLog("Game: Send>>" + packet);
+    }
+
+    public static void GAME_SEND_SPELL_LIST(Player perso, Monster.MobGrade mb) {
+        String packet = mb.parseSpellList();
         send(perso, packet);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Send>>" + packet);

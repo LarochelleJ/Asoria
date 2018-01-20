@@ -1080,6 +1080,11 @@ public class Fight {
         }
         if (Config.DEBUG)
             GameServer.addToLog("(" + _curPlayer + ")Debut du tour de Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID());
+        if (_ordreJeu.get(_curPlayer).estInvocationControllable()) {
+            SocketManager.GAME_SEND_SPELL_LIST(_ordreJeu.get(_curPlayer).getInvocator().getPersonnage(), _ordreJeu.get(_curPlayer).getMob());
+        } else if (_ordreJeu.get(_curPlayer).getPersonnage() != null && _ordreJeu.get(_curPlayer).getPersonnage().controleUneInvocation) {
+            SocketManager.GAME_SEND_SPELL_LIST(_ordreJeu.get(_curPlayer).getPersonnage());
+        }
         SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(this, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN, _ordreJeu.get(_curPlayer).estInvocationControllable() ? _ordreJeu.get(_curPlayer).getInvocator().getGUID() : _ordreJeu.get(_curPlayer).getGUID());
         scheduleTimer(45, true);
         GameServer.addToLog("(scheduledTime) startTurn():" + _curPlayer);
@@ -2171,7 +2176,7 @@ public class Fight {
         Case Cell = _map.getCase(caseID);
         _curAction = "casting";
         _spellCastDelay = 80;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
-        if (fighter.getMob() != null) {
+        if (fighter.getMob() != null && !fighter.estInvocationControllable()) {
             addSpellCastDelay(900);
         }
         if (CanCastSpell(fighter, Spell, Cell, -1) != false) // @Flow, ça foire ici. #Fixé
@@ -2256,7 +2261,7 @@ public class Fight {
                 }
             }
             verifIfTeamAllDead();
-        } else if (fighter.getMob() != null || fighter.isInvocation()) {
+        } else if (!fighter.estInvocationControllable() && (fighter.getMob() != null || fighter.isInvocation())) {
             return 10;
         }
        try {
@@ -2384,7 +2389,11 @@ public class Fight {
         }
         Player perso = null;
         if (fighter != null) {
-            perso = fighter.getPersonnage();
+            if (fighter.estInvocationControllable()) {
+                perso = fighter.getInvocator().getPersonnage();
+            } else {
+                perso = fighter.getPersonnage();
+            }
         } else {
             return false;
         }
@@ -3875,7 +3884,10 @@ public class Fight {
                     F.getPersonnage().warpToSavePos();
                     continue;
                 }
-
+                if (F.getPersonnage().controleUneInvocation) {
+                    SocketManager.GAME_SEND_SPELL_LIST(F.getPersonnage());
+                    F.getPersonnage().controleUneInvocation = false;
+                }
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE && _type != Constant.FIGHT_TYPE_PVT) {
                     F.getPersonnage().warpToSavePos();
                     F.getPersonnage().set_PDV(1);
@@ -4612,6 +4624,10 @@ public class Fight {
                 F.getPersonnage().playerWhoFollowMe.clear();
             }
             F.getPersonnage().mettreCombatBloque(false);
+            if (F.getPersonnage().controleUneInvocation) {
+                SocketManager.GAME_SEND_SPELL_LIST(F.getPersonnage());
+                F.getPersonnage().controleUneInvocation = false;
+            }
             switch (_type) {
                 case Constant.FIGHT_TYPE_CHALLENGE://Défie
                 case Constant.FIGHT_TYPE_AGRESSION://PVP

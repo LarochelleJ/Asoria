@@ -1,11 +1,7 @@
 package org.area.spell;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
 
 import org.area.client.Player;
 import org.area.common.Constant;
@@ -2051,9 +2047,10 @@ public class SpellEffect {
         Fighter F = new Fighter(fight, MG);
         F.setTeam(caster.getTeam());
         F.setInvocator(caster);
-        if (mobID == 43 && caster.getPersonnage() != null) { // Test invocation controllable - tofu
+        List<Integer> mobControllable = Arrays.asList(43, 36, 41, 40, 44, 37, 239);
+        if (mobControllable.contains(mobID )&& caster.getPersonnage() != null) { // Test invocation controllable - tofu
             F.setInvocationControler(true);
-            caster.getPersonnage().sendText("Test des activations controlable sur le tofu");
+            caster.getPersonnage().controleUneInvocation = true;
         }
         fight.get_map().getCase(cell).addFighter(F);
         F.set_fightCell(fight.get_map().getCase(cell));
