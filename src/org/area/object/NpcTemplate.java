@@ -365,9 +365,28 @@ public class NpcTemplate {
         StringBuilder items = new StringBuilder();
         if (_ventes.isEmpty()) return "";
         for (ObjTemplate obj : _ventes) {
-            items.append(obj.parseItemTemplateStats()).append("|");
+            items.append(obj.parseItemTemplateStats()).append(";").append(getMoneyType()).append("|");
         }
         return items.toString();
+    }
+
+    private int getMoneyType() {
+        int type = 0;
+        int idPnj = get_id();
+        if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031 || idPnj == 50099) {
+            type = 470001;
+        } else if (idPnj == 50029) {
+            type = 11022;
+        } else if (idPnj == 816) {
+            type = 1749;
+        } else if (idPnj == 50100) {
+            type = 895783;
+        } else if (idPnj == 50075) {
+            type = 895607;
+        } else if (idPnj == 50086) {
+            type = 895734;
+        }
+        return type;
     }
 
     public boolean addItemVendor(ObjTemplate T) {

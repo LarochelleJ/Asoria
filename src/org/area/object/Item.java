@@ -387,7 +387,7 @@ public class Item {
 
 
         public String parseItemTemplateStats() {
-            return (this.ID + ";" + StrTemplate);
+            return (this.ID + ";" + StrTemplate + ";" + this.prix);
         }
 
         public void applyAction(Player perso, Player target, int objID, short cellid) {

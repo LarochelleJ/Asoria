@@ -2635,8 +2635,9 @@ public class Player {
     }
 
     private int obtenirPrixRevente(int prixListe) {
-        int prixReventePossible = prixListe / 100;
-        return prixReventePossible < 1 ? 0 : prixReventePossible;
+       /* int prixReventePossible = prixListe / 100;
+        return prixReventePossible < 1 ? 0 : prixReventePossible;*/
+        return 0;
     }
 
     public void sellItem(int guid, int qua) {
