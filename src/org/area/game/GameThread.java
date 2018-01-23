@@ -4694,7 +4694,7 @@ public class GameThread implements Runnable {
                 //int prix = Math.abs(template.getPrix() * qua); // Va recommencer à Long.MIN_VALUE, mauvais car le test condition est prix <= kamas du joueur
             }
 
-            if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031 || idPnj == 50099) {
+            if (idPnj == 30226 || (idPnj != 30235 && idPnj > 30233 && idPnj < 30238) || idPnj == 50031 || idPnj == 50099) {
                 int prixPierres = Ints.checkedCast(prix); // Cas d'erreur: IllegalArgumentException
                 if (!player.hasItemTemplate(470001, prixPierres)) {
                     SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de pierres précieuses pour effectuer cet achat !");
@@ -4772,7 +4772,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_Ow_PACKET(player);
                     return;
                 }
-            } else if (idPnj == 50075) {
+            } else if (idPnj == 50075 || idPnj == 30235) {
                 int prixObj = Ints.checkedCast(prix);
                 if (!player.hasItemTemplate(895607, prixObj)) {
                     SocketManager.GAME_SEND_POPUP(player, "Vous n'avez pas assez de fragments provenant d'Anachore pour effectuer cet achat !");
@@ -5003,30 +5003,6 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_ECK_PACKET(out, 0, npcID + "");
                     SocketManager.GAME_SEND_ITEM_VENDOR_LIST_PACKET(player, npc);
                     player.set_isTradingWith(npcID);
-                    int idPnj = player.getMap().getNPC(player.get_isTradingWith()).get_template().get_id(); // je récupère la vrai id du pnj et non l'id qu'il a sur la map comme le fait NpcID
-                    if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031 || idPnj == 50099) // message notif pierres précieuses @Flow
-                    {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de pierres précieuses requis");
-                        return;
-                    } else if (idPnj == 50029) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Kolizeton requis");
-                        return;
-                    } else if (idPnj == 816) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de jeton d'event Area requis");
-                        return;
-                    } else if (idPnj == 21215) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de points boutique requis");
-                        return;
-                    } else if (idPnj == 50075) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de fragments requis");
-                        return;
-                    } else if (idPnj == 50086) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Kamas de Nowel requis");
-                        return;
-                    } else if (idPnj == 50100) {
-                        SocketManager.GAME_SEND_POPUP(player, "Les prix affichés correspondent au nombre de Relique Déese Anachore requis");
-                        return;
-                    }
                 } catch (NumberFormatException e) {
                 }
                 ;
@@ -6411,12 +6387,15 @@ public class GameThread implements Runnable {
             } catch (Exception e) {
                 return;
             }
-            ;
-
-            player.getFight().tryCaC(player, cellID);
+            short mapID = player.getMap().get_id();
+            if (mapID > 13069 && mapID < 13090 || mapID == 13044) {
+                player.sendText("L'utilisation des armes n'est pas autorisée sur cette carte !");
+                SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
+            } else {
+                player.getFight().tryCaC(player, cellID);
+            }
         } catch (Exception e) {
         }
-        ;
     }
 
 	/*private synchronized void game_tryCastSpell(String packet) {

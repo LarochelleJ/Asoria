@@ -17,6 +17,7 @@ import org.area.common.SQLManager;
 import org.area.common.SocketManager;
 import org.area.common.World;
 import org.area.game.GameServer;
+import org.area.game.tools.ParseTool;
 import org.area.kernel.Config;
 import org.area.object.job.Job;
 import org.area.spell.SpellEffect;
@@ -386,8 +387,8 @@ public class Item {
         }**/
 
 
-        public String parseItemTemplateStats() {
-            return (this.ID + ";" + StrTemplate + ";" + this.prix);
+        public String parseItemTemplateStats(boolean pnjShop) {
+            return (this.ID + ";" + StrTemplate + ";" + (pnjShop ? ParseTool.getShop().get(this.ID) : this.prix));
         }
 
         public void applyAction(Player perso, Player target, int objID, short cellid) {

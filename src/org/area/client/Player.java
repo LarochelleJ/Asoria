@@ -2762,10 +2762,11 @@ public class Player {
             if (_lvl == 200) {
                 SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau 200", "D85F03");
             }
-
+            if (_lvl == 205) {
+                this.learnSpell(6004, 1, true, true);
+            }
             if (_lvl == World.getExpLevelSize() && prestige == 20) {
                 SocketManager.GAME_SEND_MESSAGE_TO_ALL("Félicitation à " + _name + " qui vient d'atteindre le niveau maximum d'Area !", "D85F03");
-                this.learnSpell(6004, 1, true, true);
             }
         }
 

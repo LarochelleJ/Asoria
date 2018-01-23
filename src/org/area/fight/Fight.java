@@ -3086,7 +3086,8 @@ public class Fight {
             }
             // drop pierres précieuses @Flow
             if (type == Constant.FIGHT_TYPE_CHALLENGE && _mobGroup != null && i.isDead() == false) {
-                if (i.getPersonnage() != null && i.getPersonnage().getMap().get_id() != 534) {
+                int mapID = i.getPersonnage().getMap().get_id();
+                if (i.getPersonnage() != null && mapID != 534 && mapID != 27012) {
                     int max = Formulas.getKamasWin(i, TEAM1, minkamas, maxkamas) / 100;
                     if (max <= 0) // Valeurs négatives
                     {

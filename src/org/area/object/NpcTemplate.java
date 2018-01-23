@@ -365,7 +365,7 @@ public class NpcTemplate {
         StringBuilder items = new StringBuilder();
         if (_ventes.isEmpty()) return "";
         for (ObjTemplate obj : _ventes) {
-            items.append(obj.parseItemTemplateStats()).append(";").append(getMoneyType()).append("|");
+            items.append(obj.parseItemTemplateStats(_id == 21215)).append(";").append(getMoneyType()).append("|");
         }
         return items.toString();
     }
@@ -373,18 +373,20 @@ public class NpcTemplate {
     private int getMoneyType() {
         int type = 0;
         int idPnj = get_id();
-        if (idPnj == 30226 || idPnj > 30233 && idPnj < 30238 || idPnj == 50031 || idPnj == 50099) {
+        if (idPnj == 30226 || (idPnj != 30235 && idPnj > 30233 && idPnj < 30238) || idPnj == 50031 || idPnj == 50099) { // pierres précieuses
             type = 470001;
-        } else if (idPnj == 50029) {
+        } else if (idPnj == 50029) { // Kolizeton
             type = 11022;
-        } else if (idPnj == 816) {
+        } else if (idPnj == 816) { // jeton event
             type = 1749;
-        } else if (idPnj == 50100) {
+        } else if (idPnj == 50100) { // Relique Déese Anachore
             type = 895783;
-        } else if (idPnj == 50075) {
+        } else if (idPnj == 50075 || idPnj == 30235) { // fragments anachore
             type = 895607;
-        } else if (idPnj == 50086) {
+        } else if (idPnj == 50086) { // kams nowel
             type = 895734;
+        } else if (idPnj == 21215) {
+            type = 1; // point boutique
         }
         return type;
     }
