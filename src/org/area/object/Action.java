@@ -43,7 +43,8 @@ public class Action {
         this.cond = cond;
     }
 
-    public void execute_item_action(int ID, Player perso) {
+    public boolean execute_item_action(int ID, Player perso) {
+        boolean noError = true;
         switch (ID) {
             default:
                 break;
@@ -52,9 +53,10 @@ public class Action {
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
                 break;
             case 29004: // Bonbon d'xp x2 72h
-                perso.setCandy(29004);
+                noError = perso.setCandy(29004);
                 break;
         }
+        return noError;
     }
 
     public void apply(Player perso, Player target, int itemID, int cellid) {
@@ -190,13 +192,9 @@ public class Action {
                                 World.addObjet(O, true);
                         } else {
                         /* Action item perso */
-                            execute_item_action(tID, perso);
-
-                            if (perso.getCandyUsed() != "") {
-                                perso.sendText("Un bonbon spécial est toujours actif.");
-                                return;
+                            if (execute_item_action(tID, perso)) {
+                                perso.removeByTemplateID(tID, -count);
                             }
-                            perso.removeByTemplateID(tID, -count);
                         }
                         //Si en ligne (normalement oui)
                         if (perso.isOnline())//on envoie le packet qui indique l'ajout//retrait d'un item

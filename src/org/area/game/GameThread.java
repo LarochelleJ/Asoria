@@ -2461,6 +2461,10 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_MESSAGE(_perso, "Cet équipement est réservé aux joueurs <b>prestige " + obj.getPrestige() + "</b> et vous êtes prestige " + _perso.getPrestige() + ".", Config.CONFIG_MOTD_COLOR);
                     return;
                 }
+                if (!(_perso.getPrestige() < objT.getPrestigeMax())) {
+                    SocketManager.GAME_SEND_MESSAGE(_perso, "Cet équipement est réservé aux joueurs ayant un prestige inférieur à " + objT.getPrestigeMax(), Config.CONFIG_MOTD_COLOR);
+                    return;
+                }
                 if (objT.getLevel() > _perso.getLevel() && ignore == false) {// si le
                     // perso
                     // n'a pas
@@ -2519,6 +2523,12 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_MESSAGE(_perso, "Cet équipement est réservé aux joueurs <b>prestige " + obj.getPrestige() + "</b> et vous êtes prestige " + _perso.getPrestige() + ".", Config.CONFIG_MOTD_COLOR);
                     return;
                 }
+
+                if (!(_perso.getPrestige() < obj.getTemplate(true).getPrestigeMax())) {
+                    SocketManager.GAME_SEND_MESSAGE(_perso, "Cet équipement est réservé aux joueurs ayant un prestige inférieur à " + obj.getTemplate(true).getPrestigeMax(), Config.CONFIG_MOTD_COLOR);
+                    return;
+                }
+
                 if (obj.getTemplate(true).getLevel() > _perso.getLevel() && ignore == false) {// si le
                     // perso
                     // n'a pas
@@ -6388,7 +6398,7 @@ public class GameThread implements Runnable {
                 return;
             }
             short mapID = player.getMap().get_id();
-            if (mapID > 13069 && mapID < 13090 || mapID == 13044) {
+            if ((mapID > 13069 && mapID < 13090 || mapID == 13044) && player.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate(true).getID() != 895784) {
                 player.sendText("L'utilisation des armes n'est pas autorisée sur cette carte !");
                 SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
             } else {

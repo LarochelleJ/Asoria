@@ -5021,14 +5021,18 @@ public class Player {
         this.send("000B" + this.candy_used);
     }
 
-    public void setCandy(int idCandy) {
+    public boolean setCandy(int idCandy) {
+        boolean bool = true;
         if (this.candy_used != "") {
-            this.sendText("Un bonbon spécial est déjà utiliser.");
-            return;
+            SocketManager.GAME_SEND_POPUP(this, "Un bonbon spécial est déjà actif !");
+            bool = false;
+        } else {
+            int heures = 24;
+            this.candy_used = idCandy + "|" + (System.currentTimeMillis() + (heures * 3600000));
+            this.sendCandyUsed();
+            this.save(true);
         }
-        this.candy_used = idCandy + "|" + (System.currentTimeMillis() + ((86400 * 1000) * 3));
-        this.sendCandyUsed();
-        this.save(true);
+        return bool;
     }
 
     public boolean askCandyActive() {
@@ -5048,7 +5052,7 @@ public class Player {
             String[] decomposeCandy = this.candy_used.toString().split("\\|");
             if (Long.parseLong(decomposeCandy[1]) <= System.currentTimeMillis()) {
                 this.candy_used = "";
-                this.sendText("Votre bonbon spécial est terminé !");
+                SocketManager.GAME_SEND_POPUP(this, "Votre bonbon spécial est terminé !");
                 this.sendCandyUsed();
                 this.save(false);
             }

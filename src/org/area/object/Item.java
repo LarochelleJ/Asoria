@@ -32,6 +32,7 @@ public class Item {
         private int level;
         private int pod;
         private int Prestige;
+        private int PrestigeMax = 100;
         private int prix;
         private int panopID;
         private String conditions;
@@ -74,6 +75,9 @@ public class Item {
             this.level = level;
             this.pod = pod;
             this.Prestige = prestige;
+            if (prestige < 0) {
+                this.PrestigeMax = prestige * -1;
+            }
             this.prix = prix;
             this.panopID = panopID;
             this.conditions = conditions;
@@ -167,6 +171,10 @@ public class Item {
 
         public int getPrestige() {
             return Prestige;
+        }
+
+        public int getPrestigeMax() {
+            return PrestigeMax;
         }
 
         public String getStrTemplate() {
