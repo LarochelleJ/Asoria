@@ -202,6 +202,10 @@ public class Pathfinding {
         return -1;
     }
 
+    public static Case GetCaseFromDirrection(int CaseID, char Direction, Maps map, boolean Combat) {
+        return map.getCase(GetCaseIDFromDirrection(CaseID, Direction, map, Combat));
+    }
+
     public static int newCaseAfterPush(Maps map, Case CCase, Case TCase, int value) {
         //Si c'est les memes case, il n'y a pas a bouger
         if (CCase.getID() == TCase.getID()) return 0;

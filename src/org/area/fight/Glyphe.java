@@ -28,6 +28,18 @@ public class Glyphe
 		_color = Constant.getGlyphColor(spell);
 	}
 
+	public Glyphe(Fight fight, Fighter caster, Case cell, byte size, SortStats trapSpell, byte duration, int spell, int color)
+	{
+		_fight = fight;
+		_caster = caster;
+		_cell =cell;
+		_spell = spell;
+		_size = size;
+		_trapSpell = trapSpell;
+		_duration = duration;
+		_color = color;
+	}
+
 	public Case get_cell() {
 		return _cell;
 	}

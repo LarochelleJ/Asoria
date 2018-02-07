@@ -751,6 +751,10 @@ public class SpellEffect {
                 applyEffect_402(fight);
                 break;
 
+            case 403: // glyphe boss ustaji
+                applyEffect_403(fight);
+                break;
+
             case 610://+Vitalit�
                 applyEffect_125(cibles, fight);
                 break;
@@ -1858,6 +1862,83 @@ public class SpellEffect {
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 999, caster.getGUID() + "", str);
         str = "GDC" + cell.getID() + ";Haaaaaaaaa3005;";
         SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 999, caster.getGUID() + "", str);
+    }
+
+    private void applyEffect_403(Fight fight) {
+        if (!cell.isWalkable(true)) return;//Si case pas marchable
+
+        String[] infos = args.split(";");
+        int spellID = Short.parseShort(infos[0]);
+        int level = Byte.parseByte(infos[1]);
+        byte duration = Byte.parseByte(infos[3]);
+        String po = World.getSort(spell).getStatsByLevel(spellLvl).getPorteeType();
+        byte size = 0;
+        SortStats TS = World.getSort(spellID).getStatsByLevel(level);
+
+        Glyphe g = new Glyphe(fight, caster, cell, size, TS, duration, spell, 12);
+        fight.get_glyphs().add(g);
+        String str = "GDZ+" + cell.getID() + ";" + size + ";" + 12;
+        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 999, caster.getGUID() + "", str);
+
+        // génération glyphe en diagonale
+        try {
+            List<Integer> l = new ArrayList<Integer>();
+            l.add(cell.getID());
+            poserGlyphRecurc(cell.getID(), 'z', fight, TS, duration, l);
+        } catch (Exception e) {
+            SocketManager.GAME_SEND_MESSAGE_TO_ALL(e.getMessage(), Config.CONFIG_MOTD_COLOR);
+        }
+        str = "GDC" + cell.getID() + ";Haaaaaaaaa3005;";
+        SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, 999, caster.getGUID() + "", str);
+    }
+
+    private void poserGlyphRecurc(int caseId, char ignoreDirection, Fight f, SortStats TS, byte duration, List<Integer> l) {
+        Case c = null;
+        String str;
+        byte size = 0;
+        if (ignoreDirection != 'a') { // droite
+            c = Pathfinding.GetCaseFromDirrection(caseId, 'a', f.get_map(), false);
+            if (c != null && c.isWalkable(true) && !l.contains(c.getID())) {
+                f.get_glyphs().add(new Glyphe(f, caster, c, size, TS, duration, spell, 12));
+                str = "GDZ+" + c.getID() + ";" + size + ";" + 12;
+                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(f, 7, 999, caster.getGUID() + "", str);
+                l.add(c.getID());
+                poserGlyphRecurc(c.getID(), 'e', f, TS, duration, l);
+            }
+        }
+
+        if (ignoreDirection != 'e') { // gauche
+            c = Pathfinding.GetCaseFromDirrection(caseId, 'e', f.get_map(), false);
+            if (c != null && c.isWalkable(true) && !l.contains(c.getID())) {
+                f.get_glyphs().add(new Glyphe(f, caster, c, size, TS, duration, spell, 12));
+                str = "GDZ+" + c.getID() + ";" + size + ";" + 12;
+                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(f, 7, 999, caster.getGUID() + "", str);
+                l.add(c.getID());
+                poserGlyphRecurc(c.getID(), 'a', f, TS, duration, l);
+            }
+        }
+
+        if (ignoreDirection != 'g') { // haut
+            c = Pathfinding.GetCaseFromDirrection(caseId, 'g', f.get_map(), false);
+            if (c != null && c.isWalkable(true) && !l.contains(c.getID())) {
+                f.get_glyphs().add(new Glyphe(f, caster, c, size, TS, duration, spell, 12));
+                str = "GDZ+" + c.getID() + ";" + size + ";" + 12;
+                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(f, 7, 999, caster.getGUID() + "", str);
+                l.add(c.getID());
+                poserGlyphRecurc(c.getID(), 'c', f, TS, duration, l);
+            }
+        }
+
+        if (ignoreDirection != 'c') { // bas
+            c = Pathfinding.GetCaseFromDirrection(caseId, 'c', f.get_map(), false);
+            if (c != null && c.isWalkable(true) && !l.contains(c.getID())) {
+                f.get_glyphs().add(new Glyphe(f, caster, c, size, TS, duration, spell, 12));
+                str = "GDZ+" + c.getID() + ";" + size + ";" + 12;
+                SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(f, 7, 999, caster.getGUID() + "", str);
+                l.add(c.getID());
+                poserGlyphRecurc(c.getID(), 'g', f, TS, duration, l);
+            }
+        }
     }
 
     private void applyEffect_401(Fight fight) // glyphe feca
