@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.SystemUtils;
@@ -6449,7 +6450,7 @@ public class GameThread implements Runnable {
                         return;
                     }
                     boolean canLaunch = true;
-                    if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION) {
+                    if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION || player.getFight().get_type() == Constant.FIGHT_TYPE_CHALLENGE) {
                         if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
                             canLaunch = false;
                         }

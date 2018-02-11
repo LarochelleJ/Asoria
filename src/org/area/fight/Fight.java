@@ -3276,6 +3276,10 @@ public class Fight {
                 }
                 // Ajout du nombre de Pierres précieuses gagnées dans les drops
                 if (nombreDePierresPrecieuses > 0) {
+                    // bonbon pp
+                    if (i.getPersonnage().askCandyActive(7804)) { // 25% pp
+                        nombreDePierresPrecieuses += (0.25 * nombreDePierresPrecieuses);
+                    }
                     itemWon.put(470001, nombreDePierresPrecieuses);
                 }
                 for (Entry<Integer, Integer> entry : itemWon.entrySet()) {

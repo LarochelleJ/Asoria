@@ -52,7 +52,10 @@ public class Action {
                 perso.addSpellPoint(1);
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
                 break;
-            case 29004: // Bonbon d'xp x2 72h
+            case 10677: // Bonbon d'xp x1.5 12h
+                noError = perso.setCandy(10677);
+                break;
+            case 29004: // bonbon xp x2 24h
                 noError = perso.setCandy(29004);
                 break;
         }
@@ -180,7 +183,7 @@ public class Action {
                         int count = Integer.parseInt(args.split(",")[1]);
                         boolean send = true;
                         if (args.split(",").length > 2) send = args.split(",")[2].equals("1");
-
+                        boolean confirm = false;
                         //Si on ajoute
                         if (count > 0) {
                             ObjTemplate T = World.getObjTemplate(tID);
@@ -194,6 +197,7 @@ public class Action {
                         /* Action item perso */
                             if (execute_item_action(tID, perso)) {
                                 perso.removeByTemplateID(tID, -count);
+                                confirm = true;
                             }
                         }
                         //Si en ligne (normalement oui)
@@ -203,7 +207,7 @@ public class Action {
                             if (send) {
                                 if (count >= 0) {
                                     SocketManager.GAME_SEND_Im_PACKET(perso, "021;" + count + "~" + tID);
-                                } else if (count < 0) {
+                                } else if (confirm && count < 0) {
                                     SocketManager.GAME_SEND_Im_PACKET(perso, "022;" + -count + "~" + tID);
                                 }
                             }
@@ -413,7 +417,7 @@ public class Action {
                     int MapNeed = Integer.parseInt(args.split(",")[3]);
                     boolean error = false;
                     if (ObjetNeed > 0) {
-                        perso.templateObjeRequisPourDonjon = ObjetNeed;
+                        perso.itemsRequisPersonnagesSuiveurs.put(ObjetNeed, 1);
                         if (!perso.hasItemTemplate(ObjetNeed, 1)) {
                             //Le perso ne possède pas l'item
                             SocketManager.GAME_SEND_MESSAGE(perso, "Vous ne possedez pas l'objet necessaire : " + World.getObjTemplate(ObjetNeed).getName(), "009900");
@@ -776,6 +780,7 @@ public class Action {
                     HashMap<Integer, Integer> objets = SQLManager.OBTENIR_ITEMS_REQUIS_PAR_PNJ(idPnj);
                     boolean conditionRespecte = true;
                     if (!objets.isEmpty()) {
+                        perso.itemsRequisPersonnagesSuiveurs = objets;
                         for (Integer i : objets.keySet()) {
                             if (conditionRespecte) {
                                 if (!perso.hasItemTemplate(i, objets.get(i))) {
@@ -788,6 +793,46 @@ public class Action {
                                 perso.removeByTemplateID(i, objets.get(i));
                             }
                             Item newObj = World.getObjTemplate(idTemplateADonnee).createNewItem(qtaVoulue, false, -1);
+                            if (perso.addObjet(newObj, true)) {
+                                World.addObjet(newObj, true);
+                            }
+                            SocketManager.GAME_SEND_STATS_PACKET(perso);
+                            SocketManager.GAME_SEND_Ow_PACKET(perso);
+                            if (donnes.length == 4) {
+                                perso.teleport(Short.parseShort(donnes[2]), Integer.parseInt(donnes[3]));
+                            }
+                            perso.sendText("Vous avez reçu " + qtaVoulue + " X [" + newObj.getTemplate(false).getName() + "]");
+                        } else {
+                            perso.sendText("Vous ne possèdez pas les objets requis.");
+                        }
+                    }
+                } catch (Exception e) {
+                    perso.sendText("Il semble y avoir eu une erreur.");
+                }
+                break;
+            case 152: // Donné objet + teléportation en fonction d'une liste d'objet #Item lié
+                try {
+                    String[] donnes = args.split(",");
+                    int idTemplateADonnee = Integer.parseInt(donnes[0]);
+                    int qtaVoulue = Integer.parseInt(donnes[1]);
+                    int idPnj = perso.getMap().getNPC(perso.get_isTalkingWith()).get_template().get_id();
+                    HashMap<Integer, Integer> objets = SQLManager.OBTENIR_ITEMS_REQUIS_PAR_PNJ(idPnj);
+                    boolean conditionRespecte = true;
+                    if (!objets.isEmpty()) {
+                        perso.itemsRequisPersonnagesSuiveurs = objets;
+                        for (Integer i : objets.keySet()) {
+                            if (conditionRespecte) {
+                                if (!perso.hasItemTemplate(i, objets.get(i))) {
+                                    conditionRespecte = false;
+                                }
+                            }
+                        }
+                        if (conditionRespecte) {
+                            for (Integer i : objets.keySet()) {
+                                perso.removeByTemplateID(i, objets.get(i));
+                            }
+                            Item newObj = World.getObjTemplate(idTemplateADonnee).createNewItem(qtaVoulue, false, -1);
+                            newObj.getStats().addOneStat(252526, perso.getAccID()); // lié au compte
                             if (perso.addObjet(newObj, true)) {
                                 World.addObjet(newObj, true);
                             }

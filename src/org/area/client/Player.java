@@ -310,7 +310,7 @@ public class Player {
 
     // Follow group multi
     public ArrayList<Player> playerWhoFollowMe = new ArrayList<Player>();
-    public int templateObjeRequisPourDonjon = 0;
+    public HashMap<Integer, Integer> itemsRequisPersonnagesSuiveurs = new HashMap<Integer, Integer>();
     public boolean endfigh = false;
     public ArrayList<Player> playerWhoFightWithMe = new ArrayList<Player>();
 
@@ -2778,7 +2778,8 @@ public class Player {
     }
 
     public void addXp(long winxp) {
-        if (this.askCandyActive()) winxp = winxp * 2;    // Bonbon d'xp x2
+        if (this.askCandyActive(10677)) { winxp = (long)(winxp * 1.5); }   // Bonbon d'xp 1.5
+        if (this.askCandyActive(29004)) { winxp = winxp * 2; } // Bonbon xp x2
         _curExp += winxp;
         int exLevel = _lvl;
         while (_curExp >= World.getPersoXpMax(_lvl) && _lvl < World.getExpLevelSize()) {
@@ -2984,14 +2985,21 @@ public class Player {
         }
         for (Player followMe : playerWhoFollowMe) {
             if (followMe.getFight() == null && followMe.getMap().get_id() == getMap().get_id()) {
-                if (templateObjeRequisPourDonjon != 0) {
-                    if (followMe.hasItemTemplate(templateObjeRequisPourDonjon, 1)) {
-                        followMe.teleport(newMapID, newCellID);
-                        followMe.removeByTemplateID(templateObjeRequisPourDonjon, 1);
-                        SocketManager.GAME_SEND_Ow_PACKET(followMe);
-                    } else { // Le personnage suiveur n'a pas l'objet
-                        SocketManager.GAME_SEND_MESSAGE(followMe, "Vous ne possedez pas l'objet necessaire : " + World.getObjTemplate(templateObjeRequisPourDonjon).getName(), "009900");
+                boolean haveEveryItems = true;
+                for (Entry<Integer, Integer> item : itemsRequisPersonnagesSuiveurs.entrySet()){
+                    if (!followMe.hasItemTemplate(item.getKey(), item.getValue())) {
+                        haveEveryItems = false;
+                        break;
                     }
+                }
+                if (haveEveryItems) {
+                    for (Entry<Integer, Integer> item : itemsRequisPersonnagesSuiveurs.entrySet()){
+                        followMe.removeByTemplateID(item.getKey(), item.getValue());
+                    }
+                }
+
+                if (!haveEveryItems) {
+                    SocketManager.GAME_SEND_MESSAGE(followMe, "Vous ne possèdez pas les objets requis.", "009900");
                 } else { // Pas besoin d'objet pour tp
                     if (endfigh) { // Vient de terminer un combat pvm, donc il se fait téléporter à la prochaine salle
                         /*if (!playerWhoFightWithMe.contains(followMe)) {
@@ -3007,7 +3015,7 @@ public class Player {
             }
         }
         endfigh = false;
-        templateObjeRequisPourDonjon = 0;
+        itemsRequisPersonnagesSuiveurs.clear();
         playerWhoFightWithMe.clear();
 
 
@@ -5027,7 +5035,20 @@ public class Player {
             SocketManager.GAME_SEND_POPUP(this, "Un bonbon spécial est déjà actif !");
             bool = false;
         } else {
-            int heures = 24;
+            int heures = 0;
+            switch (idCandy) {
+                case 10677:
+                    heures = 12;
+                    break;
+                case 29004:
+                    heures = 24;
+                    break;
+                case 7804:
+                    heures = 5;
+                    break;
+                default:
+                    break;
+            }
             this.candy_used = idCandy + "|" + (System.currentTimeMillis() + (heures * 3600000));
             this.sendCandyUsed();
             this.save(true);
@@ -5035,9 +5056,10 @@ public class Player {
         return bool;
     }
 
-    public boolean askCandyActive() {
+    public boolean askCandyActive(int bonbon) {
         if (this.candy_used == "") return false;
         String[] decomposeCandy = this.candy_used.toString().split("\\|");
+        if (Integer.valueOf(decomposeCandy[0]) != bonbon) return false;
         if (Long.parseLong(decomposeCandy[1]) <= System.currentTimeMillis()) {
             this.checkCandyValidation();
             return false;
@@ -5132,7 +5154,12 @@ public class Player {
         setPrestige(getPrestige() + 1);
         // Calcul formule xp en tenant compte des malus xp des prestiges
         int malus = Constant.obtenir_taux_xp_prestige(getPrestige());
-        long xp = (100 - malus) * (get_curExp() - World.getPersoXpMin(getLevel())) / 100;
+        long xp = 0;
+        if (getPrestige() < 15) {
+            xp = (100 - malus) * (get_curExp() - World.getPersoXpMin(getLevel())) / 100;
+        } else {
+            xp = World.getPersoXpMax(Config.START_LEVEL);
+        }
         set_curExp(xp);
         set_lvl(1);
         while (_curExp >= World.getPersoXpMax(_lvl) && _lvl < World.getExpLevelSize()) {
