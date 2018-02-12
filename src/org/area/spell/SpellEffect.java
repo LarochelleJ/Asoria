@@ -2119,7 +2119,13 @@ public class SpellEffect {
             GameServer.addToLog("Erreur sur le monstre id:" + mobID);
             return;
         }
-        ;
+
+        if (caster.getPersonnage() == null) {
+            try {
+                Thread.sleep(1500);
+            } catch (Exception e) {
+            }
+        }
 
         if (mobID == -1 || level == -1 || MG == null) return;
         int id = fight.getNextLowerFighterGuid() - caster._nbInvoc;

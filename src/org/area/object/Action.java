@@ -58,6 +58,9 @@ public class Action {
             case 29004: // bonbon xp x2 24h
                 noError = perso.setCandy(29004);
                 break;
+            case 7804: // bonbon pp 25%
+                noError = perso.setCandy(7804);
+                break;
         }
         return noError;
     }
