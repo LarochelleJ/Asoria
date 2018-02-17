@@ -5046,6 +5046,9 @@ public class Player {
                 case 7804:
                     heures = 5;
                     break;
+                case 7803:
+                    heures = 5;
+                    break;
                 default:
                     break;
             }

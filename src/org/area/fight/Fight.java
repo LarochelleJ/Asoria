@@ -979,6 +979,7 @@ public class Fight {
         _curFighterUsedPA = 0;
         _curFighterUsedPM = 0;
         Fighter curPlayer = _ordreJeu.get(_curPlayer);
+        curPlayer.canCac = true;
         if (curPlayer.isDeconnected()) {
             curPlayer.newTurn();
             if (curPlayer.getToursRestants() <= 0) {
@@ -2870,7 +2871,10 @@ public class Fight {
             }
         }
         isCapturable |= mobCapturable;
-
+        List<Integer> mapsCaptureInterdite = Arrays.asList(28039, 28040, 28041, 28042);
+        if (mapsCaptureInterdite.contains(get_map().get_id())) {
+            isCapturable = false;
+        }
         if (isCapturable) {
             boolean isFirst = true;
             int maxLvl = 0;
@@ -3279,6 +3283,8 @@ public class Fight {
                     // bonbon pp
                     if (i.getPersonnage().askCandyActive(7804)) { // 25% pp
                         nombreDePierresPrecieuses += (0.25 * nombreDePierresPrecieuses);
+                    } else if (i.getPersonnage().askCandyActive(7803)) { // 50% pp
+                        nombreDePierresPrecieuses += (0.50 * nombreDePierresPrecieuses);
                     }
                     itemWon.put(470001, nombreDePierresPrecieuses);
                 }
@@ -4263,6 +4269,10 @@ public class Fight {
         Fighter caster = getFighterByPerso(perso);
 
         if (caster == null) return;
+        if (!caster.canCac) {
+            SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+            return;
+        }
         if (this._type != Constant.FIGHT_TYPE_PVM) {
             perso.sendText("L'utilisation des armes est autorisée uniquement en PvM.");
             SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
@@ -4360,6 +4370,8 @@ public class Fight {
                 _curFighterPA -= PACost;
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 102, perso.getGuid() + "", perso.getGuid() + ",-" + PACost);
                 SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this, 7, 0, perso.getGuid());//Fin de l'action
+                caster.canCac = false;
+                perso.sendText("Échec critique : Vous ne pouvez plus utiliser votre arme pour le tour actuel !");
                 //endTurn(); // On ne met plus fin au tour en cas d'EC
             } else {
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 303, perso.getGuid() + "", cellID + "");

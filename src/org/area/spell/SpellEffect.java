@@ -2120,13 +2120,6 @@ public class SpellEffect {
             return;
         }
 
-        if (caster.getPersonnage() == null) {
-            try {
-                Thread.sleep(1500);
-            } catch (Exception e) {
-            }
-        }
-
         if (mobID == -1 || level == -1 || MG == null) return;
         int id = fight.getNextLowerFighterGuid() - caster._nbInvoc;
         MG.setInFightID(id);

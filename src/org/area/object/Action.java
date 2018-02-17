@@ -53,13 +53,16 @@ public class Action {
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
                 break;
             case 10677: // Bonbon d'xp x1.5 12h
-                noError = perso.setCandy(10677);
+                noError = perso.setCandy(ID);
                 break;
             case 29004: // bonbon xp x2 24h
-                noError = perso.setCandy(29004);
+                noError = perso.setCandy(ID);
                 break;
-            case 7804: // bonbon pp 25%
-                noError = perso.setCandy(7804);
+            case 7804: // bonbon pp 25% 5h
+                noError = perso.setCandy(ID);
+                break;
+            case 7803: // bonbon pp 50% 5h
+                noError = perso.setCandy(ID);
                 break;
         }
         return noError;

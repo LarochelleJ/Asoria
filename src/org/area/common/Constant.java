@@ -1882,6 +1882,8 @@ public class Constant {
                     perso.learnSpell(13, 1, true, false);//Glyphe de Silence
                 if (lvl == 200)
                     perso.learnSpell(1901, 1, true, false);//Invocation de Dopeul Féca
+                if (lvl == 210)
+                    perso.learnSpell(4151, 1, true, false);
                 break;
 
             case CLASS_OSAMODAS:
@@ -1921,6 +1923,8 @@ public class Constant {
                     perso.learnSpell(31, 1, true, false);//Invocation de Dragonnet Rouge
                 if (lvl == 200)
                     perso.learnSpell(1902, 1, true, false);//Invocation de Dopeul Osamodas
+                if (lvl == 210)
+                    perso.learnSpell(4150, 1, true, false);
                 break;
 
             case CLASS_ENUTROF:
@@ -1960,6 +1964,8 @@ public class Constant {
                     perso.learnSpell(60, 1, true, false);//Coffre Animé
                 if (lvl == 200)
                     perso.learnSpell(1903, 1, true, false);//Invocation de Dopeul Enutrof
+                if (lvl == 210)
+                    perso.learnSpell(4149, 1, true, false);
                 break;
 
             case CLASS_SRAM:
@@ -1999,6 +2005,8 @@ public class Constant {
                     perso.learnSpell(80, 1, true, false);//Piège Mortel
                 if (lvl == 200)
                     perso.learnSpell(1904, 1, true, false);//Invocation de Dopeul Sram
+                if (lvl == 210)
+                    perso.learnSpell(4152, 1, true, false);
                 break;
 
             case CLASS_XELOR:
@@ -2038,6 +2046,8 @@ public class Constant {
                     perso.learnSpell(97, 1, true, false);//Cadran de Xélor
                 if (lvl == 200)
                     perso.learnSpell(1905, 1, true, false);//Invocation de Dopeul Xélor
+                if (lvl == 210)
+                    perso.learnSpell(4144, 1, true, false);
                 break;
 
             case CLASS_ECAFLIP:
@@ -2077,6 +2087,8 @@ public class Constant {
                     perso.learnSpell(120, 1, true, false);//Destin d'Ecaflip
                 if (lvl == 200)
                     perso.learnSpell(1906, 1, true, false);//Invocation de Dopeul Ecaflip
+                if (lvl == 210)
+                    perso.learnSpell(4156, 1, true, false);
                 break;
 
             case CLASS_ENIRIPSA:
@@ -2116,6 +2128,8 @@ public class Constant {
                     perso.learnSpell(140, 1, true, false);//Mot de Reconstitution
                 if (lvl == 200)
                     perso.learnSpell(1907, 1, true, false);//Invocation de Dopeul Eniripsa
+                if (lvl == 210)
+                    perso.learnSpell(4145, 1, true, false);
                 break;
 
             case CLASS_IOP:
@@ -2155,6 +2169,8 @@ public class Constant {
                     perso.learnSpell(159, 1, true, false);//Colère de Iop
                 if (lvl == 200)
                     perso.learnSpell(1908, 1, true, false);//Invocation de Dopeul Iop
+                if (lvl == 210)
+                    perso.learnSpell(4146, 1, true, false);
                 break;
 
             case CLASS_CRA:
@@ -2194,6 +2210,8 @@ public class Constant {
                     perso.learnSpell(180, 1, true, false);//Maîtrise de l'Arc
                 if (lvl == 200)
                     perso.learnSpell(1909, 1, true, false);//Invocation de Dopeul Cra
+                if (lvl == 210)
+                    perso.learnSpell(4148, 1, true, false);
                 break;
 
             case CLASS_SADIDA:
@@ -2233,6 +2251,8 @@ public class Constant {
                     perso.learnSpell(187, 1, true, false);//Invocation de la Surpuissante
                 if (lvl == 200)
                     perso.learnSpell(1910, 1, true, false);//Invocation de Dopeul Sadida
+                if (lvl == 210)
+                    perso.learnSpell(4155, 1, true, false);
                 break;
 
             case CLASS_SACRIEUR:
@@ -2272,6 +2292,8 @@ public class Constant {
                     perso.learnSpell(450, 1, true, false);//Folie Sanguinaire
                 if (lvl == 200)
                     perso.learnSpell(1911, 1, true, false);//Invocation de Dopeul Sacrieur
+                if (lvl == 210)
+                    perso.learnSpell(4147, 1, true, false);
                 break;
 
             case CLASS_PANDAWA:
@@ -2311,6 +2333,8 @@ public class Constant {
                     perso.learnSpell(705, 1, true, false);//Lien Spiritueux
                 if (lvl == 200)
                     perso.learnSpell(1912, 1, true, false);//Invocation de Dopeul Pandawa
+                if (lvl == 210)
+                    perso.learnSpell(4154, 1, true, false);
                 break;
 
             case CLASS_STEAMER:
@@ -2350,6 +2374,8 @@ public class Constant {
                     perso.learnSpell(119000, 1, true, false);//
                 if (lvl == 200)
                     perso.learnSpell(120000, 1, true, false);//Invocation du dopeul Steamer
+                if (lvl == 210)
+                    perso.learnSpell(4157, 1, true, false);
                 break;
 
 
@@ -2429,6 +2455,8 @@ public class Constant {
                     perso.learnSpell(3019, 1, true, false);//Charogne
                 if (lvl == 200)
                     perso.learnSpell(3020, 1, true, false);//Invocation du dopeul Roublard
+                if (lvl == 210)
+                    perso.learnSpell(4158, 1, true, false);
                 break;
 
             default: // Classe non complétement implémentée
