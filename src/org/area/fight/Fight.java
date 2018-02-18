@@ -365,7 +365,7 @@ public class Fight {
 
         // on envoie le timer ?
         SocketManager.GAME_SEND_FIGHT_GJK_PACKET_TO_FIGHT(this, 1, 2, 0, 1, 0, Config.FIGHT_START_TIME, _type);
-        scheduleTimer(60, false);
+        scheduleTimer(55, false);
         /*Random teams = new Random();
         if(teams.nextBoolean())
 		{*/
@@ -1087,7 +1087,7 @@ public class Fight {
             SocketManager.GAME_SEND_SPELL_LIST(_ordreJeu.get(_curPlayer).getPersonnage());
         }
         SocketManager.GAME_SEND_GAMETURNSTART_PACKET_TO_FIGHT(this, 7, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN, _ordreJeu.get(_curPlayer).estInvocationControllable() ? _ordreJeu.get(_curPlayer).getInvocator().getGUID() : _ordreJeu.get(_curPlayer).getGUID());
-        scheduleTimer(45, true);
+        scheduleTimer(55, true);
         GameServer.addToLog("(scheduledTime) startTurn():" + _curPlayer);
         /*}else{
 		getTurnTimer().restart();

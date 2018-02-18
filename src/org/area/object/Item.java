@@ -401,6 +401,9 @@ public class Item {
 
         public void applyAction(Player perso, Player target, int objID, short cellid) {
             for (Action a : onUseActions) {
+                if (a.getID() == 0) { //tp
+                    perso.itemsRequisPersonnagesSuiveurs.put(this.getID(), 1);
+                }
                 a.apply(perso, target, objID, cellid);
             }
         }

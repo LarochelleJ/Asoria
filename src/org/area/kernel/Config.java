@@ -69,7 +69,7 @@ public class Config {
 	/** Timers & Times **/
 	public static Timer fmTimer = new Timer();
 	public static Timer fightTimer = new Timer();
-	public static final int FIGHT_START_TIME = 45000;
+	public static final int FIGHT_START_TIME = 55000;
 	public static int CONFIG_ARENA_TIMER = 10 * 60 * 1000;
 	
 	/** Rates **/

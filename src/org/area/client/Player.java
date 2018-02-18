@@ -2779,6 +2779,7 @@ public class Player {
 
     public void addXp(long winxp) {
         if (this.askCandyActive(10677)) { winxp = (long)(winxp * 1.5); }   // Bonbon d'xp 1.5
+        if (this.askCandyActive(7802)) { winxp = (long)(winxp * 1.25); } // bonbon d'xp 25%
         if (this.askCandyActive(29004)) { winxp = winxp * 2; } // Bonbon xp x2
         _curExp += winxp;
         int exLevel = _lvl;
@@ -5048,6 +5049,9 @@ public class Player {
                     break;
                 case 7803:
                     heures = 5;
+                    break;
+                case 7802:
+                    heures = 12;
                     break;
                 default:
                     break;

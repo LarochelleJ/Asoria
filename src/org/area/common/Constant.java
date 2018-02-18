@@ -70,7 +70,7 @@ public class Constant {
     public static final int IOBJECT_STATE_EMPTY2 = 4;
     public static final int IOBJECT_STATE_FULLING = 5;
     //FIGHT
-    public static final int TIME_BY_TURN = 45000; // Beaucoup mieux
+    public static final int TIME_BY_TURN = 55000; // Beaucoup mieux
     public static final int FIGHT_TYPE_CHALLENGE = 0;//Défies
     public static final int FIGHT_TYPE_AGRESSION = 1;//Aggros
     public static final int FIGHT_TYPE_CONQUETE = 2; //Prismes
@@ -801,7 +801,7 @@ public class Constant {
                 taux = 70;
                 break;
             case 20:
-                taux = 90;
+                taux = 80;
                 break;
             default:
                 break;
