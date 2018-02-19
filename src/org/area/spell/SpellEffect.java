@@ -2128,7 +2128,7 @@ public class SpellEffect {
         F.setTeam(caster.getTeam());
         F.setInvocator(caster);
         List<Integer> mobControllable = Arrays.asList(43, 36, 41, 40, 44, 37, 239);
-        if (mobControllable.contains(mobID )&& caster.getPersonnage() != null) { // Test invocation controllable - tofu
+        if (mobControllable.contains(mobID )&& caster.getPersonnage() != null && (caster.getPersonnage().getAccount().getGmLevel() > 0 || caster.getPersonnage().getAccount().getVip() > 0)) { // Invocation controllable
             F.setInvocationControler(true);
             caster.getPersonnage().controleUneInvocation = true;
         }

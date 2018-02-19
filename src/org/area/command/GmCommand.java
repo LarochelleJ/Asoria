@@ -1,10 +1,7 @@
 package org.area.command;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import javax.swing.Timer;
@@ -157,6 +154,10 @@ public class GmCommand {
                 }
 
                 eventMap = _perso.getMap().get_id();
+                List<Integer> mapInterdites = Arrays.asList(13086, 13087, 13088, 13089);
+                if (mapInterdites.contains(eventMap)) {
+                    return true;
+                }
                 eventCell = _perso.get_curCell().getID();
                 event = true;
 
@@ -628,6 +629,10 @@ public class GmCommand {
                     return true;
                 }
             }
+            if (!P.getMap().get_npcs().isEmpty() && target.getAccount().getGmLevel() < 1) {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
+                return true;
+            }
             target.teleport(mapID, cellID);
             String str = "Le joueur a ete teleporte";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
@@ -647,9 +652,6 @@ public class GmCommand {
                 return true;
             }
             Player P = _perso;
-            if (!P.getMap().get_npcs().isEmpty() && P.getAccount().getGmLevel() < 5) {
-                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
-            } else {
                 if (infos.length > 2)// Si un nom de perso est spécifié
                 {
                     P = World.getPersoByName(infos[2]);
@@ -662,6 +664,10 @@ public class GmCommand {
                 if (P.isOnline()) {
                     short mapID = P.getMap().get_id();
                     int cellID = P.get_curCell().getID();
+                    if (!P.getMap().get_npcs().isEmpty() && P.getAccount().getGmLevel() < 5) {
+                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
+                        return true;
+                    }
                     target.teleport(mapID, cellID);
                     String str = "Le joueur a ete teleporte";
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
@@ -669,7 +675,6 @@ public class GmCommand {
                     String str = "Le joueur n'est pas en ligne";
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
                 }
-            }
         } else if (command.equalsIgnoreCase("TELEPORT")) {
             short mapID = -1;
             int cellID = -1;
@@ -678,7 +683,7 @@ public class GmCommand {
                 cellID = Integer.parseInt(infos[2]);
             } catch (Exception e) {
             }
-            ;
+            List<Integer> mapInterdites = Arrays.asList(13086, 13087, 13088, 13089);
             if (mapID == -1 || cellID == -1 || World.getCarte(mapID) == null) {
                 String str = "MapID ou cellID invalide";
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
@@ -690,6 +695,9 @@ public class GmCommand {
                 return true;
             }
             Player target = _perso;
+            if (target.getAccount().getGmLevel() < 5 && mapInterdites.contains(mapID)) {
+                return true;
+            }
             if (infos.length > 3)// Si un nom de perso est spécifié
             {
                 if (_perso.getAccount().getGmLevel() < 5) {

@@ -5162,7 +5162,7 @@ public class Player {
         // Calcul formule xp en tenant compte des malus xp des prestiges
         int malus = Constant.obtenir_taux_xp_prestige(getPrestige());
         long xp = 0;
-        if (getPrestige() < 15) {
+        if (getPrestige() < 20) {
             xp = (100 - malus) * (get_curExp() - World.getPersoXpMin(getLevel())) / 100;
         } else {
             xp = World.getPersoXpMax(Config.START_LEVEL);

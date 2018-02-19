@@ -1217,7 +1217,12 @@ public class PlayerCommand {
                                 items = _perso.getObjetByPos(Constant.ITEM_POS_BOTTES);
                             } else if (choix.equalsIgnoreCase("Amulette")) {
                                 items = _perso.getObjetByPos(Constant.ITEM_POS_AMULETTE);
-                            } else if (items == null) {
+                            } else {
+                                _perso.sendText("Ce choix d'item n'existe pas, faites .fmpa pour connaitre la liste des objets qui peuvent être fm PA.");
+                                return true;
+                            }
+
+                            if (items == null) {
                                 _perso.sendText("Vous ne portez pas l'item néccéssaire.");
                                 return true;
                             }
