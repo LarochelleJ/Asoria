@@ -4269,10 +4269,10 @@ public class Fight {
         Fighter caster = getFighterByPerso(perso);
 
         if (caster == null) return;
-        if (!caster.canCac) {
+        /*if (!caster.canCac) {
             SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
             return;
-        }
+        }*/
         if (this._type != Constant.FIGHT_TYPE_PVM) {
             perso.sendText("L'utilisation des armes est autorisée uniquement en PvM.");
             SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
