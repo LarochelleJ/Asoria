@@ -60,6 +60,7 @@ public class GmCommand {
     public static Player whisper;
 
     public static Map<String, Integer> gmCommands = new TreeMap<String, Integer>();
+    public static List<Integer> mapInterdites = Arrays.asList(13085, 13086, 13087, 13088, 13089);
 
     public GmCommand(Player perso) {
         this._compte = perso.getAccount();
@@ -154,7 +155,6 @@ public class GmCommand {
                 }
 
                 eventMap = _perso.getMap().get_id();
-                List<Integer> mapInterdites = Arrays.asList(13086, 13087, 13088, 13089);
                 if (mapInterdites.contains(eventMap)) {
                     return true;
                 }
@@ -629,7 +629,7 @@ public class GmCommand {
                     return true;
                 }
             }
-            if (!P.getMap().get_npcs().isEmpty() && target.getAccount().getGmLevel() < 1) {
+            if (!P.getMap().get_npcs().isEmpty() && target.getAccount().getGmLevel() < 4) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
                 return true;
             }
@@ -683,7 +683,7 @@ public class GmCommand {
                 cellID = Integer.parseInt(infos[2]);
             } catch (Exception e) {
             }
-            List<Integer> mapInterdites = Arrays.asList(13086, 13087, 13088, 13089);
+
             if (mapID == -1 || cellID == -1 || World.getCarte(mapID) == null) {
                 String str = "MapID ou cellID invalide";
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);

@@ -6399,7 +6399,7 @@ public class GameThread implements Runnable {
                 return;
             }
             short mapID = player.getMap().get_id();
-            if ((mapID > 13069 && mapID < 13090) && player.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate(true).getID() != 895784) {
+            if ((mapID > 13069 && mapID < 13090 || mapID == 13084) && player.getObjetByPos(Constant.ITEM_POS_ARME).getTemplate(true).getID() != 895784) {
                 player.sendText("L'utilisation des armes n'est pas autorisée sur cette carte !");
                 SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(player.getFight(), 7);
             } else {

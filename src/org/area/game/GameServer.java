@@ -166,12 +166,12 @@ public class GameServer implements Runnable {
             }, 5, 5, TimeUnit.MINUTES);
 
             /** @Refresh world mobs System **/
-            executorTimer.scheduleWithFixedDelay(new Runnable() {
+            /*executorTimer.scheduleWithFixedDelay(new Runnable() {
                 public void run() {
                     World.RefreshAllMob();
                     GameServer.addToLog(">La recharge des mobs est finie\n");
                 }
-            }, 5, 5, TimeUnit.HOURS);
+            }, 5, 5, TimeUnit.HOURS); */
 
             /** Clear Garbage collector @Flow
              * L'utilisation du System.gc n'est pas conseill? ! **/
