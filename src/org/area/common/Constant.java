@@ -25,6 +25,9 @@ public class Constant {
     //ZAAP <mapID,cellID>
     public static Map<Integer, Integer> ZAAPS = new TreeMap<Integer, Integer>();
 
+    // Invocations controllables
+    public static List<Integer> mobControllable = Arrays.asList(43, 36, 41, 40, 44, 37, 239);
+    public static List<Integer> accountAllowed = Arrays.asList(11413, 27062, 1576, 177);
 
     //Valeur des droits de guilde
     public static int G_BOOST = 2;            //Gérer les boost

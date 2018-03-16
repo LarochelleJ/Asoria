@@ -4371,7 +4371,7 @@ public class Fight {
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 102, perso.getGuid() + "", perso.getGuid() + ",-" + PACost);
                 SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this, 7, 0, perso.getGuid());//Fin de l'action
                 caster.canCac = false;
-                perso.sendText("Échec critique : Vous ne pouvez plus utiliser votre arme pour le tour actuel !");
+                //perso.sendText("Échec critique : Vous ne pouvez plus utiliser votre arme pour le tour actuel !");
                 //endTurn(); // On ne met plus fin au tour en cas d'EC
             } else {
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 303, perso.getGuid() + "", cellID + "");

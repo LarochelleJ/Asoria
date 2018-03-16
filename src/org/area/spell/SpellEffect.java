@@ -40,6 +40,7 @@ public class SpellEffect {
     private boolean isBegin = false;
     private boolean poison = false;
 
+
     public boolean getPoison() {
         return poison;
     }
@@ -2127,10 +2128,12 @@ public class SpellEffect {
         Fighter F = new Fighter(fight, MG);
         F.setTeam(caster.getTeam());
         F.setInvocator(caster);
-        List<Integer> mobControllable = Arrays.asList(43, 36, 41, 40, 44, 37, 239);
-        if (mobControllable.contains(mobID )&& caster.getPersonnage() != null && (caster.getPersonnage().getAccount().getGmLevel() > 0 || caster.getPersonnage().getAccount().getVip() > 0)) { // Invocation controllable
-            F.setInvocationControler(true);
-            caster.getPersonnage().controleUneInvocation = true;
+        Player perso = caster.getPersonnage();
+        if (perso != null) {
+            if (Constant.mobControllable.contains(mobID)  && (perso.getAccount().getGmLevel() > 0 || perso.getAccount().getVip() > 0 || Constant.accountAllowed.contains(perso.getAccID()))) { // Invocation controllable
+                F.setInvocationControler(true);
+                perso.controleUneInvocation = true;
+            }
         }
         fight.get_map().getCase(cell).addFighter(F);
         F.set_fightCell(fight.get_map().getCase(cell));
