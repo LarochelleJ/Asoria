@@ -2140,10 +2140,10 @@ public class Fight {
 
     public void playerPass(Player _perso) {
         Fighter f = getFighterByPerso(_perso);
-        Fighter cur = _perso.getFight().getCurFighter();
+        Fighter cur = getCurFighter();
         if (cur == null) return;
         if (cur.isInvocation() && cur.getInvocator() == f && cur.estInvocationControllable()) {
-            f = _perso.getFight().getCurFighter();
+            f = cur;
         }
         if (f == null) return;
         if (!f.canPlay()) return;

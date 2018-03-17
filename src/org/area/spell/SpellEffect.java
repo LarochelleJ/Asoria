@@ -4490,15 +4490,17 @@ public class SpellEffect {
         Map<Integer, Fighter> deads = fight.getDeadList();
         Fighter target = null;
         for (Entry<Integer, Fighter> entry : deads.entrySet()) {
-            if (entry.getValue().hasLeft()) continue;
-            if (entry.getValue().getTeam() == caster.getTeam())
-                target = entry.getValue();
-            if (entry.getValue().isInvocation())
-                if (entry.getValue().getInvocator().isDead()) {
-                    continue;
+            if (!entry.getValue().hasLeft() && entry.getValue() != null) {
+                if (entry.getValue().getTeam() == caster.getTeam())
+                    target = entry.getValue();
+                if (entry.getValue().isInvocation()) {
+                    if (entry.getValue().getInvocator() != null && entry.getValue().getInvocator().isDead()) {
+                        continue;
+                    }
                 }
-            if (fight.isLastFighterDie(target, target.getTeam())) {
-                break;
+                if (target != null && fight.isLastFighterDie(target, target.getTeam())) {
+                    break;
+                }
             }
         }
         if (target == null)
