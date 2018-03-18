@@ -111,7 +111,7 @@ public class IA {
             } else {
                 try {
                     if (_fighter.estInvocationControllable()) {
-                        apply_nothing(_fighter);
+                        //apply_nothing(_fighter);
                     } else {
                         switch (_fighter.getMob().getTemplate().getIAType()) {
                             case 0:// Ne rien faire
@@ -185,7 +185,7 @@ public class IA {
                         }
                     } catch (InterruptedException localInterruptedException3) {
                     }
-                    if (!_fighter.isDead()) {
+                    if (!_fighter.estInvocationControllable() && !_fighter.isDead()) {
                         _fight.endTurn();
                     }
                 } catch (Exception e) {
@@ -197,11 +197,6 @@ public class IA {
         private static void apply_type0(Fighter F, Fight fight) {
             while (!stop && F.canPlay()) {
                 stop = true;
-            }
-        }
-
-        private static void apply_nothing(Fighter F) {
-            while (F.canPlay()) {
             }
         }
 

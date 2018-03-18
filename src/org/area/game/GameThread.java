@@ -764,14 +764,16 @@ public class GameThread implements Runnable {
                 Player perso = World.getPlayer(idJoueur);
                 if (perso != null && perso.getFight() != null) {
                     if (perso._Follows == player || perso.playerWhoFollowMe.contains(player)) {
-                        Fighter f = perso.getFight().getFighterByPerso(perso);
-                        Fighter p = player.getFight().getFighterByPerso(player);
-                        if (f != null) {
-                            int cell = f.get_fightCell().getID();
-                            int cellP = p.get_fightCell().getID();
-                            f.get_fightCell().getFighters().clear();
-                            player.getFight().changePlace(player, cell);
-                            player.getFight().changePlace(perso, cellP);
+                        if (!perso.is_ready() && !player.is_ready()) {
+                            Fighter f = perso.getFight().getFighterByPerso(perso);
+                            Fighter p = player.getFight().getFighterByPerso(player);
+                            if (f != null) {
+                                int cell = f.get_fightCell().getID();
+                                int cellP = p.get_fightCell().getID();
+                                f.get_fightCell().getFighters().clear();
+                                player.getFight().changePlace(player, cell);
+                                player.getFight().changePlace(perso, cellP);
+                            }
                         }
                     } else {
                         SocketManager.GAME_SEND_POPUP(player, "Vous pouvez changer de place uniquement avec un meneur ou une de vos mules !");
@@ -5911,7 +5913,6 @@ public class GameThread implements Runnable {
             return;
         }
         boolean isOk = packet.charAt(2) == 'K';
-
         switch (GA._actionID) {
             case 1:// Deplacement
                 if (isOk) {
@@ -5962,7 +5963,7 @@ public class GameThread implements Runnable {
                                 player.get_curCell().getID());
                     } else// En combat
                     {
-                        player.getFight().onGK(player);
+                        player.getFight().onGK(player, 1);
                         return;
                     }
 
@@ -5988,8 +5989,18 @@ public class GameThread implements Runnable {
                 }
                 break;
 
+            case 300: // Sorts
+                if (isOk) {
+                    Fight f = player.getFight();
+                    if (f != null) {
+                        f.onGK(player, 300);
+                    }
+                }
+                break;
             case 500:// Action Sur Map
                 player.finishActionOnCell(GA);
+                break;
+            default:
                 break;
 
         }
@@ -6437,7 +6448,7 @@ public class GameThread implements Runnable {
             int caseID = Integer.parseInt(splt[1]);
             if (player.getFight() != null) {
                 Fighter cur = player.getFight().getCurFighter();
-                if (cur.estInvocationControllable() && cur.getInvocator().getPersonnage() == player) {
+                if (cur != null && cur.estInvocationControllable() && cur.getInvocator().getPersonnage() == player) {
                     if (cur.getMob().getSpells().containsKey(spellID)) {
                         player.getFight().tryCastSpell(cur, cur.getMob().getSpells().get(spellID), caseID);
                     }
@@ -6781,9 +6792,10 @@ public class GameThread implements Runnable {
         } else {
             Fighter F = player.getFight().getFighterByPerso(player);
             Fighter cur = player.getFight().getCurFighter();
-            if (cur == null) return;
-            if (cur.estInvocationControllable() && cur.getInvocator() == F) {
-                F = player.getFight().getCurFighter();
+            if (cur != null) {
+                if (cur.estInvocationControllable() && cur.getInvocator() == F) {
+                    F = player.getFight().getCurFighter();
+                }
             }
             if (F == null)
                 return;

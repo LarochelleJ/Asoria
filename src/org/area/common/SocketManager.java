@@ -1029,6 +1029,7 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Fight : Send>>" + packet);
     }
 
+
     public static void GAME_SEND_GAMEACTION_TO_FIGHT(Fight fight, int teams, String packet) {
         for (Fighter f : fight.getFighters(teams)) {
             if (f.hasLeft()) continue;

@@ -142,6 +142,7 @@ public class Fight {
     //Temporisation des Actions
     //Variables
     private int _spellCastDelay;
+    private boolean endTurnOnActionComplete = false;
     // Formules xp
     public int _lvlWinners = 0;
     public int _lvlMax = 0;
@@ -169,7 +170,11 @@ public class Fight {
                     else if (collector != null)
                         collector.setTurnTime(60000);
                 } else if (FighterID == _curPlayer) {
-                    fight.endTurn();
+                    if (_curAction == "" || fight.getCurFighter().isDeconnected()) {
+                        fight.endTurn();
+                    } else {
+                        endTurnOnActionComplete = true;
+                    }
                 }
             }
         }, time, TimeUnit.SECONDS);
@@ -1939,6 +1944,23 @@ public class Fight {
             return false;
         }
 
+        AtomicReference<String> pathRef = new AtomicReference<String>(path);
+        int nStep = Pathfinding.isValidPath(_map, f.get_fightCell().getID(), pathRef, this);
+        String newPath = pathRef.get();
+
+        Player client = f.getPersonnage();
+        if (f.estInvocationControllable()) {
+            client = f.getInvocator().getPersonnage();
+        }
+        if (nStep > _curFighterPM || nStep == -1000) {
+            if (Config.DEBUG)
+                GameServer.addToLog("(" + _curPlayer + ") Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID() + " a demander un chemin inaccessible ou trop loin");
+            if (client != null && client.getAccount() != null && client.getAccount().getGameThread() != null) {
+                SocketManager.GAME_SEND_GA_PACKET(client.getAccount().getGameThread().getOut(), "" + 151, "" + f.getGUID(), "-1", "");
+            }
+            return false;
+        }
+        
         ArrayList<Fighter> tmptacle = Pathfinding.getEnemyFighterArround(f.get_fightCell().getID(), _map, this);
         ArrayList<Fighter> tacle = new ArrayList<Fighter>();
         if (tmptacle != null && !f.isState(6) && !f.isHide())//Tentative de Tacle : Si stabilisation alors pas de tacle possible
@@ -1976,22 +1998,6 @@ public class Fight {
         }
 
         //*
-        AtomicReference<String> pathRef = new AtomicReference<String>(path);
-        int nStep = Pathfinding.isValidPath(_map, f.get_fightCell().getID(), pathRef, this);
-        String newPath = pathRef.get();
-
-        Player client = f.getPersonnage();
-        if (f.estInvocationControllable()) {
-            client = f.getInvocator().getPersonnage();
-        }
-        if (nStep > _curFighterPM || nStep == -1000) {
-            if (Config.DEBUG)
-                GameServer.addToLog("(" + _curPlayer + ") Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID() + " a demander un chemin inaccessible ou trop loin");
-            if (client != null && client.getAccount() != null && client.getAccount().getGameThread() != null) {
-                SocketManager.GAME_SEND_GA_PACKET(client.getAccount().getGameThread().getOut(), "" + 151, "" + f.getGUID(), "-1", "");
-            }
-            return false;
-        }
 
         _curFighterPM -= nStep;
         _curFighterUsedPM += nStep;
@@ -2082,7 +2088,7 @@ public class Fight {
         {
             if (client == null) {
                 try {
-                    Thread.sleep(1000 + 150 * nStep);//Estimation de la durée du déplacement
+                    Thread.sleep(90 + 450 * nStep); // 90ms ping moyen constaté sur le serveur, 600ms durée animation moyenne des sprites
                 } catch (InterruptedException e) {
                 }
             }
@@ -2113,37 +2119,48 @@ public class Fight {
         return true;
     }
 
-    public void onGK(Player perso) {
+    public void onGK(Player perso, int actionType) {
         try {
             if (_curAction.equals("") || _ordreJeu.get(_curPlayer).getGUID() != perso.getGuid() || _state != Constant.FIGHT_STATE_ACTIVE)
                 return;
         } catch (Exception e) {
             return;
         }
-        if (Config.DEBUG)
-            GameServer.addToLog("(" + _curPlayer + ")Fin du deplacement de Fighter ID= " + perso.getGuid());
-        SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this, 7, _curAction);
-        SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this, 7, 2, _ordreJeu.get(_curPlayer).getGUID());
-        //copie
-        ArrayList<Piege> P = (new ArrayList<Piege>());
-        P.addAll(_traps);
-        for (Piege p : P) {
-            Fighter F = getFighterByPerso(perso);
-            int dist = Pathfinding.getDistanceBetween(_map, p.get_cell().getID(), F.get_fightCell().getID());
-            //on active le piege
-            if (dist <= p.get_size())
-                p.onTraped(F);
-            if (_state == Constant.FIGHT_STATE_FINISHED) break;
+        switch (actionType) {
+            case 1:
+                if (Config.DEBUG)
+                    GameServer.addToLog("(" + _curPlayer + ")Fin du deplacement de Fighter ID= " + perso.getGuid());
+                SocketManager.GAME_SEND_GAMEACTION_TO_FIGHT(this, 7, _curAction);
+                SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(this, 7, 2, _ordreJeu.get(_curPlayer).getGUID());
+                //copie
+                ArrayList<Piege> P = (new ArrayList<Piege>());
+                P.addAll(_traps);
+                for (Piege p : P) {
+                    Fighter F = getFighterByPerso(perso);
+                    int dist = Pathfinding.getDistanceBetween(_map, p.get_cell().getID(), F.get_fightCell().getID());
+                    //on active le piege
+                    if (dist <= p.get_size())
+                        p.onTraped(F);
+                    if (_state == Constant.FIGHT_STATE_FINISHED) break;
+                }
+                break;
+            default:
+                break;
         }
         _curAction = "";
+        if (endTurnOnActionComplete) {
+            endTurnOnActionComplete = false;
+            endTurn();
+        }
     }
 
     public void playerPass(Player _perso) {
         Fighter f = getFighterByPerso(_perso);
         Fighter cur = getCurFighter();
-        if (cur == null) return;
-        if (cur.isInvocation() && cur.getInvocator() == f && cur.estInvocationControllable()) {
-            f = cur;
+        if (cur != null) {
+            if (cur.isInvocation() && cur.getInvocator() == f && cur.estInvocationControllable()) {
+                f = cur;
+            }
         }
         if (f == null) return;
         if (!f.canPlay()) return;
@@ -2176,9 +2193,9 @@ public class Fight {
         }
         Case Cell = _map.getCase(caseID);
         _curAction = "casting";
-        _spellCastDelay = 80;//Ont ajoutes un delay pour eviter les actions qui finissent trop vite
-        if (fighter.getMob() != null && !fighter.estInvocationControllable()) {
-            addSpellCastDelay(900);
+        _spellCastDelay = 0;
+        if (fighter.getPersonnage() == null && !fighter.estInvocationControllable()) {
+            _spellCastDelay = 1490;
         }
         if (CanCastSpell(fighter, Spell, Cell, -1) != false) // @Flow, ça foire ici. #Fixé
         {
@@ -2196,6 +2213,7 @@ public class Fight {
                 if (Config.DEBUG)
                     GameServer.addToLog(fighter.getPacketsName() + " Echec critique sur le sort " + Spell.getSpellID());
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 302, fighter.getGUID() + "", Spell.getSpellID() + "");
+
                 //Il est ici le problÃ¨me
 
             } else {
@@ -2211,6 +2229,9 @@ public class Fight {
                 boolean isCC = fighter.testIfCC(Spell.getTauxCC(fighter));
                 String sort = Spell.getSpellID() + "," + caseID + "," + Spell.getSpriteID() + "," + Spell.getLevel() + "," + Spell.getSpriteInfos();
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 300, fighter.getGUID() + "", sort);
+                if (fighter.getPersonnage() != null) {
+                    fighter.getPersonnage().getAccount().getGameThread().addAction(new GameAction(fighter.getGUID(), 300, sort));
+                }
                 if (isCC) {
                     if (Config.DEBUG)
                         GameServer.addToLog(fighter.getPacketsName() + " Coup critique sur le sort " + Spell.getSpellID());
@@ -2238,10 +2259,10 @@ public class Fight {
             //refreshCurPlayerInfos();
             if (!isEc) fighter.addLaunchedSort(Cell.getFirstFighter(), Spell);
             //fighter.addLaunchedSort(Cell.getFirstFighter(),Spell);
-            if (Spell.getSpellID() == 696) // @Flow - Si c'est le sort Chamrak on temporise
+            /*if (Spell.getSpellID() == 696) // @Flow - Si c'est le sort Chamrak on temporise
             {
                 addSpellCastDelay(2000);
-            }
+            }*/
             /*try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -2252,7 +2273,6 @@ public class Fight {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                 }
-                ;
                 if (fighter.getMob() != null || fighter.isInvocation())//Mob, Invoque
                 {
                     return 5;
@@ -2269,7 +2289,9 @@ public class Fight {
             Thread.sleep(_spellCastDelay);
         } catch (InterruptedException e) {
         }
-        _curAction = "";
+        if (fighter.getPersonnage() == null || fighter.estInvocationControllable()) {
+            _curAction = "";
+        }
         return 0;
     }
 
@@ -4008,6 +4030,9 @@ public class Fight {
         } catch (Exception e) {
         }
         SocketManager.GAME_SEND_FIGHT_PLAYER_DIE_TO_FIGHT(this, 7, target.getGUID());
+        try {
+            Thread.sleep(1500);
+        } catch (Exception e) {}
         target.get_fightCell().getFighters().clear();// Supprime tout causait bug si porté/porteur
 
         if (target.isState(Constant.ETAT_PORTEUR)) {
@@ -4021,7 +4046,7 @@ public class Fight {
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 950, target.getGUID() + "", target.getGUID() + "," + Constant.ETAT_PORTEUR + ",0");
         }
         // @Flow - Petit fix
-        else if (target.isState(8)) {
+        else if (target.isState(Constant.ETAT_PORTE)) {
             Fighter f = target.get_isHolding();
             f.set_fightCell(f.get_fightCell());
             f.get_fightCell().addFighter(f);
@@ -4589,6 +4614,7 @@ public class Fight {
 
     public boolean deconnexion(Player perso, boolean verif)//True si entre en mode déconnexion en combat, false sinon
     {
+        _curAction = "";
         Fighter f = getFighterByPerso(perso);
         if (f == null) return false;
         if (_state == Constant.FIGHT_STATE_INIT || _state == Constant.FIGHT_STATE_FINISHED) {
@@ -4623,6 +4649,7 @@ public class Fight {
 
     public void leftFight(Player perso, Player target, boolean isDebug) //@Flow - À vérifier
     {
+        _curAction = "";
         if (perso == null || _ordreJeu == null || _curPlayer < 0) return; // @Flow
         if (_curPlayer >= _ordreJeu.size()) _curPlayer = 0; // Tout simple
         Fighter F = this.getFighterByPerso(perso);
