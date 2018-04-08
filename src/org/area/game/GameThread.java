@@ -2222,7 +2222,11 @@ public class GameThread implements Runnable {
                 Object_delete(packet);
                 break;
             case 'D':// Depose l'objet au sol
-                Object_drop(packet);
+                if (player.getAccount().getGmLevel() > 3) {
+                    Object_drop(packet);
+                } else {
+                    SocketManager.GAME_SEND_POPUP(player, "Il est actuellement impossible de jeter un item au sol...");
+                }
                 //player.sendText("Action impossible");
                 break;
             case 'M':// Bouger un objet (Equiper/déséquiper) // Associer obvijevan
@@ -3483,14 +3487,14 @@ public class GameThread implements Runnable {
                         DD = new Mount(color);
                     }
                     // On enleve l'objet du Monde et du Perso
-                    player.removeItem(guid);
-                    World.removeItem(guid);
+                    player.removeItem(guid, 1, true, true);
+                    //World.removeItem(guid);
                     // on ajoute la dinde a l'étable
                     MP.addData(DD.get_id(), player.getGuid());
                     SQLManager.UPDATE_MOUNTPARK(MP);
                     // On envoie les packet
-                    SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player,
-                            obj.getGuid());
+                   // SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player,
+                            //obj.getGuid());
                     SocketManager.GAME_SEND_Ee_PACKET(player, '+', DD.parse());
                     break;
                 case 'c':// Etable => Parcho(Echanger)

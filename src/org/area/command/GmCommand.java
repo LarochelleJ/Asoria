@@ -2076,7 +2076,7 @@ public class GmCommand {
             for (Player player : World.getOnlinePlayers())
                 player.send(ParseTool.parseShop());
         } else if (command.equalsIgnoreCase("SETADMIN")) {
-            if (_perso.getAccount().getGmLevel() == 5) {
+            if (_perso.getAccount().getGmLevel() > 3) {
                 int gmLvl = -100;
                 try {
                     gmLvl = Integer.parseInt(infos[1]);

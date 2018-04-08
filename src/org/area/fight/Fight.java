@@ -1417,6 +1417,9 @@ public class Fight {
                         if (_curPlayer >= _ordreJeu.size()) _curPlayer = 0;
                         SocketManager.GAME_SEND_GTM_PACKET_TO_FIGHT(fight, 7);
                         SocketManager.GAME_SEND_GTR_PACKET_TO_FIGHT(fight, 7, _ordreJeu.get(_curPlayer == _ordreJeu.size() ? 0 : _curPlayer).getGUID());
+                        if (_ordreJeu.get(_curPlayer).estInvocationControllable()) {
+                            SocketManager.GAME_SEND_SPELL_LIST(_ordreJeu.get(_curPlayer).getInvocator().getPersonnage());
+                        }
                         if (Config.DEBUG)
                             GameServer.addToLog("(" + _curPlayer + ")Fin du tour de Fighter ID= " + _ordreJeu.get(_curPlayer).getGUID());
                         startTurn();
