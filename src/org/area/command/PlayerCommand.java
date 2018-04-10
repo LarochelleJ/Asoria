@@ -237,6 +237,9 @@ public class PlayerCommand {
                                         staff += "Fondateur)";
                                     else
                                         staff += "Unknown";
+                                    if (World.getOnlinePlayers().get(i)._isAbsent) {
+                                        staff += " - Absent";
+                                    }
                                     staff += "\n";
                                     allOffline = false;
                                 }

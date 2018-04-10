@@ -1858,14 +1858,20 @@ public class Fight {
         if ((_init0 != null && _init0.getGUID() == guid) || (_init1 != null && _init1.getGUID() == guid)) {
             specOk = !specOk;
             if (!specOk) {
-                for (Player p : _spec.values()) {
+                List<Integer> remove = new ArrayList<Integer>();
+                for (Entry<Integer, Player> e : _spec.entrySet()) {
+                    Player p = e.getValue();
                     if (p == null) continue;
+                    if (p.getAccount().getGmLevel() > 0) continue;
+                    remove.add(e.getKey());
                     SocketManager.GAME_SEND_GV_PACKET(p);
                     p.setSitted(false);
                     p.set_fight(null);
                     p.set_away(false);
                 }
-                _spec.clear();
+                for (Integer i : remove) {
+                    _spec.remove(i);
+                }
             }
             if (Config.DEBUG)
                 GameServer.addToLog(specOk ? "Le combat accepte les spectateurs" : "Le combat n'accepte plus les spectateurs");
@@ -2216,7 +2222,7 @@ public class Fight {
                 if (Config.DEBUG)
                     GameServer.addToLog(fighter.getPacketsName() + " Echec critique sur le sort " + Spell.getSpellID());
                 SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(this, 7, 302, fighter.getGUID() + "", Spell.getSpellID() + "");
-
+                _curAction = "";
                 //Il est ici le problÃ¨me
 
             } else {
@@ -5202,7 +5208,7 @@ public class Fight {
         {
             return;
         }
-        if (!specOk || _state != Constant.FIGHT_STATE_ACTIVE) {
+        if (!specOk && p.getAccount().getGmLevel() < 1|| _state != Constant.FIGHT_STATE_ACTIVE) {
             SocketManager.GAME_SEND_Im_PACKET(p, "157");
             return;
         }
@@ -5215,7 +5221,9 @@ public class Fight {
         SocketManager.GAME_SEND_GAMETURNSTART_PACKET(p, _ordreJeu.get(_curPlayer).getGUID(), Constant.TIME_BY_TURN, _ordreJeu.get(_curPlayer).getGUID());
         _spec.put(p.getGuid(), p);
         p.set_fight(this);
-        SocketManager.GAME_SEND_Im_PACKET_TO_FIGHT(this, 7, "036;" + p.getName());
+        if (p.getAccount().getGmLevel() < 1) {
+            SocketManager.GAME_SEND_Im_PACKET_TO_FIGHT(this, 7, "036;" + p.getName());
+        }
         if ((this._type == Constant.FIGHT_TYPE_PVM) && (this._challenges.size() > 0)) {
             for (Entry<Integer, Challenge> c : this._challenges.entrySet()) {
                 if (c.getValue() == null)

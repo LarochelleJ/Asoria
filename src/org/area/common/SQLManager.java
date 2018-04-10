@@ -790,10 +790,10 @@ public class SQLManager {
         }
         try {
             String query = "SELECT * FROM personnages WHERE account = ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
-            ps.setInt(1, accID);
-            ResultSet RS = ps.executeQuery();
-            while (RS.next()) {
+                java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+                ps.setInt(1, accID);
+                ResultSet RS = ps.executeQuery();
+                while (RS.next()) {
                 if (RS.getInt("server") != GameServer.id)
                     continue;
                 Player p = World.getPlayer(RS.getInt("guid"));

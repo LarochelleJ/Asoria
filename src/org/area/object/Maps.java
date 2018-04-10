@@ -1499,6 +1499,7 @@ public class Maps {
         }
         for (Player p : persos) {
             if (p == null || !p.isOnline()) continue;
+            if (p.get_size() == 0) continue;;
             packet.append("|+").append(p.parseToGM());
             count++;
             if (count >= 20) {

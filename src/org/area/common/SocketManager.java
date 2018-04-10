@@ -527,10 +527,12 @@ public class SocketManager {
     }
 
     public static void GAME_SEND_ADD_PLAYER_TO_MAP(Maps map, Player perso) {
-        String packet = "GM|+" + perso.parseToGM();
-        for (Player z : map.getPersos()) send(z, packet);
-        if (Config.DEBUG)
-            GameServer.addToSockLog("Game: Map " + map.get_id() + ": Send>>" + packet);
+        if (perso.get_size() != 0) {
+            String packet = "GM|+" + perso.parseToGM();
+            for (Player z : map.getPersos()) send(z, packet);
+            if (Config.DEBUG)
+                GameServer.addToSockLog("Game: Map " + map.get_id() + ": Send>>" + packet);
+        }
     }
 
     public static void GAME_SEND_DUEL_Y_AWAY(GameSendThread out, int guid) {
@@ -1941,10 +1943,12 @@ public class SocketManager {
     }
 
     public static void GAME_SEND_ALTER_GM_PACKET(Maps map, Player perso) {
-        String packet = "GM|~" + perso.parseToGM();
-        for (Player z : map.getPersos()) send(z, packet);
-        if (Config.DEBUG)
-            GameServer.addToSockLog("Game: Map: Send>>" + packet);
+        if (perso.get_size() != 0) {
+            String packet = "GM|~" + perso.parseToGM();
+            for (Player z : map.getPersos()) send(z, packet);
+            if (Config.DEBUG)
+                GameServer.addToSockLog("Game: Map: Send>>" + packet);
+        }
     }
 
     public static void GAME_SEND_Ee_PACKET(Player perso, char c, String s) {

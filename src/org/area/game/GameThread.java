@@ -6493,7 +6493,7 @@ public class GameThread implements Runnable {
 
 
         String[] infos = packet.substring(5).split(";");
-        if (infos.length == 1) {
+        if (infos.length == 1) { // plus de 9 combats sur la même carte ça va bug ici
             try {
                 Fight F = player.getMap().getFight(Integer.parseInt(infos[0]));
                 F.joinAsSpect(player);
