@@ -4506,7 +4506,7 @@ public class GameThread implements Runnable {
                             qua = obj.getQuantity() - quaInExch;
                         if (qua <= 0)
                             return;
-                        if (obj.getStats().getEffect(252526) > 0) { // Item verouillé à un compte
+                        if (obj.getStats().getEffect(252526) > 0 && World.getPlayer(player.get_isTradingWith()).getAccount().getGmLevel() < 1) { // Item verouillé à un compte
                             player.sendText("Cet item est lié à votre compte, vous ne pouvez pas l'échanger.");
                             return;
                         }

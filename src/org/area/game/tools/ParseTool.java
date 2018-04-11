@@ -1,9 +1,6 @@
 package org.area.game.tools;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.area.arena.Arena;
@@ -573,6 +570,27 @@ public class ParseTool {
                 }
                 player.set_lvl(player.getLevel());
                 Player perso = player;
+
+                // // TODO: 2018-04-10 Fix this
+                /*List<Item> ressources = new ArrayList<Item>();
+                for (Item i : player.getItems().values()) {
+                    if (i.getTemplate(true).getType() == 15) {
+                        ressources.add(i);
+                    }
+                }
+                for (int i = 0; i < ressources.size(); i++) {
+                    Item ob = ressources.get(i);
+                    ObjTemplate t = ob.getTemplate(true);
+                    for (int z = 0; z < ressources.size(); z++) {
+                        if (ressources.get(z).getTemplate(true).getID() == t.getID()) {
+                            int qua = ob.getQuantity() + ressources.get(z).getQuantity();
+                            player.sendText(String.valueOf(ob.getQuantity()));
+                            ob.setQuantity(qua);
+                            perso.removeItem(ressources.get(z).getGuid(), -1, true, true);
+                            ressources.remove(z);
+                        }
+                    }
+                }*/
                 SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(perso.getMap(), perso.getGuid());
                 SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(perso.getMap(), perso);
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
