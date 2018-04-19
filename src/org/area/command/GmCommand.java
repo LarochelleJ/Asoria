@@ -2703,7 +2703,7 @@ public class GmCommand {
             int pointsDepart = Util.loadPointsByAccount(perso.getAccount());
             points = Integer.parseInt(infos[2]);
             if (points != 0) {
-                Util.updatePointsByAccount(perso.getAccount(), pointsDepart + points);
+                Util.updatePointsByAccount(perso.getAccount(), pointsDepart + points, "Ajout / supression de points par le staff " + _perso.getName() + "(" + _perso.getAccount().getGuid() + ")");
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous avez bien donné " + points + " points à " + nom + ".");
                 return true;
             } else {

@@ -2130,7 +2130,7 @@ public class SpellEffect {
         F.setInvocator(caster);
         Player perso = caster.getPersonnage();
         if (perso != null) {
-            if (Constant.mobControllable.contains(mobID)  && (perso.getAccount().getGmLevel() > 0 || perso.getAccount().getVip() > 0 || Constant.accountAllowed.contains(perso.getAccID()))) { // Invocation controllable
+            if (Constant.mobControllable.contains(mobID)  && (true || perso.getAccount().getGmLevel() > 0 || perso.getAccount().getVip() > 0 || Constant.accountAllowed.contains(perso.getAccID()))) { // Invocation controllable, activé temporairement pour tout le monde
                 F.setInvocationControler(true);
                 perso.controleUneInvocation = true;
             }

@@ -29,15 +29,17 @@ public class Util {
 			return points;
 	}
 	
-	public static void updatePointsByAccount(Account account, int diff) {
-		
+	public static void updatePointsByAccount(Account account, int diff, String description) {
 		String Request = "UPDATE accounts SET points = '"+diff+"' WHERE guid = '"+account.getGuid()+"';";
+		int points = -1 * (Util.loadPointsByAccount(account) - diff);
 		try {
 			PreparedStatement PS = SQLManager.newTransact(Request, SQLManager.Connection(true));
 			PS.execute();
 			SQLManager.closePreparedStatement(PS);
 		} catch (SQLException e) {e.printStackTrace();}
-		
+		if (description != "") {
+			SQLManager.INSERT_PB_TRANSACT(account.getCurPlayer().getName(), description, points);
+		}
 	}
 	
 	public static String getActualDate() { //Leur calendar pourrit faut vraiment l'améliorer u_u 

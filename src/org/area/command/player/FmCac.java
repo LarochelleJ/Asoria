@@ -80,7 +80,7 @@ public class FmCac {
 		// Add retrait de pts by Tµ
 		int points = Util.loadPointsByAccount(player.getAccount());
 		int newPoints = points - 10;
-		Util.updatePointsByAccount(player.getAccount(), newPoints);
+		Util.updatePointsByAccount(player.getAccount(), newPoints, "FmCac");
 		player.send("000C"+Util.loadPointsByAccount(player.getAccount()));
 		SQLManager.SAVE_PERSONNAGE(player, false);
 		/**GameThread.Object_move(_perso, _perso.get_compte().getGameThread().get_out(), 1, obj.getGuid(), 1);

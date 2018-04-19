@@ -227,7 +227,7 @@ public class Event {
 			int playerPoints = Util.loadPointsByAccount(player.getAccount());
 			int afterWin = playerPoints + winPoints;
 			
-			Util.updatePointsByAccount(player.getAccount(), afterWin);
+			Util.updatePointsByAccount(player.getAccount(), afterWin, "Event.java");
 			
 			player.sendMess(Lang.LANG_91, "", " "+winPoints+" "+Lang.POINTS[player.getLang()]);
 			player.send("000C"+afterWin); //Update served interface
@@ -255,7 +255,7 @@ public class Event {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
 		String min = dateFormat.format(actDate);
 		
-		return (Integer.parseInt(heure)*60) + (Integer.parseInt(min)); //Décalage Horraire de 3h
+		return (Integer.parseInt(heure)*60) + (Integer.parseInt(min)); //Dï¿½calage Horraire de 3h
 		
 	}
 	

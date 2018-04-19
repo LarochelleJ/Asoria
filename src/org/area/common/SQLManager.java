@@ -4415,8 +4415,8 @@ public class SQLManager {
         byte status = -1;
         Player perso = null;
         int points = 0;
+        String titre = "";
         try {
-            String titre = "";
             String couleur = "";
             int idJoueur = -1;
             ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", false);
@@ -4458,7 +4458,7 @@ public class SQLManager {
         }
         if (status == 1) {
             int nouvelleSomme = points - 60;
-            Util.updatePointsByAccount(perso.getAccount(), nouvelleSomme);
+            Util.updatePointsByAccount(perso.getAccount(), nouvelleSomme, "Validation du titre : " + titre);
             SUPPRIMER_TITRE_EN_ATTENTE(idValidation);
             SAVE_PERSONNAGE(perso, false);
             if (perso.isOnline()) {
@@ -4782,5 +4782,20 @@ public class SQLManager {
             e.printStackTrace();
         }
         return toReturn;
+    }
+
+    public static void INSERT_PB_TRANSACT(String nomPerso, String description, int points) {
+        HashMap<Integer, Integer> toReturn = new HashMap<Integer, Integer>();
+        try {
+            String query = "INSERT INTO `achatsPB` (`date`, `nomPerso`, `description`, `points`) VALUES (now(), ?, ?, ?);";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            ps.setString(1, nomPerso);
+            ps.setString(2, description);
+            ps.setInt(3, points);
+            ps.execute();
+        } catch (SQLException e) {
+            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

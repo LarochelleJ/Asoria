@@ -324,7 +324,7 @@ public class PlayerCommand {
                                 SocketManager.GAME_SEND_Im_PACKET(_perso, "116;<i>Serveur: </i>Vous êtes déjà  parchotté dans tous les éléments !");
                             } else {
                                 SocketManager.GAME_SEND_STATS_PACKET(_perso);
-                                Util.updatePointsByAccount(_perso.getAccount(), nombrePoints - 15);
+                                Util.updatePointsByAccount(_perso.getAccount(), nombrePoints - 15, "Parchottage");
                                 _perso.sendText("Le parchotage vous a coûté 15 points !");
                                 _perso.send("000C" + Util.loadPointsByAccount(_perso.getAccount()));
                             }
@@ -1157,11 +1157,11 @@ public class PlayerCommand {
                                 _perso.sendText("Votre nom doit contenir au moins une lettre.");
                                 return true;
                             }
-                            _perso.set_name(name);
                             SQLManager.SAVE_PERSONNAGE(_perso, false);
                             SocketManager.GAME_SEND_ALTER_GM_PACKET(_perso.getMap(), _perso);
-                            Util.updatePointsByAccount(_perso.getAccount(), nombrePoint - 50);
+                            Util.updatePointsByAccount(_perso.getAccount(), nombrePoint - 50, "Changement de nom pour : " + _perso.getName());
                             _perso.send("000C" + Util.loadPointsByAccount(_perso.getAccount()));
+                            _perso.set_name(name);
                             break;
                         case 42: //Point d'honneur
                             if (_perso.getFight() != null)
@@ -1789,7 +1789,7 @@ public class PlayerCommand {
                                         int id = _perso.get_title();
                                         SQLManager.CHANGER_COULEUR_TITRE(id, couleur);
                                         int nouvelleSomme = Util.loadPointsByAccount(_perso.getAccount()) - 15;
-                                        Util.updatePointsByAccount(_perso.getAccount(), nouvelleSomme);
+                                        Util.updatePointsByAccount(_perso.getAccount(), nouvelleSomme, "Changement couleur du titre # " + id);
                                         if (_perso.isOnline()) {
                                             _perso.send("000C" + nouvelleSomme);
                                             _perso.sendText("Votre titre affiche désormais une nouvelle couleur !");
@@ -1821,7 +1821,7 @@ public class PlayerCommand {
                                 } else {
                                     SQLManager.SAUVEGARDER_TITRE(idTitre, _perso.getGuid());
                                     _perso.sendText("Votre titre a été sauvegardé !");
-                                    Util.updatePointsByAccount(_perso.getAccount(), nbPoints - 5);
+                                    Util.updatePointsByAccount(_perso.getAccount(), nbPoints - 5, "Titre sauvegardé");
                                     _perso.send("000C" + (nbPoints - 5));
                                 }
                             } catch (Exception e) {
@@ -1993,7 +1993,7 @@ public class PlayerCommand {
 
                 if (command.getPrice() > 0) {
                     diff = (points - price);
-                    Util.updatePointsByAccount(_perso.getAccount(), diff);
+                    Util.updatePointsByAccount(_perso.getAccount(), price, "Commande payante : " + msg.substring(1, msg.length() - 1));
                     _perso.send("000C" + diff);
                 }
                 SQLManager.SAVE_PERSONNAGE(_perso, true);

@@ -752,7 +752,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_OAKO_PACKET(player, obj);
                     SocketManager.GAME_SEND_Ow_PACKET(player);
 
-                    Util.updatePointsByAccount(player.getAccount(), points - 50);
+                    Util.updatePointsByAccount(player.getAccount(), points - 50, "Mimibiote de l'item : " + targetItem.getName() + " en " + itemSkinVerif.getName());
                     player.sendText("Le service <b>Mimibiote</b> vous a coûté 50 points.");
                 } else {
                     player.sendText("Il vous faut 50 points pour effectuer ceci !");
@@ -794,7 +794,7 @@ public class GameThread implements Runnable {
                             player.set_colors(Integer.valueOf(donnees[0]), Integer.valueOf(donnees[1]), Integer.valueOf(donnees[2]));
                             if (player.isOnline()) {
                                 if (!(player.getAccount().getGmLevel() > 0)) {
-                                    Util.updatePointsByAccount(player.getAccount(), points - 60);
+                                    Util.updatePointsByAccount(player.getAccount(), points - 60, "Changement couleur du personnage");
                                     player.send("000C" + (points - 60));
                                     player.sendText("Vous avez perdu 60 points suite à votre changement de couleur !");
                                 }
@@ -3619,7 +3619,7 @@ public class GameThread implements Runnable {
             player.set_away(false);
             SocketManager.GAME_SEND_EXCHANGE_VALID(player.getAccount().getGameThread().getOut(), 'a');
             int points = Util.loadPointsByAccount(player.getAccount());
-            Util.updatePointsByAccount(player.getAccount(), points + player.getOffrePoints());
+            Util.updatePointsByAccount(player.getAccount(), points + player.getOffrePoints(), "Échange de vieux items au pnj");
             player.deleteItemQuantity();
             player.sendText("Vous avez obtenu " + player.getOffrePoints() + " points boutique suite à cet échange !");
             player.resetOffrePoints();
@@ -4780,7 +4780,7 @@ public class GameThread implements Runnable {
                 } else {
                     Item newObj = template.createNewItem(qua, true, -1); // jet parfait pnj boutique
                     int remaining = points - prixObjEnPoints;
-                    Util.updatePointsByAccount(player.getAccount(), remaining);
+                    Util.updatePointsByAccount(player.getAccount(), remaining, "Achat de l'item " + template.getName() + " via le PNJ Boutique");
                     player.send("000C" + remaining);
                     if (player.addObjet(newObj, true))
                         World.addObjet(newObj, true);

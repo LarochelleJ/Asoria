@@ -370,7 +370,7 @@ public class ParseTool {
                                         player.sendMess(Lang.LANG_42);
                                     else {
                                         int newPoints = points - 200;
-                                        Util.updatePointsByAccount(player.getAccount(), newPoints);
+                                        Util.updatePointsByAccount(player.getAccount(), newPoints, "Achat personne suiveur #" + Integer.parseInt(params[2]));
                                         player.getFolowers().add(Integer.parseInt(params[2]));
                                         player.sendMess(Lang.LANG_43, "", " 200 " + Lang.POINTS[player.getLang()]);
                                         player.send("004L1|" + folowers + "|" + player.getFolowersString());
@@ -401,7 +401,7 @@ public class ParseTool {
                                 World.addObjet(object, true);
                             player.save(true);
                             int remaining = points - price;
-                            Util.updatePointsByAccount(player.getAccount(), remaining);
+                            Util.updatePointsByAccount(player.getAccount(), remaining, "Achat de l'objet " + objTemplate.getName() + " via l'interface boutique");
                             player.send("000C" + remaining);
                             player.sendMess(Lang.LANG_45, "", " " + objTemplate.getName() + ".");
                             player.sendMess(Lang.LANG_51, "", " " + price + " " + Lang.POINTS[player.getLang()] + ". " + Lang.LANG_52[player.getLang()] + " " + (points - price) + ".");
@@ -572,7 +572,7 @@ public class ParseTool {
                 Player perso = player;
 
                 // Ressources stack fix
-                List<Integer> toDelete = new ArrayList<Integer>();
+                /*List<Integer> toDelete = new ArrayList<Integer>();
                 Collection<Item> copy = perso.getItems().values();
                 for (Item i : perso.getItems().values()) {
                     if (toDelete.contains(i.getGuid()) || i.getTemplate(true).getType() != 15) continue;
@@ -596,7 +596,7 @@ public class ParseTool {
                 // Suppression doublon
                 for (Integer i : toDelete) {
                     perso.removeItem(i, 0, true, true);
-                }
+                }*/
                 SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(perso.getMap(), perso.getGuid());
                 SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(perso.getMap(), perso);
                 SocketManager.GAME_SEND_STATS_PACKET(perso);
@@ -721,7 +721,7 @@ public class ParseTool {
                                 SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
                                 SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
                                 player.sendText("Vous possèdez un nouvel ornement !");
-                                Util.updatePointsByAccount(player.getAccount(), pointsJoueur - prixOrnement);
+                                Util.updatePointsByAccount(player.getAccount(), pointsJoueur - prixOrnement, "Achat ornement #" + ornement);
                                 player.send("000C" + (pointsJoueur - prixOrnement));
                                 player.addOrnement(ornement);
                                 player.send("000A" + player.getOrnementsStringData());
