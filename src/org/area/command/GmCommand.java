@@ -281,17 +281,16 @@ public class GmCommand {
             String mess = "==========\n" + "Liste des joueurs en ligne:";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
             int nbIterration = 30, diff = 0;
+            boolean full = false;
             if (infos.length > 1) {
                 if (infos[1].equalsIgnoreCase("FULL")) {
-                    nbIterration = Main.gameServer.getClients().size();
+                    full = true;
                 }
             } else {
                 diff = Main.gameServer.getClients().size() - 30;
             }
-            for (byte b = 0; b < nbIterration; b++) {
-                if (b == Main.gameServer.getClients().size())
-                    break;
-                GameThread GT = Main.gameServer.getClients().get(b);
+            for (GameThread GT : Main.gameServer.getClients()) {
+                if (nbIterration-- < 1) break;
                 Player P = GT.getPlayer();
                 if (P == null)
                     continue;
@@ -347,6 +346,7 @@ public class GmCommand {
                         + P.getMap().getX() + "/"
                         + P.getMap().getY() + ") ";
                 mess += P.getFight() == null ? "" : "Combat ";
+                mess += "Pseudo : " + P.getAccount().getPseudo() + " IP: " + (P.getAccount().getGmLevel() > 0 ? "Inconnue" : P.getAccount().getCurIp());
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
             }
             if (diff > 0) {

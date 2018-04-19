@@ -571,26 +571,32 @@ public class ParseTool {
                 player.set_lvl(player.getLevel());
                 Player perso = player;
 
-                // // TODO: 2018-04-10 Fix this
-                /*List<Item> ressources = new ArrayList<Item>();
-                for (Item i : player.getItems().values()) {
-                    if (i.getTemplate(true).getType() == 15) {
-                        ressources.add(i);
-                    }
-                }
-                for (int i = 0; i < ressources.size(); i++) {
-                    Item ob = ressources.get(i);
-                    ObjTemplate t = ob.getTemplate(true);
-                    for (int z = 0; z < ressources.size(); z++) {
-                        if (ressources.get(z).getTemplate(true).getID() == t.getID()) {
-                            int qua = ob.getQuantity() + ressources.get(z).getQuantity();
-                            player.sendText(String.valueOf(ob.getQuantity()));
-                            ob.setQuantity(qua);
-                            perso.removeItem(ressources.get(z).getGuid(), -1, true, true);
-                            ressources.remove(z);
+                // Ressources stack fix
+                List<Integer> toDelete = new ArrayList<Integer>();
+                Collection<Item> copy = perso.getItems().values();
+                for (Item i : perso.getItems().values()) {
+                    if (toDelete.contains(i.getGuid()) || i.getTemplate(true).getType() != 15) continue;
+                    int tGuid = i.getTemplate(true).getID();
+                    int qua = i.getQuantity();
+                    for (Item z : copy) {
+                        if (z.getGuid() != i.getGuid()) {
+                            if (z.getTemplate(true).getID() == tGuid) {
+                                qua += z.getQuantity();
+                                toDelete.add(z.getGuid());
+                            }
                         }
                     }
-                }*/
+                    if (i.getQuantity() != qua) {
+                        i.setQuantity(qua);
+                        if (perso.isOnline()) {
+                            SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(perso, i);
+                        }
+                    }
+                }
+                // Suppression doublon
+                for (Integer i : toDelete) {
+                    perso.removeItem(i, 0, true, true);
+                }
                 SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(perso.getMap(), perso.getGuid());
                 SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(perso.getMap(), perso);
                 SocketManager.GAME_SEND_STATS_PACKET(perso);

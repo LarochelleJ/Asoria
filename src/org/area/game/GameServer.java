@@ -33,7 +33,7 @@ public class GameServer implements Runnable {
      * SheduledExecutor
      **/
     /*public static ScheduledExecutorService executorTimer = Executors.newSingleThreadScheduledExecutor(),
-			fightExecutor = Executors.newSingleThreadScheduledExecutor();*/
+            fightExecutor = Executors.newSingleThreadScheduledExecutor();*/
     private final static int NUM_THREADS = Runtime.getRuntime().availableProcessors();
     public static ScheduledExecutorService executorTimer = Executors.newSingleThreadScheduledExecutor(),
             fightExecutor = Executors.newScheduledThreadPool(NUM_THREADS);
@@ -75,24 +75,25 @@ public class GameServer implements Runnable {
             }
             executorTimer.scheduleWithFixedDelay(new Runnable() {
                 public void run() {
-                    if (++rebootTimeEllap >= hoursForReboot-1) { // Plus qu'une heure
+                    if (++rebootTimeEllap >= hoursForReboot - 1) { // Plus qu'une heure
                         SocketManager.GAME_SEND_MESSAGE_TO_ALL("Plus qu'une heure avant le redémarage du serveur !", Config.CONFIG_MOTD_COLOR);
                         executorTimer.scheduleWithFixedDelay(new Runnable() {
                             public void run() {
                                 rebootStep++;
-                                if (rebootStep == 1) {
+                                if (rebootStep == 1) { // 30
                                     SocketManager.GAME_SEND_MESSAGE_TO_ALL("Plus que 30 minutes avant le redémarage du serveur !", Config.CONFIG_MOTD_COLOR);
-                                } else if (rebootStep == 2) {
-                                    SocketManager.GAME_SEND_MESSAGE_TO_ALL("Les combats sont bloqués jusqu'au redémarage du serveur qui aura lieu dans 20 minutes !", Config.CONFIG_MOTD_COLOR);
+                                } else if (rebootStep == 3) { // 40
+                                    SocketManager.GAME_SEND_MESSAGE_TO_ALL("Plus que 20 minutes avant le redémarage du serveur ! Dans 5 minutes les combats seront bloqués !", Config.CONFIG_MOTD_COLOR);
+                                } else if (rebootStep == 4) { // 45, on leur laisse 15 minutes de jeu avant de reboot
                                     Constant.COMBAT_BLOQUE = true;
-                                } else if (rebootStep == 3) {
+                                } else if (rebootStep == 5) { // 50
                                     SocketManager.GAME_SEND_MESSAGE_TO_ALL("Redémarage du serveur dans 10 minutes !", Config.CONFIG_MOTD_COLOR);
-                                } else if (rebootStep == 4) {
+                                } else if (rebootStep == 4) { // 60
                                     SocketManager.GAME_SEND_MESSAGE_TO_ALL("Redémarage du serveur !", Config.CONFIG_MOTD_COLOR);
                                     Reboot.reboot();
                                 }
                             }
-                        }, 30, 10, TimeUnit.MINUTES);
+                        }, 30, 5, TimeUnit.MINUTES);
                     } else {
                         SocketManager.GAME_SEND_MESSAGE_TO_ALL((hoursForReboot - rebootTimeEllap) + " heures avant le redémarage du serveur !", Config.CONFIG_MOTD_COLOR);
                     }

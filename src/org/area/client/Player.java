@@ -2682,7 +2682,7 @@ public class Player {
             Item obj = _items.get(guid);
 
 
-            if (nombre > obj.getQuantity() || nombre == -1)
+            if (nombre > obj.getQuantity() || nombre == 0)
                 nombre = obj.getQuantity();
 
             if (obj.getQuantity() >= nombre) {
