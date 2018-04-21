@@ -290,7 +290,7 @@ public class GmCommand {
                 diff = Main.gameServer.getClients().size() - 30;
             }
             for (GameThread GT : Main.gameServer.getClients()) {
-                if (nbIterration-- < 1) break;
+                if (!full && nbIterration-- < 1) break;
                 Player P = GT.getPlayer();
                 if (P == null)
                     continue;
@@ -422,7 +422,7 @@ public class GmCommand {
             return true;
         } else if (command.equalsIgnoreCase("POPALL")) {
             String message = "";
-            message = msg.split(" ", 4)[1];
+            message = infos[1];
             for (Player P : World.getOnlinePlayers())
                 SocketManager.GAME_SEND_POPUP(P, message);
             return true;
@@ -1927,16 +1927,16 @@ public class GmCommand {
 
             if (infos.length > 3) {
                 target = World.getPersoByName(infos[3]);
-                if ((target == null) || (target.getFight() != null)) {
-                    String str = "Le personnage n'a pas ete trouve ou est en combat";
+                if (target == null) {
+                    String str = "Le personnage n'a pas ete trouve";
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(this._out, str);
                     return true;
                 }
-                if (target.getFight() != null) {
+                /*if (target.getFight() != null) {
                     String str = "La cible est en combat";
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(this._out, str);
                     return true;
-                }
+                }*/
             }
             if (infos[1].equalsIgnoreCase("intelligence")) {
                 add = 126;
@@ -2036,12 +2036,6 @@ public class GmCommand {
     }
 
     public boolean commandGmFour(String command, String[] infos, String msg) {
-        if (command.equalsIgnoreCase("POUPOU")) {
-            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Rebonjour Poupou! Vous voilà de retour sur Area!");
-        }
-        if (command.equalsIgnoreCase("FLOW")) {
-            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Rebonjour Flow! Je suis l'esprit de El Caribou!");
-        }
         if (command.equalsIgnoreCase("EVENT")) {
             int type;
             int minPlayer;

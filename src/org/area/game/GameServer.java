@@ -88,7 +88,7 @@ public class GameServer implements Runnable {
                                     Constant.COMBAT_BLOQUE = true;
                                 } else if (rebootStep == 5) { // 50
                                     SocketManager.GAME_SEND_MESSAGE_TO_ALL("Redémarage du serveur dans 10 minutes !", Config.CONFIG_MOTD_COLOR);
-                                } else if (rebootStep == 4) { // 60
+                                } else if (rebootStep == 7) { // 60
                                     SocketManager.GAME_SEND_MESSAGE_TO_ALL("Redémarage du serveur !", Config.CONFIG_MOTD_COLOR);
                                     Reboot.reboot();
                                 }
