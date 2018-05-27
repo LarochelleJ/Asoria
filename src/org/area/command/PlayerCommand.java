@@ -217,7 +217,7 @@ public class PlayerCommand {
                         case 5: //Staff en ligne
                             String staff = "Membre de l'équipe connectés :\n";
                             boolean allOffline = true;
-
+                            List<Player> helpers = new ArrayList<Player>();
                             for (int i = 0; i < World.getOnlinePlayers().size(); i++) {
                                 if (World.getOnlinePlayers().get(i).getAccount().getGmLevel() > 0 && !World.getOnlinePlayers().get(i).staffInvisible) {
                                     staff += "- <b><a href='asfunction:onHref,ShowPlayerPopupMenu," + World.getOnlinePlayers().get(i).getName() + "'>" + World.getOnlinePlayers().get(i).getName() + "</a></b> (";
@@ -242,9 +242,18 @@ public class PlayerCommand {
                                     }
                                     staff += "\n";
                                     allOffline = false;
+                                } else if (World.getOnlinePlayers().get(i).getAccount().isHelper) {
+                                   helpers.add(World.getOnlinePlayers().get(i));
                                 }
                             }
-                            if (!staff.isEmpty() && !allOffline) {
+                            if (!helpers.isEmpty()) {
+                                staff += "\nHelpers connectés : \n";
+                                allOffline = false;
+                            }
+                            for (Player p : helpers) {
+                                staff += "- <b><a href='asfunction:onHref,ShowPlayerPopupMenu," + p.getName() + "'>" + p.getName() + "</a></b>\n";
+                            }
+                            if (!allOffline) {
                                 SocketManager.GAME_SEND_POPUP(_perso, staff);
                             } else if (allOffline) {
                                 SocketManager.GAME_SEND_POPUP(_perso, "Aucun membre de l'équipe est présent !");
@@ -1525,7 +1534,7 @@ public class PlayerCommand {
                                 }
 
                                 SocketManager.GAME_SEND_SPELL_LIST(_perso);
-                                SocketManager.GAME_SEND_NEW_LVL_PACKET(_perso.getAccount().getGameThread().getOut(), _perso.getLevel());
+                                SocketManager.GAME_SEND_NEW_LVL_PACKET(_perso.getAccount(), _perso.getLevel());
                                 Thread.sleep(150);
                                 SQLManager.CHANGER_SEX_CLASSE(_perso);
                             } catch (Exception e) {
@@ -1569,7 +1578,7 @@ public class PlayerCommand {
                                 }
 
                                 SocketManager.GAME_SEND_SPELL_LIST(_perso);
-                                SocketManager.GAME_SEND_NEW_LVL_PACKET(_perso.getAccount().getGameThread().getOut(), _perso.getLevel());
+                                SocketManager.GAME_SEND_NEW_LVL_PACKET(_perso.getAccount(), _perso.getLevel());
                                 Thread.sleep(150);
                                 SQLManager.CHANGER_SEX_CLASSE(_perso);
                             } catch (Exception e) {
@@ -1993,7 +2002,7 @@ public class PlayerCommand {
 
                 if (command.getPrice() > 0) {
                     diff = (points - price);
-                    Util.updatePointsByAccount(_perso.getAccount(), price, "Commande payante : " + msg.substring(1, msg.length() - 1));
+                    Util.updatePointsByAccount(_perso.getAccount(), diff, "Commande payante : " + msg.substring(1, msg.length() - 1));
                     _perso.send("000C" + diff);
                 }
                 SQLManager.SAVE_PERSONNAGE(_perso, true);

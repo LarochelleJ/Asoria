@@ -210,7 +210,8 @@ public class SQLManager {
                     "`enemy` = ?," +
                     "`mute_time` = ?," +
                     "`mute_raison` = ?," +
-                    "`mute_pseudo` = ?" +
+                    "`mute_pseudo` = ?," +
+                    "`helper` = ?" +
                     " WHERE `guid` = ?;";
             PreparedStatement p = newTransact(baseQuery, Connection(true));
 
@@ -225,7 +226,8 @@ public class SQLManager {
             p.setLong(9, acc.getMuteTime());
             p.setString(10, acc.getMuteRaison());
             p.setString(11, acc.getMutePseudo());
-            p.setInt(12, acc.getGuid());
+            p.setInt(12, acc.isHelper ? 1 : 0);
+            p.setInt(13, acc.getGuid());
 
             p.executeUpdate();
             closePreparedStatement(p);
@@ -2098,7 +2100,8 @@ public class SQLManager {
                         RS.getLong("mute_time"),
                         RS.getString("mute_raison"),
                         RS.getString("mute_pseudo"),
-                        RS.getInt("vote")
+                        RS.getInt("vote"),
+                        RS.getInt("helper") > 0 ? true : false
                 );
                 World.addAccount(C);
                 World.ReassignAccountToChar(C);
@@ -2147,7 +2150,8 @@ public class SQLManager {
                         RS.getLong("mute_time"),
                         RS.getString("mute_raison"),
                         RS.getString("mute_pseudo"),
-                        RS.getInt("vote")
+                        RS.getInt("vote"),
+                        RS.getInt("helper") > 0 ? true : false
                 );
                 World.addAccount(account);
                 World.ReassignAccountToChar(account);

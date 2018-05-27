@@ -51,6 +51,8 @@ public class Account {
     private Map<Integer, ArrayList<HdvEntry>> _hdvsItems;// Contient les items des HDV format : <hdvID,<cheapestID>>
     private int _cadeau; //Cadeau à la connexion
 
+    public boolean isHelper = false;
+
     private Map<Integer, Player> players = new TreeMap<Integer, Player>();
     private Map<Integer, Long> WhenHasLeftKolizeum = new HashMap<Integer, Long>();
     private boolean isAFlooder = false;
@@ -74,7 +76,7 @@ public class Account {
                    String aQuestion, String aReponse, int aGmLvl, int vip, boolean aBanned,
                    long banned_time, String aLastIp, String aLastConnectionDate,
                    String bank, long l, String friends, String enemy,
-                   int cadeau, long mute_time, String mute_raison, String mute_pseudo, int vote) {
+                   int cadeau, long mute_time, String mute_raison, String mute_pseudo, int vote, boolean isHelper) {
         this._GUID = aGUID;
         this._name = aName;
         this._pass = aPass;
@@ -120,6 +122,7 @@ public class Account {
             ;
         }
         this._cadeau = cadeau;
+        this.isHelper = isHelper;
     }
 
     public void setBankKamas(long i) {

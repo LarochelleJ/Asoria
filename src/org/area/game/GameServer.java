@@ -372,7 +372,7 @@ public class GameServer implements Runnable {
     }
 
     public synchronized void stop() {
-        this.stop();
+        this.stop(); // Causer un stackOverFlow pour arrêter le serveur, mouais...
     }
 
     public static void addShutDown(int time) {

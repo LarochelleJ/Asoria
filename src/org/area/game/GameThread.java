@@ -2222,7 +2222,7 @@ public class GameThread implements Runnable {
                 Object_delete(packet);
                 break;
             case 'D':// Depose l'objet au sol
-                if (player.getAccount().getGmLevel() > 3) {
+                if (player.getAccount().getGmLevel() > 0) {
                     Object_drop(packet);
                 } else {
                     SocketManager.GAME_SEND_POPUP(player, "Il est actuellement impossible de jeter un item au sol...");

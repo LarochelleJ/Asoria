@@ -652,29 +652,29 @@ public class GmCommand {
                 return true;
             }
             Player P = _perso;
-                if (infos.length > 2)// Si un nom de perso est spécifié
-                {
-                    P = World.getPersoByName(infos[2]);
-                    if (P == null) {
-                        String str = "Le personnage n'a pas ete trouve";
-                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
-                        return true;
-                    }
-                }
-                if (P.isOnline()) {
-                    short mapID = P.getMap().get_id();
-                    int cellID = P.get_curCell().getID();
-                    if (!P.getMap().get_npcs().isEmpty() && P.getAccount().getGmLevel() < 5) {
-                        SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
-                        return true;
-                    }
-                    target.teleport(mapID, cellID);
-                    String str = "Le joueur a ete teleporte";
+            if (infos.length > 2)// Si un nom de perso est spécifié
+            {
+                P = World.getPersoByName(infos[2]);
+                if (P == null) {
+                    String str = "Le personnage n'a pas ete trouve";
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
-                } else {
-                    String str = "Le joueur n'est pas en ligne";
-                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                    return true;
                 }
+            }
+            if (P.isOnline()) {
+                short mapID = P.getMap().get_id();
+                int cellID = P.get_curCell().getID();
+                if (!P.getMap().get_npcs().isEmpty() && P.getAccount().getGmLevel() < 5) {
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
+                    return true;
+                }
+                target.teleport(mapID, cellID);
+                String str = "Le joueur a ete teleporte";
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+            } else {
+                String str = "Le joueur n'est pas en ligne";
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+            }
         } else if (command.equalsIgnoreCase("TELEPORT")) {
             short mapID = -1;
             int cellID = -1;
@@ -935,6 +935,27 @@ public class GmCommand {
 
             String str = "L'alignement du joueur a ete modifie";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+        } else if (command.equalsIgnoreCase("H")) {
+            if (infos.length > 1)// Si un nom de perso est spécifié
+            {
+                Player target = World.getPersoByName(infos[1]);
+                if (target == null) {
+                    String str = "Le personnage n'a pas ete trouve";
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                    return true;
+                }
+                target.getAccount().isHelper = !target.getAccount().isHelper;
+                SQLManager.UPDATE_ACCOUNT_DATA(target.getAccount());
+                String str;
+                if (target.getAccount().isHelper) {
+                    str = target.getName() + " est désormais un helper !";
+                } else {
+                    str = target.getName() + " n'est plus un helper !";
+                }
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+            } else {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Commande incompléte, entrer un nom de personnage !");
+            }
         } else if (command.equalsIgnoreCase("SETREPONSES")) {
             if (infos.length < 3) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out,
@@ -1181,10 +1202,11 @@ public class GmCommand {
             }
             im_mess.append("~").append(message);
             String duree = "permanente !";
-            if (nb_heures > 0 ) {
+            if (nb_heures > 0) {
                 duree = nb_heures + " heures.";
             }
-            if (P.getAccount().getGameThread() != null) P.getAccount().getGameThread().kick(40, "Le membre du staff " + _perso.getName() + " vous a banni pour la raison suivante: " + message + ". La durée du ban est " + duree);
+            if (P.getAccount().getGameThread() != null)
+                P.getAccount().getGameThread().kick(40, "Le membre du staff " + _perso.getName() + " vous a banni pour la raison suivante: " + message + ". La durée du ban est " + duree);
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous avez banni " + P.getName());
             SocketManager.GAME_SEND_MESSAGE_TO_STAFF("Le joueur <b>" + P.getName() + "</b> a été banni pour la raison suivante : " + message, AllColor.RED);
             return true;
@@ -1396,6 +1418,18 @@ public class GmCommand {
             StringBuilder im_mess = new StringBuilder("1244;").append(P.getName()).append("~").append(_perso.getName()).append("~").append(message);
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous avez debanni " + P.getName());
             SocketManager.GAME_SEND_Im_PACKET_TO_ALL(im_mess.toString());
+            return true;
+        } else if (command.equalsIgnoreCase("NBSUIVEURS")) {
+            Integer nb = Integer.valueOf(infos[1]);
+            _perso.nbSuiveurs = nb;
+            _perso.refresh();
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le nombre de suiveur a été modifié !");
+            return true;
+        } else if (command.equalsIgnoreCase("SETSUIVEUR")) {
+            Integer suiveur = Integer.valueOf(infos[1]);
+            _perso.setCurrentFolower(suiveur);
+            _perso.refresh();
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le nombre de suiveur a été modifié !");
             return true;
         } else if (command.equalsIgnoreCase("ADDFIGHTPOS")) {
             int team = -1;
@@ -2132,7 +2166,7 @@ public class GmCommand {
                 String str = "Le canal global est maintenant activé !";
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
             }
-        } else if(command.equalsIgnoreCase("HIDEMYASS!")) {
+        } else if (command.equalsIgnoreCase("HIDEMYASS!")) {
             _perso.staffInvisible = !_perso.staffInvisible;
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, _perso.staffInvisible ? "Invisible !" : "Plus invisible !");
         } else if (command.equalsIgnoreCase("ORNEMENT")) {
@@ -2172,14 +2206,13 @@ public class GmCommand {
             } catch (Exception e) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Mauvaise syntaxe");
             }
-        } else if (command.equalsIgnoreCase("DDZERO")){
+        } else if (command.equalsIgnoreCase("DDZERO")) {
             Mount dd = _perso.getMount();
             if (dd != null) {
                 dd.setEnergie(0);
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Énergie dd à zéro");
             }
-        }
-        else if (command.equalsIgnoreCase("DOACTION")) {
+        } else if (command.equalsIgnoreCase("DOACTION")) {
             // DOACTION NAME TYPE ARGS COND
             if (infos.length < 4) {
                 String mess = "Nombre d'argument de la commande incorect !";
@@ -2238,7 +2271,7 @@ public class GmCommand {
                     if (perso.isOnline()) {
                         SocketManager.GAME_SEND_SPELL_LIST(perso);
                         SocketManager.GAME_SEND_NEW_LVL_PACKET(perso
-                                        .getAccount().getGameThread().getOut(),
+                                        .getAccount(),
                                 perso.getLevel());
                         SocketManager.GAME_SEND_STATS_PACKET(perso);
                     }

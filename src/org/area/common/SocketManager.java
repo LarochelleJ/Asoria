@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import org.area.client.Account;
 import org.area.client.Player;
 import org.area.client.Player.Group;
 import org.area.common.World.ItemSet;
@@ -1507,11 +1508,13 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Send>>" + packet);
     }
 
-    public static void GAME_SEND_NEW_LVL_PACKET(GameSendThread out, int lvl) {
+    public static void GAME_SEND_NEW_LVL_PACKET(Account a, int lvl) {
         String packet = "AN" + lvl;
+        GameSendThread out = a.getGameThread().getOut();
         send(out, packet);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Send>>" + packet);
+            GameServer.addToLog("Le joueur " + a.getCurPlayer().getName() + " a atteint le niveau " + lvl);
     }
 
     public static void GAME_SEND_MESSAGE_TO_ALL(String msg, String color) {

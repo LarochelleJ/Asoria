@@ -90,6 +90,7 @@ public class Player {
     private boolean _canAggro = true;
     private String _emotes = "7667711";
     private TimerTask actTimerTask;
+    public Integer nbSuiveurs = 0;
 
     //Variables d'ali
     private byte _align = 0;
@@ -1717,8 +1718,11 @@ public class Player {
             str.append("==").append(this.getPrestige()).append("."); //Prestige
             str.append(this.getCurrentFolower()).append("."); //Personnages suiveurs
             if (Config.ORNEMENT) {
-                str.append(this._ornement);
+                str.append(this._ornement).append(".");
+            } else {
+                str.append(0).append(".");
             }
+            str.append(this.nbSuiveurs);
         }
         return str.toString();
     }
@@ -2771,7 +2775,7 @@ public class Player {
         }
 
         if (send && _isOnline && _compte != null && _compte.getGameThread() != null) {
-            SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte.getGameThread().getOut(), _lvl);
+            SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte, _lvl);
             SocketManager.GAME_SEND_STATS_PACKET(this);
             SocketManager.GAME_SEND_SPELL_LIST(this);
         }
@@ -2788,7 +2792,7 @@ public class Player {
             if (_lvl == 200 & prestige != 20) break;
         }
         if (_isOnline) {
-            if (exLevel < _lvl) SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte.getGameThread().getOut(), _lvl);
+            if (exLevel < _lvl) SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte, _lvl);
             SocketManager.GAME_SEND_STATS_PACKET(this);
             SocketManager.GAME_SEND_SPELL_LIST(this);
         }
@@ -5125,7 +5129,7 @@ public class Player {
             for (int a = 1; a <= getLevel(); a++)
                 Constant.onLevelUpSpells(this, a);
 
-            SocketManager.GAME_SEND_NEW_LVL_PACKET(this.getAccount().getGameThread().getOut(), lvl);
+            SocketManager.GAME_SEND_NEW_LVL_PACKET(this.getAccount(), lvl);
             SocketManager.GAME_SEND_STATS_PACKET(this);
             SocketManager.GAME_SEND_SPELL_LIST(this);
         } else {
@@ -5183,7 +5187,7 @@ public class Player {
         _capital = _lvl * 5;
 
         if (_isOnline) {
-            SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte.getGameThread().getOut(), _lvl);
+            SocketManager.GAME_SEND_NEW_LVL_PACKET(_compte, _lvl);
             SocketManager.GAME_SEND_STATS_PACKET(this);
             SocketManager.GAME_SEND_SPELL_LIST(this);
             if (getPrestige() == 2) {
