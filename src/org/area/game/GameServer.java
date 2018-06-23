@@ -60,6 +60,7 @@ public class GameServer implements Runnable {
     private int rebootTimeEllap = 0;
     private int rebootStep = 0;
     private int hoursForReboot = 48; // 2 jour
+    private boolean hourL = false;
 
     public GameServer() {
         try {
@@ -73,9 +74,11 @@ public class GameServer implements Runnable {
             } else {
                 n = 2 - heure;
             }
+            rebootStep = 0;
             executorTimer.scheduleWithFixedDelay(new Runnable() {
                 public void run() {
-                    if (++rebootTimeEllap >= hoursForReboot - 1) { // Plus qu'une heure
+                    if (++rebootTimeEllap >= hoursForReboot - 1 && !hourL) { // Plus qu'une heure
+                        hourL = true;
                         SocketManager.GAME_SEND_MESSAGE_TO_ALL("Plus qu'une heure avant le redémarage du serveur !", Config.CONFIG_MOTD_COLOR);
                         executorTimer.scheduleWithFixedDelay(new Runnable() {
                             public void run() {

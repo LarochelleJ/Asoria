@@ -711,15 +711,15 @@ public class Fight {
         return fighters;
     }
 
-    public synchronized void changePlace(Player perso, int cell) {
+    public synchronized void changePlace(Player perso, int cell, boolean force) {
         Fighter fighter = getFighterByPerso(perso);
         int team = getTeamID(perso.getGuid()) - 1;
         if (fighter == null) return;
         if (_map.getCase(cell) == null || _map.getCase(cell).isWalkable(true) == false) return;
-        if (get_state() != 2 || isOccuped(cell) || perso.is_ready() || (team == 0 && !groupCellContains(_start0, cell)) || (team == 1 && !groupCellContains(_start1, cell)))
+        if (get_state() != 2 || isOccuped(cell) && !force || perso.is_ready() || (team == 0 && !groupCellContains(_start0, cell)) || (team == 1 && !groupCellContains(_start1, cell)))
             return;
 
-        fighter.get_fightCell().getFighters().clear();
+        fighter.get_fightCell().getFighters().remove(fighter.getGUID());
         fighter.set_fightCell(_map.getCase(cell));
 
         _map.getCase(cell).addFighter(fighter);
@@ -1606,6 +1606,7 @@ public class Fight {
         if (_team0.containsKey(guid)) {
             Case cell = getRandomCell(_start0);
             if (cell == null) {
+                SocketManager.GAME_SEND_POPUP(perso, "Il n'y a plus de place dans le combat !");
                 return false;
             }
 
@@ -1668,7 +1669,7 @@ public class Fight {
         } else if (_team1.containsKey(guid)) {
             Case cell = getRandomCell(_start1);
             if (cell == null) {
-                perso.sendText("Grosse merde #2");
+                //perso.sendText("Grosse merde #2");
                 return false;
             }
 

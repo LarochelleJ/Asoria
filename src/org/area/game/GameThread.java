@@ -770,9 +770,8 @@ public class GameThread implements Runnable {
                             if (f != null) {
                                 int cell = f.get_fightCell().getID();
                                 int cellP = p.get_fightCell().getID();
-                                f.get_fightCell().getFighters().clear();
-                                player.getFight().changePlace(player, cell);
-                                player.getFight().changePlace(perso, cellP);
+                                player.getFight().changePlace(player, cell, true);
+                                player.getFight().changePlace(perso, cellP, true);
                             }
                         }
                     } else {
@@ -5882,7 +5881,7 @@ public class GameThread implements Runnable {
             return;
         try {
             int cell = Integer.parseInt(packet.substring(2));
-            player.getFight().changePlace(player, cell);
+            player.getFight().changePlace(player, cell, false);
         } catch (NumberFormatException e) {
             return;
         }
