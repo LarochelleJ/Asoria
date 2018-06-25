@@ -51,7 +51,8 @@ public class Main {
 			Console.println("[Database connexion : false]", Color.RED);
 			Reboot.reboot();
 		}
-		
+		// Chargement config ajustable via bdd
+		SQLManager.LOAD_CONFIG();
 		//Chargement de la base de donn�e
 		Console.setTitle("World");
 		World.createWorld();

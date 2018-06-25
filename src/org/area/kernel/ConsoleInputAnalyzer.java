@@ -60,7 +60,7 @@ public class ConsoleInputAnalyzer implements Runnable {
             try {
 
                 sendInfo("------------ Staff en ligne ----------------");
-                ResultSet RS = SQLManager.executeQuery("SELECT pseudo from accounts WHERE logged = '1' AND level > '0';", false);
+                ResultSet RS = SQLManager.executeQuery("SELECT pseudo from accounts WHERE logged = '1' AND level > '0';", true);
                 while (RS.next()) {
                     sendInfo("- " + RS.getString("pseudo"));
                 }

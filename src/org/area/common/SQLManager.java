@@ -118,14 +118,18 @@ public class SQLManager {
             myConnectionLocker.lock();
             boolean valid = true;
             try {
-                valid = realm ? !realmConnection.isClosed() : !gameConnection.isClosed();
-            } catch (SQLException e) {
+                if (realmConnection == null || gameConnection == null) {
+                    valid = false;
+                } else {
+                    valid = realm ? !realmConnection.isClosed() : !gameConnection.isClosed();
+                }
+            } catch (Exception e) {
                 valid = false;
             }
-            if (!realm && (gameConnection == null || !valid)) {
+            if (!realm && !valid) { // On doit cérer une connexion
                 closeCons(realm);
                 setUpConnexion(realm);
-            } else if (realm && (realmConnection == null || !valid)) {
+            } else if (realm && !valid) {
                 closeCons(realm);
                 setUpConnexion(realm);
             }
@@ -179,21 +183,23 @@ public class SQLManager {
     }
 
     public static void closeCons(boolean realm) {
-        try {
-            commitTransacts();
+        if ((realm && realmConnection != null) || (!realm && gameConnection != null)) { // On peut pas fermer une connexion qui n'a jamais eu lieu
             try {
-                myConnectionLocker.lock();
-                if (!realm)
-                    gameConnection.close();
-                else
-                    realmConnection.close();
-            } finally {
-                myConnectionLocker.unlock();
+                commitTransacts();
+                try {
+                    myConnectionLocker.lock();
+                    if (!realm)
+                        gameConnection.close();
+                    else
+                        realmConnection.close();
+                } finally {
+                    myConnectionLocker.unlock();
+                }
+            } catch (Exception e) {
+                Console.println("Erreur a la fermeture des connexions SQL:"
+                        + e.getMessage(), Color.RED);
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Console.println("Erreur a la fermeture des connexions SQL:"
-                    + e.getMessage(), Color.RED);
-            e.printStackTrace();
         }
     }
 
@@ -262,7 +268,7 @@ public class SQLManager {
 
         try {
             String query = "SELECT * FROM `personnages` WHERE `name` = ? AND `server` = ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ps.setInt(2, GameServer.id);
             ResultSet RS = ps.executeQuery();
@@ -275,6 +281,29 @@ public class SQLManager {
         }
 
         return exist;
+    }
+
+    public static boolean LOAD_CONFIG() {
+        boolean wellLoaded = false;
+
+        try {
+            String query = "SELECT * FROM config;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
+            ResultSet RS = ps.executeQuery();
+            while (RS.next()) {
+                if (RS.getString("param").equalsIgnoreCase("rateXP")) {
+                    Config.RATE_PVM = RS.getInt("value");
+                    wellLoaded = true;
+                }
+            }
+            closeResultSet(RS);
+        } catch (Exception e) {
+            GameServer.addToLog("SQL ERROR: " + e);
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return wellLoaded;
     }
 
     public static void LOAD_CRAFTS() {
@@ -760,7 +789,7 @@ public class SQLManager {
 
     public static int getNextPersonnageGuid() {
         try {
-            ResultSet RS = executeQuery("SELECT guid FROM personnages ORDER BY guid DESC LIMIT 1;", true);
+            ResultSet RS = executeQuery("SELECT guid FROM personnages ORDER BY guid DESC LIMIT 1;", false);
             if (!RS.first()) return 1;
             int guid = RS.getInt("guid");
             guid++;
@@ -792,7 +821,7 @@ public class SQLManager {
         }
         try {
             String query = "SELECT * FROM personnages WHERE account = ?;";
-                java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+                java.sql.PreparedStatement ps = newTransact(query, Connection(false));
                 ps.setInt(1, accID);
                 ResultSet RS = ps.executeQuery();
                 while (RS.next()) {
@@ -901,21 +930,21 @@ public class SQLManager {
         String baseQuery = "DELETE FROM personnages WHERE guid = ?;";
 
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setInt(1, guid);
 
             p.execute();
 
             if (!perso.getItemsIDSplitByChar(",").equals("")) {
                 baseQuery = "DELETE FROM items WHERE guid IN (?) AND server = ?;";
-                p = newTransact(baseQuery, Connection(true));
+                p = newTransact(baseQuery, Connection(false));
                 p.setString(1, perso.getItemsIDSplitByChar(","));
                 p.setInt(2, GameServer.id);
                 p.execute();
             }
             if (!perso.getStoreItemsIDSplitByChar(",").equals("")) {
                 baseQuery = "DELETE FROM items WHERE guid IN (?) AND server = ?;";
-                p = newTransact(baseQuery, Connection(true));
+                p = newTransact(baseQuery, Connection(false));
                 p.setString(1, perso.getStoreItemsIDSplitByChar(","));
                 p.setInt(2, GameServer.id);
                 p.execute();
@@ -944,7 +973,7 @@ public class SQLManager {
                 " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'', '', ?, ?, ?, ?, ?, ?);";
 
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
 
             p.setInt(1, perso.getGuid());
             p.setString(2, perso.getName());
@@ -1152,7 +1181,7 @@ public class SQLManager {
     public static void LOAD_SORTS_INTERDITS() {
         try {
             String query = "SELECT * from sorts_interdits;";
-            ResultSet RS = executeQuery(query, true);
+            ResultSet RS = executeQuery(query, false);
             List<Integer> pvp = new ArrayList<Integer>();
             List<Integer> pvm = new ArrayList<Integer>();
             while (RS.next()) {
@@ -1244,7 +1273,7 @@ public class SQLManager {
         PreparedStatement p = null;
 
         try {
-            p = newTransact(baseQuery, Connection(true));
+            p = newTransact(baseQuery, Connection(false));
             p.setString(1, _perso.getName());
             p.setLong(2, _perso.get_kamas());
             p.setInt(3, _perso.get_spellPts());
@@ -1322,7 +1351,7 @@ public class SQLManager {
             baseQuery = "UPDATE `items` SET qua = ?, pos= ?, stats = ?" +
                     " WHERE guid = ? AND server = ?;";
             try {
-                p = newTransact(baseQuery, Connection(true));
+                p = newTransact(baseQuery, Connection(false));
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
@@ -1382,7 +1411,7 @@ public class SQLManager {
         PreparedStatement p = null;
         boolean fine = true;
         try {
-            p = newTransact(baseQuery, Connection(true));
+            p = newTransact(baseQuery, Connection(false));
             p.setString(1, _perso.parseObjetsToDB());
             p.setString(2, _perso.parseStoreItemstoBD());
             p.setInt(3, _perso.getGuid());
@@ -1405,7 +1434,7 @@ public class SQLManager {
         PreparedStatement p = null;
         boolean fine = true;
         try {
-            p = newTransact(baseQuery, Connection(true));
+            p = newTransact(baseQuery, Connection(false));
             p.setInt(1, gain);
             p.setInt(2, giftTemplate);
             p.setInt(3, template);
@@ -1454,7 +1483,7 @@ public class SQLManager {
 
     public static void LOAD_SHOP() {
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM shop;", true);
+            ResultSet RS = SQLManager.executeQuery("SELECT * FROM shop;", false);
             while (RS.next()) {
                 for (String s : RS.getString("servers").split(",")) {
                     if (Integer.parseInt(s) == GameServer.id) {
@@ -1473,7 +1502,7 @@ public class SQLManager {
         List<Integer> templateIds = new ArrayList<Integer>();
         try {
             String query = "SELECT `template` FROM shop WHERE servers = ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, String.valueOf(GameServer.id));
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -1724,7 +1753,7 @@ public class SQLManager {
         try {
             String baseQuery = "REPLACE INTO `items` VALUES(?,?,?,?,?,?);";
 
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
 
             p.setInt(1, item.getGuid());
             p.setInt(2, item.getTemplate(false).getID());
@@ -1744,7 +1773,7 @@ public class SQLManager {
         try {
 
             String sql = "INSERT INTO items (template, qua, pos, stats, server) VALUES (?, ?, ?, ?, ?);";
-            PreparedStatement p = (PreparedStatement) Connection(true).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement p = (PreparedStatement) Connection(false).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             p.setInt(1, item.getTemplate(false).getID());
             p.setInt(2, item.getQuantity());
             p.setInt(3, item.getPosition());
@@ -1902,7 +1931,7 @@ public class SQLManager {
     public static void LOAD_ITEMS(String ids) {
         String req = "SELECT * FROM items WHERE guid IN (?) AND server = ?;";
         try {
-            java.sql.PreparedStatement ps = newTransact(req, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(req, Connection(false));
             ps.setString(1, ids);
             ps.setInt(2, GameServer.id);
             ResultSet RS = ps.executeQuery();
@@ -1936,7 +1965,7 @@ public class SQLManager {
     public static void LOAD_ITEMS_FULL() {
         String req = "SELECT * FROM items WHERE server = '" + GameServer.id + "';";
         try {
-            ResultSet RS = SQLManager.executeQuery(req, true);
+            ResultSet RS = SQLManager.executeQuery(req, false);
             while (RS.next()) {
                 try {
                     int guid = RS.getInt("guid");
@@ -1970,7 +1999,7 @@ public class SQLManager {
     public static void DELETE_ITEM(int guid) {
         String baseQuery = "DELETE FROM items WHERE guid = ? AND server = ?;";
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setInt(1, guid);
             p.setInt(2, GameServer.id);
             p.execute();
@@ -1985,7 +2014,7 @@ public class SQLManager {
         String baseQuery = "UPDATE `items` SET template = ?,qua = ?, pos = ?, stats = ? WHERE guid = ? AND server = ?;";
 
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setInt(1, item.getTemplate(false).getID());
             p.setInt(2, item.getQuantity());
             p.setInt(3, item.getPosition());
@@ -2004,7 +2033,7 @@ public class SQLManager {
         String baseQuery = "UPDATE `items` SET qua = ? WHERE guid = ? AND server = ?;";
 
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setInt(1, qua);
             p.setInt(2, guid);
             p.setInt(3, GameServer.id);
@@ -2171,7 +2200,7 @@ public class SQLManager {
 
         try {
             String query = "SELECT * FROM personnages WHERE guid = ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, guid);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -2278,7 +2307,7 @@ public class SQLManager {
 
         try {
             String query = "SELECT * FROM personnages WHERE name = ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -2834,7 +2863,7 @@ public class SQLManager {
 
         try {
             String sql = "SELECT guild FROM `guild_members` WHERE guid = ?;";
-            java.sql.PreparedStatement ps = newTransact(sql, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(sql, Connection(false));
             ps.setInt(1, guid);
             ResultSet GuildQuery = ps.executeQuery();
 
@@ -2863,7 +2892,7 @@ public class SQLManager {
         int guid = -1;
         try {
             String query = "SELECT guild,guid FROM `guild_members` WHERE name=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ResultSet GuildQuery = ps.executeQuery();
             boolean found = GuildQuery.first();
@@ -2971,42 +3000,48 @@ public class SQLManager {
     }
 
     public static void SETONLINE(int accID) {
-        String query = "UPDATE `accounts` SET logged='1' WHERE `guid`=" + accID
-                + ";";
-        try {
-            PreparedStatement p = newTransact(query, Connection(true));
-            p.execute();
-        } catch (SQLException e) {
-            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
-            GameServer.addToLog("Game: Query: " + query);
+        if (GameServer.id == 7) { // Serveur officiel
+            String query = "UPDATE `accounts` SET logged='1' WHERE `guid`=" + accID
+                    + ";";
+            try {
+                PreparedStatement p = newTransact(query, Connection(true));
+                p.execute();
+            } catch (SQLException e) {
+                GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+                GameServer.addToLog("Game: Query: " + query);
+            }
         }
     }
 
     public static void SETOFFLINE(int accID) {
-        String query = "UPDATE `accounts` SET logged='0' WHERE `guid`=" + accID
-                + ";";
-        try {
-            PreparedStatement p = newTransact(query, Connection(true));
-            p.execute();
-        } catch (SQLException e) {
-            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
-            GameServer.addToLog("Game: Query: " + query);
+        if (GameServer.id == 7) { // Serveur officiel
+            String query = "UPDATE `accounts` SET logged='0' WHERE `guid`=" + accID
+                    + ";";
+            try {
+                PreparedStatement p = newTransact(query, Connection(true));
+                p.execute();
+            } catch (SQLException e) {
+                GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+                GameServer.addToLog("Game: Query: " + query);
+            }
         }
     }
 
     public static void LOGGED_ZERO() {
-        PreparedStatement p;
-        String query = "UPDATE `accounts` SET logged=0;";
-        try {
-            p = newTransact(query, Connection(true));
+        if (GameServer.id == 7) {
+            PreparedStatement p;
+            String query = "UPDATE `accounts` SET logged=0;";
+            try {
+                p = newTransact(query, Connection(true));
 
-            p.execute();
-            closePreparedStatement(p);
+                p.execute();
+                closePreparedStatement(p);
 
-            //Console.print("\r-logged reset", Color.GREEN);
-        } catch (SQLException e) {
-            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
-            GameServer.addToLog("Game: Query: " + query);
+                //Console.print("\r-logged reset", Color.GREEN);
+            } catch (SQLException e) {
+                GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+                GameServer.addToLog("Game: Query: " + query);
+            }
         }
 
     }
@@ -3259,7 +3294,7 @@ public class SQLManager {
 
     public static int getNextObjetID() {
         try {
-            ResultSet RS = executeQuery("SELECT MAX(guid) AS max FROM items;", true);
+            ResultSet RS = executeQuery("SELECT MAX(guid) AS max FROM items;", false);
 
             int guid = 0;
             boolean found = RS.first();
@@ -3659,7 +3694,7 @@ public class SQLManager {
         PreparedStatement p;
         String query = "UPDATE `personnages` SET `sexe`=?, `class`= ?, `spells`= ? WHERE `guid`= ?";
         try {
-            p = newTransact(query, Connection(true));
+            p = newTransact(query, Connection(false));
             p.setInt(1, perso.get_sexe());
             p.setInt(2, perso.get_classe());
             p.setString(3, perso.parseSpellToDB());
@@ -3683,7 +3718,7 @@ public class SQLManager {
         PreparedStatement p = null;
 
         try {
-            p = newTransact(baseQuery, Connection(true));
+            p = newTransact(baseQuery, Connection(false));
 
             p.setString(1, _perso.getName());
             p.setInt(2, _perso.get_color1());
@@ -3708,7 +3743,7 @@ public class SQLManager {
         byte i = 0;
         try {
             String query = "SELECT *FROM mountpark_data WHERE guild=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, getId);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -3799,7 +3834,7 @@ public class SQLManager {
         Item objetStats = null;
         try {
             String query = "SELECT guid FROM items WHERE template = ? AND stats = ? AND server = ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, templateID);
             ps.setString(2, verif);
             ps.setInt(3, GameServer.id);
@@ -3848,7 +3883,7 @@ public class SQLManager {
         try {
             ResultSet RS;
             String query = "SELECT * from ticketigs WHERE `joueur` =? AND valid = '0';";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, pseudo);
             ResultSet rs = ps.executeQuery();
             while (rs.next())
@@ -3865,7 +3900,7 @@ public class SQLManager {
     public static void addticket(String pseudo, String message) {
         String baseQuery = "INSERT INTO `ticketigs` (`message`,`joueur`,`maitrejeu`,`valid`) VALUES(?,?,?,?);";
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setString(1, message);
             p.setString(2, pseudo);
             p.setString(3, "null");
@@ -3881,7 +3916,7 @@ public class SQLManager {
     public static void updateticketencour(String pseudoj, String pseudom) {
         try {
             String baseQuery = "UPDATE ticketigs SET `maitrejeu` = ? ,`valid` = 1 WHERE `valid` = 0 AND `joueur` = ?;";
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setString(1, pseudom);
             p.setString(2, pseudoj);
             p.executeUpdate();
@@ -3895,7 +3930,7 @@ public class SQLManager {
     public static void deleteticket(String pseudoj) {
         try {
             String baseQuery = "DELETE FROM ticketigs WHERE `valid` = 0 AND `joueur` = ?;";
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setString(1, pseudoj);
             p.executeUpdate();
             closePreparedStatement(p);
@@ -3908,7 +3943,7 @@ public class SQLManager {
     public static void updateticketfini(String pseudom) {
         try {
             String baseQuery = "UPDATE ticketigs SET `valid` = 2 WHERE `valid` = 1 AND `maitrejeu` = ?;";
-            PreparedStatement p = newTransact(baseQuery, Connection(true));
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
             p.setString(1, pseudom);
             p.executeUpdate();
             closePreparedStatement(p);
@@ -4012,7 +4047,7 @@ public class SQLManager {
         int TemplateId = 0;
         try {
             String query = "SELECT * FROM items WHERE guid=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, guid);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4029,7 +4064,7 @@ public class SQLManager {
         String name = "";
         try {
             String query = "SELECT * FROM item_template WHERE id=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, id);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4047,7 +4082,7 @@ public class SQLManager {
         int id = 0;
         try {
             String query = "SELECT * FROM guilds WHERE name=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4086,7 +4121,7 @@ public class SQLManager {
         boolean exist = false;
         try {
             String query = "SELECT * FROM guilds WHERE name=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4135,7 +4170,7 @@ public class SQLManager {
         boolean exist = false;
         try {
             String query = "SELECT * FROM guildesnoguerre WHERE name=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4324,7 +4359,7 @@ public class SQLManager {
     public static boolean VERIFIER_TITRE_UTILISE(String titre) {
         boolean toReturn = false;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `titres`", false);
+            ResultSet RS = executeQuery("SELECT * FROM `titres`", true);
             while (RS.next() && !toReturn) {
                 if (RS.getString("titre").equalsIgnoreCase(titre)) toReturn = true;
             }
@@ -4339,7 +4374,7 @@ public class SQLManager {
     public static int VERIFIER_TITRE_UTILISE_ID(String titre) {
         int toReturn = -1;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `titres`", false);
+            ResultSet RS = executeQuery("SELECT * FROM `titres`", true);
             while (RS.next() && toReturn == -1) {
                 if (RS.getString("titre").equalsIgnoreCase(titre)) {
                     toReturn = RS.getInt("id");
@@ -4355,7 +4390,7 @@ public class SQLManager {
     public static int OBTENIR_ID_TITRE_VALIDATION() {
         try {
             int lastIndex = 0;
-            ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", false);
+            ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", true);
             while (RS.next()) {
                 if (RS.getInt("id_validation") > lastIndex) lastIndex = RS.getInt("id_validation");
             }
@@ -4370,7 +4405,7 @@ public class SQLManager {
     public static int OBTENIR_ID_NOUVEAU_TITRE() {
         try {
             int lastIndex = 0;
-            ResultSet RS = executeQuery("SELECT * FROM `titres`", false);
+            ResultSet RS = executeQuery("SELECT * FROM `titres`", true);
             while (RS.next()) {
                 if (RS.getInt("id") > lastIndex) lastIndex = RS.getInt("id");
             }
@@ -4392,7 +4427,7 @@ public class SQLManager {
                     String baseQuery = "INSERT INTO `titres_attente` " +
                             "(`titre`,`couleur`,`id_joueur`,`id_validation`) " +
                             "VALUES(?,?,?,?);";
-                    queries = newTransact(baseQuery, Connection(false));
+                    queries = newTransact(baseQuery, Connection(true));
                     queries.setString(1, titre);
                     queries.setString(2, couleur);
                     queries.setInt(3, idJoueur);
@@ -4423,7 +4458,7 @@ public class SQLManager {
         try {
             String couleur = "";
             int idJoueur = -1;
-            ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", false);
+            ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", true);
             while (RS.next()) {
                 if (RS.getInt("id_validation") == idValidation) {
                     titre = RS.getString("titre");
@@ -4490,7 +4525,7 @@ public class SQLManager {
                 String baseQuery = "INSERT INTO `titres` " +
                         "(`id`,`titre`,`couleur`) " +
                         "VALUES(?,?,?);";
-                queries = newTransact(baseQuery, Connection(false));
+                queries = newTransact(baseQuery, Connection(true));
                 queries.setInt(1, idTitreDisponible);
                 queries.setString(2, titre);
                 queries.setString(3, couleur);
@@ -4509,7 +4544,7 @@ public class SQLManager {
     public static void SUPPRIMER_TITRE_EN_ATTENTE(int idValidation) {
         String baseQuery = "DELETE FROM titres_attente WHERE id_validation = ?;";
         try {
-            PreparedStatement p = newTransact(baseQuery, Connection(false));
+            PreparedStatement p = newTransact(baseQuery, Connection(true));
             p.setInt(1, idValidation);
             p.execute();
             closePreparedStatement(p);
@@ -4522,7 +4557,7 @@ public class SQLManager {
     public static void REJETER_TITRE_EN_ATTENTE(int idValidation, String motif) {
         Player perso = null;
         try {
-            ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", false);
+            ResultSet RS = executeQuery("SELECT * FROM `titres_attente`", true);
             while (RS.next()) {
                 if (RS.getInt("id_validation") == idValidation) {
                     perso = World.getPlayer(RS.getInt("id_joueur"));
@@ -4540,7 +4575,7 @@ public class SQLManager {
     public static void CHANGER_COULEUR_TITRE(int id, String couleur) {
         try {
             String baseQuery = "UPDATE `titres` SET `couleur` = ? WHERE id = ?;";
-            PreparedStatement p = newTransact(baseQuery, Connection(false));
+            PreparedStatement p = newTransact(baseQuery, Connection(true));
             p.setString(1, couleur);
             p.setInt(2, id);
             p.execute();
@@ -4559,7 +4594,7 @@ public class SQLManager {
             String baseQuery = "INSERT INTO `titres_save` " +
                     "(`idJoueur`,`idTitre`) " +
                     "VALUES(?,?);";
-            queries = newTransact(baseQuery, Connection(false));
+            queries = newTransact(baseQuery, Connection(true));
             queries.setInt(1, idJoueur);
             queries.setInt(2, idTitre);
 
@@ -4592,7 +4627,7 @@ public class SQLManager {
         if (!tempList.isEmpty()) {
             for (int i = 0; i < tempList.size(); i++) {
                 try {
-                    ResultSet RS = executeQuery("SELECT * FROM `titres`", false);
+                    ResultSet RS = executeQuery("SELECT * FROM `titres`", true);
                     while (RS.next()) {
                         if (RS.getInt("id") == tempList.get(i)) {
                             titres.put(RS.getString("titre"), tempList.get(i));
@@ -4631,7 +4666,7 @@ public class SQLManager {
             long time1 = System.currentTimeMillis();    //TIME
             ResultSet RS = executeQuery("SELECT i.*" +
                     " FROM `items` AS i,`hdvs_items` AS h" +
-                    " WHERE i.guid = h.itemID", true);
+                    " WHERE i.guid = h.itemID", false);
 
             //Load items
             while (RS.next()) {
@@ -4686,7 +4721,7 @@ public class SQLManager {
         ArrayList<Integer> toReturn = new ArrayList<Integer>();
         try {
             String query = "SELECT * FROM `ornements` WHERE idJoueur=?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, guid);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4734,7 +4769,7 @@ public class SQLManager {
         ArrayList<Integer> toReturn = new ArrayList<Integer>();
         try {
             String query = "SELECT * FROM `npc_template` WHERE initQuestion= ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, questionId);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4750,7 +4785,7 @@ public class SQLManager {
     public static boolean IS_A_GOOD_ANSWER_FOR_QUESTION(int questionId, int responseId) {
         try {
             String query = "SELECT * FROM `npc_questions` WHERE ID= ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, questionId);
             ResultSet RS = ps.executeQuery();
             String[] arr = null;
@@ -4775,7 +4810,7 @@ public class SQLManager {
         HashMap<Integer, Integer> toReturn = new HashMap<Integer, Integer>();
         try {
             String query = "SELECT * FROM `objets_requis_pnj` WHERE idPnj= ?;";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, idPnj);
             ResultSet RS = ps.executeQuery();
             while (RS.next()) {
@@ -4792,7 +4827,7 @@ public class SQLManager {
         HashMap<Integer, Integer> toReturn = new HashMap<Integer, Integer>();
         try {
             String query = "INSERT INTO `achatsPB` (`date`, `nomPerso`, `description`, `points`) VALUES (now(), ?, ?, ?);";
-            java.sql.PreparedStatement ps = newTransact(query, Connection(true));
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, nomPerso);
             ps.setString(2, description);
             ps.setInt(3, points);

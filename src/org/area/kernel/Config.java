@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Timer;
 
 import org.area.common.Constant;
+import org.area.common.SQLManager;
 import org.area.exchange.ExchangeClient;
 import org.area.game.GameServer;
 
@@ -503,6 +504,9 @@ public class Config {
 			System.out.println(e.getMessage());
 			load();
 			return false;
+		}
+		if (Main.isRunning) { // La connexion bdd est déjà actve
+			SQLManager.LOAD_CONFIG();
 		}
 		return true;
 	}
