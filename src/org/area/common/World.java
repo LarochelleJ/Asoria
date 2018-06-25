@@ -40,7 +40,7 @@ public class World {
     private static Map<Integer, Account> Comptes = new TreeMap<Integer, Account>();
     private static Map<Integer, GdG> Guerre = new TreeMap<Integer, GdG>();
     private static ArrayList<BanIp> Banips = new ArrayList<BanIp>();
-    private static Map<String, Integer> ComptebyName = new TreeMap<String, Integer>();
+    private static Map<String, Integer> ComptebyName = new HashMap<String, Integer>();
     private static StringBuilder Challenges = new StringBuilder();
     private static Map<Integer, Player> Persos = new TreeMap<Integer, Player>();
     private static Map<Short, Maps> Cartes = new TreeMap<Short, Maps>();

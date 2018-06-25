@@ -2294,6 +2294,8 @@ public class Fight {
             verifIfTeamAllDead();
         } else if (!fighter.estInvocationControllable() && (fighter.getMob() != null || fighter.isInvocation())) {
             return 10;
+        } else {
+            _curAction = "";
         }
        try {
             Thread.sleep(_spellCastDelay);
@@ -4383,6 +4385,7 @@ public class Fight {
                     Thread.sleep(500);
                 } catch (Exception e) {
                 }
+                return;
                 //endTurn();
             }
 

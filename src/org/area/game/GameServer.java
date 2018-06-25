@@ -217,7 +217,9 @@ public class GameServer implements Runnable {
             /**
              * @Start the GameServer
              **/
-
+            try {
+                Thread.sleep(30000); // 1/2 minute
+            } catch (Exception e) {}
             serverSocket = new ServerSocket(Config.CONFIG_GAME_PORT);
             if (Config.CONFIG_USE_IP)
                 Config.GAMESERVER_IP = CryptManager.CryptIP(ip) + CryptManager.CryptPort(Config.CONFIG_GAME_PORT);

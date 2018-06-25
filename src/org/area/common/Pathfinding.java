@@ -81,7 +81,7 @@ public class Pathfinding {
                     Steps += _nSteps;
                     newPath += dir + CryptManager.cellID_To_Code(newPos);
                     pathRef.set(newPath);
-                    return -Steps;
+                    return Steps; // -Steps before, I don't know why.
                 } else if (aPathInfos[0].equalsIgnoreCase("ok")) {
                     newPos = dirCaseID;
                     Steps += _nSteps;

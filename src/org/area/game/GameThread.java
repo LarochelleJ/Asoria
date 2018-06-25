@@ -5452,6 +5452,7 @@ public class GameThread implements Runnable {
     private void Basic_chatMessage(String packet) {
         String msg = "";
         String log_msg = "";
+        boolean privateMessage = false;
         if (player.isMuted()) {
             if (player.getAccount() != null) {
                 player.getAccount().sendMutedIM();
@@ -5462,277 +5463,284 @@ public class GameThread implements Runnable {
         packet = packet.replace(">", "");
         if (packet.length() == 3)
             return;
-        switch (packet.charAt(2)) {
-            case '*':// Canal noir
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                msg = packet.split("\\|", 2)[1];
-                if (msg.isEmpty())
-                    return;
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                if (player.getEvent() != null
-                        && player.getEvent().getEventQuizz() != null)
-                    if (player.getEvent().getEventQuizz().isWaitingAnwser()) {
-                        player.getEvent().getEventQuizz()
-                                .checkAnwser(player, msg.replace("|", ""));
+        if (packet.charAt(3) != '|') { // C'est sûr que c'est un message privé
+            privateMessage = true;
+        } else {
+            switch (packet.charAt(2)) {
+                case '*':// Canal noir
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
                         return;
-                    }
-
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-                if (player.getFight() == null) {
-                    if (player.getMap().isMuted()
-                            && player.getAccount().getGmLevel() == 0) {
-                        player.sendMess(Lang.LANG_121);
+                    msg = packet.split("\\|", 2)[1];
+                    if (msg.isEmpty())
                         return;
-                    }
-                    log_msg = "[Map " + player.getMap().get_id() + "] : " + msg;
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    if (player.getEvent() != null
+                            && player.getEvent().getEventQuizz() != null)
+                        if (player.getEvent().getEventQuizz().isWaitingAnwser()) {
+                            player.getEvent().getEventQuizz()
+                                    .checkAnwser(player, msg.replace("|", ""));
+                            return;
+                        }
 
-                    if (GmCommand.isWhisper) {
-                        GmCommand.whisper.sendText("[MAP] " + player.getName() + " : " + msg);
-                    }
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+                    if (player.getFight() == null) {
+                        if (player.getMap().isMuted()
+                                && player.getAccount().getGmLevel() == 0) {
+                            player.sendMess(Lang.LANG_121);
+                            return;
+                        }
+                        log_msg = "[Map " + player.getMap().get_id() + "] : " + msg;
 
-                    SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(player.getMap(), "",
-                            player.getGuid(), player.getName(), msg);
-                } else {
-                    SocketManager.GAME_SEND_cMK_PACKET_TO_FIGHT(player.getFight(),
-                            7, "", player.getGuid(), player.getName(), msg);
-                    log_msg = "[Map " + player.getMap().get_id() + " Combat "
-                            + player.getFight().get_id() + "] : " + msg;
-                }
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-            case '#':// Canal Equipe
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                if (player.getFight() != null) {
+                        if (GmCommand.isWhisper) {
+                            GmCommand.whisper.sendText("[MAP] " + player.getName() + " : " + msg);
+                        }
+
+                        SocketManager.GAME_SEND_cMK_PACKET_TO_MAP(player.getMap(), "",
+                                player.getGuid(), player.getName(), msg);
+                    } else {
+                        SocketManager.GAME_SEND_cMK_PACKET_TO_FIGHT(player.getFight(),
+                                7, "", player.getGuid(), player.getName(), msg);
+                        log_msg = "[Map " + player.getMap().get_id() + " Combat "
+                                + player.getFight().get_id() + "] : " + msg;
+                    }
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+                case '#':// Canal Equipe
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
+                        return;
+                    if (player.getFight() != null) {
+                        msg = packet.split("\\|", 2)[1];
+                        if (FloodCheck.isFlooding(player, msg))
+                            return;
+                        if (PlayerCommand.tryNewCommand(msg, player, out))
+                            return;
+                        int team = player.getFight().getTeamID(player.getGuid());
+                        if (team == -1)
+                            return;
+                        SocketManager.GAME_SEND_cMK_PACKET_TO_FIGHT(player.getFight(),
+                                team, "#", player.getGuid(), player.getName(), msg);
+                        log_msg = "[Map " + player.getMap().get_id() + " Combat "
+                                + player.getFight().get_id() + " Equipe " + team
+                                + "] : " + msg;
+                        FloodCheck.updateFloodInfos(player, msg);
+                    }
+                    break;
+                case '$':// Canal groupe
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
+                        return;
+                    if (player.getGroup() == null)
+                        break;
                     msg = packet.split("\\|", 2)[1];
                     if (FloodCheck.isFlooding(player, msg))
                         return;
                     if (PlayerCommand.tryNewCommand(msg, player, out))
                         return;
-                    int team = player.getFight().getTeamID(player.getGuid());
-                    if (team == -1)
-                        return;
-                    SocketManager.GAME_SEND_cMK_PACKET_TO_FIGHT(player.getFight(),
-                            team, "#", player.getGuid(), player.getName(), msg);
-                    log_msg = "[Map " + player.getMap().get_id() + " Combat "
-                            + player.getFight().get_id() + " Equipe " + team
-                            + "] : " + msg;
-                    FloodCheck.updateFloodInfos(player, msg);
-                }
-                break;
-            case '$':// Canal groupe
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                if (player.getGroup() == null)
-                    break;
-                msg = packet.split("\\|", 2)[1];
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-
-                if (GmCommand.isWhisper) {
-                    GmCommand.whisper.sendText("[GROUP] " + player.getName() + " : " + msg);
-                }
-
-                SocketManager.GAME_SEND_cMK_PACKET_TO_GROUP(player.getGroup(), "$",
-                        player.getGuid(), player.getName(), msg);
-                log_msg = "[Groupe " + player.getGroup().getChief().getGuid()
-                        + "] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-
-            case ':':// Canal commerce
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                long l;
-                if ((l = System.currentTimeMillis() - _timeLastTradeMsg) < Config.FLOOD_TIME
-                        && player.getAccount().getGmLevel() < 3) {
-                    l = (Config.FLOOD_TIME - l) / 1000;// On calcul la différence en
-                    // secondes
-                    SocketManager.GAME_SEND_Im_PACKET(player,
-                            "0115;" + ((int) Math.ceil(l) + 1));
-                    FloodCheck.updateFloodInfos(player, msg);
-                    return;
-                }
-                _timeLastTradeMsg = System.currentTimeMillis();
-                msg = packet.split("\\|", 2)[1];
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-                log_msg = "[Commerce] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                SocketManager.GAME_SEND_cMK_PACKET_TO_ALL(":", player.getGuid(),
-                        player.getName(), msg);
-                break;
-            case '@':// Canal Admin
-                if (player.getAccount().getGmLevel() == 0)
-                    return;
-                msg = packet.split("\\|", 2)[1];
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("@", player.getGuid(),
-                        player.getName(), msg);
-                log_msg = "[Admin] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-            case '?':// Canal recrutement
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                long j;
-                if ((j = System.currentTimeMillis() - _timeLastRecrutmentMsg) < Config.FLOOD_TIME
-                        && player.getAccount().getGmLevel() < 3) {
-                    j = (Config.FLOOD_TIME - j) / 1000;// On calcul la différence en
-                    // secondes
-                    SocketManager.GAME_SEND_Im_PACKET(player,
-                            "0115;" + ((int) Math.ceil(j) + 1));
-                    FloodCheck.updateFloodInfos(player, msg);
-                    return;
-                }
-                _timeLastRecrutmentMsg = System.currentTimeMillis();
-                msg = packet.split("\\|", 2)[1];
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                SocketManager.GAME_SEND_cMK_PACKET_TO_ALL("?", player.getGuid(),
-                        player.getName(), msg);
-                log_msg = "[Recrutement] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-            case '%':// Canal guilde
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                if (player.get_guild() == null)
-                    return;
-                msg = packet.split("\\|", 2)[1];
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-
-                if (GmCommand.isWhisper) {
-                    GmCommand.whisper.sendText("[GROUPE] " + player.getName() + " : " + msg);
-                }
-
-                SocketManager.GAME_SEND_cMK_PACKET_TO_GUILD(player.get_guild(),
-                        "%", player.getGuid(), player.getName(), msg);
-                log_msg = "[Guide " + player.get_guild().get_name() + "] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-            case 0xC2:// Canal
-                break;
-            case '!':// Alignement
-                if (!player.get_canaux().contains(packet.charAt(2) + ""))
-                    return;
-                if (player.get_align() == 0)
-                    return;
-                if (player.getDeshonor() >= 1) {
-                    SocketManager.GAME_SEND_Im_PACKET(player, "183");
-                    return;
-                }
-                long k;
-                if ((k = System.currentTimeMillis() - _timeLastAlignMsg) < Config.FLOOD_TIME
-                        && player.getAccount().getGmLevel() < 3) {
-                    k = (Config.FLOOD_TIME - k) / 1000;// On calcul la différence en
-                    // secondes
-                    SocketManager.GAME_SEND_Im_PACKET(player,
-                            "0115;" + ((int) Math.ceil(k) + 1));
-                    return;
-                }
-                _timeLastAlignMsg = System.currentTimeMillis();
-                msg = packet.split("\\|", 2)[1];
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-
-                if (GmCommand.isWhisper) {
-                    GmCommand.whisper.sendText("[ALIGN] " + player.getName() + " : " + msg);
-                }
-
-                SocketManager.GAME_SEND_cMK_PACKET_TO_ALIGN("!", player.getGuid(),
-                        player.getName(), msg, player);
-                log_msg = "[Alignement " + player.get_align() + "] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-            case '^':// Canal Incarnam
-                msg = packet.split("\\|", 2)[1];
-                long x;
-                if ((x = System.currentTimeMillis() - _timeLastIncarnamMsg) < Config.FLOOD_TIME) {
-                    x = (Config.FLOOD_TIME - x) / 1000;// Calculamos a diferença em
-                    // segundos
-                    SocketManager.GAME_SEND_Im_PACKET(player,
-                            "0115;" + ((int) Math.ceil(x) + 1));
-                    return;
-                }
-                _timeLastIncarnamMsg = System.currentTimeMillis();
-                msg = packet.split("\\|", 2)[1];
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                if (PlayerCommand.tryNewCommand(msg, player, out))
-                    return;
-                SocketManager.GAME_SEND_cMK_PACKET_INCARNAM_CHAT(player, "^",
-                        player.getGuid(), player.getName(), msg);
-                log_msg = "[Incarnam] : " + msg;
-                FloodCheck.updateFloodInfos(player, msg);
-                break;
-            case '¤': // Canal admin pas de retour @Flow
-                return;
-            default:
-                String nom = packet.substring(2).split("\\|")[0];
-                msg = packet.split("\\|", 2)[1];
-                if (nom.length() <= 1)
-                    GameServer.addToLog("ChatHandler: Chanel non gere : " + nom);
-                if (FloodCheck.isFlooding(player, msg))
-                    return;
-                else {
-                    if (nom.equalsIgnoreCase("[Staff]")) {
-                        String[] donnes = msg.split(Pattern.quote(" "));
-                        nom = donnes[0];
-                        msg = msg.substring(nom.length() + 1);
-                    }
-                    Player target = World.getPersoByName(nom);
-                    if (target == null)// si le personnage n'existe pas
-                    {
-                        SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
-                        return;
-                    }
-                    if (target.getAccount() == null) {
-                        SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
-                        return;
-                    }
-                    if (target.getAccount().getGameThread() == null || target.staffInvisible)// si le perso
-                    // n'est pas co
-                    {
-                        SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
-                        return;
-                    }
-                    if (target.getAccount().isEnemyWith(
-                            player.getAccount().getGuid()) == true
-                            || !target.isDispo(player)) {
-                        SocketManager.GAME_SEND_Im_PACKET(player,
-                                "114;" + target.getName());
-                        return;
-                    }
 
                     if (GmCommand.isWhisper) {
-                        GmCommand.whisper.sendText("[MESS] " + player.getName() + " <b>to</b> " + target.getName() + " : " + msg);
+                        GmCommand.whisper.sendText("[GROUP] " + player.getName() + " : " + msg);
                     }
 
-                    SocketManager.GAME_SEND_cMK_PACKET(target, "F",
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_GROUP(player.getGroup(), "$",
                             player.getGuid(), player.getName(), msg);
-                    SocketManager.GAME_SEND_cMK_PACKET(player, "T",
-                            target.getGuid(), target.getName(), msg);
-                    log_msg = "[MP à " + target.getName() + "] : " + msg;
+                    log_msg = "[Groupe " + player.getGroup().getChief().getGuid()
+                            + "] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+
+                case ':':// Canal commerce
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
+                        return;
+                    long l;
+                    if ((l = System.currentTimeMillis() - _timeLastTradeMsg) < Config.FLOOD_TIME
+                            && player.getAccount().getGmLevel() < 3) {
+                        l = (Config.FLOOD_TIME - l) / 1000;// On calcul la différence en
+                        // secondes
+                        SocketManager.GAME_SEND_Im_PACKET(player,
+                                "0115;" + ((int) Math.ceil(l) + 1));
+                        FloodCheck.updateFloodInfos(player, msg);
+                        return;
+                    }
+                    _timeLastTradeMsg = System.currentTimeMillis();
+                    msg = packet.split("\\|", 2)[1];
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+                    log_msg = "[Commerce] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_ALL(":", player.getGuid(),
+                            player.getName(), msg);
+                    break;
+                case '@':// Canal Admin
+                    if (player.getAccount().getGmLevel() == 0)
+                        return;
+                    msg = packet.split("\\|", 2)[1];
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_ADMIN("@", player.getGuid(),
+                            player.getName(), msg);
+                    log_msg = "[Admin] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+                case '?':// Canal recrutement
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
+                        return;
+                    long j;
+                    if ((j = System.currentTimeMillis() - _timeLastRecrutmentMsg) < Config.FLOOD_TIME
+                            && player.getAccount().getGmLevel() < 3) {
+                        j = (Config.FLOOD_TIME - j) / 1000;// On calcul la différence en
+                        // secondes
+                        SocketManager.GAME_SEND_Im_PACKET(player,
+                                "0115;" + ((int) Math.ceil(j) + 1));
+                        FloodCheck.updateFloodInfos(player, msg);
+                        return;
+                    }
+                    _timeLastRecrutmentMsg = System.currentTimeMillis();
+                    msg = packet.split("\\|", 2)[1];
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_ALL("?", player.getGuid(),
+                            player.getName(), msg);
+                    log_msg = "[Recrutement] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+                case '%':// Canal guilde
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
+                        return;
+                    if (player.get_guild() == null)
+                        return;
+                    msg = packet.split("\\|", 2)[1];
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+
+                    if (GmCommand.isWhisper) {
+                        GmCommand.whisper.sendText("[GROUPE] " + player.getName() + " : " + msg);
+                    }
+
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_GUILD(player.get_guild(),
+                            "%", player.getGuid(), player.getName(), msg);
+                    log_msg = "[Guide " + player.get_guild().get_name() + "] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+                case 0xC2:// Canal
+                    break;
+                case '!':// Alignement
+                    if (!player.get_canaux().contains(packet.charAt(2) + ""))
+                        return;
+                    if (player.get_align() == 0)
+                        return;
+                    if (player.getDeshonor() >= 1) {
+                        SocketManager.GAME_SEND_Im_PACKET(player, "183");
+                        return;
+                    }
+                    long k;
+                    if ((k = System.currentTimeMillis() - _timeLastAlignMsg) < Config.FLOOD_TIME
+                            && player.getAccount().getGmLevel() < 3) {
+                        k = (Config.FLOOD_TIME - k) / 1000;// On calcul la différence en
+                        // secondes
+                        SocketManager.GAME_SEND_Im_PACKET(player,
+                                "0115;" + ((int) Math.ceil(k) + 1));
+                        return;
+                    }
+                    _timeLastAlignMsg = System.currentTimeMillis();
+                    msg = packet.split("\\|", 2)[1];
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+
+                    if (GmCommand.isWhisper) {
+                        GmCommand.whisper.sendText("[ALIGN] " + player.getName() + " : " + msg);
+                    }
+
+                    SocketManager.GAME_SEND_cMK_PACKET_TO_ALIGN("!", player.getGuid(),
+                            player.getName(), msg, player);
+                    log_msg = "[Alignement " + player.get_align() + "] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+                case '^':// Canal Incarnam
+                    msg = packet.split("\\|", 2)[1];
+                    long x;
+                    if ((x = System.currentTimeMillis() - _timeLastIncarnamMsg) < Config.FLOOD_TIME) {
+                        x = (Config.FLOOD_TIME - x) / 1000;// Calculamos a diferença em
+                        // segundos
+                        SocketManager.GAME_SEND_Im_PACKET(player,
+                                "0115;" + ((int) Math.ceil(x) + 1));
+                        return;
+                    }
+                    _timeLastIncarnamMsg = System.currentTimeMillis();
+                    msg = packet.split("\\|", 2)[1];
+                    if (FloodCheck.isFlooding(player, msg))
+                        return;
+                    if (PlayerCommand.tryNewCommand(msg, player, out))
+                        return;
+                    SocketManager.GAME_SEND_cMK_PACKET_INCARNAM_CHAT(player, "^",
+                            player.getGuid(), player.getName(), msg);
+                    log_msg = "[Incarnam] : " + msg;
+                    FloodCheck.updateFloodInfos(player, msg);
+                    break;
+                case '¤': // Canal admin pas de retour @Flow
+                    return;
+                default:
+                    privateMessage = true;
+                    break;
+            }
+        }
+        if (privateMessage) {
+            String nom = packet.substring(2).split("\\|")[0];
+            msg = packet.split("\\|", 2)[1];
+            if (nom.length() <= 1)
+                GameServer.addToLog("ChatHandler: Chanel non gere : " + nom);
+            if (FloodCheck.isFlooding(player, msg))
+                return;
+            else {
+                if (nom.equalsIgnoreCase("[Staff]")) {
+                    String[] donnes = msg.split(Pattern.quote(" "));
+                    nom = donnes[0];
+                    msg = msg.substring(nom.length() + 1);
                 }
-                break;
+                Player target = World.getPersoByName(nom);
+                if (target == null)// si le personnage n'existe pas
+                {
+                    SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
+                    return;
+                }
+                if (target.getAccount() == null) {
+                    SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
+                    return;
+                }
+                if (target.getAccount().getGameThread() == null || target.staffInvisible)// si le perso
+                // n'est pas co
+                {
+                    SocketManager.GAME_SEND_CHAT_ERROR_PACKET(out, nom);
+                    return;
+                }
+                if (target.getAccount().isEnemyWith(
+                        player.getAccount().getGuid()) == true
+                        || !target.isDispo(player)) {
+                    SocketManager.GAME_SEND_Im_PACKET(player,
+                            "114;" + target.getName());
+                    return;
+                }
+
+                if (GmCommand.isWhisper) {
+                    GmCommand.whisper.sendText("[MESS] " + player.getName() + " <b>to</b> " + target.getName() + " : " + msg);
+                }
+
+                SocketManager.GAME_SEND_cMK_PACKET(target, "F",
+                        player.getGuid(), player.getName(), msg);
+                SocketManager.GAME_SEND_cMK_PACKET(player, "T",
+                        target.getGuid(), target.getName(), msg);
+                log_msg = "[MP à " + target.getName() + "] : " + msg;
+            }
         }
         Logs.addToChatLog("[" + account.getCurIp() + "] (" + account.getName()
                 + ", " + player.getName() + ") " + log_msg);

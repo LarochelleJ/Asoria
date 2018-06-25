@@ -56,11 +56,6 @@ public class Main {
 		Console.setTitle("World");
 		World.createWorld();
 		
-		isRunning = true;
-		Console.setTitle("GameServer");
-		gameServer = new GameServer();
-		Console.println("GameServer on port " + Config.CONFIG_GAME_PORT, Color.GREEN); 
-		
 		Console.setTitle("Exchange");
 		/*exchangeClient = new ExchangeClient();
 		exchangeClient.start();*/
@@ -72,6 +67,10 @@ public class Main {
 		Console.print("-------------------------------------------------------------------------------\n", Color.RED);
 		Console.clear(false);
 		new ConsoleInputAnalyzer();
+		isRunning = true;
+		//Console.setTitle("GameServer");
+		gameServer = new GameServer();
+		Console.println("GameServer on port " + Config.CONFIG_GAME_PORT, Color.GREEN);
 	}
 	
 	public static void listThreads(boolean isError) throws Exception {
