@@ -1501,6 +1501,7 @@ public class GameThread implements Runnable {
                     SocketManager.GAME_SEND_gJ_PACKET(p, "Ka" + player.getName());
                     SocketManager.GAME_SEND_gS_PACKET(player, GM);
                     SocketManager.GAME_SEND_gJ_PACKET(player, "Kj");
+                    SocketManager.GAME_SEND_ALTER_GM_PACKET(player.getMap(), player);
                 }
                 break;
         }
@@ -1538,12 +1539,16 @@ public class GameThread implements Runnable {
     private void guild_create(String packet) {
         if (player == null)
             return;
-        if (player.get_guild() != null || player.getGuildMember() != null) {
-            SocketManager.GAME_SEND_gC_PACKET(player, "Ea");
-            return;
-        }
         if (player.getFight() != null) {
             SocketManager.GAME_SEND_gV_PACKET(player);
+            return;
+        }
+        if (player.potionGuilde) {
+            guild_update(packet);
+            return;
+        }
+        if (player.get_guild() != null || player.getGuildMember() != null) {
+            SocketManager.GAME_SEND_gC_PACKET(player, "Ea");
             return;
         }
         try {
@@ -1623,7 +1628,104 @@ public class GameThread implements Runnable {
             SocketManager.GAME_SEND_gV_PACKET(player);
             return;
         }
-        ;
+    }
+
+    private void guild_update(String packet) {
+        if (player.getGuildMember().getRank() == 1) {
+            Guild guilde = player.get_guild();
+            try {
+                String[] infos = packet.substring(2).split("\\|");
+                // base 10 => 36
+                String bgID = Integer.toString(Integer.parseInt(infos[0]), 36);
+                String bgCol = Integer.toString(Integer.parseInt(infos[1]), 36);
+                String embID = Integer.toString(Integer.parseInt(infos[2]), 36);
+                String embCol = Integer.toString(Integer.parseInt(infos[3]), 36);
+                String name = infos[4];
+                boolean nameChange = false, emblemChange = false;
+                String emblem = bgID + "," + bgCol + "," + embID + "," + embCol;
+
+                if (!emblem.equalsIgnoreCase("1,8w33x,1,0")) { // change l'emblème
+                    if (World.guildEmblemIsUsed(emblem)) {
+                        SocketManager.GAME_SEND_gC_PACKET(player, "Eae");
+                    } else {
+                        emblemChange = true;
+                    }
+                }
+
+                if (!name.equalsIgnoreCase("abc")) { // change le nom
+                    if (!player.get_guild().get_name().equalsIgnoreCase(name) && World.guildNameIsUsed(name)) {
+                        SocketManager.GAME_SEND_gC_PACKET(player, "Ean");
+                    } else {
+                        // Validation du nom de la guilde
+                        String tempName = name.toLowerCase();
+                        boolean isValid = true;
+                        // Vérifie d'abord si il contient des termes définit
+                        if (tempName.length() > 20 || tempName.contains("mj")
+                                || tempName.contains("modo") || tempName.contains("admin")) {
+                            isValid = false;
+                        }
+                        // Si le nom passe le test, on vérifie que les caractère entré sont
+                        // correct.
+                        if (isValid) {
+                            int tiretCount = 0;
+                            for (char curLetter : tempName.toCharArray()) {
+                                if (!((curLetter >= 'a' && curLetter <= 'z')
+                                        || curLetter == '-' || curLetter == ' ')) {
+                                    isValid = false;
+                                    break;
+                                }
+                                if (curLetter == '-') {
+                                    if (tiretCount >= 2) {
+                                        isValid = false;
+                                        break;
+                                    } else {
+                                        tiretCount++;
+                                    }
+                                }
+                            }
+                        }
+                        // Si le nom est invalide
+                        if (!isValid) {
+                            SocketManager.GAME_SEND_gC_PACKET(player, "Ean");
+                        } else {
+                            nameChange = true;
+                        }
+                    }
+                }
+
+                if (nameChange || emblemChange) {
+                    if (!player.hasItemTemplate(212123, 1))// potion guilde
+                    {
+                        SocketManager.GAME_SEND_POPUP(player, "Vous ne possèder par la potion !");
+                    } else {
+                        player.removeByTemplateID(212123, 1);
+                        if (nameChange) {
+                            guilde.set_name(name);
+                        }
+                        if (emblemChange) {
+                            guilde.set_emblem(emblem);
+                        }
+                    }
+                    SQLManager.UPDATE_GUILD(guilde);
+                    SocketManager.GAME_SEND_gV_PACKET(player);
+                    for (Player p : player.get_guild().getMembers()) {
+                        if (p != null && p.isOnline()) {
+                            SocketManager.GAME_SEND_ALTER_GM_PACKET(p.getMap(), p);
+                            SocketManager.GAME_SEND_gS_PACKET(p, p.getGuildMember());
+                        }
+                    }
+                    SocketManager.GAME_SEND_ALTER_GM_PACKET(player.getMap(), player);
+                } else {
+                    SocketManager.GAME_SEND_gV_PACKET(player);
+                }
+            } catch (Exception e) {
+                SocketManager.GAME_SEND_gV_PACKET(player);
+                return;
+            }
+        } else {
+            SocketManager.GAME_SEND_gV_PACKET(player);
+            return;
+        }
     }
 
     private void parseChanelPacket(String packet) {
@@ -3492,8 +3594,8 @@ public class GameThread implements Runnable {
                     MP.addData(DD.get_id(), player.getGuid());
                     SQLManager.UPDATE_MOUNTPARK(MP);
                     // On envoie les packet
-                   // SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player,
-                            //obj.getGuid());
+                    // SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player,
+                    //obj.getGuid());
                     SocketManager.GAME_SEND_Ee_PACKET(player, '+', DD.parse());
                     break;
                 case 'c':// Etable => Parcho(Echanger)

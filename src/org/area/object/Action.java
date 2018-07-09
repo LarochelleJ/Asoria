@@ -97,6 +97,7 @@ public class Action {
                     return;
                 }
                 if (perso.hasItemGuid(1575)) {
+                    perso.potionGuilde = false;
                     SocketManager.GAME_SEND_gn_PACKET(perso);
                     perso.removeByTemplateID(1575, -1);
                     SocketManager.GAME_SEND_Im_PACKET(perso, "022;" + -1 + "~" + 1575);
@@ -985,6 +986,24 @@ public class Action {
                     }
                 } catch (Exception e) {
                     SocketManager.GAME_SEND_POPUP(perso, "Une erreur s'est produite à l'ouverture de votre cadeau... :(");
+                }
+                break;
+            case 212126: // Guilde peau neuve
+                if (perso != null && perso.isOnline()) {
+                    if (perso.get_guild() != null && perso.getGuildMember() != null) {
+                        if (perso.getGuildMember().getRank() == 1) { // Meneur
+                            String message = "Salut " + perso.getName() + " ! Dans cette interface, tu peux changer le nom et l'emblème de ta guilde !\n\n" +
+                                    "Si tu ne veux pas changer le nom de ta guilde parce que tu aimes le nom actuel, tapes <U>abc</U> comme nom de guilde\n\n" +
+                                    "Si tu veux garder ton emblème actuelle, <U>ne touches pas à l'emblème, si tu as modifié l'emblème de cette interface, clique sur annuler et recommence</U> !";
+                            perso.potionGuilde = true;
+                            SocketManager.GAME_SEND_gn_PACKET(perso);
+                            SocketManager.GAME_SEND_POPUP(perso, message);
+                        } else {
+                            SocketManager.GAME_SEND_POPUP(perso, "Vous n'êtes pas le meneur, vous ne pouvez pas utiliser cette potion !");
+                        }
+                    } else {
+                        SocketManager.GAME_SEND_POPUP(perso, "Pour utiliser cette potion, il vous faut une guilde !");
+                    }
                 }
                 break;
 

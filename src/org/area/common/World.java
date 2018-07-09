@@ -140,6 +140,9 @@ public class World {
     // Prix ornements
     private static Map<Integer, Integer> prixOrnements = new HashMap<Integer, Integer>();
 
+    // Checkpoints
+    public static HashMap<Short, Checkpoint> checkpoints = new HashMap<Short, Checkpoint>();
+
     private static byte _GmAccess = 0;
 
     private static int nextObjetID; // Contient le derniere ID utilisé pour crée
@@ -1201,6 +1204,8 @@ public class World {
         updateListeEchangeItem(); // @Flow
         Constant.initialiserTableauPoidsParPuissance();
         runes = SQLManager.LOAD_RUNES();
+        SQLManager.LOAD_CHECKPOINT();
+        Console.println("|| Checkpoints : Ok !", Color.CYAN);
         SQLManager.LOAD_ORNEMENTS_PRICE();
     }
 

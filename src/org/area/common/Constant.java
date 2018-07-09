@@ -3916,6 +3916,7 @@ public class Constant {
                 {
                     SocketManager.GAME_SEND_Im_PACKET(perso, "14");
                 }
+                perso.potionGuilde = false;
                 SocketManager.GAME_SEND_gn_PACKET(perso);
                 break;
             default:

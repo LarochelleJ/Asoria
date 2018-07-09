@@ -902,7 +902,8 @@ public class SQLManager {
                         RS.getInt("sSuerte"),
                         RS.getInt("sVitalidad"),
                         RS.getInt("sSabiduria"),
-                        RS.getInt("ornement")
+                        RS.getInt("ornement"),
+                        RS.getString("checkpoints")
                 );
                 //Vérifications pré-connexion
                 perso.VerifAndChangeItemPlace();
@@ -2280,7 +2281,8 @@ public class SQLManager {
                         RS.getInt("sSuerte"),
                         RS.getInt("sVitalidad"),
                         RS.getInt("sSabiduria"),
-                        RS.getInt("ornement")
+                        RS.getInt("ornement"),
+                        RS.getString("checkpoints")
                 );
                 //Vérifications pré-connexion
                 player.VerifAndChangeItemPlace();
@@ -2386,7 +2388,8 @@ public class SQLManager {
                         RS.getInt("sSuerte"),
                         RS.getInt("sVitalidad"),
                         RS.getInt("sSabiduria"),
-                        RS.getInt("ornement")
+                        RS.getInt("ornement"),
+                        RS.getString("checkpoints")
                 );
                 //Vérifications pré-connexion
                 player.VerifAndChangeItemPlace();
@@ -2811,7 +2814,9 @@ public class SQLManager {
                 "`capital` = ?," +
                 "`nbrmax` = ?," +
                 "`sorts` = ?," +
-                "`stats` = ?" +
+                "`stats` = ?," +
+                "`emblem` = ?," +
+                "`name` = ?" +
                 " WHERE id = ?;";
 
         try {
@@ -2822,7 +2827,9 @@ public class SQLManager {
             p.setInt(4, g.get_nbrPerco());
             p.setString(5, g.compileSpell());
             p.setString(6, g.compileStats());
-            p.setInt(7, g.get_id());
+            p.setString(7, g.get_emblem());
+            p.setString(8, g.get_name());
+            p.setInt(9, g.get_id());
 
             p.execute();
             closePreparedStatement(p);
@@ -3223,6 +3230,61 @@ public class SQLManager {
             e.printStackTrace();
         }
         return i;
+    }
+
+    public static void LOAD_CHECKPOINT() {
+
+        try {
+            String query = "SELECT * FROM checkpoints ORDER BY id ASC;";
+
+            ResultSet RS = executeQuery(query, false);
+            boolean first = true;
+            int donjonID = 0;
+            Checkpoint last = null;
+            while (RS.next()) {
+               int d = RS.getInt("donjonID");
+                if (d != donjonID) { // Nouveau donjon
+                    first = true;
+                    donjonID = d;
+                    last = null;
+                }
+                short mapID = (short)RS.getInt("mapID");
+                Checkpoint current = new Checkpoint(mapID, RS.getInt("cellID"), d);
+                if (first) {
+                    first = false;
+                } else {
+                    current.setPrev(last);
+                    last.setNext(current);
+                }
+                World.checkpoints.put(mapID, current);
+                last = current;
+            }
+
+            closeResultSet(RS);
+        } catch (Exception e) {
+            GameServer.addToLog("SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void SAVE_PLAYER_CHECKPOINTS(Player P) {
+        PreparedStatement p;
+        String query = "UPDATE personnages SET checkpoints = ? WHERE guid = ?;";
+        try {
+            p = newTransact(query, Connection(false));
+            String save = "";
+            for (Checkpoint cp : P.checkpoints.values()) {
+                save += cp.getMapID() + "|";
+            }
+            p.setString(1, save);
+            p.setInt(2, P.getGuid());
+
+            p.execute();
+            closePreparedStatement(p);
+        } catch (SQLException e) {
+            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+            GameServer.addToLog("Game: Query: " + query);
+        }
     }
 
     public static int LOAD_ZAAPIS() {

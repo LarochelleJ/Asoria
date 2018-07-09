@@ -49,17 +49,12 @@ import org.area.kernel.Console;
 import org.area.kernel.Reboot;
 import org.area.kolizeum.Kolizeum;
 import org.area.lang.Lang;
-import org.area.object.Guild;
+import org.area.object.*;
 import org.area.object.Guild.GuildMember;
 import org.area.object.Item.ObjTemplate;
-import org.area.object.Houses;
-import org.area.object.Item;
-import org.area.object.Maps;
 import org.area.object.Maps.Case;
 import org.area.object.Maps.InteractiveObject;
 import org.area.object.Maps.MountPark;
-import org.area.object.Mount;
-import org.area.object.Trunk;
 import org.area.object.job.Job;
 import org.area.object.job.Job.JobAction;
 import org.area.object.job.Job.StatsMetier;
@@ -320,6 +315,12 @@ public class Player {
 
     // Guilde defense peco
     public Collector percoDefendre = null;
+
+    // Potion guilde
+    public boolean potionGuilde = false;
+
+    // Checkpoints
+    public HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
 
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
@@ -717,7 +718,7 @@ public class Player {
                   byte seeFriend, byte seeAlign, byte seeSeller, String canaux, short map, int cell, String stuff, String storeObjets, int pdvPer, String spells, String savePos, String jobs,
                   int mountXp, int mount, int honor, int deshonor, int alvl, String z, int title, int wifeGuid, int teamID, int server, int prestige, String folowers, int currentFolower,
                   int winK, int loseK, int winA, int loseA, int canExp, int pvpMod, String candy_used, String quest, int ScrollFuerza, int ScrollInteligencia, int ScrollAgilidad, int ScrollSuerte, int ScrollVitalidad,
-                  int ScrollSabiduria, int ornement) {
+                  int ScrollSabiduria, int ornement, String checkpoints) {
         this._GUID = _guid;
         this._name = _name;
         this._sexe = _sexe;
@@ -809,6 +810,13 @@ public class Player {
             if (stuff.charAt(stuff.length() - 1) == '|')
                 stuff = stuff.substring(0, stuff.length() - 1);
             SQLManager.LOAD_ITEMS(stuff.replace("|", ","));
+        }
+        for (String checkP : checkpoints.split("\\|")) {
+            if (checkP.equals("")) continue;
+            Checkpoint temp = World.checkpoints.get(Short.valueOf(checkP));
+            if (temp != null) {
+                this.checkpoints.put(temp.getDonjonID(), temp);
+            }
         }
         for (String item : stuff.split("\\|")) {
             if (item.equals("")) continue;
@@ -992,7 +1000,8 @@ public class Player {
                 0,
                 0,
                 0,
-                0
+                0,
+                ""
         );
         perso._sorts = Constant.getStartSorts(classe);
         for (int a = 1; a <= perso.getLevel(); a++) {
@@ -1694,7 +1703,7 @@ public class Player {
                         aura = 4;
                     } else if (_lvl > 199) {
                         aura = 2;
-                    } else if (_lvl > 99){
+                    } else if (_lvl > 99) {
                         aura = 1;
                     }
                     str.append(aura).append(";");
@@ -2782,9 +2791,15 @@ public class Player {
     }
 
     public void addXp(long winxp) {
-        if (this.askCandyActive(10677)) { winxp = (long)(winxp * 1.5); }   // Bonbon d'xp 1.5
-        if (this.askCandyActive(7802)) { winxp = (long)(winxp * 1.25); } // bonbon d'xp 25%
-        if (this.askCandyActive(29004)) { winxp = winxp * 2; } // Bonbon xp x2
+        if (this.askCandyActive(10677)) {
+            winxp = (long) (winxp * 1.5);
+        }   // Bonbon d'xp 1.5
+        if (this.askCandyActive(7802)) {
+            winxp = (long) (winxp * 1.25);
+        } // bonbon d'xp 25%
+        if (this.askCandyActive(29004)) {
+            winxp = winxp * 2;
+        } // Bonbon xp x2
         _curExp += winxp;
         int exLevel = _lvl;
         while (_curExp >= World.getPersoXpMax(_lvl) && _lvl < World.getExpLevelSize()) {
@@ -2988,17 +3003,48 @@ public class Player {
             SocketManager.GAME_SEND_MESSAGE(this, "Le staff a désactivé la fonctionnalité meneur-suiveur", "009900");
             playerWhoFollowMe.clear();
         }
+        Checkpoint cp = World.checkpoints.get(newMapID);
+        Player p = _compte.getCurPlayer();
+        if (cp != null) { // Donjon
+            Checkpoint pcp = p.checkpoints.get(cp.getDonjonID());
+            if (cp.getPrev() == null) { // Entre dans le donjon
+                if (pcp != null) { // possède un checkpoint
+                    if (pcp.getPrev() != null) { // est plus loin dans le donjon
+                        teleport(pcp.getMapID(), pcp.getCellID());
+                        return;
+                    }
+                } else {
+                    p.checkpoints.put(cp.getDonjonID(), cp);
+                    SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                }
+            } else { // Changement de salle
+                if (pcp != null) {
+                    if (cp.getNext() == null) {// salle récompense, on supprime le checkpoint
+                        p.checkpoints.remove(cp.getDonjonID());
+                        SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                    } else if (pcp.getNext() == cp) { // a monté d'une salle
+                        p.checkpoints.remove(cp.getDonjonID());
+                        p.checkpoints.put(cp.getDonjonID(), cp);
+                        SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                    }
+                } else if (cp.getNext() != null) { // pas une salle récompense
+                    p.checkpoints.put(cp.getDonjonID(), cp);
+                    SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                }
+            }
+        }
+
         for (Player followMe : playerWhoFollowMe) {
             if (followMe.getFight() == null && followMe.getMap().get_id() == getMap().get_id()) {
                 boolean haveEveryItems = true;
-                for (Entry<Integer, Integer> item : itemsRequisPersonnagesSuiveurs.entrySet()){
+                for (Entry<Integer, Integer> item : itemsRequisPersonnagesSuiveurs.entrySet()) {
                     if (!followMe.hasItemTemplate(item.getKey(), item.getValue())) {
                         haveEveryItems = false;
                         break;
                     }
                 }
                 if (haveEveryItems) {
-                    for (Entry<Integer, Integer> item : itemsRequisPersonnagesSuiveurs.entrySet()){
+                    for (Entry<Integer, Integer> item : itemsRequisPersonnagesSuiveurs.entrySet()) {
                         followMe.removeByTemplateID(item.getKey(), item.getValue());
                     }
                 }
@@ -3014,7 +3060,20 @@ public class Player {
                             SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneur a continué son chemin sans vous ! ", "009900");
                         }
                     } else { // Changement de carte normal
-                        followMe.teleport(newMapID, newCellID);
+                        boolean tp = true;
+                        if (cp != null) { // donjon
+                            Checkpoint pcp = p.checkpoints.get(cp.getDonjonID());
+                            if (pcp != null && pcp.getPrev() != null) { // a un checkpoint dans le donjon plus loin que l'entrée
+                                Checkpoint suiveur = followMe.checkpoints.get(cp.getDonjonID());
+                                if (suiveur != pcp) { // pas le même checkpoint
+                                    tp = false;
+                                    SocketManager.GAME_SEND_MESSAGE(followMe, "Votre meneur est dans une autre salle du donjon ! ", "009900");
+                                }
+                            }
+                        }
+                        if (tp) {
+                            followMe.teleport(newMapID, newCellID);
+                        }
                     }
                 }
             }
@@ -4383,7 +4442,7 @@ public class Player {
     }
 
     /*
-	public void set_FuneralStone()
+    public void set_FuneralStone()
 	{
 		// Ce transformer en tombe TODO
 		set_gfxID(Integer.parseInt(get_classe()+"3"));
@@ -4398,7 +4457,7 @@ public class Player {
         set_Speed(-40);
         teleport((short) 8534, 297);
         //Le teleporter aux zone de mort la plus proche
-		/*for(Carte map : ) FIXME
+        /*for(Carte map : ) FIXME
 		{
 			map.
 		}*/

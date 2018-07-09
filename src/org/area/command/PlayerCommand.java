@@ -282,6 +282,7 @@ public class PlayerCommand {
                             if (_perso.get_guild() != null || _perso.getGuildMember() != null || !_perso.isOnline() || _perso == null) {
                                 break;
                             } else {
+                                _perso.potionGuilde = false;
                                 SocketManager.GAME_SEND_gn_PACKET(_perso);
                             }
                             break;

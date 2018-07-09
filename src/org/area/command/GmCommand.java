@@ -456,6 +456,7 @@ public class GmCommand {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
                 return true;
             }
+            perso.potionGuilde = false;
             SocketManager.GAME_SEND_gn_PACKET(perso);
             String mess = perso.getName()
                     + ": Panneau de creation de guilde ouvert";

@@ -341,9 +341,15 @@ public class Guild {
 	public String get_name() {
 		return _name;
 	}
+	public void set_name(String name) {
+		_name = name;
+	}
 	public String get_emblem()
 	{
 		return _emblem;
+	}
+	public void set_emblem(String emblem) {
+		_emblem = emblem;
 	}
 	public long get_xp()
 	{
