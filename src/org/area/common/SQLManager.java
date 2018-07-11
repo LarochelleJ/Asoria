@@ -970,8 +970,8 @@ public class SQLManager {
     }
 
     public static boolean ADD_PERSO_IN_BDD(Player perso) {
-        String baseQuery = "INSERT INTO personnages( `guid` , `name` , `sexe` , `class` , `color1` , `color2` , `color3` , `kamas` , `spellboost` , `capital` , `energy` , `level` , `xp` , `size` , `gfx` , `account`,`cell`,`map`,`spells`,`objets`, `storeObjets`, `server`, `prestige`, `folowers`, `canExp`, `pvpMod`, `candy_used`)" +
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'', '', ?, ?, ?, ?, ?, ?);";
+        String baseQuery = "INSERT INTO personnages( `guid` , `name` , `sexe` , `class` , `color1` , `color2` , `color3` , `kamas` , `spellboost` , `capital` , `energy` , `level` , `xp` , `size` , `gfx` , `account`,`cell`,`map`,`spells`,`objets`, `storeObjets`, `server`, `prestige`, `folowers`, `canExp`, `pvpMod`, `candy_used`, `checkpoints`)" +
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'', '', ?, ?, ?, ?, ?, ?, '');";
 
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(false));
@@ -1003,8 +1003,10 @@ public class SQLManager {
             p.setString(25, perso.getCandyUsed());
             p.execute();
             closePreparedStatement(p);
+            Console.println("Création d'un personage en bdd : succès !", Color.YELLOW);
             return true;
         } catch (SQLException e) {
+            Console.println(e.getMessage(), Color.RED);
             GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
             GameServer.addToLog("Game: Query: " + baseQuery);
             GameServer.addToLog("Game: Creation du personnage echouee");
@@ -1099,9 +1101,9 @@ public class SQLManager {
             ResultSet RS = executeQuery(query, false);
             while (RS.next()) {
                 if (!World.cadeaux.containsKey(RS.getInt("giftTemplate"))) {
-                    new Gift(RS.getInt("giftTemplate"), RS.getInt("template"), RS.getInt("limit"), RS.getInt("gain"), RS.getFloat("chance"));
+                    new Gift(RS.getInt("giftTemplate"), RS.getInt("template"), RS.getInt("limit"), RS.getInt("gain"), RS.getFloat("chance"), RS.getInt("qty"));
                 } else {
-                    World.cadeaux.get(RS.getInt("giftTemplate")).addProb(RS.getInt("template"), RS.getInt("limit"), RS.getInt("gain"), RS.getFloat("chance"));
+                    World.cadeaux.get(RS.getInt("giftTemplate")).addProb(RS.getInt("template"), RS.getInt("limit"), RS.getInt("gain"), RS.getFloat("chance"), RS.getInt("qty"));
                 }
             }
             closeResultSet(RS);

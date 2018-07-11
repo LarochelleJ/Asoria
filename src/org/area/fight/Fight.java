@@ -1602,6 +1602,9 @@ public class Fight {
             perso.getAccount().getGameThread().kick();
             return false;
         }
+        if (perso.getFight() != null) {
+            return false;
+        }
         Fighter current_Join = null;
         if (_team0.containsKey(guid)) {
             Case cell = getRandomCell(_start0);

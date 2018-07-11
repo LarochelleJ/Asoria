@@ -968,11 +968,11 @@ public class Action {
                 try {
                     int templateCadeau = World.getObjet(itemID).getTemplate(true).getID();
                     Gift cadeau = World.cadeaux.get(templateCadeau);
-                    ObjTemplate itemWon;
+                    Entry<ObjTemplate, Integer> itemWon;
                     synchronized (cadeau) {
                         itemWon = cadeau.open();
                     }
-                    Item O = itemWon.createNewItem(1, false, -1);
+                    Item O = itemWon.getKey().createNewItem(itemWon.getValue(), false, -1);
                     //Si retourne true, on l'ajoute au monde
                     if (perso.addObjet(O, true))
                         World.addObjet(O, true);
@@ -982,7 +982,7 @@ public class Action {
                     if (perso.isOnline()) {
                         SocketManager.GAME_SEND_Ow_PACKET(perso);
                         SocketManager.GAME_SEND_Im_PACKET(perso, "022;" + 1 + "~" + templateCadeau);
-                        SocketManager.GAME_SEND_MESSAGE(perso, "Vous avez obtenu : " + itemWon.getName() + " !", "009900");
+                        SocketManager.GAME_SEND_MESSAGE(perso, "Vous avez obtenu : " + itemWon.getKey().getName() + " !", "009900");
                     }
                 } catch (Exception e) {
                     SocketManager.GAME_SEND_POPUP(perso, "Une erreur s'est produite à l'ouverture de votre cadeau... :(");

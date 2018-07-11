@@ -60,11 +60,14 @@ public class CharacterName {
 					Integer.parseInt(infos[1]), 
 					Integer.parseInt(infos[3]),
 					Integer.parseInt(infos[4]), 
-					Integer.parseInt(infos[5]))) {System.out.println("aaa");
+					Integer.parseInt(infos[5])))
+			{System.out.println("aaa");
 				SocketManager.send(out, "BN");
 				SocketManager.send(out, "AAK");
 				SocketManager.GAME_SEND_PERSO_LIST(out, account.getPlayers());
-			} else SocketManager.GAME_SEND_CREATE_FAILED(out);
+			} else {
+				SocketManager.GAME_SEND_CREATE_FAILED(out);
+			}
 		} catch(Exception e) {
 			SocketManager.send(out, "BN");
 			SocketManager.send(out, "AAE");
