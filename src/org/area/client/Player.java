@@ -321,6 +321,7 @@ public class Player {
 
     // Checkpoints
     public HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
+    public int lastDonjonID = -1;
 
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
@@ -3006,6 +3007,7 @@ public class Player {
         Checkpoint cp = World.checkpoints.get(newMapID);
         Player p = _compte.getCurPlayer();
         if (cp != null) { // Donjon
+            p.lastDonjonID = cp.getDonjonID();
             Checkpoint pcp = p.checkpoints.get(cp.getDonjonID());
             if (cp.getPrev() == null) { // Entre dans le donjon
                 if (pcp != null) { // possède un checkpoint
@@ -3020,8 +3022,10 @@ public class Player {
             } else { // Changement de salle
                 if (pcp != null) {
                     if (cp.getNext() == null) {// salle récompense, on supprime le checkpoint
-                        p.checkpoints.remove(cp.getDonjonID());
-                        SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                        if (p.lastDonjonID != -1) { // Arrive de la salle d'avant, fix pour les salles récompenses mises en commun entre des donjons
+                            p.checkpoints.remove(p.lastDonjonID);
+                            SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                        }
                     } else if (pcp.getNext() == cp) { // a monté d'une salle
                         p.checkpoints.remove(cp.getDonjonID());
                         p.checkpoints.put(cp.getDonjonID(), cp);
@@ -3031,6 +3035,9 @@ public class Player {
                     p.checkpoints.put(cp.getDonjonID(), cp);
                     SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
                 }
+            }
+            if (cp.getNext() != null) {
+                p.lastDonjonID = cp.getDonjonID();
             }
         }
 

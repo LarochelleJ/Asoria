@@ -423,6 +423,15 @@ public class PlayerCommand {
                             //Sauvagarde du perso et des item avant.
                             if (_perso.getFight() != null)
                                 break;
+
+                            if (World.checkpoints.get(_perso.getMap().get_id()) != null) { // Donjon, on bloque la banque !
+                                SocketManager.GAME_SEND_POPUP(_perso, "La banque ne peut être utilisé en donjon ! :(");
+                                break;
+                            }
+                            if (Config.BETA) {
+                                SocketManager.GAME_SEND_POPUP(_perso, "La banque est désactivé dans la beta !");
+                                break;
+                            }
                             SQLManager.SAVE_PERSONNAGE(_perso, true);
                             if (_perso.getDeshonor() >= 1) {
                                 SocketManager.GAME_SEND_Im_PACKET(_perso, "183");
