@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import org.area.client.Encryption;
 import org.area.kernel.*;
 
 
@@ -17,6 +18,7 @@ public class GameSendThread implements Runnable
 	@SuppressWarnings("unused")
 	private Socket _s;
 	private ArrayList<String> _packets = new ArrayList<String>();
+	public Encryption encrypt = null;
 	
 	public GameSendThread(GameThread g, Socket s, PrintWriter out)
 	{

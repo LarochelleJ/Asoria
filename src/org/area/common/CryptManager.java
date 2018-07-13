@@ -1,5 +1,6 @@
 package org.area.common;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -179,13 +180,12 @@ public class CryptManager {
     }
 
 
-    //Fonction qui convertis tout les textes ANSI(Unicode) en UTF-8. Les fichiers doivent �tre cod� en ANSI sinon les phrases seront illisible.
+    //Fonction qui convertis tout les textes ANSI(Unicode) en UTF-8. Les fichiers doivent �tre cod� en ANSI sinon les phrases seront illisible. Ansi et unicde c'est pas la même chose @Dumbass
     public static String toUtf(String _in) {
         String _out = "";
 
         try {
-            _out = new String(_in.getBytes("UTF8"));
-
+            _out = new String(_in.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             System.out.println("Conversion en UTF-8 echoue! : " + e.getMessage());
         }
@@ -198,10 +198,9 @@ public class CryptManager {
         String _out = "";
 
         try {
-            _out = new String(_in.getBytes(), "UTF8");
-
+            _out = new String(_in.getBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
-            System.out.println("Conversion en UTF-8 echoue! : " + e.getMessage());
+            System.out.println("Conversion en UNICODE! : " + e.getMessage());
         }
 
         return _out;
@@ -222,7 +221,7 @@ public class CryptManager {
 
     public static String decryptPacket(String packet) {
         String vraiPacket;
-        String cleCryptage = Main.gameServer.encryptPacketKey;
+        String cleCryptage = "";
         String b = packet.substring(1, 2).toUpperCase();
         int b2 = 0;
         try {

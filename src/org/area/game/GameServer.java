@@ -49,7 +49,6 @@ public class GameServer implements Runnable {
      **/
     public static int id, state = 0;
     public static String key;
-    public static String encryptPacketKey = "0";
     /**
      * Waiting accounts & players in the game
      **/

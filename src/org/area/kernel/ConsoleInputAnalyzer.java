@@ -156,14 +156,6 @@ public class ConsoleInputAnalyzer implements Runnable {
                 sendEcho(mess);
             }
 
-        } else if (fct.equals("KEY")) {
-            String newKey = "0";
-            try {
-                newKey = command.substring(4);
-            } catch (Exception e) {
-            }
-            Main.gameServer.encryptPacketKey = newKey;
-            sendEcho("La clé d'encryption des packets est maintenant: " + newKey);
         } else if (fct.equals("DECRYPT")) {
             try {
                 String toDecrypt = command.substring(8);

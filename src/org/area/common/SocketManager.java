@@ -19,9 +19,7 @@ import org.area.fight.object.Monster.MobGroup;
 import org.area.fight.object.Prism;
 import org.area.game.GameSendThread;
 import org.area.game.GameServer;
-import org.area.kernel.Config;
-import org.area.kernel.Logs;
-import org.area.kernel.Main;
+import org.area.kernel.*;
 import org.area.object.AuctionHouse;
 import org.area.object.AuctionHouse.HdvEntry;
 import org.area.object.Guild;
@@ -44,13 +42,27 @@ public class SocketManager {
         if (p.getAccount().getGameThread() == null) return;
         GameSendThread out = p.getAccount().getGameThread().getOut();
         if (out != null) {
-            packet = CryptManager.toUtf(packet);
+            if (out.encrypt != null) {
+                packet = out.encrypt.prepareData(packet);
+            }
             //packet = SlowBase64.encode(packet);
+            //packet = CryptManager.toUtf(packet);
             out.send(packet);
         }
     }
 
     public static void send(GameSendThread out, String packet) {
+        if (out != null) {
+            if (out.encrypt != null) {
+                packet = out.encrypt.prepareData(packet);
+            }
+            //packet = CryptManager.toUtf(packet);
+            //packet = SlowBase64.encode(packet);
+            out.send(packet);
+        }
+    }
+
+    public static void send(GameSendThread out, String packet, boolean useCrypted) {
         if (out != null) {
             packet = CryptManager.toUtf(packet);
             //packet = SlowBase64.encode(packet);
@@ -66,7 +78,7 @@ public class SocketManager {
 
     public static void GAME_SEND_HELLOGAME_PACKET(GameSendThread out) {
         String packet = "HG";
-        send(out, packet);
+        send(out, packet, true);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Send>>" + packet);
     }
@@ -84,11 +96,10 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Send>>" + packet);
     }
 
-    public static void GAME_SEND_ATTRIBUTE_SUCCESS(GameSendThread out) // TODO TESTING HASH METHOD @Flow
-    {
+    public static void GAME_SEND_ATTRIBUTE_SUCCESS(GameSendThread out) {
         String packet = "ATK";
-        packet += Main.gameServer.encryptPacketKey;
-        send(out, packet);
+        packet += out.encrypt.myKey;
+        send(out, packet, true);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Send>>" + packet);
     }
@@ -1137,7 +1148,7 @@ public class SocketManager {
 
     public static void GAME_SEND_FIGHT_GE_PACKET_TO_FIGHT(final String packet, Fighter f) {
         try {
-		/*final String packet = fight.GetGE(win);
+        /*final String packet = fight.GetGE(win);
 		for(final Fighter f : fight.getFighters(teams)){
 			try{
 				Thread.sleep(750);
@@ -1514,7 +1525,7 @@ public class SocketManager {
         send(out, packet);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Send>>" + packet);
-            GameServer.addToLog("Le joueur " + a.getCurPlayer().getName() + " a atteint le niveau " + lvl);
+        GameServer.addToLog("Le joueur " + a.getCurPlayer().getName() + " a atteint le niveau " + lvl);
     }
 
     public static void GAME_SEND_MESSAGE_TO_ALL(String msg, String color) {
