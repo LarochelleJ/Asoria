@@ -128,6 +128,9 @@ public class Player {
     //Ornements
     private int _ornement = 0;
 
+    // Joueur restreint
+    public boolean isRestricted = false;
+
     //GvG
     private int GvG = -1;
 
@@ -719,7 +722,7 @@ public class Player {
                   byte seeFriend, byte seeAlign, byte seeSeller, String canaux, short map, int cell, String stuff, String storeObjets, int pdvPer, String spells, String savePos, String jobs,
                   int mountXp, int mount, int honor, int deshonor, int alvl, String z, int title, int wifeGuid, int teamID, int server, int prestige, String folowers, int currentFolower,
                   int winK, int loseK, int winA, int loseA, int canExp, int pvpMod, String candy_used, String quest, int ScrollFuerza, int ScrollInteligencia, int ScrollAgilidad, int ScrollSuerte, int ScrollVitalidad,
-                  int ScrollSabiduria, int ornement, String checkpoints) {
+                  int ScrollSabiduria, int ornement, String checkpoints, boolean isRestricted) {
         this._GUID = _guid;
         this._name = _name;
         this._sexe = _sexe;
@@ -762,6 +765,8 @@ public class Player {
         this._scrollVitalidad = ScrollVitalidad;
         this._scrollSabiduria = ScrollSabiduria;
         this._ornement = ornement;
+        this.isRestricted = isRestricted;
+
         try {
             if (folowers != null && folowers.contains(",")) {
                 for (String s : folowers.split(","))
@@ -1002,7 +1007,8 @@ public class Player {
                 0,
                 0,
                 0,
-                ""
+                "",
+                false
         );
         perso._sorts = Constant.getStartSorts(classe);
         for (int a = 1; a <= perso.getLevel(); a++) {

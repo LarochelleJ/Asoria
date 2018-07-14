@@ -1968,8 +1968,11 @@ public class SpellEffect {
         if (cell.getFirstFighter() != null) return;//Si la case est prise par un joueur
 
         //Si la case est prise par le centre d'un piege
-        for (Piege p : fight.get_traps()) if (p.get_cell().getID() == cell.getID()) return;
-
+        for (Piege p : fight.get_traps()) {
+            if (p.get_cell() == cell){
+                return;
+            }
+        }
         String[] infos = args.split(";");
         int spellID = Short.parseShort(infos[0]);
         int level = Byte.parseByte(infos[1]);

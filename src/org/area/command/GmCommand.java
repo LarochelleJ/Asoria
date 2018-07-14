@@ -957,6 +957,26 @@ public class GmCommand {
             } else {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Commande incompléte, entrer un nom de personnage !");
             }
+        } else if (command.equalsIgnoreCase("RESTREINT")) {
+            if (infos.length > 1)// Si un nom de perso est spécifié
+            {
+                Player target = World.getPersoByName(infos[1]);
+                if (target == null) {
+                    String str = "Le personnage n'a pas ete trouve";
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+                    return true;
+                }
+                target.isRestricted = true;
+                SQLManager.UPDATE_ACCOUNT_DATA(target.getAccount());
+                String str = "";
+                if (target.isRestricted) {
+                    str = target.getName() + " est désormais restreint ! Pour enlever la restriction, contacter un administrateur !";
+                }
+                SQLManager.SAVE_PLAYER_RESTRICTION(target);
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
+            } else {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Commande incompléte, entrer un nom de personnage !");
+            }
         } else if (command.equalsIgnoreCase("SETREPONSES")) {
             if (infos.length < 3) {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out,

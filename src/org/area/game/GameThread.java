@@ -160,7 +160,7 @@ public class GameThread implements Runnable {
                     packet = CryptManager.toUnicode(packet);
                     /*if(!IpCheck.onGamePacket(_s.getInetAddress().getHostAddress(), packet))
                         _s.close();*/
-                    if (encrypt != null && !packet.substring(0,2).equalsIgnoreCase("Ak")) { // Décryptage
+                    if (encrypt != null && !packet.substring(0, 2).equalsIgnoreCase("Ak")) { // Décryptage
                         packet = encrypt.unprepareData(packet);
                     }
                     GameServer.addToSockLog("Game: Recu << " + packet);
@@ -289,7 +289,11 @@ public class GameThread implements Runnable {
                 break;
 
             case 'E':
-                parseExchangePacket(packet);
+                if (player.isRestricted) {
+                    SocketManager.GAME_SEND_POPUP(player, "Tout type d'échange est bloqué sur ce personnage suite à votre restriction !");
+                } else {
+                    parseExchangePacket(packet);
+                }
                 break;
 
             case 'e':
@@ -956,7 +960,10 @@ public class GameThread implements Runnable {
 
     private void guild_perco_join_fight(String packet) {
         String PercoID = Integer.toString(Integer.parseInt(packet.substring(1)), 36);
-
+        if (player.isRestricted) {
+            SocketManager.GAME_SEND_POPUP(player, "Combats PvP interdit sur ce personnage !");
+            return;
+        }
         int TiD = -1;
         try {
             TiD = Integer.parseInt(PercoID);
@@ -6311,6 +6318,10 @@ public class GameThread implements Runnable {
         try {
             if (player == null)
                 return;
+            if (player.isRestricted) {
+                SocketManager.GAME_SEND_POPUP(player, "Combats PvP interdit sur ce personnage !");
+                return;
+            }
             if (player.getFight() != null)
                 return;
             if (player.get_isTalkingWith() != 0
@@ -6362,6 +6373,10 @@ public class GameThread implements Runnable {
         try {
             if (player == null)
                 return;
+            if (player.isRestricted) {
+                SocketManager.GAME_SEND_POPUP(player, "Combats PvP interdit sur ce personnage !");
+                return;
+            }
             if (player.getFight() != null)
                 return;
             if (player.get_isTalkingWith() != 0
@@ -6405,6 +6420,10 @@ public class GameThread implements Runnable {
             Player target = World.getPlayer(id);
             if (player == null)
                 return;
+            if (player.isRestricted) {
+                SocketManager.GAME_SEND_POPUP(player, "Combats PvP interdit sur ce personnage !");
+                return;
+            }
             if (Constant.COMBAT_BLOQUE) {
                 player.sendText("Les combats sont bloqués par les administrateurs.");
                 return;
@@ -6633,7 +6652,9 @@ public class GameThread implements Runnable {
                     return;
                 }
                 Fight combat = World.getPlayer(guid).getFight();
-                if (combat.get_map().get_id() == player.getMap().get_id()) {
+                if (combat.get_type() != Constant.FIGHT_TYPE_PVM && player.isRestricted) {
+                    SocketManager.GAME_SEND_POPUP(player, "Combats PvP interdit sur ce personnage !");
+                } else if (combat.get_map().get_id() == player.getMap().get_id()) {
                     combat.joinFight(player, guid);
                 } else {
                     player.sendText("Nice try Wpe...");

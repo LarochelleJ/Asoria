@@ -903,7 +903,8 @@ public class SQLManager {
                         RS.getInt("sVitalidad"),
                         RS.getInt("sSabiduria"),
                         RS.getInt("ornement"),
-                        RS.getString("checkpoints")
+                        RS.getString("checkpoints"),
+                        RS.getInt("restriction") > 0 ? true : false
                 );
                 //Vérifications pré-connexion
                 perso.VerifAndChangeItemPlace();
@@ -2284,7 +2285,8 @@ public class SQLManager {
                         RS.getInt("sVitalidad"),
                         RS.getInt("sSabiduria"),
                         RS.getInt("ornement"),
-                        RS.getString("checkpoints")
+                        RS.getString("checkpoints"),
+                        RS.getInt("restriction") > 0 ? true : false
                 );
                 //Vérifications pré-connexion
                 player.VerifAndChangeItemPlace();
@@ -2391,7 +2393,8 @@ public class SQLManager {
                         RS.getInt("sVitalidad"),
                         RS.getInt("sSabiduria"),
                         RS.getInt("ornement"),
-                        RS.getString("checkpoints")
+                        RS.getString("checkpoints"),
+                        RS.getInt("restriction") > 0 ? true : false
                 );
                 //Vérifications pré-connexion
                 player.VerifAndChangeItemPlace();
@@ -3279,6 +3282,22 @@ public class SQLManager {
                 save += cp.getMapID() + "|";
             }
             p.setString(1, save);
+            p.setInt(2, P.getGuid());
+
+            p.execute();
+            closePreparedStatement(p);
+        } catch (SQLException e) {
+            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+            GameServer.addToLog("Game: Query: " + query);
+        }
+    }
+
+    public static void SAVE_PLAYER_RESTRICTION(Player P) {
+        PreparedStatement p;
+        String query = "UPDATE personnages SET restriction = ? WHERE guid = ?;";
+        try {
+            p = newTransact(query, Connection(false));
+            p.setInt(1, P.isRestricted ? 1 : 0);
             p.setInt(2, P.getGuid());
 
             p.execute();

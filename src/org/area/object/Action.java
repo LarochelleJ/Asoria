@@ -166,8 +166,8 @@ public class Action {
                 break;
 
             case 4://Kamas
-                if (perso.getAccount().getGmLevel() > 0 && perso.getAccount().getGmLevel() < 5) {
-                    perso.sendText("Vous ne pouvez pas avoir accès à cette récompense puisque vous utilisez votre personnage Staff !");
+                if ((perso.getAccount().getGmLevel() > 0 && perso.getAccount().getGmLevel() < 5) || perso.isRestricted) {
+                    SocketManager.GAME_SEND_POPUP(perso, "Votre compte ou personnage est restreint !");
                 } else {
                     try {
                         int count = Integer.parseInt(args);
@@ -185,8 +185,8 @@ public class Action {
                 }
                 break;
             case 5://objet
-                if (perso.getAccount().getGmLevel() > 0 && perso.getAccount().getGmLevel() < 5) {
-                    perso.sendText("Vous ne pouvez pas avoir accès à cette récompense puisque vous utilisez votre personnage Staff !");
+                if ((perso.getAccount().getGmLevel() > 0 && perso.getAccount().getGmLevel() < 5) || perso.isRestricted) {
+                    SocketManager.GAME_SEND_POPUP(perso, "Votre compte ou personnage est restreint !");
                 } else {
                     try {
                         int tID = Integer.parseInt(args.split(",")[0]);

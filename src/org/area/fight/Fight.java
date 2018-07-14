@@ -727,8 +727,21 @@ public class Fight {
     }
 
     public boolean isOccuped(int cell) {
-        if (_map.getCase(cell) == null) return true;
-        return _map.getCase(cell).getFighters().size() > 0;
+        if (_map.getCase(cell) == null) {
+            return true;
+        } else {
+            Fighter f = _map.getCase(cell).getFirstFighter();
+            if (f == null) {
+                return false;
+            }
+            if (f.isDead()) {
+                return false;
+            }
+            if (f.get_fightCell().getID() != cell) { // wtf
+                return false;
+            }
+            return true;
+        }
     }
 
     private boolean groupCellContains(ArrayList<Case> cells, int cell) {
@@ -2690,6 +2703,21 @@ public class Fight {
             return false;
         }
 
+        for (SpellEffect se : spell.getEffects()) {
+            if (se.getEffectID() == 400) { // piège
+                for (Piege p : get_traps()) {
+                    if (p.get_cell() == cell){
+                        if (perso != null) {
+                            SocketManager.GAME_SEND_Im_PACKET(perso, "116;Impossible de lancer ce sort~Vous tentez de poser un piège sur un piège !");
+                            SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
+                            SocketManager.GAME_SEND_GAF_PACKET_TO_FIGHT(perso.getFight(), 7, 0, perso.getGuid());
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
         return true;
     }
 
@@ -2734,7 +2762,7 @@ public class Fight {
         for (int i = 0; i < TEAM1.size(); i++) {
             Fighter f = TEAM1.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) {
+                if (f.getPersonnage().getFight() != this || (f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) || f.getPersonnage().isRestricted) {
                     TEAM1.remove(i);
                 }
             }
@@ -2742,7 +2770,7 @@ public class Fight {
         for (int i = 0; i < TEAM2.size(); i++) {
             Fighter f = TEAM2.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this || f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) {
+                if (f.getPersonnage().getFight() != this || (f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) || f.getPersonnage().isRestricted) {
                     TEAM2.remove(i);
                 }
             }
