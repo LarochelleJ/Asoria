@@ -3262,7 +3262,8 @@ public class Fight {
                     } else {
                         Collector perco = Collector.GetPercoByMapID(_map.get_id());
                         if (perco != null && i.getPersonnage() != null) {
-                            if (perco.GetPercoGuildID() == i.getPersonnage().get_guild().get_id()) { // Les défenseurs et le perco n'a pas de gains en défense perco
+                            Guild guildeJoueur = i.getPersonnage().get_guild();
+                            if (guildeJoueur != null && perco.GetPercoGuildID() == guildeJoueur.get_id()) { // Les défenseurs et le perco n'a pas de gains en défense perco
                                 canDropAndXp = false;
                             }
                         }
@@ -3474,7 +3475,7 @@ public class Fight {
                 }
             }
         }
-        for (Fighter i : TEAM2) {
+        for (Fighter i : TEAM2) { // Perdant ?
             if (i.getPersonnage() != null && i.getPersonnage().getKolizeum() != null && i.getPersonnage().getKolizeum().isStarted()) {
                 i.getPersonnage().sendMess(Lang.LANG_117);
                 Kolizeum.unsubscribe(i.getPersonnage());
@@ -3487,6 +3488,14 @@ public class Fight {
                 i.getPersonnage().teleport(i.getPersonnage().getLastMapFight(), World.getCarte(i.getPersonnage().getLastMapFight()).getRandomFreeCellID());
                 i.getPersonnage().setArena(-1);
                 i.getPersonnage().setLoseArena(i.getPersonnage().getLoseArena() + 1);
+            }
+
+            Collector perco = Collector.GetPercoByMapID(_map.get_id());
+            if (perco != null && i.getPersonnage() != null) {
+                Guild guildeJoueur = i.getPersonnage().get_guild();
+                if (guildeJoueur != null && perco.GetPercoGuildID() == guildeJoueur.get_id()) { // Défenseur perco
+                    i.getPersonnage().teleport(i.getPersonnage().getLastMapID(), i.getPersonnage().getLastCellID());
+                }
             }
 
 
@@ -3728,6 +3737,7 @@ public class Fight {
             try {
                this.sendGE(winner); // Envoi des statistiques de fin de combat
             } catch (Exception e) {
+                e.printStackTrace(System.out);
             }
 
             try {
