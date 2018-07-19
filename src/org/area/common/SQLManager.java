@@ -4552,7 +4552,7 @@ public class SQLManager {
             }
             perso = World.getPlayer(idJoueur);
             points = Util.loadPointsByAccount(perso.getAccount());
-            if (points < 60) {
+            if (points < 60 && perso.getAccount().getGmLevel() < 1) {
                 perso.sendText("Un membre du Staff a tenté de valider l'un de vos titres en attente, cependant vous n'aviez pas assez de points."
                         + " Votre titre restera en attente pendant encore une semaine, il sera supprimé par la suite");
                 return 2;
@@ -4579,8 +4579,11 @@ public class SQLManager {
             e.printStackTrace();
         }
         if (status == 1) {
-            int nouvelleSomme = points - 60;
-            Util.updatePointsByAccount(perso.getAccount(), nouvelleSomme, "Validation du titre : " + titre);
+            int nouvelleSomme = points;
+            if (perso.getAccount().getGmLevel() < 1) {
+                nouvelleSomme -= 60;
+                Util.updatePointsByAccount(perso.getAccount(), nouvelleSomme, "Validation du titre : " + titre);
+            }
             SUPPRIMER_TITRE_EN_ATTENTE(idValidation);
             SAVE_PERSONNAGE(perso, false);
             if (perso.isOnline()) {

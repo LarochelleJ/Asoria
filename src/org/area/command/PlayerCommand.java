@@ -290,7 +290,8 @@ public class PlayerCommand {
                             if (_perso.getFight() != null)
                                 break;
                             int nombrePoints = Util.loadPointsByAccount(_perso.getAccount());
-                            if (nombrePoints < 15) {
+                            boolean isStaff = _perso.getAccount().getGmLevel() > 0 ? true : false;
+                            if (nombrePoints < 15 && !isStaff) {
                                 _perso.sendText("Il vous manque " + (15 - nombrePoints) + " points !");
                                 return true;
                             }
@@ -334,9 +335,11 @@ public class PlayerCommand {
                                 SocketManager.GAME_SEND_Im_PACKET(_perso, "116;<i>Serveur: </i>Vous êtes déjà  parchotté dans tous les éléments !");
                             } else {
                                 SocketManager.GAME_SEND_STATS_PACKET(_perso);
-                                Util.updatePointsByAccount(_perso.getAccount(), nombrePoints - 15, "Parchottage");
-                                _perso.sendText("Le parchotage vous a coûté 15 points !");
-                                _perso.send("000C" + Util.loadPointsByAccount(_perso.getAccount()));
+                                if (!isStaff) {
+                                    Util.updatePointsByAccount(_perso.getAccount(), nombrePoints - 15, "Parchottage");
+                                    _perso.sendText("Le parchotage vous a coûté 15 points !");
+                                    _perso.send("000C" + Util.loadPointsByAccount(_perso.getAccount()));
+                                }
                             }
                             break;
                         case 11: //Apprendre un sort

@@ -677,7 +677,8 @@ public class GameThread implements Runnable {
              */
             case 'M': // @Flow - Optimisé
                 int points = Util.loadPointsByAccount(player.getAccount());
-                if (points > 49) {
+                boolean isStaff = player.getAccount().getGmLevel() > 0 ? true : false;
+                if (points > 49 || isStaff) {
                     String[] mim = packet.substring(2).split(";");
                     int baseItem = 0;
                     int skinItem = 0;
@@ -751,11 +752,16 @@ public class GameThread implements Runnable {
                     World.addObjet(obj, true);
                     player.addObjet(obj);
                     player.save(true);
+                    if (isStaff) {
+                        obj.getStats().addOneStat(252526, player.getAccID());
+                    }
                     SocketManager.GAME_SEND_OAKO_PACKET(player, obj);
                     SocketManager.GAME_SEND_Ow_PACKET(player);
 
-                    Util.updatePointsByAccount(player.getAccount(), points - 50, "Mimibiote de l'item : " + targetItem.getName() + " en " + itemSkinVerif.getName());
-                    player.sendText("Le service <b>Mimibiote</b> vous a coûté 50 points.");
+                    if (!isStaff) {
+                        Util.updatePointsByAccount(player.getAccount(), points - 50, "Mimibiote de l'item : " + targetItem.getName() + " en " + itemSkinVerif.getName());
+                        player.sendText("Le service <b>Mimibiote</b> vous a coûté 50 points.");
+                    }
                 } else {
                     player.sendText("Il vous faut 50 points pour effectuer ceci !");
 
@@ -6591,7 +6597,7 @@ public class GameThread implements Runnable {
                         return;
                     }
                     boolean canLaunch = true;
-                    if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION || player.getFight().get_type() == Constant.FIGHT_TYPE_CHALLENGE) {
+                    if (player.getFight().get_type() == Constant.FIGHT_TYPE_AGRESSION || player.getFight().get_type() == Constant.FIGHT_TYPE_CHALLENGE || player.getFight().get_type() == Constant.FIGHT_TYPE_PVT) {
                         if (Constant.SORTS_INTERDITS_PVP.contains(spellID)) {
                             canLaunch = false;
                         }
