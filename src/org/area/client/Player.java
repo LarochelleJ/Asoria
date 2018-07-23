@@ -3028,7 +3028,7 @@ public class Player {
             } else { // Changement de salle
                 if (pcp != null) {
                     if (cp.getNext() == null) {// salle récompense, on supprime le checkpoint
-                        if (p.lastDonjonID != -1) { // Arrive de la salle d'avant, fix pour les salles récompenses mises en commun entre des donjons
+                        if (p.lastDonjonID != -1) {
                             p.checkpoints.remove(p.lastDonjonID);
                             SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
                         }
@@ -3040,6 +3040,12 @@ public class Player {
                 } else if (cp.getNext() != null) { // pas une salle récompense
                     p.checkpoints.put(cp.getDonjonID(), cp);
                     SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                } else if (p.lastDonjonID != -1) { // C'est une salle récompense mise en commune avec un autre donjon
+                    Checkpoint realDonjon = p.checkpoints.get(p.lastDonjonID);
+                    if (realDonjon != null && realDonjon.getNext().getMapID() == cp.getMapID()) { // Même salle récompense
+                        p.checkpoints.remove(p.lastDonjonID);
+                        SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                    }
                 }
             }
             if (cp.getNext() != null) {

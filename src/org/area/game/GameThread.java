@@ -6426,7 +6426,7 @@ public class GameThread implements Runnable {
             Player target = World.getPlayer(id);
             if (player == null)
                 return;
-            if (player.isRestricted) {
+            if (player.isRestricted || target != null && target.isRestricted) {
                 SocketManager.GAME_SEND_POPUP(player, "Combats PvP interdit sur ce personnage !");
                 return;
             }
