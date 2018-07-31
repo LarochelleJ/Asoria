@@ -819,9 +819,11 @@ public class Player {
         }
         for (String checkP : checkpoints.split("\\|")) {
             if (checkP.equals("")) continue;
-            Checkpoint temp = World.checkpoints.get(Short.valueOf(checkP));
-            if (temp != null) {
-                this.checkpoints.put(temp.getDonjonID(), temp);
+            synchronized (World.checkpoints) {
+                Checkpoint temp = World.checkpoints.get(Short.valueOf(checkP));
+                if (temp != null) {
+                    this.checkpoints.put(temp.getDonjonID(), temp);
+                }
             }
         }
         for (String item : stuff.split("\\|")) {
@@ -3010,46 +3012,52 @@ public class Player {
             SocketManager.GAME_SEND_MESSAGE(this, "Le staff a désactivé la fonctionnalité meneur-suiveur", "009900");
             playerWhoFollowMe.clear();
         }
-        Checkpoint cp = World.checkpoints.get(newMapID);
+        Checkpoint cp = null;
         Player p = _compte.getCurPlayer();
-        if (cp != null) { // Donjon
-            p.lastDonjonID = cp.getDonjonID();
-            Checkpoint pcp = p.checkpoints.get(cp.getDonjonID());
-            if (cp.getPrev() == null) { // Entre dans le donjon
-                if (pcp != null) { // possède un checkpoint
-                    if (pcp.getPrev() != null) { // est plus loin dans le donjon
-                        teleport(pcp.getMapID(), pcp.getCellID());
-                        return;
-                    }
-                } else {
-                    p.checkpoints.put(cp.getDonjonID(), cp);
-                    SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
-                }
-            } else { // Changement de salle
-                if (pcp != null) {
-                    if (cp.getNext() == null) {// salle récompense, on supprime le checkpoint
-                        if (p.lastDonjonID != -1) {
-                            p.checkpoints.remove(p.lastDonjonID);
+        synchronized (World.checkpoints) {
+            if (!World.checkpoints.isEmpty()) {
+                cp = World.checkpoints.get(newMapID);
+                if (cp != null) { // Donjon
+                    Checkpoint pcp = p.checkpoints.get(cp.getDonjonID());
+                    if (cp.getPrev() == null) { // Entre dans le donjon
+                        if (pcp != null) { // possède un checkpoint
+                            if (pcp.getPrev() != null) { // est plus loin dans le donjon
+                                teleport(pcp.getMapID(), pcp.getCellID());
+                                return;
+                            }
+                        } else {
+                            p.checkpoints.put(cp.getDonjonID(), cp);
                             SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
                         }
-                    } else if (pcp.getNext() == cp) { // a monté d'une salle
-                        p.checkpoints.remove(cp.getDonjonID());
-                        p.checkpoints.put(cp.getDonjonID(), cp);
-                        SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                    } else { // Changement de salle
+                        if (pcp != null) {
+                            if (cp.getNext() == null) {// salle récompense, on supprime le checkpoint
+                                if (p.lastDonjonID != -1) {
+                                    p.checkpoints.remove(p.lastDonjonID);
+                                    SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                                }
+                            } else if (pcp.getNext() == cp) { // a monté d'une salle
+                                p.checkpoints.remove(cp.getDonjonID());
+                                p.checkpoints.put(cp.getDonjonID(), cp);
+                                SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                            }
+                        } else if (cp.getNext() != null) { // pas une salle récompense
+                            p.checkpoints.put(cp.getDonjonID(), cp);
+                            SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                        } else if (p.lastDonjonID != -1) { // C'est une salle récompense mise en commune avec un autre donjon
+                            Checkpoint realDonjon = p.checkpoints.get(p.lastDonjonID);
+                            if (realDonjon != null && realDonjon.getNext().getMapID() == cp.getMapID()) { // Même salle récompense
+                                p.checkpoints.remove(p.lastDonjonID);
+                                SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                            }
+                        }
                     }
-                } else if (cp.getNext() != null) { // pas une salle récompense
-                    p.checkpoints.put(cp.getDonjonID(), cp);
-                    SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
-                } else if (p.lastDonjonID != -1) { // C'est une salle récompense mise en commune avec un autre donjon
-                    Checkpoint realDonjon = p.checkpoints.get(p.lastDonjonID);
-                    if (realDonjon != null && realDonjon.getNext().getMapID() == cp.getMapID()) { // Même salle récompense
-                        p.checkpoints.remove(p.lastDonjonID);
-                        SQLManager.SAVE_PLAYER_CHECKPOINTS(this);
+                    if (cp.getNext() != null) {
+                        p.lastDonjonID = cp.getDonjonID();
+                    } else {
+                        p.lastDonjonID = -1;
                     }
                 }
-            }
-            if (cp.getNext() != null) {
-                p.lastDonjonID = cp.getDonjonID();
             }
         }
 

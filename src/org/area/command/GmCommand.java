@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import javax.swing.Timer;
 
 import jdk.internal.jfr.events.SocketReadEvent;
+import lombok.Synchronized;
 import org.area.client.Account;
 import org.area.client.Player;
 import org.area.command.player.Tickets;
@@ -425,6 +426,18 @@ public class GmCommand {
             message = infos[1];
             for (Player P : World.getOnlinePlayers())
                 SocketManager.GAME_SEND_POPUP(P, message);
+            return true;
+        } else if (command.equalsIgnoreCase("DISABLE_CHECKPOINTS")) {
+            synchronized (World.checkpoints) {
+                World.checkpoints.clear();
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Les checkpoints sont désactivé, pour ré-activer les checkpoints utilisez la commande LOAD_CHECKPOINTS");
+            }
+            return true;
+        } else if (command.equalsIgnoreCase("LOAD_CHECKPOINTS")) {
+            synchronized (World.checkpoints) {
+                SQLManager.LOAD_CHECKPOINT();
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Les checkpoints ont bien été chargés !");
+            }
             return true;
         } else if (command.equalsIgnoreCase("POPUP")) {
             String message = "";

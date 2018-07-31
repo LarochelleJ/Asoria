@@ -3246,23 +3246,26 @@ public class SQLManager {
             boolean first = true;
             int donjonID = 0;
             Checkpoint last = null;
-            while (RS.next()) {
-               int d = RS.getInt("donjonID");
-                if (d != donjonID) { // Nouveau donjon
-                    first = true;
-                    donjonID = d;
-                    last = null;
+            synchronized (World.checkpoints) {
+                World.checkpoints.clear();
+                while (RS.next()) {
+                    int d = RS.getInt("donjonID");
+                    if (d != donjonID) { // Nouveau donjon
+                        first = true;
+                        donjonID = d;
+                        last = null;
+                    }
+                    short mapID = (short) RS.getInt("mapID");
+                    Checkpoint current = new Checkpoint(mapID, RS.getInt("cellID"), d);
+                    if (first) {
+                        first = false;
+                    } else {
+                        current.setPrev(last);
+                        last.setNext(current);
+                    }
+                    World.checkpoints.put(mapID, current);
+                    last = current;
                 }
-                short mapID = (short)RS.getInt("mapID");
-                Checkpoint current = new Checkpoint(mapID, RS.getInt("cellID"), d);
-                if (first) {
-                    first = false;
-                } else {
-                    current.setPrev(last);
-                    last.setNext(current);
-                }
-                World.checkpoints.put(mapID, current);
-                last = current;
             }
 
             closeResultSet(RS);
