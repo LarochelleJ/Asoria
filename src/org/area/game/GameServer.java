@@ -111,6 +111,13 @@ public class GameServer implements Runnable {
                 }
             }, 30, 30, TimeUnit.MINUTES);
 
+            /** @Automatic PING players **/
+            executorTimer.scheduleWithFixedDelay(new Runnable() {
+                public void run() {
+                    SocketManager.GAME_PING_PLAYERS();
+                }
+            }, 10, 10, TimeUnit.SECONDS);
+
             /** @Automatic MobGroup spawn **/
             executorTimer.scheduleWithFixedDelay(new Runnable() {
                 public void run() {

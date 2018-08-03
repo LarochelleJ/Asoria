@@ -255,6 +255,11 @@ public class NpcTemplate {
         }
 
         public void apply(Player perso) {
+            // Gestion des donjons avec plusieurs palliers, dès qu'il applique les actions, on sait qu'il quitte le pallier, donc on efface le checkpoint
+            Checkpoint possible = World.checkpoints.get(perso.getMap().get_id());
+            if (possible != null) {
+                perso.checkpoints.remove(possible.getDonjonID());
+            }
             for (Action act : _actions)
                 act.apply(perso, null, -1, -1);
         }

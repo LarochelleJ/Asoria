@@ -160,14 +160,13 @@ public class GameThread implements Runnable {
                     packet = CryptManager.toUnicode(packet);
                     /*if(!IpCheck.onGamePacket(_s.getInetAddress().getHostAddress(), packet))
                         _s.close();*/
-                    if (encrypt != null && !packet.substring(0, 2).equalsIgnoreCase("Ak")) { // Décryptage
+                    /*if (encrypt != null && !packet.substring(0, 2).equalsIgnoreCase("Ak")) { // Décryptage
                         packet = encrypt.unprepareData(packet);
-                    }
+                    }*/
                     GameServer.addToSockLog("Game: Recu << " + packet);
                     ParseTool.parsePacket(packet, player);
                     parsePacket(packet);
                     packet = "";
-
                 }
             }
         } catch (IOException e) {
@@ -350,6 +349,12 @@ public class GameThread implements Runnable {
 
             case 'W':
                 parseWaypointPacket(packet);
+                break;
+
+            case 'r': // réponse ping
+                if (packet.length() > 5) {
+                    player.ping = System.currentTimeMillis() - Long.valueOf(packet.substring(5));
+                }
                 break;
 
             case 'Z':

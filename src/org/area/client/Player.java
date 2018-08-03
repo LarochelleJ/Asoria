@@ -326,6 +326,9 @@ public class Player {
     public HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
     public int lastDonjonID = -1;
 
+    // Ping
+    public long ping = 0;
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;

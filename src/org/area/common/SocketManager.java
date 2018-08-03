@@ -2579,6 +2579,21 @@ public class SocketManager {
         send(perso, packet);
     }
 
+    public static long GAME_PING_PLAYER(Player perso) {
+        long time = System.currentTimeMillis();
+        String packet = "rpong" + time;
+        send(perso, packet);
+        return time;
+    }
+
+    public static void GAME_PING_PLAYERS() {
+        long time = System.currentTimeMillis();
+        String packet = "rpong" + time;
+        for (Player p : World.getOnlinePlayers()) {
+            send(p, packet);
+        }
+    }
+
     public static void SEND_QUESTS_LIST_PACKET(Player P) {
         //String packet = "QL|209;0;1|92;1;1";
         String packet = P.parseQuestsList();
