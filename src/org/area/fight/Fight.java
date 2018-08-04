@@ -86,7 +86,7 @@ public class Fight {
     private boolean help2 = false;
     private int _st2;
     private int _st1;
-    private int _curPlayer;
+    private int _curPlayer = -1;
     private long _startTime = 0;
     int _curFighterPA;
     int _curFighterPM;
@@ -146,6 +146,9 @@ public class Fight {
     // Formules xp
     public int _lvlWinners = 0;
     public int _lvlMax = 0;
+
+    // Tours actuel
+    public int tourActuel = 0;
 
     public void addSpellCastDelay(int delay) {
         _spellCastDelay += delay;
@@ -991,6 +994,10 @@ public class Fight {
         }
         if (_curPlayer >= _ordreJeu.size())
             _curPlayer = 0;
+        if (_curPlayer < 1) { // Un tour effectuée
+            tourActuel++;
+            SocketManager.GAME_SEND_ACTUAL_TURN_TO_FIGHT(this);
+        }
         //on reset a chaque debut de tours
         _curFighterPA = _ordreJeu.get(_curPlayer).getPA();
         _curFighterPM = _ordreJeu.get(_curPlayer).getPM();

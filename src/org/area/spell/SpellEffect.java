@@ -1670,11 +1670,13 @@ public class SpellEffect {
             id = Integer.parseInt(args.split(";")[2]);
         } catch (Exception e) {
         }
-        ;
         for (Fighter target : cibles) {
-            if (id == -1) id = target.getDefaultGfx();
-            target.addBuff(effectID, id, turns, 1, false, spell, args, caster, poison);
             int defaut = target.getDefaultGfx();
+            if (id == -1) id = defaut;
+            if ((spell == 701 || spell == 686) && target.getPersonnage() != null) { // picole panda et personnage donc possiblilité d'avoir un sexe
+                id += target.getPersonnage().get_sexe();
+            }
+            target.addBuff(effectID, id, turns, 1, false, spell, args, caster, poison);
             SocketManager.GAME_SEND_GA_PACKET_TO_FIGHT(fight, 7, effectID, caster.getGUID() + "", target.getGUID() + "," + defaut + "," + id + "," + turns);
         }
     }

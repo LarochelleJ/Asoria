@@ -137,8 +137,15 @@ public class Formulas {
 
         Stats casterStats = caster.getTotalStats();
         Stats targetStats;
-        if (isB) targetStats = target.getTotalStatsLessBuff();
-        else targetStats = target.getTotalStats();
+        /*
+        Note spéciale : isB représente isBegin, si le combat vient de commencer, imposible d'avoir des buffs, la personne qui a codé cette partie saouhaitez économiser du travail au serveur, mais bon...
+        @Flow
+         */
+        if (isB) {
+            targetStats = target.getTotalStatsLessBuff();
+        } else {
+            targetStats = target.getTotalStats();
+        }
         switch (statID) {
             case Constant.ELEMENT_NULL://Fixe
                 statC = 0;
@@ -213,10 +220,7 @@ public class Formulas {
         }
         //On bride la resistance a 50% si c'est un joueur
         if (target.getMob() == null && respT > 50) respT = 50;
-        /** Lol, mais qui a mis ça pour les résistances fixe XDDD | Return/Skryn annuler !
-         if(target.getMob() == null){
-         resfT = (int) Math.ceil(Manager.REDUCTION * resfT);
-         }**/
+
         if (statC < 0) statC = 0;
         if (isB) {
             switch (spellid) {

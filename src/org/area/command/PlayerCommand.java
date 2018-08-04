@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.area.kolizeum.Kolizeum;
+import org.area.object.Checkpoint;
 import org.area.object.Maps.MountPark;
 import org.area.arena.Arena;
 import org.area.arena.GdG;
@@ -539,9 +540,9 @@ public class PlayerCommand {
                         case 2828: // Bloquer / Activer réception message canal global
                             _perso.neVeutPasVoirMessage = !_perso.neVeutPasVoirMessage;
                             if (_perso.neVeutPasVoirMessage) {
-                                _perso.sendText("Vous ne recevez plus de message provenant du canal global, si vous souhaitez le ré-activer, taper .global !");
+                                SocketManager.GAME_SEND_POPUP(_perso, "Vous ne recevez plus de message provenant du canal global, si vous souhaitez le ré-activer, taper .global !");
                             } else {
-                                _perso.sendText("Vous recevez à nouveau les messages provenant du canal global !");
+                                SocketManager.GAME_SEND_POPUP(_perso, "Vous recevez à nouveau les messages provenant du canal global !");
                             }
                             break;
                         case 29: //Création de Team Arena
@@ -1939,6 +1940,23 @@ public class PlayerCommand {
                         case 2222:
                             _perso.addObjet(World.getObjTemplate(470001).createNewItem(1000, true, -1));
                             _perso.sendText("Vous avez reçu 10000 PP ! Bon testing !");
+                            break;
+                        case 2122: // Recommencer donjon
+                            Checkpoint cp = World.checkpoints.get(_perso.getMap().get_id());
+                            if (cp != null) {
+                                if (_perso.getFight() == null) {
+                                    Checkpoint c = cp;
+                                    while (c.getPrev() != null) {
+                                        c = c.getPrev();
+                                    }
+                                    _perso.checkpoints.remove(cp.getDonjonID());
+                                    _perso.teleport(c.getMapID(), c.getCellID());
+                                } else {
+                                    SocketManager.GAME_SEND_POPUP(_perso, "Vous ne pouvez pas recommencer le donjon si vous êtes en combat !");
+                                }
+                            } else {
+                                SocketManager.GAME_SEND_POPUP(_perso, "Vous devez être en donjon pour utiliser cette commande !");
+                            }
                             break;
                         case 55: //Guerre de Guilde
 

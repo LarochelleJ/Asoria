@@ -75,6 +75,7 @@ public class Fighter {
     // Contrôle invocation
     private boolean invocationControllable = false;
 
+
     public boolean canCac = true;
 
     private Player.BoostSpellStats _SpellBoost = null;
@@ -283,6 +284,7 @@ public class Fighter {
         if (_type == 10)//Double
             stats = _double.getTotalStats();
 
+        // Buffs (malus et bonus)
         stats = Stats.cumulStat(stats, getFightBuffStats());
         return stats;
     }
@@ -690,13 +692,15 @@ public class Fighter {
             // Système de limite de buff faiblesse %
             if (id > 214 && id < 220) {
                 buffFaiblesse = true;
-                int limite = this.getTotalStats().getEffect(id - 5) + 100; // 100% de faiblesse
-                if (limite < 1) {
-                    val = 0;
+                int resistance = getTotalStats().getEffect(id-5);
+                int limite = Math.abs(-100 - resistance);
+                // La limite de -100% de résistance ne s'applique pas si on se buff soit même
+                if (caster != this) {
+                    if (val > limite) {
+                        val = limite;
+                    }
                 }
-                else if (val > limite) {
-                    val -= val - limite;
-                }
+
             }
             if (!buffFaiblesse || buffFaiblesse && val > 0) {
                 if (id == 293) {

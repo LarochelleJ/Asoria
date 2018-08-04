@@ -550,7 +550,7 @@ public class Player {
                     val = Effects.get(id);
                 }
                 if (id < 500) {
-                    switch (id)//Bonus/Malus TODO
+                    switch (id)//Bonus/Malus
                     {
                         case Constant.STATS_ADD_AFLEE:
                             if (Effects.get(Constant.STATS_REM_AFLEE) != null)

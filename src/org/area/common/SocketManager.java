@@ -603,6 +603,15 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Map: Send>>" + packet.toString());
     }
 
+    public static void GAME_SEND_ACTUAL_TURN_TO_FIGHT(Fight fight) {
+        String packet = "000T" + fight.tourActuel;
+        for (Fighter f : fight.getAllFighters()) {
+            if (f.getPersonnage() != null && f.getPersonnage().isOnline() && !f.hasLeft()) {
+                send(f.getPersonnage(), packet);
+            }
+        }
+    }
+
     public static void GAME_SEND_FIGHT_PLACES_PACKET_TO_FIGHT(Fight fight, int teams, String places, int team) {
         String packet = "GP" + places + "|" + team;
         for (Fighter f : fight.getFighters(teams)) {

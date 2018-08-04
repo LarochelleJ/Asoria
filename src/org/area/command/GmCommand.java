@@ -654,12 +654,19 @@ public class GmCommand {
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
                 return true;
             }
+
+            if (_perso.getAccount().getGmLevel() < 2 && World.checkpoints.containsKey(mapID)) {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Aucune téléportation donjon n'est permise sur votre compte !");
+                return true;
+            }
             target.teleport(mapID, cellID);
             String str = "Le joueur a ete teleporte";
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
         } else if (command.equalsIgnoreCase("MENEUR-SUIVEUR")) {
             Config.MENEUR_SUIVEUR_ACTIVE = !Config.MENEUR_SUIVEUR_ACTIVE;
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, Config.MENEUR_SUIVEUR_ACTIVE ? "La fonctionnalité Meneur-suiveur est activé !" : "La fonctionnalité Meneur-suiveur est désactivé !");
+        } else if (command.equalsIgnoreCase("TEST_UI")) {
+            _perso.send("000X1");
         } else if (command.equalsIgnoreCase("NAMEGO")) {
             Player target = World.getPersoByName(infos[1]);
             if (target == null) {
@@ -673,7 +680,7 @@ public class GmCommand {
                 return true;
             }
             Player P = _perso;
-            if (infos.length > 2)// Si un nom de perso est spécifié
+            /*if (infos.length > 2)// Si un nom de perso est spécifié
             {
                 P = World.getPersoByName(infos[2]);
                 if (P == null) {
@@ -681,12 +688,16 @@ public class GmCommand {
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
                     return true;
                 }
-            }
+            }*/
             if (P.isOnline()) {
                 short mapID = P.getMap().get_id();
                 int cellID = P.get_curCell().getID();
                 if (!P.getMap().get_npcs().isEmpty() && P.getAccount().getGmLevel() < 5) {
                     SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Vous ne pouvez pas téléporter un joueur sur une carte possédant un pnj !");
+                    return true;
+                }
+                if (_perso.getAccount().getGmLevel() < 2 && World.checkpoints.containsKey(mapID)) {
+                    SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Aucune téléportation donjon n'est permise sur votre compte !");
                     return true;
                 }
                 target.teleport(mapID, cellID);
@@ -717,6 +728,10 @@ public class GmCommand {
             }
             Player target = _perso;
             if (target.getAccount().getGmLevel() < 5 && mapInterdites.contains(mapID)) {
+                return true;
+            }
+            if (_perso.getAccount().getGmLevel() < 2 && World.checkpoints.containsKey(mapID)) {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Aucune téléportation donjon n'est permise sur votre compte !");
                 return true;
             }
             if (infos.length > 3)// Si un nom de perso est spécifié
