@@ -1,3 +1,3 @@
-# AreaGameServer
+# AsoriaGameServer
 
-Serveur de jeu d'area-serveur.eu codé en Java 7, protocol TCP sous la librairie Apache Mina
+Serveur de jeu d'area-serveur.eu de type semilike basé sur notre émulateur principal AreaGameServer
