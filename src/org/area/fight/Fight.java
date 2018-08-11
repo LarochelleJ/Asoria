@@ -2882,7 +2882,7 @@ public class Fight {
             }
         }
         if (_type == Constant.FIGHT_TYPE_PVT) {
-            minkamas = (int) collector.getKamas() / TEAM1.size();
+            minkamas = (int)(TEAM1.size() > 1 ? collector.getKamas() / TEAM1.size() : collector.getKamas());
             maxkamas = minkamas;
             possibleDrops = collector.getDrops();
         }
