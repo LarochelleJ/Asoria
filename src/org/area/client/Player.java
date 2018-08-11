@@ -953,6 +953,7 @@ public class Player {
                 z += i.getKey();
             }
         }
+        Entry<Short, Integer> carte = Constant.carteDepart(classe);
         Player perso = new Player(
                 SQLManager.getNextPersonnageGuid(),
                 name,
@@ -976,8 +977,8 @@ public class Player {
                 (byte) 0,
                 (byte) 0,
                 "*#%!pi$:?",
-                (short) Config.START_MAP,
-                Config.START_CELL,
+                carte.getKey(),
+                carte.getValue(),
                 "",
                 "",
                 100,
@@ -1627,20 +1628,19 @@ public class Player {
 
         //  Nouveau joueur
         if (isNew()) {
-            String message = "Bienvenue sur area-serveur.eu !\n\n" +
-                    "Nous tenons à nous présenter, nous pensons qu'une bonne présentation est le début d'une bonne expérience de jeu\n" +
-                    "Area est avant tout un serveur orienté PvM, l'économie du serveur repose principalement sur les pierres précieuses qui permettent d'avancer dans le jeu, les kamas eux servent plutôt pour le commerce\n" +
-                    "Dans vos débuts, vous n'aurez pas besoin de vous souciez des kamas, tous les items, à l'exception des items 2.0 et des Dofus, sont gratuits ! Nous conseillons aussi aux joueurs de jouer en équipe afin de favoriser les interactions sociales ;" +
-                    " les meilleurs joueurs sont ceux qui jouent en équipe !\n\n" +
-                    "Nous aimerions tout vous expliquer sur notre serveur, mais celui-ci est si particulier que nous pourrions prendre une bonne heure à tout vous présenter, nous vous invitons à consulter : " +
-                    "\n<A HREF=\"https://area-serveur.eu/forum/index.php?/topic/1619-guide-moi-d%C3%A9butant-le-guide-des-premiers-r%C3%A9flexes-juin-2017/\">Guide du débutant</A>" +
-                    "\n\n D'autres tutoriels sont à votre dispositions sur note forum, bonne chance et bon jeu à vous ! ";
+            String message = "Bienvenue sur le serveur Asoria !\n\n" +
+                    "Asoria est notre nouveau bébé, un serveur tout nouveau qui est encore en phase de développement\n" +
+                    "Nous souhaitons créer un semilike qui tend vers l'ankalike, il faut savoir que cela va demander du temps d'apdatation\n" +
+                    "Si vous voyez ce message, c'est que vous accéder au serveur avant sa sortie officielle, lors de la sortie officielle, ce serveur seras remis à zéro." +
+                    " Nous invitons les joueurs à nous faire part des bugs trouvés, des fonctionnalitées manquante et de ce qui n'a pas sa place dans un serveur semilike\n\n" +
+                    "Nous epérons pouvoir sortir ce serveur au public, le mettre à terme un jour ! :) " +
+                    "\nMerci à vous de contribuer au projet Asoria !";
             SocketManager.GAME_SEND_POPUP(this, message);
-            Item bienvenue = World.getObjTemplate(6962).createNewItem(1, true, -1);
+            /*Item bienvenue = World.getObjTemplate(6962).createNewItem(1, true, -1);
             if (addObjet(bienvenue, true)) {
                 World.addObjet(bienvenue, true);
             }
-            sendText("Un cadeau a été ajouté à votre compte !");
+            sendText("Un cadeau a été ajouté à votre compte !");*/
             SocketManager.GAME_SEND_Ow_PACKET(this);
             setIsNew(false);
         }

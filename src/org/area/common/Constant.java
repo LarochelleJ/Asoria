@@ -508,6 +508,61 @@ public class Constant {
     public static List<Integer> SORTS_INTERDITS_PVP = new ArrayList<Integer>();
     public static List<Integer> SORTS_INTERDITS_PVM = new ArrayList<Integer>();
 
+    // Carte départ
+    public static Map.Entry<Short, Integer> carteDepart(int classe) {
+        Short mapID = 0;
+        int caseID = 0;
+        switch (classe) {
+            case CLASS_CRA:
+                break;
+            case CLASS_ECAFLIP:
+                mapID = 10276;
+                caseID = 311;
+                break;
+            case CLASS_ENIRIPSA:
+                mapID = 10283;
+                caseID = 283;
+                break;
+            case CLASS_ENUTROF:
+                mapID = 10299;
+                caseID = 300;
+                break;
+            case CLASS_FECA:
+                mapID = 10300;
+                caseID = 337;
+                break;
+            case CLASS_IOP:
+                mapID = 10294;
+                caseID = 294;
+                break;
+            case CLASS_PANDAWA:
+                mapID = 10289;
+                caseID = 235;
+                break;
+            case CLASS_SACRIEUR:
+                mapID = 10296;
+                caseID = 243;
+                break;
+            case CLASS_SADIDA:
+                mapID = 10279;
+                caseID = 269;
+                break;
+            case CLASS_SRAM:
+                mapID = 10285;
+                caseID = 263;
+                break;
+            case CLASS_XELOR:
+                mapID = 10298;
+                caseID = 315;
+                break;
+            default:
+                mapID = 10299;
+                caseID = 300;
+                break;
+        }
+        return new AbstractMap.SimpleEntry<Short, Integer>(mapID, caseID);
+    }
+
     // Prisme empêcher téléportation
     public static final List<Integer> DONJONS_TELEPORTATION_INTERDITE = Arrays.asList(
             15001,
