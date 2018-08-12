@@ -164,7 +164,7 @@ public class GameThread implements Runnable {
                         packet = encrypt.unprepareData(packet);
                     }*/
                     GameServer.addToSockLog("Game: Recu << " + packet);
-                    ParseTool.parsePacket(packet, player);
+                    //ParseTool.parsePacket(packet, player);
                     parsePacket(packet);
                     packet = "";
                 }

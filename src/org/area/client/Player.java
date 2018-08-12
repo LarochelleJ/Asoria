@@ -1632,8 +1632,8 @@ public class Player {
                     "Asoria est notre nouveau bébé, un serveur tout nouveau qui est encore en phase de développement\n" +
                     "Nous souhaitons créer un semilike qui tend vers l'ankalike, il faut savoir que cela va demander du temps d'apdatation\n" +
                     "Si vous voyez ce message, c'est que vous accéder au serveur avant sa sortie officielle, lors de la sortie officielle, ce serveur seras remis à zéro." +
-                    " Nous invitons les joueurs à nous faire part des bugs trouvés, des fonctionnalitées manquante et de ce qui n'a pas sa place dans un serveur semilike\n\n" +
-                    "Nous epérons pouvoir sortir ce serveur au public, le mettre à terme un jour ! :) " +
+                    " Nous invitons les joueurs à nous faire part des bugs trouvés, des fonctionnalitées manquantes et de ce qui n'a pas sa place dans un serveur semilike\n\n" +
+                    "Nous espérons pouvoir sortir ce serveur au public le plus tôt possible ! :) " +
                     "\nMerci à vous de contribuer au projet Asoria !";
             SocketManager.GAME_SEND_POPUP(this, message);
             /*Item bienvenue = World.getObjTemplate(6962).createNewItem(1, true, -1);

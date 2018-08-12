@@ -2475,6 +2475,10 @@ public class SocketManager {
         send(perso, packet);
     }
 
+    public static void GAME_WELCOME(Player perso)  {
+        send (perso, "TB");
+    }
+
     public static void GAME_SEND_EJ_PACKET(Player perso, int metid, int pid, StatsMetier sm) { //Regarder un livre de métier
         Player p = World.getPlayer(pid);
         if (p == null) return;

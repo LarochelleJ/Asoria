@@ -269,6 +269,7 @@ public class Account {
             return false;
         }
         players.put(perso.getGuid(), perso);
+        SocketManager.GAME_WELCOME(perso);
         return true;
     }
 

@@ -2,26 +2,32 @@
   <artifact type="jar" name="GameServer.jar">
     <output-path>$PROJECT_DIR$/out/artifacts/GameServer_jar</output-path>
     <root id="archive" name="GameServer.jar">
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-codec-1.8.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-collections-3.2.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-configuration-1.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-dbcp-1.4.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-lang-2.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-logging-1.1.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/commons-pool-1.5.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/guava-19.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/jansi-1.7.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/jep.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/joda-time-2.4.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/lombok.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/mina-core-2.0.10.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/mysql-connector-java-5.1.40-bin.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/simplyfilter.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/slf4j-api-1.6.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/slf4j-api-1.7.13.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/slf4j-jdk14-1.6.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Jason/Area/Libs-game/properties-manager-01.jar" path-in-jar="/" />
-      <element id="module-output" name="Asoria" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="Asoria-unbug" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-codec-1.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-collections-3.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-configuration-1.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-dbcp-1.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-lang-2.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-logging-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/commons-pool-1.5.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/guava-19.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jansi-1.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/jep.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/joda-time-2.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lombok.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/mina-core-2.0.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/mina-core-2.0.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/mina-core-2.0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/mysql-connector-java-5.1.40-bin.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/mysql.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/properties-manager-01.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/simplyfilter.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j-api-1.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j-api-1.7.13.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/slf4j-jdk14-1.6.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
