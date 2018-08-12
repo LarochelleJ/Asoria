@@ -3161,7 +3161,7 @@ public class Fight {
                 continue;//Pas de double dans les gains
             }
             // drop pierres précieuses @Flow
-            if (type == Constant.FIGHT_TYPE_CHALLENGE && _mobGroup != null && i.isDead() == false) {
+            if (false && type == Constant.FIGHT_TYPE_CHALLENGE && _mobGroup != null && i.isDead() == false) { // Pas de PP sur Asoria
                 int mapID = get_map().get_id();
                 if (i.getPersonnage() != null && mapID != 534 && mapID != 27012) {
                     int max = Formulas.getKamasWin(i, TEAM1, minkamas, maxkamas) / 100;
@@ -3594,7 +3594,7 @@ public class Fight {
                 SocketManager.GAME_SEND_GV_PACKET(perso);
                 perso.set_duelID(-1);
                 perso.set_ready(false);
-                perso.fullPDV();
+                //perso.fullPDV();
                 perso.set_fight(null);
                 SocketManager.GAME_SEND_GV_PACKET(perso);
                 SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(perso.getMap(), perso);
@@ -3975,6 +3975,7 @@ public class Fight {
                 if (F.isInvocation()) continue;
                 if ((F.hasLeft() || !F.getPersonnage().isOnline()) && _type != Constant.FIGHT_TYPE_PVT) {
                     F.getPersonnage().warpToSavePos();
+                    F.getPersonnage().set_PDV(1);
                     continue;
                 }
                 if (F.getPersonnage().controleUneInvocation) {
@@ -4077,8 +4078,10 @@ public class Fight {
 
     public void onFighterDie(Fighter target, Fighter caster) { // Lorsque qu'un personnage meurt
         target.setIsDead(true);
-        if (!target.hasLeft()) deadList.put(target.getGUID(), target);//on ajoute le joueur à la liste des cadavres ;)
-        setLastFighterDie(target, target.getTeam()); // @Flow - Laisse spirituelle
+        if (!target.hasLeft()) { deadList.put(target.getGUID(), target); }//on ajoute le joueur à la liste des cadavres ;)
+        else {
+            setLastFighterDie(target, target.getTeam()); // @Flow - Laisse spirituelle
+        }
         if (target.getPersonnage() != null && target == _ordreJeu.get(_curPlayer)) { // Si il meurt pendant son tour
             try {
                 SocketManager.GAME_SEND_GAMETURNSTOP_PACKET_TO_FIGHT(this, 7, target.getGUID());
@@ -4761,7 +4764,7 @@ public class Fight {
                             final Player P = F.getPersonnage();
                             P.set_duelID(-1);
                             P.set_ready(false);
-                            P.fullPDV();
+                            //P.fullPDV();
                             P.set_fight(null);
                             P.setSitted(false);
                             P.set_away(false);
@@ -4851,7 +4854,7 @@ public class Fight {
                                 final Player P = T.getPersonnage();
                                 P.set_duelID(-1);
                                 P.set_ready(false);
-                                P.fullPDV();
+                                //P.fullPDV();
                                 P.set_fight(null);
                                 P.setSitted(false);
                                 P.set_away(false);
@@ -4895,7 +4898,7 @@ public class Fight {
                                     final Player P = f.getPersonnage();
                                     P.set_duelID(-1);
                                     P.set_ready(false);
-                                    P.fullPDV();
+                                    //P.fullPDV();
                                     P.set_fight(null);
                                     P.setSitted(false);
                                     P.set_away(false);
@@ -5039,12 +5042,13 @@ public class Fight {
                             } else//Soit il a rejoin le combat => Left de lui seul
                             {
                                 SocketManager.GAME_SEND_ON_FIGHTER_KICK(this, F.getPersonnage().getGuid(), getTeamID(F.getGUID()));
-                                if (_type == Constant.FIGHT_TYPE_AGRESSION || _type == Constant.FIGHT_TYPE_CONQUETE || _type == Constant.FIGHT_TYPE_CHALLENGE || _type == Constant.FIGHT_TYPE_PVT)
+                                if (_type == Constant.FIGHT_TYPE_AGRESSION || _type == Constant.FIGHT_TYPE_CONQUETE || _type == Constant.FIGHT_TYPE_CHALLENGE || _type == Constant.FIGHT_TYPE_PVT) {
                                     SocketManager.GAME_SEND_ON_FIGHTER_KICK(this, F.getPersonnage().getGuid(), getOtherTeamID(F.getGUID()));
+                                }
                                 final Player P = F.getPersonnage();
                                 P.set_duelID(-1);
                                 P.set_ready(false);
-                                P.fullPDV();
+                                //P.fullPDV();
                                 P.set_fight(null);
                                 P.setSitted(false);
                                 P.set_away(false);

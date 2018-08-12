@@ -357,14 +357,44 @@ public class GameThread implements Runnable {
                 }
                 break;
 
-            case 'Z':
+            /*case 'Z':
                 parseSpecialPackets(packet);
+                break;*/
+            case 'Y': // Debug client Asoria
+                debug();
                 break;
 
             default: // Pour éviter les packets chinoix qui génères des <<Dofus ne
                 // répond pas>>
                 break;
         }
+    }
+
+    private void debug() {
+        if (player.getFight() != null && !player.getFight().isFightStarted()) {
+            player.sendText("Impossible d'utiliser le debug en préparation de combat.");
+            return;
+        }
+        player.teleport(player.getMap().get_id(), player.get_curCell().getID());
+        SocketManager.GAME_SEND_GV_PACKET(player);
+        player.set_duelID(-1);
+        player.set_ready(false);
+        try {
+            player.getFight().leftFight(player, null, true);
+        } catch (Exception e) {
+        }
+        player.set_fight(null);
+        SocketManager.GAME_SEND_GV_PACKET(player);
+        SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
+        player.get_curCell().addPerso(player);
+
+        if (player.getFight() == null && player.estBloqueCombat() && !Constant.COMBAT_BLOQUE) {
+            player.mettreCombatBloque(false);
+        }
+
+        SocketManager.GAME_SEND_ERASE_ON_MAP_TO_MAP(player.getMap(), player.getGuid());
+        SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(player.getMap(), player);
+        SocketManager.GAME_SEND_STATS_PACKET(player);
     }
 
     private void parseQuestPacket(String packet) {
@@ -6033,20 +6063,31 @@ public class GameThread implements Runnable {
         } catch (Exception e) {
             return;
         }
-        ;
         if (GameActionId == -1) {
             return;
         }
+        boolean isOk = packet.charAt(2) == 'K';
         GameAction GA = actions.get(GameActionId);
         if (GA == null) {
+            if (GameActionId == 0 && player.getFight() != null) {
+                if (isOk) {
+                    Fight f = player.getFight();
+                    if (f != null) {
+                        f.onGK(player, 300);
+                    }
+                }
+            }
             return;
         }
-        boolean isOk = packet.charAt(2) == 'K';
         switch (GA._actionID) {
             case 1:// Deplacement
                 if (isOk) {
                     // Hors Combat
                     if (player.getFight() == null) {
+                        if (player.statue) {
+                            Entry<Short, Integer> carte = Constant.carteDepart(player.get_classe());
+                            player.teleport(carte.getKey(), carte.getValue());
+                        }
                         if (player.getMap().get_id() != GA._secondArgs) {
                             return;
                         }
@@ -7000,12 +7041,14 @@ public class GameThread implements Runnable {
             case 'B':
                 int stat = -1;
                 try {
-                    stat = Integer.parseInt(packet.substring(2).split("/u000A")[0]);
-                    player.boostStat(stat);
+                    String[] params = packet.substring(2).split(Pattern.quote(";"));
+                    stat = Integer.parseInt(params[0]);
+                    int value = Integer.parseInt(params[1]);
+                    if (value <= player.get_capital() && value > 0)
+                        player.boost(stat, value);
                 } catch (NumberFormatException e) {
                     return;
                 }
-                ;
                 break;
             case 'g':// Cadeaux à la connexion
                 int regalo = account.getCadeau();

@@ -991,6 +991,7 @@ public class Maps {
                 case 44://Sauvegarder pos
                     String str = _map + "," + _id;
                     perso.set_savePos(str);
+                    perso.save(false);
                     SocketManager.GAME_SEND_Im_PACKET(perso, "06");
                     break;
 
@@ -1003,7 +1004,8 @@ public class Maps {
                     SocketManager.GAME_SEND_GDF_PACKET_TO_MAP(perso.getMap(), this);
                     break;
                 case 114://Utiliser (zaap)
-                    perso.openZaapMenu();
+                    String data = _map + "," + _id;
+                    perso.openZaapMenu(data);
                     perso.getAccount().getGameThread().removeAction(GA);
                     break;
                 case 170: //Livre de métiers
@@ -1133,6 +1135,10 @@ public class Maps {
                     if (h4 == null) return;
                     perso.setInHouse(h4);
                     h4.SellIt(perso);
+                    break;
+
+                case 183: // Statue zone incarnam
+                    perso.statue = true;
                     break;
 
                 default:

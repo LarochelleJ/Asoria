@@ -518,6 +518,9 @@ public class GmCommand {
             Player cible = World.getPersoByName(infos[1]);
             cible.set_Speed(speed);
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "La vitesse de " + cible.getName() + " est maintenant de " + speed);
+        } else if (command.equalsIgnoreCase("PACKET")) {
+            String packet = String.valueOf(infos[1]);
+            SocketManager.send(_perso, packet);
         } else if (command.equalsIgnoreCase("MUTEGLOBAL")) {
             try {
                 Player perso = World.getPersoByName(infos[1]);

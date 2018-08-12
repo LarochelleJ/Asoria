@@ -326,6 +326,9 @@ public class Player {
     public HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
     public int lastDonjonID = -1;
 
+    // Statue incarnam
+    public boolean statue = false;
+
     // Ping
     public long ping = 0;
 
@@ -954,6 +957,7 @@ public class Player {
             }
         }
         Entry<Short, Integer> carte = Constant.carteDepart(classe);
+        String savePos = carte.getKey() + "," + carte.getValue();
         Player perso = new Player(
                 SQLManager.getNextPersonnageGuid(),
                 name,
@@ -983,7 +987,7 @@ public class Player {
                 "",
                 100,
                 "",
-                "951,156",
+                savePos,
                 "",
                 0,
                 -1,
@@ -2307,7 +2311,7 @@ public class Player {
             pods += SM.get_lvl() * 5;
             if (SM.get_lvl() == 100) pods += 1000;
         }
-        return (10000 + pods);
+        return pods;
     }
 
 
@@ -2423,7 +2427,7 @@ public class Player {
         SocketManager.GAME_SEND_GV_PACKET(perso);
         perso.set_duelID(-1);
         perso.set_ready(false);
-        perso.fullPDV();
+        //perso.fullPDV();
         SocketManager.GAME_SEND_ADD_PLAYER_TO_MAP(perso.getMap(), perso);
         perso.get_curCell().addPerso(perso);
     }
@@ -2999,6 +3003,8 @@ public class Player {
         if (_compte.getGameThread() != null) {
             PW = _compte.getGameThread().getOut();
         }
+        Player p = this;
+        p.statue = false;
         if (World.getCarte(newMapID) == null) {
             GameServer.addToLog("Game: INVALID MAP : " + newMapID);
             return;
@@ -3016,7 +3022,6 @@ public class Player {
             playerWhoFollowMe.clear();
         }
         Checkpoint cp = null;
-        Player p = _compte.getCurPlayer();
         synchronized (World.checkpoints) {
             if (!World.checkpoints.isEmpty()) {
                 cp = World.checkpoints.get(newMapID);
@@ -3528,7 +3533,6 @@ public class Player {
             teleport(Short.parseShort(infos[0]), Integer.parseInt(infos[1]));
         } catch (Exception e) {
         }
-        ;
     }
 
     public void removeByTemplateID(int tID, int count) {
@@ -3965,7 +3969,7 @@ public class Player {
         }
     }
 
-    public void openZaapMenu() {
+    public void openZaapMenu(String mapInfos) {
         if (this._fight == null)//On ouvre si il n'est pas en combat
         {
             if (getDeshonor() >= 3) {
@@ -3976,6 +3980,7 @@ public class Player {
             if (!hasZaap(_curCarte.get_id()))//Si le joueur ne connaissait pas ce zaap
             {
                 _zaaps.add(_curCarte.get_id());
+                this.set_savePos(mapInfos);
                 SocketManager.GAME_SEND_Im_PACKET(this, "024");
                 SQLManager.SAVE_PERSONNAGE(this, false);
             }
