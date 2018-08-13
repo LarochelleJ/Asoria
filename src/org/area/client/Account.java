@@ -89,14 +89,14 @@ public class Account {
         this._banned_time = banned_time;
         this._lastIP = aLastIp;
         this._lastConnectionDate = aLastConnectionDate;
-        this._bankKamas = l;
         this._hdvsItems = World.getMyItems(_GUID);
         this._mute_time = mute_time;
         this._mute_raison = mute_raison;
         this._mute_pseudo = mute_pseudo;
         this._vote = vote;
         //Chargement de la banque
-        for (String item : bank.split("\\|")) {
+        Entry<String, Long> banque = SQLManager.LOAD_BANQUE(aGUID);
+        for (String item : banque.getKey().split("\\|")) {
             if (item.equals("")) continue;
             String[] infos = item.split(":");
             int guid = Integer.parseInt(infos[0]);
@@ -105,6 +105,7 @@ public class Account {
             if (obj == null) continue;
             _bank.put(obj.getGuid(), obj);
         }
+        this._bankKamas = banque.getValue();
         //Chargement de la liste d'amie
         for (String f : friends.split(";")) {
             try {

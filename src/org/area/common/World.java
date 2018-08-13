@@ -143,6 +143,9 @@ public class World {
     // Checkpoints
     public static HashMap<Short, Checkpoint> checkpoints = new HashMap<Short, Checkpoint>();
 
+    // Portes interactives
+    public static HashMap<Short, List<Porte>> portes = new HashMap<Short, List<Porte>>();
+
     private static byte _GmAccess = 0;
 
     private static int nextObjetID; // Contient le derniere ID utilisé pour crée
@@ -1134,6 +1137,8 @@ public class World {
         Console.println("|| IOTemplate : Ok !", Color.CYAN);
         SQLManager.LOAD_ITEMSETS();
         Console.println("|| Panoplies : Ok !", Color.CYAN);
+        SQLManager.LOAD_PORTES();
+        Console.println("|| Porte interactives : Ok !", Color.CYAN);
         SQLManager.LOAD_MAPS();
         Console.println("|| Carte : Ok !", Color.CYAN);
         SQLManager.LOAD_PRISMES();

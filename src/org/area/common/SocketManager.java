@@ -245,6 +245,18 @@ public class SocketManager {
 
     }
 
+    public static void GAME_SEND_OUVERTURE_PORTE_TO_MAP(Maps carte, int cell, int action) {
+        String packet = "GDF|" + cell + ";" + action;
+        for (Player p : carte.getPersos()) {
+            send(p, packet);
+        }
+    }
+
+    public static void GAME_SEND_OUVERTURE_PORTE(Player p, int cell, int action) {
+        String packet = "GDF|" + cell + ";" + action;
+        send(p, packet);
+    }
+
     public static void REALM_SEND_MESSAGE_DECO(Player P, int MSG_ID, String args) {
         String packet = "M0" + MSG_ID + "|" + args;
         send(P, packet);

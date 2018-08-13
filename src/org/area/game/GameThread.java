@@ -53,23 +53,16 @@ import org.area.kernel.Console;
 import org.area.kernel.Logs;
 import org.area.kernel.Main;
 import org.area.lang.Lang;
-import org.area.object.AuctionHouse;
+import org.area.object.*;
 import org.area.object.AuctionHouse.HdvEntry;
-import org.area.object.Guild;
 import org.area.object.Guild.GuildMember;
-import org.area.object.Houses;
-import org.area.object.Item;
 import org.area.object.Item.ObjTemplate;
-import org.area.object.Maps;
 import org.area.object.Maps.Case;
 import org.area.object.Maps.MountPark;
-import org.area.object.Mount;
-import org.area.object.NpcTemplate;
 import org.area.object.NpcTemplate.NPC;
 import org.area.object.NpcTemplate.NPC_Exchange;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
-import org.area.object.Trunk;
 import org.area.object.job.Job.StatsMetier;
 import org.area.spell.Spell.SortStats;
 import org.simplyfilter.filter.Filter;
@@ -6189,7 +6182,14 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_GDK_PACKET(out);
                 return;
             }
-
+            // Portes interractives
+            if (map.portes != null) {
+                for (Porte porte : map.portes) {
+                    if (porte.isPorteOuverte()) {
+                        SocketManager.GAME_SEND_OUVERTURE_PORTE(player, porte.getCellue(), 3);
+                    }
+                }
+            }
             SocketManager.GAME_SEND_Rp_PACKET(this.player, this.player.getMap()
                     .getMountPark());
             //debug++;

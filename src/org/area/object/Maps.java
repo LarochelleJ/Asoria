@@ -66,6 +66,7 @@ public class Maps {
     private long _muteTime = -1;
     private Map<Integer, Integer> _parleTime = new HashMap<Integer, Integer>();
     private long _tempsPourPosePercepteur;
+    public List<Porte> portes = null;
 
     public static class MountPark {
         private int _owner;
@@ -1767,8 +1768,9 @@ public class Maps {
     }
 
     public void onPlayerArriveOnCell(Player perso, int caseID) {
-        if (_cases.get(caseID) == null) return;
         Case caseCible = _cases.get(caseID);
+        if (caseCible == null) return;
+        perso.set_curCell(caseCible);
         synchronized (caseCible) {
             Item obj = caseCible._droppedItem;
             if (obj != null) {
@@ -1785,6 +1787,11 @@ public class Maps {
         if (perso.getHasEndFight()) {
             perso.setHasEndFight(false);
             //return; @Flow - Is it needed, well I don't think so ^^ ? bug du double clique
+        }
+        if (portes != null) {
+            for (Porte p : portes) {
+                p.ouvrir(this);
+            }
         }
         if (_placesStr.equalsIgnoreCase("|")) return;
         //Si le joueur a changer de map ou ne peut etre aggro

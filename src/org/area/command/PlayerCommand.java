@@ -208,7 +208,7 @@ public class PlayerCommand {
                             SocketManager.GAME_SEND_POPUP(_perso, args);
                             break;
                         case 4: //Informations serveur
-                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Area V.2.11 REV2</b>\n\n"
+                            String text = "\n<img src='UI_FightOptionBlockJoinerExceptPartyMemberUp'/><br/><b>Asoria Phase développement 1.0.0</b>\n\n"
                                     + "\n   "
                                     + GameServer.uptime()
                                     + "Joueurs en ligne : <b>" + Main.gameServer.getPlayerNumber() + "</b>\n"

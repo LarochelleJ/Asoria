@@ -206,8 +206,6 @@ public class SQLManager {
     public static void UPDATE_ACCOUNT_DATA(Account acc) {
         try {
             String baseQuery = "UPDATE accounts SET " +
-                    "`bankKamas` = ?," +
-                    "`bank` = ?," +
                     "`level` = ?," +
                     "`pseudo` = ?," +
                     "`banned` = ?," +
@@ -220,25 +218,37 @@ public class SQLManager {
                     "`helper` = ?" +
                     " WHERE `guid` = ?;";
             PreparedStatement p = newTransact(baseQuery, Connection(true));
-
-            p.setLong(1, acc.getBankKamas());
-            p.setString(2, acc.parseBankObjetsToDB());
-            p.setInt(3, acc.getGmLevel());
-            p.setString(4, acc.getPseudo());
-            p.setInt(5, (acc.isBanned() ? 1 : 0));
-            p.setLong(6, acc.getBannedTime());
-            p.setString(7, acc.parseFriendListToDB());
-            p.setString(8, acc.parseEnemyListToDB());
-            p.setLong(9, acc.getMuteTime());
-            p.setString(10, acc.getMuteRaison());
-            p.setString(11, acc.getMutePseudo());
-            p.setInt(12, acc.isHelper ? 1 : 0);
-            p.setInt(13, acc.getGuid());
+            SAVE_BANQUE(acc);
+            p.setInt(1, acc.getGmLevel());
+            p.setString(2, acc.getPseudo());
+            p.setInt(3, (acc.isBanned() ? 1 : 0));
+            p.setLong(4, acc.getBannedTime());
+            p.setString(5, acc.parseFriendListToDB());
+            p.setString(6, acc.parseEnemyListToDB());
+            p.setLong(7, acc.getMuteTime());
+            p.setString(8, acc.getMuteRaison());
+            p.setString(9, acc.getMutePseudo());
+            p.setInt(10, acc.isHelper ? 1 : 0);
+            p.setInt(11, acc.getGuid());
 
             p.executeUpdate();
             closePreparedStatement(p);
         } catch (SQLException e) {
             GameServer.addToLog("SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void SAVE_BANQUE(Account compte) {
+        try {
+            String query = "REPLACE INTO banque(compte, objets, kamas) VALUES (?, ?, ?);";
+            PreparedStatement p = newTransact(query, Connection(false));
+            p.setInt(1, compte.getGuid());
+            p.setString(2, compte.parseBankObjetsToDB());
+            p.setLong(3, compte.getBankKamas());
+            p.execute();
+            closePreparedStatement(p);
+        } catch (SQLException e){
             e.printStackTrace();
         }
     }
@@ -260,6 +270,27 @@ public class SQLManager {
         } catch (SQLException e) {
             GameServer.addToLog("SQL ERROR: " + e);
             e.printStackTrace();
+        }
+    }
+
+    public static void LOAD_PORTES() {
+        try{
+            PreparedStatement p = newTransact("SELECT * FROM portes;", Connection(false));
+            ResultSet RS = p.executeQuery();
+            while (RS.next()) {
+                Porte porte = new Porte(RS.getString("cellulesRequises"), RS.getInt("cellule"), RS.getInt("temps"));
+                short mapID = RS.getShort("carteID");
+                if (!World.portes.containsKey(mapID)) {
+                    List<Porte> liste = new ArrayList<Porte>();
+                    liste.add(porte);
+                    World.portes.put(mapID, liste);
+                } else {
+                    World.portes.get(mapID).add(porte);
+                }
+            }
+
+        } catch (SQLException e) {
+
         }
     }
 
@@ -927,6 +958,25 @@ public class SQLManager {
         }
     }
 
+    public static Map.Entry<String, Long> LOAD_BANQUE(int compte) {
+        String objets = "";
+        long kamas = 0;
+        try {
+            java.sql.PreparedStatement ps = newTransact("SELECT * FROM banque WHERE compte = ?;", Connection(false));
+            ps.setInt(1, compte);
+            ResultSet RS = ps.executeQuery();
+            if (RS.next()) {
+                objets = RS.getString("objets");
+                kamas = RS.getLong("kamas");
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return new AbstractMap.SimpleEntry<String, Long>(objets, kamas);
+    }
+
     public static boolean DELETE_PERSO_IN_BDD(Player perso) {
         int guid = perso.getGuid();
         String baseQuery = "DELETE FROM personnages WHERE guid = ?;";
@@ -1119,21 +1169,25 @@ public class SQLManager {
             ResultSet RS;
             RS = SQLManager.executeQuery("SELECT * from maps LIMIT " + Constant.DEBUG_MAP_LIMIT + ";", false);
             while (RS.next()) {
-                World.addCarte(
-                        new Maps(
-                                RS.getShort("id"),
-                                RS.getString("date"),
-                                RS.getByte("width"),
-                                RS.getByte("heigth"),
-                                RS.getString("key"),
-                                RS.getString("places"),
-                                RS.getString("mapData"),
-                                RS.getString("cells"),
-                                RS.getString("monsters"),
-                                RS.getString("mappos"),
-                                RS.getByte("numgroup"),
-                                RS.getByte("groupmaxsize")
-                        ));
+                Maps carte = new Maps(
+                        RS.getShort("id"),
+                        RS.getString("date"),
+                        RS.getByte("width"),
+                        RS.getByte("heigth"),
+                        RS.getString("key"),
+                        RS.getString("places"),
+                        RS.getString("mapData"),
+                        RS.getString("cells"),
+                        RS.getString("monsters"),
+                        RS.getString("mappos"),
+                        RS.getByte("numgroup"),
+                        RS.getByte("groupmaxsize")
+                );
+                World.addCarte(carte);
+                carte.portes = World.portes.get(carte.get_id());
+                if (carte.portes != null) {
+                    Console.println("Portes ajoutées !", Color.YELLOW);
+                }
             }
             //if(i == 0) //Console.print("\r-maps loaded : " + i, Color.GREEN);
             SQLManager.closeResultSet(RS);
