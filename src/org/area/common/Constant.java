@@ -514,6 +514,8 @@ public class Constant {
         int caseID = 0;
         switch (classe) {
             case CLASS_CRA:
+                mapID = 10292;
+                caseID = 299;
                 break;
             case CLASS_ECAFLIP:
                 mapID = 10276;

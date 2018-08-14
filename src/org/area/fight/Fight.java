@@ -2769,7 +2769,7 @@ public class Fight {
         for (int i = 0; i < TEAM1.size(); i++) {
             Fighter f = TEAM1.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this || (f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) || f.getPersonnage().isRestricted) {
+                if (f.getPersonnage().getFight() != this || f.getPersonnage().isRestricted) {
                     TEAM1.remove(i);
                 }
             }
@@ -2777,7 +2777,7 @@ public class Fight {
         for (int i = 0; i < TEAM2.size(); i++) {
             Fighter f = TEAM2.get(i);
             if (f.getPersonnage() != null) {
-                if (f.getPersonnage().getFight() != this || (f.getPersonnage().getAccount().getGmLevel() > 0 && !Config.BETA) || f.getPersonnage().isRestricted) {
+                if (f.getPersonnage().getFight() != this || f.getPersonnage().isRestricted) {
                     TEAM2.remove(i);
                 }
             }

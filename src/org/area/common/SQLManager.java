@@ -278,7 +278,7 @@ public class SQLManager {
             PreparedStatement p = newTransact("SELECT * FROM portes;", Connection(false));
             ResultSet RS = p.executeQuery();
             while (RS.next()) {
-                Porte porte = new Porte(RS.getString("cellulesRequises"), RS.getInt("cellule"), RS.getInt("temps"));
+                Porte porte = new Porte(RS.getString("cellulesRequises"), RS.getInt("cellule"), RS.getInt("temps"), RS.getString("cellulesDebloque"));
                 short mapID = RS.getShort("carteID");
                 if (!World.portes.containsKey(mapID)) {
                     List<Porte> liste = new ArrayList<Porte>();
@@ -851,7 +851,7 @@ public class SQLManager {
             e.printStackTrace();
         }
         try {
-            String query = "SELECT * FROM personnages WHERE account = ?;";
+            String query = "SELECT * FROM personnages WHERE account = ? AND deleted = 0;";
                 java.sql.PreparedStatement ps = newTransact(query, Connection(false));
                 ps.setInt(1, accID);
                 ResultSet RS = ps.executeQuery();
@@ -979,7 +979,7 @@ public class SQLManager {
 
     public static boolean DELETE_PERSO_IN_BDD(Player perso) {
         int guid = perso.getGuid();
-        String baseQuery = "DELETE FROM personnages WHERE guid = ?;";
+        String baseQuery = "UPDATE personnages SET deleted = 1 WHERE guid = ?;";
 
         try {
             PreparedStatement p = newTransact(baseQuery, Connection(false));
@@ -987,7 +987,7 @@ public class SQLManager {
 
             p.execute();
 
-            if (!perso.getItemsIDSplitByChar(",").equals("")) {
+            /*if (!perso.getItemsIDSplitByChar(",").equals("")) {
                 baseQuery = "DELETE FROM items WHERE guid IN (?) AND server = ?;";
                 p = newTransact(baseQuery, Connection(false));
                 p.setString(1, perso.getItemsIDSplitByChar(","));
@@ -1008,7 +1008,7 @@ public class SQLManager {
 
                 p.execute();
                 World.delDragoByID(perso.getMount().get_id());
-            }
+            }*/
 
             closePreparedStatement(p);
             return true;
@@ -1774,7 +1774,7 @@ public class SQLManager {
                 String access = RS.getString("accessories");
                 int extraClip = RS.getInt("extraClip");
                 int customArtWork = RS.getInt("customArtWork");
-                int initQId = RS.getInt("initQuestion");
+                String questions = RS.getString("initQuestion");
                 String ventes = RS.getString("ventes");
                 String quest = RS.getString("quests");
                 World.addNpcTemplate
@@ -1793,7 +1793,7 @@ public class SQLManager {
                                                 access,
                                                 extraClip,
                                                 customArtWork,
-                                                initQId,
+                                                questions,
                                                 ventes,
                                                 quest
                                         )
@@ -2257,7 +2257,7 @@ public class SQLManager {
         Player player = null;
 
         try {
-            String query = "SELECT * FROM personnages WHERE guid = ?;";
+            String query = "SELECT * FROM personnages WHERE guid = ? AND deleted = 0;";
             java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, guid);
             ResultSet RS = ps.executeQuery();
@@ -2366,7 +2366,7 @@ public class SQLManager {
         Player player = null;
 
         try {
-            String query = "SELECT * FROM personnages WHERE name = ?;";
+            String query = "SELECT * FROM personnages WHERE name = ? AND deleted = 0;";
             java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, name);
             ResultSet RS = ps.executeQuery();

@@ -252,7 +252,7 @@ public class GmCommand {
                 mess = entry.getKey() + " "
                         + entry.getValue().get_template().get_id() + " "
                         + entry.getValue().get_cellID() + " "
-                        + entry.getValue().get_template().get_initQuestionID();
+                        + entry.getValue().get_template().get_initQuestionID(map.get_id());
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, mess);
             }
             mess = "Liste des groupes de monstres:";

@@ -132,10 +132,13 @@ public class Action {
 
             case 0://Téléportation
                 try {
-                    short newMapID = Short.parseShort(args.split(",", 2)[0]);
-                    int newCellID = Integer.parseInt(args.split(",", 2)[1]);
-                    if (perso.getCurCarte().get_id() != newMapID) {
-                        perso.teleport(newMapID, newCellID);
+                    String[] param = args.split(",");
+                    if (param.length > 1) {
+                        short newMapID = Short.parseShort(param[0]);
+                        int newCellID = Integer.parseInt(param[1]);
+                        if (perso.getCurCarte().get_id() != newMapID) {
+                            perso.teleport(newMapID, newCellID);
+                        }
                     }
                 } catch (Exception e) {
                     return;

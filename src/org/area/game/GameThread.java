@@ -3035,21 +3035,31 @@ public class GameThread implements Runnable {
             int rID = Integer.parseInt(infos[1]);
             NPC_question quest = World.getNPCQuestion(qID, _perso);
             NPC_reponse rep = World.getNPCreponse(rID);
-            //NpcTemplate npcVerif = World.getNPCTemplate(_perso.get_isTalkingWith());
-            // Revu des vérifications (+ intelligente et efficacité 100%)
-            ArrayList<Integer> npcWithThisQuestionId = SQLManager.GET_NPCS_WITH_QUESTION_ID(qID);
-            boolean valid = false;
-            Map<Integer, Integer> npcOnMap = new HashMap<Integer, Integer>();
+            boolean valid = true;
+            List<Integer> npcOnMap = new ArrayList<Integer>();
             for (NPC npc : _perso.getCurCarte().get_npcs().values()) {
-                npcOnMap.put(npc.get_template().get_id(), npc.get_guid());
+                npcOnMap.add(npc.get_guid());
             }
-            for (int i = 0; i < npcWithThisQuestionId.size(); i++) {
-                if (npcOnMap.containsKey(npcWithThisQuestionId.get(i)) && npcOnMap.get(npcWithThisQuestionId.get(i)) == _perso.get_isTalkingWith()) {
-                    valid = true;
-                    break;
+            // Vérification si c'est une réponse à cette question
+            String[] reponses = quest.getReponses().split(Pattern.quote(";"));
+            if (reponses.length > 1) {
+                boolean contains = false;
+                for (String reponse : reponses) {
+                    if (Integer.valueOf(reponse) == rID) {
+                        contains = true;
+                        break;
+                    }
                 }
+                valid = contains;
+            } else if (Integer.valueOf(quest.getReponses()) != rID) {
+                valid = false;
             }
-            if (!valid || !SQLManager.IS_A_GOOD_ANSWER_FOR_QUESTION(qID, rID)) {
+            // Est-ce que le pnj est sur la carte du joueur ?
+            if (!npcOnMap.contains(_perso.get_isTalkingWith())) {
+                valid = false;
+            }
+
+            if (!valid) {
                 _perso.sendText("Action impossible.");
                 return;
             }
@@ -3104,7 +3114,7 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_DCK_PACKET(_perso.getAccount().getGameThread().getOut(), npcID);
                 // Objectif quÃƒÂªtes : Aller voir x
                 _perso.confirmObjective(1, npc.get_template().get_id() + "", null);
-                int qID = npc.get_template().get_initQuestionID();
+                int qID = npc.get_template().get_initQuestionID(_perso.getMap().get_id());
                 // Quests
                 boolean pendingStep = false;
                 // Quest Master
@@ -3146,7 +3156,7 @@ public class GameThread implements Runnable {
                         } else {
                             qID = Integer.parseInt(questDetails.get("startQuestion"));
                             if (qID == -1) {
-                                qID = npc.get_template().get_initQuestionID();
+                                qID = npc.get_template().get_initQuestionID(_perso.getMap().get_id());
                             }
                             break;
                         }
@@ -6186,6 +6196,7 @@ public class GameThread implements Runnable {
             if (map.portes != null) {
                 for (Porte porte : map.portes) {
                     if (porte.isPorteOuverte()) {
+                        SocketManager.GAME_SEND_CELLULE_DEBLOQUEE(player, porte.getCellulesDebloquees(), true);
                         SocketManager.GAME_SEND_OUVERTURE_PORTE(player, porte.getCellue(), 3);
                     }
                 }
@@ -7068,7 +7079,8 @@ public class GameThread implements Runnable {
                 String reponse = split.length > 1 ? split[1] : "";
 
                 if (account.getPlayers().containsKey(GUID)) {
-                    if (reponse.equalsIgnoreCase(account.getAnwser())) {
+                    boolean askQuestion = account.getPlayers().get(GUID).getLevel() >= 20;
+                    if ((askQuestion && reponse.equalsIgnoreCase(account.getAnwser())) || !askQuestion) {
                         account.deletePerso(GUID);
                         SocketManager.GAME_SEND_PERSO_LIST(out,
                                 account.getPlayers());

@@ -3,6 +3,7 @@ package org.area.common;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -249,6 +250,26 @@ public class SocketManager {
         String packet = "GDF|" + cell + ";" + action;
         for (Player p : carte.getPersos()) {
             send(p, packet);
+        }
+    }
+
+    public static void GAME_SEND_CELLULE_DEBLOQUEE_TO_MAP(Maps carte, List<Integer> cellules, boolean debloque) {
+        List<String> packets = new ArrayList<String>();
+        for (int i : cellules) {
+            String packet = "GDC" + i + (debloque ? ";aaGaaaaaaa801;1 " : ";aaaaaaaaaa801;1");
+            packets.add(packet);
+        }
+        for (Player p : carte.getPersos()) {
+            for (String s : packets) {
+                send(p, s);
+            }
+        }
+    }
+
+    public static void GAME_SEND_CELLULE_DEBLOQUEE(Player p, List<Integer> cellules, boolean debloque) {
+        for (int i : cellules) {
+            String packet = "GDC" + i + (debloque ? ";aaGaaaaaaa801;1 " : ";aaaaaaaaaa801;1");
+            send (p, packet);
         }
     }
 
@@ -1170,7 +1191,7 @@ public class SocketManager {
     public static void GAME_SEND_FIGHT_GE_PACKET_TO_FIGHT(final String packet, Fighter f) {
         try {
         /*final String packet = fight.GetGE(win);
-		for(final Fighter f : fight.getFighters(teams)){
+        for(final Fighter f : fight.getFighters(teams)){
 			try{
 				Thread.sleep(750);
 			}
@@ -2487,8 +2508,8 @@ public class SocketManager {
         send(perso, packet);
     }
 
-    public static void GAME_WELCOME(Player perso)  {
-        send (perso, "TB");
+    public static void GAME_WELCOME(Player perso) {
+        send(perso, "TB");
     }
 
     public static void GAME_SEND_EJ_PACKET(Player perso, int metid, int pid, StatsMetier sm) { //Regarder un livre de métier

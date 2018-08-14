@@ -1,9 +1,7 @@
 package org.area.object;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import org.area.client.Player;
 import org.area.common.SQLManager;
@@ -29,7 +27,7 @@ public class NpcTemplate {
     private String _acces;
     private int _extraClip;
     private int _customArtWork;
-    private int _initQuestionID;
+    private HashMap<Integer, Integer> _initQuestions = new HashMap<Integer, Integer>(); // Réutilisation du même NPC mais sur plusieurs maps différente avec questions différentes
     private ArrayList<ObjTemplate> _ventes = new ArrayList<ObjTemplate>();
 
     //TODO:Baskwo
@@ -196,7 +194,7 @@ public class NpcTemplate {
             sock += "91;";
             sock += GuildName + ";9,qjtz,q,6y7ke";
             /*sock += _template.get_acces()+";";
-			sock += (_template.get_extraClip()!=-1?(_template.get_extraClip()):(""))+";";
+            sock += (_template.get_extraClip()!=-1?(_template.get_extraClip()):(""))+";";
 			sock += _template.get_customArtWork();*/
             return sock;
         }
@@ -276,7 +274,7 @@ public class NpcTemplate {
 
     public NpcTemplate(int _id, int value, int _gfxid, int _scalex, int _scaley,
                        int _sex, int _color1, int _color2, int _color3, String _acces,
-                       int clip, int artWork, int questionID, String ventes, String quest) {
+                       int clip, int artWork, String questions, String ventes, String quest) {
         super();
         this._id = _id;
         _bonusValue = value;
@@ -291,7 +289,15 @@ public class NpcTemplate {
         this._acces = _acces;
         _extraClip = clip;
         _customArtWork = artWork;
-        _initQuestionID = questionID;
+        String[] lesQuestions = questions.split(Pattern.quote("|"));
+        if (lesQuestions.length > 1) {
+            for (String question : lesQuestions) {
+                String[] infos = question.split(Pattern.quote(","));
+                _initQuestions.put(Integer.valueOf(infos[0]), Integer.valueOf(infos[1])); // 0: mapID, 1: initQuestionID
+            }
+        } else if (!questions.equals("")) {
+            _initQuestions.put(0, Integer.valueOf(questions)); // Une seule question
+        }
         if (_id == 21215) {
             for (Integer templateId : SQLManager.LOAD_NPC_SHOP_ITEMS()) {
                 ObjTemplate temp = World.getObjTemplate(templateId);
@@ -362,8 +368,14 @@ public class NpcTemplate {
         return _customArtWork;
     }
 
-    public int get_initQuestionID() {
-        return _initQuestionID;
+    public int get_initQuestionID(int mapID) {
+        int initQuestion = 0;
+        if (_initQuestions.containsKey(mapID)) {
+            initQuestion = _initQuestions.get(mapID);
+        } else if (_initQuestions.containsKey(0)) { // une seule question
+            initQuestion = _initQuestions.get(0);
+        }
+        return initQuestion;
     }
 
     public String getItemVendorList() {
@@ -417,7 +429,8 @@ public class NpcTemplate {
     }
 
     public void setInitQuestion(int q) {
-        _initQuestionID = q;
+        // TODO Faire cette méthode
+        //_initQuestionID = q;
     }
 
     public String get_quests() {

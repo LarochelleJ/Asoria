@@ -17,14 +17,19 @@ import java.util.regex.Pattern;
 public class Porte {
     private List<Integer> cellulesRequises = new ArrayList<Integer>();
     @Getter
+    private List<Integer> cellulesDebloquees = new ArrayList<Integer>();
+    @Getter
     private int cellue;
     @Getter
     private boolean porteOuverte = false;
     private int tempsOuverture = 30;
 
-    public Porte(String requises, int cellule, int temps) {
+    public Porte(String requises, int cellule, int temps, String cellulesDeboque) {
         for (String s : requises.split(Pattern.quote(","))) {
             cellulesRequises.add(Integer.valueOf(s));
+        }
+        for (String s : cellulesDeboque.split(Pattern.quote(","))) {
+            cellulesDebloquees.add(Integer.valueOf(s));
         }
         this.cellue = cellule;
         tempsOuverture = temps;
@@ -50,6 +55,7 @@ public class Porte {
         }
 
         if (success) {
+            SocketManager.GAME_SEND_CELLULE_DEBLOQUEE_TO_MAP(o, cellulesDebloquees, true);
             SocketManager.GAME_SEND_OUVERTURE_PORTE_TO_MAP(o, cellue, 2);
             porteOuverte = true;
             new Timer().schedule(new TimerTask() {
@@ -57,6 +63,7 @@ public class Porte {
                 public void run() {
                     porteOuverte = false;
                     SocketManager.GAME_SEND_OUVERTURE_PORTE_TO_MAP(o, cellue, 4);
+                    SocketManager.GAME_SEND_CELLULE_DEBLOQUEE_TO_MAP(o, cellulesDebloquees, false);
                 }
             }, tempsOuverture * 1000); // SECONDES
         }
