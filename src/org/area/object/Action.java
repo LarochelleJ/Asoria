@@ -156,7 +156,6 @@ public class Action {
                         qID = Integer.parseInt(args);
                     } catch (NumberFormatException e) {
                     }
-                    ;
 
                     NPC_question quest = World.getNPCQuestion(qID);
                     if (quest == null) {

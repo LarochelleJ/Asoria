@@ -3056,6 +3056,8 @@ public class GameThread implements Runnable {
             }
             // Est-ce que le pnj est sur la carte du joueur ?
             if (!npcOnMap.contains(_perso.get_isTalkingWith())) {
+                _perso.sendText("pnj " + _perso.get_isTalkingWith());
+                _perso.sendText("3");
                 valid = false;
             }
 
@@ -3084,7 +3086,9 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_END_DIALOG_PACKET(_perso.getAccount().getGameThread().getOut());
             }
             rep.apply(_perso);
-            _perso.set_isTalkingWith(0);
+            if (!rep.isAnotherDialog()) {
+                _perso.set_isTalkingWith(0);
+            }
         } catch (Exception e) {
             SocketManager.GAME_SEND_END_DIALOG_PACKET(_perso.getAccount().getGameThread().getOut());
         }

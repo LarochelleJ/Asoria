@@ -2208,7 +2208,7 @@ public class Player {
     public Stats getDonsStats() {
         Stats stats = new Stats(false, null);
 
-        Integer gP = this.getPrestige();
+        /*Integer gP = this.getPrestige();
         Integer bS = 101;
         if (gP == 1) {
             bS = 101;
@@ -2290,7 +2290,7 @@ public class Player {
             stats.addOneStat(Constant.STATS_ADD_VITA, 350);
             stats.addOneStat(Constant.STATS_ADD_PERDOM, 50);
             stats.addOneStat(Constant.STATS_ADD_PA, 1);
-        }
+        }*/
         return stats;
     }
 
@@ -2779,6 +2779,10 @@ public class Player {
         _spellPts++;
         _PDVMAX += 5;
         _PDV = _PDVMAX;
+        Fighter f = getFight().getFighterByPerso(this);
+        if (f != null) {
+            f.levelUp = true;
+        }
         if (_lvl == 100)
             _baseStats.addOneStat(Constant.STATS_ADD_PA, 1);
         Constant.onLevelUpSpells(this, _lvl);

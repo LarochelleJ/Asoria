@@ -2876,7 +2876,15 @@ public class Fight {
             //Evaluation de la liste des drops droppable
             for (Drop D : F.getMob().getDrops()) {
                 if (D.getMinProsp() <= groupPP) {
-                    int taux = (int) (D.get_taux() * Config.RATE_DROP);
+                    int taux = (int) (D.get_taux(F.getMob().getGrade()) * Config.RATE_DROP);
+                    possibleDrops.add(new Drop(D.get_itemID(), 0, taux, D.get_max()));
+                }
+            }
+        }
+        if (_type == Constant.FIGHT_TYPE_PVM) {
+            for (Drop D : World.dropGlobal) {
+                if (D.getMinProsp() <= groupPP) {
+                    int taux = (int) (D.get_fixedTaux() * Config.RATE_DROP);
                     possibleDrops.add(new Drop(D.get_itemID(), 0, taux, D.get_max()));
                 }
             }
@@ -3325,7 +3333,7 @@ public class Fight {
                 boolean allIsDropped = false;
                 while (!allIsDropped && canDropAndXp) {
                     for (Drop D : temp) {
-                        int t = (int) (D.get_taux() * PP);//Permet de gerer des taux>0.01
+                        int t = (int) (D.get_fixedTaux() * PP);//Permet de gerer des taux>0.01
                         t = (int) ((double) t * factChalDrop);
                         if (_type == Constant.FIGHT_TYPE_PVT)
                             t = 10000 / TEAM1.size();
@@ -3624,7 +3632,7 @@ public class Fight {
             Map<Integer, Integer> itemWon = new TreeMap<Integer, Integer>();
 
             for (Drop D : temp) {
-                int t = (int) (D.get_taux() * 100);//Permet de gerer des taux>0.01
+                int t = (int) (D.get_fixedTaux() * 100);//Permet de gerer des taux>0.01
                 int jet = Formulas.getRandomValue(0, 100 * 100);
                 if (jet < t) {
                     ObjTemplate OT = World.getObjTemplate(D.get_itemID());
@@ -3895,10 +3903,12 @@ public class Fight {
                         SocketManager.SEND_CP_INFO_DEFENSEURS_PRISME(F.getPersonnage(), this.getDefenseurs());
                 }
                 if (_type != Constant.FIGHT_TYPE_CHALLENGE) {
-                    if (F.getPDV() <= 0) {
-                        F.getPersonnage().set_PDV(1);
-                    } else {
-                        F.getPersonnage().set_PDV(F.getPDV());
+                    if (!F.levelUp) {
+                        if (F.getPDV() <= 0) {
+                            F.getPersonnage().set_PDV(1);
+                        } else {
+                            F.getPersonnage().set_PDV(F.getPDV());
+                        }
                     }
                 }
 

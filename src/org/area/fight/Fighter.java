@@ -74,6 +74,7 @@ public class Fighter {
 
     // Contrôle invocation
     private boolean invocationControllable = false;
+    public boolean levelUp = false;
 
 
     public boolean canCac = true;

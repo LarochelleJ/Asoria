@@ -1,13 +1,7 @@
 package org.area.common;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.area.arena.GdG;
@@ -143,6 +137,9 @@ public class World {
     // Checkpoints
     public static HashMap<Short, Checkpoint> checkpoints = new HashMap<Short, Checkpoint>();
 
+    // Drops global (Qu'on peut drop sur tous les groupes de monstres)
+    public static List<Drop> dropGlobal = new ArrayList<Drop>();
+
     // Portes interactives
     public static HashMap<Short, List<Porte>> portes = new HashMap<Short, List<Porte>>();
 
@@ -154,15 +151,24 @@ public class World {
     public static class Drop {
         private int _itemID;
         private int _prosp;
-        private float _taux;
+        private LinkedList<Float> _taux;
         private int _max;
+        private float _fixedTaux;
 
-        public Drop(int itm, int p, float t, int m) {
+        public Drop(int itm, int p, LinkedList<Float> t, int m) {
             _itemID = itm;
             _prosp = p;
             _taux = t;
             _max = m;
         }
+
+        public Drop(int itm, int p, float t, int m) {
+            _itemID = itm;
+            _prosp = p;
+            _fixedTaux = t;
+            _max = m;
+        }
+
 
         public void setMax(int m) {
             _max = m;
@@ -176,8 +182,19 @@ public class World {
             return _prosp;
         }
 
-        public float get_taux() {
-            return _taux;
+        public float get_taux(int mobGrade) {
+            Float taux;
+            int size = _taux.size();
+            if (size < mobGrade) {
+                taux = _taux.getLast();
+            } else {
+                taux = _taux.get(mobGrade - 1);
+            }
+            return taux;
+        }
+
+        public float get_fixedTaux() {
+            return _fixedTaux;
         }
 
         public int get_max() {

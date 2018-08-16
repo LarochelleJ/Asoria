@@ -74,7 +74,8 @@ public class Config {
 	
 	/** Rates **/
 	public static int RATE_PVM = 1, RATE_KAMAS = 1, RATE_HONOR = 1;
-	public static int RATE_METIER = 1, RATE_FM = 1, RATE_DROP = 1;
+	public static int RATE_METIER = 1, RATE_FM = 1;
+	public static double RATE_DROP = 1;
 	public static int RATE_XP_PVP = 10;
 
 	/** Config the Server **/
@@ -201,7 +202,7 @@ public class Config {
 					RATE_XP_PVP = Integer.parseInt(value);
 
 				else if (param.equalsIgnoreCase("RATE_DROP"))
-					RATE_DROP = Integer.parseInt(value);
+					RATE_DROP = Double.valueOf(value);
 
 				else if (param.equalsIgnoreCase("ZAAP")
 						&& value.equalsIgnoreCase("true"))

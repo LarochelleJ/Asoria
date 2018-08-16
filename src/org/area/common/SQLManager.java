@@ -582,13 +582,34 @@ public class SQLManager {
         try {
             ResultSet RS = SQLManager.executeQuery("SELECT * from drops;", false);
             while (RS.next()) {
-                Monster MT = World.getMonstre(RS.getInt("mob"));
-                MT.addDrop(new Drop(
-                        RS.getInt("item"),
-                        RS.getInt("seuil"),
-                        RS.getFloat("taux"),
-                        RS.getInt("max")
-                ));
+                int monsterID = RS.getInt("monsterId");
+                if (monsterID == 0) { // Drop possible sur tous les groupes de monstres
+                    World.dropGlobal.add(new Drop(
+                            RS.getInt("objectId"),
+                            RS.getInt("ceil"),
+                            RS.getFloat("percentGrade1"),
+                            RS.getInt("max")
+                    ));
+                } else {
+                    Monster MT = World.getMonstre(monsterID);
+                    if (MT != null) {
+                        LinkedList<Float> taux = new LinkedList<Float>();
+                        for (int i = 1; i < 6; i++) {
+                            float tauxPourCeGrade = 0;
+                            try {
+                                tauxPourCeGrade = RS.getFloat("percentGrade" + i);
+                            } catch (Exception e) {
+                            }
+                            taux.add(tauxPourCeGrade);
+                        }
+                        MT.addDrop(new Drop(
+                                RS.getInt("objectId"),
+                                RS.getInt("ceil"),
+                                taux,
+                                RS.getInt("max")
+                        ));
+                    }
+                }
             }
             //if(i == 0) //Console.print("\r-drops loaded : " + i, Color.GREEN);
             closeResultSet(RS);
