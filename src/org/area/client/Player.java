@@ -58,6 +58,8 @@ import org.area.object.Maps.MountPark;
 import org.area.object.job.Job;
 import org.area.object.job.Job.JobAction;
 import org.area.object.job.Job.StatsMetier;
+import org.area.quests.Quest;
+import org.area.quests.QuestPlayer;
 import org.area.spell.Spell.SortStats;
 import org.area.spell.SpellEffect;
 
@@ -331,6 +333,29 @@ public class Player {
 
     // Ping
     public long ping = 0;
+
+    // Quêtes
+    private Map<Integer, QuestPlayer> questList = new HashMap<>();
+    public QuestPlayer getQuestPersoByQuest(Quest quest) {
+        for (QuestPlayer questPlayer : this.questList.values()) {
+            if (questPlayer != null && questPlayer.getQuest().getId() == quest.getId()) {
+                return questPlayer;
+            }
+        }
+        return null;
+    }
+
+    public void addQuestPerso(QuestPlayer qPerso) {
+        questList.put(qPerso.getId(), qPerso);
+    }
+
+    public Map<Integer, QuestPlayer> getQuestPerso() {
+        return questList;
+    }
+
+    public void delQuestPerso(int id) {
+        questList.remove(id);
+    }
 
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
@@ -823,6 +848,10 @@ public class Player {
                 stuff = stuff.substring(0, stuff.length() - 1);
             SQLManager.LOAD_ITEMS(stuff.replace("|", ","));
         }
+
+        // Chargement de la progression des quêtes du joueur
+        SQLManager.LOAD_PLAYER_QUESTS(this);
+
         for (String checkP : checkpoints.split("\\|")) {
             if (checkP.equals("")) continue;
             synchronized (World.checkpoints) {

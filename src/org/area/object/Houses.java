@@ -195,7 +195,7 @@ public class Houses
 							{
 								packet.append(";").append(Gname).append(";").append(Gemblem);
 							}
-							else if(house.getValue().canDo(Constant.H_OBLASON))//Pas de guilde/guilde-différente
+							else if(house.getValue().canDo(Constant.H_OBLASON))//Pas de guilde/guilde-diffï¿½rente
 							{
 								packet.append(";").append(Gname).append(";").append(Gemblem);
 							}
@@ -237,13 +237,13 @@ public class Houses
 		
 		Houses h = P.getInHouse();
 		if(h == null) return;
-		if(h.get_owner_id() == P.getAccID() || (P.get_guild() != null && P.get_guild().get_id() == h.get_guild_id() && canDo(Constant.H_GNOCODE)))//C'est sa maison ou même guilde + droits entrer sans pass
+		if(h.get_owner_id() == P.getAccID() || (P.get_guild() != null && P.get_guild().get_id() == h.get_guild_id() && canDo(Constant.H_GNOCODE)))//C'est sa maison ou mï¿½me guilde + droits entrer sans pass
 		{
 			OpenHouse(P, "-", true);
 		}
 		else if(h.get_owner_id() > 0) //Une personne autre la acheter, il faut le code pour rentrer
 		{
-			SocketManager.GAME_SEND_KODE(P, "CK0|8");//8 étant le nombre de chiffre du code
+			SocketManager.GAME_SEND_KODE(P, "CK0|8");//8 ï¿½tant le nombre de chiffre du code
 		}
 		else if(h.get_owner_id() == 0) //Maison non acheter, mais achetable, on peut rentrer sans code
 		{
@@ -295,7 +295,7 @@ public class Houses
 		{
 			if(h.get_owner_id() > 0)
 			{
-				t.moveTrunktoBank(World.getCompte(h.get_owner_id()));//Déplacement des items vers la banque
+				t.moveTrunktoBank(World.getCompte(h.get_owner_id()));//Dï¿½placement des items vers la banque
 			}
 			tKamas += t.get_kamas();
 			t.set_kamas(0);//Retrait kamas
@@ -310,10 +310,11 @@ public class Houses
 			Account Seller = World.getCompte(h.get_owner_id());
 			long newbankkamas = Seller.getBankKamas()+h.get_sale()+tKamas;
 			Seller.setBankKamas(newbankkamas);
-			//Petit message pour le prévenir si il est on?
+			//Petit message pour le prï¿½venir si il est on?
 			if(Seller.getCurPlayer() != null)
 			{
-				SocketManager.GAME_SEND_MESSAGE(Seller.getCurPlayer(), "Une maison vous appartenant à été vendue "+h.get_sale()+" kamas.", Config.CONFIG_MOTD_COLOR);
+				//SocketManager.GAME_SEND_MESSAGE(Seller.getCurPlayer(), "Une maison vous appartenant ï¿½ ï¿½tï¿½ vendue "+h.get_sale()+" kamas.", Config.CONFIG_MOTD_COLOR);
+				SocketManager.GAME_SEND_POPUP(Seller.getCurPlayer(), "Votre maison a Ã©tÃ© vendue pour " + h.get_sale() + " kamas !");
 				SQLManager.SAVE_PERSONNAGE(Seller.getCurPlayer(), true);
 			}
 			SQLManager.UPDATE_ACCOUNT_DATA(Seller);
@@ -327,7 +328,7 @@ public class Houses
 		//Achat de la maison
 		SQLManager.HOUSE_BUY(P, h);
 
-		//Rafraichir la map après l'achat
+		//Rafraichir la map aprï¿½s l'achat
 		for(Player z:P.getMap().getPersos())
 		{
 			LoadHouse(z, z.getMap().get_id());
@@ -360,7 +361,7 @@ public class Houses
 			//Vente de la maison
 			SQLManager.HOUSE_SELL(h, price);
 
-			//Rafraichir la map après la mise en vente
+			//Rafraichir la map aprï¿½s la mise en vente
 			for(Player z:P.getMap().getPersos())
 			{
 				LoadHouse(z, z.getMap().get_id());
@@ -423,7 +424,7 @@ public class Houses
 				packet.append(house.getKey()).append(";");
 				packet.append(World.getPlayer(house.getValue().get_owner_id()).getAccount().getPseudo()).append(";");
 				packet.append(World.getCarte((short)house.getValue().get_mapid()).getX()).append(",").append(World.getCarte((short)house.getValue().get_mapid()).getY()).append(";");
-				packet.append("0;");//TODO : Compétences ...
+				packet.append("0;");//TODO : Compï¿½tences ...
 				packet.append(house.getValue().get_guild_rights());	
 				isFirst = false;
 			}
@@ -523,12 +524,12 @@ public class Houses
 		if(total == 1)
 			return;
 
-		if(haveRight.size() > 0)	//Si les droits contiennent quelque chose -> Vidage (Même si le TreeMap supprimerais les entrées doublon lors de l'ajout)
+		if(haveRight.size() > 0)	//Si les droits contiennent quelque chose -> Vidage (Mï¿½me si le TreeMap supprimerais les entrï¿½es doublon lors de l'ajout)
 			haveRight.clear();
 
 		initRight();	//Remplissage des droits
 
-		Integer[] mapKey = haveRight.keySet().toArray(new Integer[haveRight.size()]);	//Récupère les clef de map dans un tableau d'Integer
+		Integer[] mapKey = haveRight.keySet().toArray(new Integer[haveRight.size()]);	//Rï¿½cupï¿½re les clef de map dans un tableau d'Integer
 
 		while(total > 0)
 		{

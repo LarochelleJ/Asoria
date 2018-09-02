@@ -434,7 +434,22 @@ public class GmCommand {
             }
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le ping du joueur " + target.getName() + " est de " + target.ping + " ms");
             return true;
-        } else if (command.equalsIgnoreCase("DISABLE_CHECKPOINTS")) {
+        } else if (command.equalsIgnoreCase("THREAD")) {
+            Player target = infos.length > 1 ? World.getPersoByName(infos[1]) : null;
+            if (target == null) {
+                target = _perso;
+            }
+            long tid = 0;
+            Account a = target.getAccount();
+            if (a == null) {
+                SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Compte null !");
+            }
+            try {
+                tid = a.getGameThread().getThread().getId();
+            } catch (Exception e) {}
+            SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Le TID du joueur " + target.getName() + " est " + tid);
+            return true;
+        }else if (command.equalsIgnoreCase("DISABLE_CHECKPOINTS")) {
             synchronized (World.checkpoints) {
                 World.checkpoints.clear();
                 SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, "Les checkpoints sont désactivé, pour ré-activer les checkpoints utilisez la commande LOAD_CHECKPOINTS");

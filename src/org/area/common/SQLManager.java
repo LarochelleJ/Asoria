@@ -46,6 +46,7 @@ import org.area.object.NpcTemplate.NPC_Exchange;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
 import org.area.object.job.Job;
+import org.area.quests.QuestPlayer;
 import org.area.spell.Spell;
 import org.area.spell.Spell.SortStats;
 
@@ -855,6 +856,24 @@ public class SQLManager {
         return 0;
     }
 
+    public static void LOAD_PLAYER_QUESTS(Player perso) {
+        try {
+            String query = "SELECT * FROM `quest_players` WHERE `player` = ?;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
+            ps.setInt(1, perso.getGuid());
+
+            ResultSet RS = ps.executeQuery();
+
+            while (RS.next()) {
+                perso.addQuestPerso(new QuestPlayer(RS.getInt("id"), RS.getInt("quest"), RS.getInt("finish") == 1, RS.getInt("player"), RS.getString("stepsValidation")));
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static void LOAD_PERSO_BY_ACCOUNT(int accID) {
         try {
             Account c = World.getCompte(accID);
@@ -1425,7 +1444,14 @@ public class SQLManager {
             Console.println("Le personnage n'a pas ete sauvegarde");
             Reboot.reboot();
         }
-        ;
+
+        // Sauvegarde progression quêtes joueur
+        if (_perso.getQuestPerso() != null) {
+            for (QuestPlayer qP : _perso.getQuestPerso().values()) {
+                SAVE_QUEST_PLAYER(qP, _perso);
+            }
+        }
+
         if (saveItem) {
             baseQuery = "UPDATE `items` SET qua = ?, pos= ?, stats = ?" +
                     " WHERE guid = ? AND server = ?;";
@@ -1859,7 +1885,7 @@ public class SQLManager {
             p.setString(4, item.parseToSave());
             p.setInt(5, GameServer.id);
 
-            String baseQuery = "UPDATE `items` SET guid = 20000000 + id WHERE id = ?;";
+            String baseQuery = "UPDATE `items` SET guid = id WHERE id = ?;";
             PreparedStatement prepareState = newTransact(baseQuery, Connection(false));
             p.executeUpdate();
 
@@ -1873,12 +1899,70 @@ public class SQLManager {
                 prepareState.setInt(1, id);
                 prepareState.execute();
                 closePreparedStatement(prepareState);
-                return 20000000 + id;
+                return id;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public static int INSERT_NEW_QUEST_PLAYER(QuestPlayer questPlayer) {
+        try {
+
+            String sql = "INSERT INTO `quest_players` VALUES (?, ?, ?, ?);";
+            PreparedStatement p = (PreparedStatement) Connection(false).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            p.setInt(1, questPlayer.getQuest().getId());
+            p.setInt(2, questPlayer.isFinish() ? 1 : 0);
+            p.setInt(3, questPlayer.getPlayer().getGuid());
+            p.setString(4, questPlayer.getQuestEtapeString());
+            p.execute();
+
+            ResultSet rs = p.getGeneratedKeys();
+            int id = -1;
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            closeResultSet(rs);
+            if (id > -1) {
+                return id;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static boolean SAVE_QUEST_PLAYER(QuestPlayer questPlayer, Player player) {
+        try {
+            String baseQuery = "UPDATE `quest_players` SET `quest`= ?, `finish`= ?, `player` = ?, `stepsValidation` = ? WHERE `id` = ?;";
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
+            p.setInt(1, questPlayer.getQuest().getId());
+            p.setInt(2, questPlayer.isFinish() ? 1 : 0);
+            p.setInt(3, player.getGuid());
+            p.setString(4, questPlayer.getQuestEtapeString());
+            p.setInt(5, questPlayer.getId());
+            p.execute();
+            closePreparedStatement(p);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean DELETE_QUEST_PLAYER(int id) {
+        try {
+            String baseQuery = "DELETE FROM `quest_players` WHERE `id` = ?;";
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
+            p.setInt(1, id);
+            p.execute();
+            closePreparedStatement(p);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static boolean SAVE_NEW_FIXGROUP(int mapID, int cellID, String groupData, int ellap) {
