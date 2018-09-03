@@ -29,6 +29,8 @@ import org.area.object.NpcTemplate.NPC;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.Item.ObjTemplate;
 import org.area.object.job.Job.StatsMetier;
+import org.area.quests.Quest;
+import org.area.quests.QuestPlayer;
 
 
 public class Action {
@@ -660,8 +662,24 @@ public class Action {
                 ;
                 break;
             case 40: // Give quest
-                int questId = Integer.parseInt(args);
-                perso.addNewQuest(questId);
+                int QuestID = Integer.parseInt(args);
+                boolean problem = false;
+                Quest quest0 = Quest.getQuestById(QuestID);
+                if (quest0 == null) {
+                    SocketManager.GAME_SEND_POPUP(perso, "La quête est introuvable.");
+                    problem = true;
+                    break;
+                }
+                for (QuestPlayer qPerso : perso.getQuestPerso().values()) {
+                    if (qPerso.getQuest().getId() == QuestID) {
+                        SocketManager.GAME_SEND_POPUP(perso, "Vous connaissez déjà cette quête.");
+                        problem = true;
+                        break;
+                    }
+                }
+
+                if (!problem)
+                    quest0.applyQuest(perso);
                 break;
             case 41: // Confirm objective
                 String[] splitArgs = args.split("\\|");
@@ -931,6 +949,31 @@ public class Action {
                 int levelWant = Integer.parseInt(args);
                 perso.goUpto(levelWant);
                 break;*/
+
+            case 984:
+                try {
+                    int xp = Integer.parseInt(args.split(",")[0]);
+                    int mapCurId = Integer.parseInt(args.split(",")[1]);
+                    int idQuest = Integer.parseInt(args.split(",")[2]);
+
+                    if (perso.getMap().get_id() != (short) mapCurId)
+                        return;
+
+                    QuestPlayer qp = perso.getQuestPersoByQuestId(idQuest);
+                    if (qp == null)
+                        return;
+                    if (qp.isFinish())
+                        return;
+
+                    perso.addXp((long) xp);
+                    SocketManager.GAME_SEND_Im_PACKET(perso, "08;" + xp);
+                    qp.setFinish(true);
+                    SocketManager.GAME_SEND_Im_PACKET(perso, "055;" + idQuest);
+                    SocketManager.GAME_SEND_Im_PACKET(perso, "056;" + idQuest);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
 
             case 212121://Changement apparence Dofus 2 @Flow
                 if (perso.getFight() != null) break;

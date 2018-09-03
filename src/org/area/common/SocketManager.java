@@ -20,6 +20,7 @@ import org.area.fight.object.Monster.MobGroup;
 import org.area.fight.object.Prism;
 import org.area.game.GameSendThread;
 import org.area.game.GameServer;
+import org.area.game.GameThread;
 import org.area.kernel.*;
 import org.area.object.AuctionHouse;
 import org.area.object.AuctionHouse.HdvEntry;
@@ -35,6 +36,7 @@ import org.area.object.Mount;
 import org.area.object.NpcTemplate.NPC;
 import org.area.object.Trunk;
 import org.area.object.job.Job.StatsMetier;
+import org.area.quests.Quest;
 
 public class SocketManager {
 
@@ -2716,6 +2718,16 @@ public class SocketManager {
                     break;
             }
         }
+        send(perso, packet);
+    }
+
+    public static void QuestGep(Quest quest, Player perso) {
+		/*
+		 * Explication packet : aQuestId | aObjectifCurrent |
+		 * aEtapeId,aFinish;aEtapeId,aFinish... | aPreviousObjectif |
+		 * aNextObjectif | aDialogId | aDialogParams
+		 */
+        String packet = "QS" + quest.getGmQuestDataPacket(perso);
         send(perso, packet);
     }
 }

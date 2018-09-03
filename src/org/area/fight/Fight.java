@@ -48,6 +48,9 @@ import org.area.object.Item.ObjTemplate;
 import org.area.object.Maps;
 import org.area.object.Maps.Case;
 import org.area.object.SoulStone;
+import org.area.quests.Quest;
+import org.area.quests.QuestPlayer;
+import org.area.quests.Quest_Step;
 import org.area.spell.Spell.SortStats;
 import org.area.spell.SpellEffect;
 import org.area.timers.PeriodicRunnableCancellable;
@@ -1115,7 +1118,7 @@ public class Fight {
         scheduleTimer(55, true);
         GameServer.addToLog("(scheduledTime) startTurn():" + _curPlayer);
         /*}else{
-		getTurnTimer().restart();
+        getTurnTimer().restart();
 		try {
 			Thread.sleep(650);
 		} catch (InterruptedException e1) {e1.printStackTrace();}}*/
@@ -1993,7 +1996,7 @@ public class Fight {
             }
             return false;
         }
-        
+
         ArrayList<Fighter> tmptacle = Pathfinding.getEnemyFighterArround(f.get_fightCell().getID(), _map, this);
         ArrayList<Fighter> tacle = new ArrayList<Fighter>();
         if (tmptacle != null && !f.isState(6) && !f.isHide())//Tentative de Tacle : Si stabilisation alors pas de tacle possible
@@ -2320,7 +2323,7 @@ public class Fight {
         } else {
             _curAction = "";
         }
-       try {
+        try {
             Thread.sleep(_spellCastDelay);
         } catch (InterruptedException e) {
         }
@@ -2713,7 +2716,7 @@ public class Fight {
         for (SpellEffect se : spell.getEffects()) {
             if (se.getEffectID() == 400) { // piège
                 for (Piege p : get_traps()) {
-                    if (p.get_cell() == cell){
+                    if (p.get_cell() == cell) {
                         if (perso != null) {
                             SocketManager.GAME_SEND_Im_PACKET(perso, "116;Impossible de lancer ce sort~Vous tentez de poser un piège sur un piège !");
                             SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
@@ -2890,7 +2893,7 @@ public class Fight {
             }
         }
         if (_type == Constant.FIGHT_TYPE_PVT) {
-            minkamas = (int)(TEAM1.size() > 1 ? collector.getKamas() / TEAM1.size() : collector.getKamas());
+            minkamas = (int) (TEAM1.size() > 1 ? collector.getKamas() / TEAM1.size() : collector.getKamas());
             maxkamas = minkamas;
             possibleDrops = collector.getDrops();
         }
@@ -3155,6 +3158,39 @@ public class Fight {
                         }
                     } catch (NullPointerException e) {
                         continue;
+                    }
+                }
+            }
+        }
+
+        // Quêtes : tuer X mobs
+        if (get_type() == Constant.FIGHT_TYPE_PVM) {
+            for (Fighter fighter : TEAM1) { // Gagnants
+                Player player = fighter.getPersonnage();
+                if (player == null) continue;
+
+                if (!player.getQuestPerso().isEmpty()) {
+                    for (Fighter ennemy : TEAM2) { // Perdants groupe de mob
+                        if (ennemy.getMob() == null) continue;
+                        if (ennemy.getMob().getTemplate() == null) continue;
+
+                        for (QuestPlayer questP : player.getQuestPerso().values()) {
+                            if (questP == null) continue;
+                            Quest quest = questP.getQuest();
+                            if (quest == null) continue;
+                            for (Quest_Step qEtape : quest.getQuestEtapeList()) {
+                                if (!questP.isQuestEtapeIsValidate(qEtape) && (qEtape.getType() == 0 || qEtape.getType() == 6)) {
+                                    if (qEtape.getMonsterId() == ennemy.getMob().getTemplate().getID()) {
+                                        try {
+                                            player.getQuestPersoByQuest(qEtape.getQuestData()).getMonsterKill().put(ennemy.getMob().getTemplate().getID(), (short) 1);
+                                            qEtape.getQuestData().updateQuestData(player, false, 2);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -3750,7 +3786,7 @@ public class Fight {
             this._init0.getPersonnage().getMap().removeFight(this._id);
 
             try {
-               this.sendGE(winner); // Envoi des statistiques de fin de combat
+                this.sendGE(winner); // Envoi des statistiques de fin de combat
             } catch (Exception e) {
                 e.printStackTrace(System.out);
             }
@@ -4088,7 +4124,9 @@ public class Fight {
 
     public void onFighterDie(Fighter target, Fighter caster) { // Lorsque qu'un personnage meurt
         target.setIsDead(true);
-        if (!target.hasLeft()) { deadList.put(target.getGUID(), target); }//on ajoute le joueur à la liste des cadavres ;)
+        if (!target.hasLeft()) {
+            deadList.put(target.getGUID(), target);
+        }//on ajoute le joueur à la liste des cadavres ;)
         else {
             setLastFighterDie(target, target.getTeam()); // @Flow - Laisse spirituelle
         }
@@ -4105,7 +4143,8 @@ public class Fight {
         SocketManager.GAME_SEND_FIGHT_PLAYER_DIE_TO_FIGHT(this, 7, target.getGUID());
         try {
             Thread.sleep(1500);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         target.get_fightCell().getFighters().clear();// Supprime tout causait bug si porté/porteur
 
         if (target.isState(Constant.ETAT_PORTEUR)) {
@@ -5274,7 +5313,7 @@ public class Fight {
         {
             return;
         }
-        if (!specOk && p.getAccount().getGmLevel() < 1|| _state != Constant.FIGHT_STATE_ACTIVE) {
+        if (!specOk && p.getAccount().getGmLevel() < 1 || _state != Constant.FIGHT_STATE_ACTIVE) {
             SocketManager.GAME_SEND_Im_PACKET(p, "157");
             return;
         }

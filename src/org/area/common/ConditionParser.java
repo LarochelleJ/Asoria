@@ -8,6 +8,9 @@ import org.area.kernel.Config;
 
 import com.singularsys.jep.Jep;
 import com.singularsys.jep.JepException;
+import org.area.quests.Quest;
+import org.area.quests.QuestPlayer;
+import org.area.quests.Quest_Step;
 
 public class ConditionParser
 {
@@ -24,6 +27,10 @@ public class ConditionParser
 			req = havePO(req, perso);
 		if(req.contains("PN"))
 			req = canPN(req, perso);
+		if(req.contains("Qa") || req.contains("QE") || req.contains("QT"))
+			return haveQa(req, perso);
+		if (req.contains("QEt"))
+			return haveQEt(req, perso);
 	 	//TODO : Gérer PJ Pj
 		try
 		{
@@ -289,5 +296,40 @@ public class ConditionParser
 			}
 		}
 		return copyCond;
+	}
+
+	// Avoir la quête en cours
+	private static boolean haveQa(String req, Player player) {
+		int id = Integer.parseInt((req.contains("==") ? req.split("==")[1] : req.split("!=")[1]));
+		Quest q = Quest.getQuestById(id);
+		if (q == null)
+			return (!req.contains("=="));
+
+		QuestPlayer qp = player.getQuestPersoByQuest(q);
+		if (qp == null)
+			return (!req.contains("=="));
+
+		return !qp.isFinish() || (!req.contains("=="));
+
+	}
+
+	// L'étape en cours de la quête doit être : id
+	private static boolean haveQEt(String req, Player player) {
+		int id = Integer.parseInt((req.contains("==") ? req.split("==")[1] : req.split("!=")[1]));
+		Quest_Step qe = Quest_Step.getQuestEtapeById(id);
+		if (qe != null) {
+			Quest q = qe.getQuestData();
+			if (q != null) {
+				QuestPlayer qp = player.getQuestPersoByQuest(q);
+				if (qp != null) {
+					Quest_Step current = q.getQuestEtapeCurrent(qp);
+					if (current == null)
+						return false;
+					if (current.getId() == qe.getId())
+						return (req.contains("=="));
+				}
+			}
+		}
+		return false;
 	}
 }

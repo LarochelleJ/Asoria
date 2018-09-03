@@ -357,6 +357,13 @@ public class Player {
         questList.remove(id);
     }
 
+    public QuestPlayer getQuestPersoByQuestId(int id) {
+        for (QuestPlayer qPerso : questList.values())
+            if (qPerso.getQuest().getId() == id)
+                return qPerso;
+        return null;
+    }
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;

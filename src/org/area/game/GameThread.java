@@ -64,6 +64,9 @@ import org.area.object.NpcTemplate.NPC_Exchange;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
 import org.area.object.job.Job.StatsMetier;
+import org.area.quests.Quest;
+import org.area.quests.QuestPlayer;
+import org.area.quests.Quest_Step;
 import org.area.spell.Spell.SortStats;
 import org.simplyfilter.filter.Filter;
 import org.simplyfilter.filter.Filters;
@@ -395,8 +398,10 @@ public class GameThread implements Runnable {
             case 'L': //Liste quête
                 SocketManager.SEND_QUESTS_LIST_PACKET(player);
                 break;
-            case 'S'://Etapes d'une quete
-                SocketManager.SEND_QUEST_STEPS_PACKET(player, Integer.parseInt(packet.substring(2)));
+            case 'S': // Envoi d'une quête
+                int QuestID = Integer.parseInt(packet.substring(2));
+                Quest quest = Quest.getQuestById(QuestID);
+                SocketManager.QuestGep(quest, this.player);
                 break;
         }
     }
@@ -3066,22 +3071,34 @@ public class GameThread implements Runnable {
                 return;
             }
 
-            // Quest
-            Map<Integer, Map<String, String>> objectives = World.getObjectiveByOptAnswer(rID);
-            if (objectives != null) // C'est une rÃƒÂ©ponse de quÃƒÂªte avec au moins 1 objectif
-            {
-                for (Entry<Integer, Map<String, String>> objective : objectives.entrySet()) {
-                    if (_perso.hasObjective(objective.getKey())) // Si le perso ÃƒÂ  cet objectif
-                    {
-                        qID = Integer.parseInt(objective.getValue().get("optQuestion"));
+            // Quêtes
+            try {
+                if (!_perso.getQuestPerso().isEmpty()) {
+                    for (QuestPlayer QP : _perso.getQuestPerso().values()) {
+                        if (QP.isFinish() || QP.getQuest() == null
+                                || QP.getQuest().getNpc_Tmpl() == null)
+                            continue;
+                        ArrayList<Quest_Step> QEs = QP.getQuest().getQuestEtapeList();
+                        for (Quest_Step qe : QEs) {
+                            if (qe == null)
+                                continue;
+                            if (QP.isQuestEtapeIsValidate(qe))
+                                continue;
 
-                        if (_perso.canDoObjective(Integer.parseInt(objective.getValue().get("type")), objective.getValue().get("args"))) {
-                            _perso.confirmObjective(Integer.parseInt(objective.getValue().get("type")), objective.getValue().get("args"), null);
+                            NpcTemplate npc = qe.getNpc();
+                            NpcTemplate curNpc = _perso.getMap().getNPC(_perso.get_isTalkingWith()).get_template();
+
+                            if (npc == null || curNpc == null)
+                                continue;
+                            if (npc.get_id() == curNpc.get_id())
+                                QP.getQuest().updateQuestData(_perso, false, rID);
                         }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            // Fin Quetes
+
             if (quest == null || rep == null || !rep.isAnotherDialog()) {
                 SocketManager.GAME_SEND_END_DIALOG_PACKET(_perso.getAccount().getGameThread().getOut());
             }
@@ -3112,102 +3129,86 @@ public class GameThread implements Runnable {
                 SocketManager.GAME_SEND_QUESTION_PACKET(_perso.getAccount().getGameThread().getOut(), perco.getDQ_Packet());
                 _perso.set_isTalkingWith(npcID);
             } else {
-                _perso.set_isTalkingWith(npcID);
                 NPC npc = _perso.getMap().getNPC(npcID);
                 if (npc == null) return;
                 SocketManager.GAME_SEND_DCK_PACKET(_perso.getAccount().getGameThread().getOut(), npcID);
-                // Objectif quÃƒÂªtes : Aller voir x
-                _perso.confirmObjective(1, npc.get_template().get_id() + "", null);
                 int qID = npc.get_template().get_initQuestionID(_perso.getMap().get_id());
-                // Quests
-                boolean pendingStep = false;
-                // Quest Master
-                String quests = npc.get_template().get_quests(); // Quetes du npc
-                if (quests != null && !quests.isEmpty() && quests.length() > 0) // Npc a des quetes
-                {
-                    String[] splitQuests = quests.split(";");
-                    for (String curQuest : splitQuests) // Boucle chaque quete du npc
-                    {
-                        Map<String, String> questPerso = _perso.get_quest(Integer.parseInt(curQuest));
-                        Map<String, String> questDetails = World.getQuest(Integer.parseInt(curQuest));
-                        if (questPerso != null && (questDetails.get("unique").equals("1") || questPerso.get("finishQuest").equals("0"))) // Le perso ÃƒÂ  la quÃƒÂªte
-                        {
-                            String curStep = questPerso.get("curStep");
-                            if (!curStep.equals("-1")) // Si quete non terminee
-                            {
-                                Map<String, String> stepDetails = World.getStep(Integer.parseInt(curStep));
-                                if (!questPerso.get("objectivesToDo").isEmpty() && !questPerso.get("objectivesToDo").equals(" ")) // Etape en cours
-                                {
-                                    //pendingStep = true;
-                                    qID = Integer.parseInt(stepDetails.get("question"));
-                                    break;
-                                } else {
-                                    String questSteps = questDetails.get("steps"); // Etapes de la quete
-                                    if (questSteps.length() < questSteps.indexOf(curStep) + 1 + curStep.length() + 1) {
-                                        _perso.upgradeQuest(Integer.parseInt(curQuest));
-                                        qID = Integer.parseInt(questDetails.get("endQuestion")); // Question de fin de quete
-                                    } else {
-                                        qID = Integer.parseInt(stepDetails.get("question"));
-                                    }
-                                }
-                                break;
-                            } else { // Quete terminee
-                                if (questPerso.get("finishQuest").equals("0")) {
-                                    qID = Integer.parseInt(questDetails.get("endQuestion")); // Question de fin de quete
-                                }
-                                break;
-                            }
-                        } else {
-                            qID = Integer.parseInt(questDetails.get("startQuestion"));
-                            if (qID == -1) {
-                                qID = npc.get_template().get_initQuestionID(_perso.getMap().get_id());
-                            }
-                            break;
-                        }
-
-
-                    }
-                }
-                // Pnj quete secondaire
-                int newAnswer = -1;
-                Map<Integer, Map<String, String>> objectives = World.getObjectiveByNpcTarget(npc.get_template().get_id());
-                if (objectives != null) // Il y a un objectif liÃƒÂ© ÃƒÂ  ce pnj
-                {
-                    for (Entry<Integer, Map<String, String>> objective : objectives.entrySet()) {
-                        int question = Integer.parseInt(objective.getValue().get("optQuestion"));
-                        if (_perso.hasObjective(objective.getKey()) && question > 0) // Si le perso doit faire cet objectif
-                        {
-                            // Le perso ne peut pas accomplir l'objectif
-                            if (!_perso.canDoObjective(Integer.parseInt(objective.getValue().get("type")), objective.getValue().get("args"))) {
-                                pendingStep = true;
-                            } else {
-                                pendingStep = false;
-                                qID = question;
-                                newAnswer = Integer.parseInt(objective.getValue().get("optAnswer"));
-                                break;
-                            }
-                        }
-                    }
-                }
-                // End quests
-                NPC_question quest = World.getNPCQuestion(qID);
-                if (quest == null) {
+                NPC_question question = World.getNPCQuestion(qID);
+                if (question == null) {
                     SocketManager.GAME_SEND_END_DIALOG_PACKET(_perso.getAccount().getGameThread().getOut());
                     return;
                 }
-                String DQPacket = quest.parseToDQPacket(_perso);
-                if (pendingStep) // Etape de quete en cours: on remplace la rÃƒÂ©ponse par "terminer la discussion"
-                {
-                    DQPacket = DQPacket.split("\\|")[0] + "|4840"; // 4840 = "Terminer la discussion"
-                } else if (newAnswer != -1) {
-                    DQPacket = DQPacket.split("\\|")[0] + "|" + newAnswer;
+
+                int idPnj = npc.get_template().get_id();
+
+                if (idPnj == 870) {
+                    Quest quest = Quest.getQuestById(185);
+                    if (quest != null) {
+                        QuestPlayer questPlayer = _perso.getQuestPersoByQuest(quest);
+                        if (questPlayer != null) {
+                            if (questPlayer.isFinish()) {
+                                SocketManager.GAME_SEND_END_DIALOG_PACKET(_perso.getAccount().getGameThread().getOut());
+                                return;
+                            }
+                        }
+                    }
+                } else if (idPnj == 891) {
+                    Quest quest = Quest.getQuestById(200);
+                    if (quest != null)
+                        if (_perso.getQuestPersoByQuest(quest) == null)
+                            quest.applyQuest(_perso);
+                } else if (idPnj == 925 && _perso.getMap().get_id() == (short) 9402) {
+                    Quest quest = Quest.getQuestById(231);
+                    if (quest != null) {
+                        QuestPlayer questPlayer = _perso.getQuestPersoByQuest(quest);
+                        if (questPlayer != null) {
+                            if (questPlayer.isFinish()) {
+                                question = World.getNPCQuestion(4127);
+                                if (question == null) {
+                                    SocketManager.GAME_SEND_END_DIALOG_PACKET(_perso.getAccount().getGameThread().getOut());
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                } else if (idPnj == 577 && _perso.getMap().get_id() == (short) 7596) {
+                    if (_perso.hasItemTemplate(2106, 1))
+                        question = World.getNPCQuestion(2407);
+                } else if (idPnj == 1041 && _perso.getMap().get_id() == (short) 10255 && qID == 5516) {
+                    if (_perso.get_align() == 1) {// bontarien
+                        if (_perso.get_sexe() == 0)
+                            question = World.getNPCQuestion(5519);
+                        else
+                            question = World.getNPCQuestion(5520);
+                    } else if (_perso.get_align() == 2) {// brakmarien
+                        if (_perso.get_sexe() == 0)
+                            question = World.getNPCQuestion(5517);
+                        else
+                            question = World.getNPCQuestion(5518);
+                    } else { // Neutre ou mercenaire
+                        question = World.getNPCQuestion(5516);
+                    }
                 }
-                SocketManager.GAME_SEND_QUESTION_PACKET(_perso.getAccount().getGameThread().getOut(), quest.parseToDQPacket(_perso));
+
+                SocketManager.GAME_SEND_QUESTION_PACKET(_perso.getAccount().getGameThread().getOut(), question.parseToDQPacket(_perso));
                 _perso.set_isTalkingWith(npcID);
+
+                for (QuestPlayer questPlayer : _perso.getQuestPerso().values()) {
+                    boolean loc1 = false;
+                    for (Quest_Step questStep : questPlayer.getQuest().getQuestEtapeList())
+                        if (questStep.getNpc() != null && questStep.getNpc().get_id() == npcID)
+                            loc1 = true;
+
+                    Quest quest = questPlayer.getQuest();
+                    if (quest == null || questPlayer.isFinish()) continue;
+                    NpcTemplate npcTemplate = quest.getNpc_Tmpl();
+                    if (npcTemplate == null && !loc1) continue;
+
+                    quest.updateQuestData(_perso, false, 0);
+                }
             }
         } catch (NumberFormatException e) {
         }
-        ;
     }
 
     private void parseExchangePacket(String packet) {
@@ -6309,6 +6310,10 @@ public class GameThread implements Runnable {
                 game_parseDeplacementPacket(GA);
                 break;
 
+            case 34://Get quest on sign.
+                gameCheckSign(packet);
+                break;
+
             case 300:// Sort
                 game_tryCastSpell(packet);
                 break;
@@ -6379,6 +6384,15 @@ public class GameThread implements Runnable {
                 Game_attaque_prisme(packet);
                 break;
         }
+    }
+
+    private void gameCheckSign(String packet) {
+        Quest quete = Quest.getQuestById(Integer.parseInt(packet.substring(5)));
+        QuestPlayer qp = this.player.getQuestPersoByQuest(quete);
+        if (qp == null)
+            quete.applyQuest(this.player); // S'il n'a pas la qu�te
+        else
+            SocketManager.GAME_SEND_POPUP(this.player, "Vous avez déjà appris la quête.");
     }
 
     private void Game_attaque_prisme(String packet) {
