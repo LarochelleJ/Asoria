@@ -46,7 +46,10 @@ import org.area.object.NpcTemplate.NPC_Exchange;
 import org.area.object.NpcTemplate.NPC_question;
 import org.area.object.NpcTemplate.NPC_reponse;
 import org.area.object.job.Job;
+import org.area.quests.Quest;
 import org.area.quests.QuestPlayer;
+import org.area.quests.Quest_Objective;
+import org.area.quests.Quest_Step;
 import org.area.spell.Spell;
 import org.area.spell.Spell.SortStats;
 
@@ -866,6 +869,27 @@ public class SQLManager {
 
             while (RS.next()) {
                 perso.addQuestPerso(new QuestPlayer(RS.getInt("id"), RS.getInt("quest"), RS.getInt("finish") == 1, RS.getInt("player"), RS.getString("stepsValidation")));
+            }
+            closeResultSet(RS);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void LOAD_QUESTS() {
+        try {
+            String query = "SELECT * FROM `quests`;";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
+            ResultSet RS = ps.executeQuery();
+
+            while (RS.next()) {
+                Quest quest = new  Quest(RS.getInt("id"), RS.getString("etapes"), RS.getString("objectif"), RS.getInt("npc"), RS.getString("action"), RS.getString("args"), (RS.getInt("deleteFinish") == 1), RS.getString("condition"));
+                if (quest.getNpc_Tmpl() != null) {
+                    quest.getNpc_Tmpl().setQuest(quest);
+                    quest.getNpc_Tmpl().set_extraClip(4);
+                }
+                Quest.setQuestInList(quest);
             }
             closeResultSet(RS);
         } catch (SQLException e) {
@@ -1910,7 +1934,7 @@ public class SQLManager {
     public static int INSERT_NEW_QUEST_PLAYER(QuestPlayer questPlayer) {
         try {
 
-            String sql = "INSERT INTO `quest_players` VALUES (?, ?, ?, ?);";
+            String sql = "INSERT INTO quest_players(quest, finish, player, stepsValidation) VALUES (?, ?, ?, ?);";
             PreparedStatement p = (PreparedStatement) Connection(false).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             p.setInt(1, questPlayer.getQuest().getId());
             p.setInt(2, questPlayer.isFinish() ? 1 : 0);
@@ -1927,7 +1951,7 @@ public class SQLManager {
             if (id > -1) {
                 return id;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;
@@ -4223,44 +4247,15 @@ public class SQLManager {
         return ticket;
     }
 
-    public static void LOAD_QUESTS() {
-        try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM `quests`;",
-                    false);
-
-            while (RS.next()) {
-                World.addQuest(RS.getInt("id"),
-                        RS.getString("steps"),
-                        RS.getInt("startQuestion"),
-                        RS.getInt("endQuestion"),
-                        RS.getInt("minLvl"),
-                        RS.getInt("questRequired"),
-                        RS.getInt("unique")
-                );
-            }
-
-            closeResultSet(RS);
-        } catch (SQLException e) {
-            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     public static void LOAD_QUEST_STEPS() {
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM `quest_steps`;",
-                    false);
-
-            while (RS.next()) {
-                World.addQuestStep(RS.getInt("id"),
-                        RS.getString("objectives"),
-                        RS.getInt("question"),
-                        RS.getInt("gainExp"),
-                        RS.getInt("gainKamas"),
-                        RS.getString("gainItems"));
+            ResultSet RST = SQLManager.executeQuery("SELECT * FROM `quest_steps`;", false);
+            while (RST.next()) {
+                Quest_Step QE = new Quest_Step(RST.getInt("id"), RST.getInt("type"), RST.getInt("objectif"), RST.getString("item"), RST.getInt("npc"), RST.getString("monster"), RST.getString("conditions"), RST.getInt("validationType"));
+                Quest_Step.setQuestEtape(QE);
             }
-
-            closeResultSet(RS);
+            closeResultSet(RST);
         } catch (SQLException e) {
             GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
             e.printStackTrace();
@@ -4269,19 +4264,14 @@ public class SQLManager {
 
     public static void LOAD_QUEST_OBJECTIVES() {
         try {
-            ResultSet RS = SQLManager.executeQuery("SELECT * FROM `quest_objectives`;",
-                    false);
+            ResultSet loc1 = SQLManager.executeQuery("SELECT * FROM `quest_objectives`;", false);
 
-            while (RS.next()) {
-                World.addQuestObjective(RS.getInt("id"),
-                        RS.getString("type"),
-                        RS.getString("args"),
-                        RS.getInt("optNpcTarget"),
-                        RS.getInt("optQuestion"),
-                        RS.getInt("optAnswer"));
+            while (loc1.next()) {
+                Quest_Objective qObjectif = new Quest_Objective(loc1.getInt("id"), loc1.getInt("xp"), loc1.getInt("kamas"), loc1.getString("item"), loc1.getString("action"));
+                Quest_Objective.setQuest_Objectif(qObjectif);
             }
 
-            closeResultSet(RS);
+            closeResultSet(loc1);
         } catch (SQLException e) {
             GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
             e.printStackTrace();

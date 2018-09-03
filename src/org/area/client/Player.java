@@ -364,6 +364,20 @@ public class Player {
         return null;
     }
 
+    public String getQuestGmPacket() {
+        StringBuilder packet = new StringBuilder();
+        int nb = 0;
+        packet.append("+");
+        for (QuestPlayer qPerso : questList.values()) {
+            packet.append(qPerso.getQuest().getId()).append(";");
+            packet.append(qPerso.isFinish() ? 1 : 0);
+            if (nb < questList.size() - 1)
+                packet.append("|");
+            nb++;
+        }
+        return packet.toString();
+    }
+
     public static class Group {
         private ArrayList<Player> _persos = new ArrayList<Player>();
         private Player _chief;

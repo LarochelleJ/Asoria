@@ -1174,12 +1174,12 @@ public class World {
         Console.println("|| Échange PNJ : Ok !", Color.CYAN);
         SQLManager.LOAD_NPCS();
         Console.println("|| PNJ : Ok !", Color.CYAN);
-        SQLManager.LOAD_QUESTS();
-        Console.println("|| Quêtes : Ok !", Color.CYAN);
-        SQLManager.LOAD_QUEST_STEPS();
-        Console.println("|| Étapes quêtes : Ok !", Color.CYAN);
         SQLManager.LOAD_QUEST_OBJECTIVES();
         Console.println("|| Objectifs quêtes : Ok !", Color.CYAN);
+        SQLManager.LOAD_QUEST_STEPS();
+        Console.println("|| Étapes quêtes : Ok !", Color.CYAN);
+        SQLManager.LOAD_QUESTS();
+        Console.println("|| Quêtes : Ok !", Color.CYAN);
         SQLManager.LOAD_ITEM_ACTIONS();
         Console.println("|| Item action : Ok !", Color.CYAN);
         SQLManager.LOAD_DROPS();

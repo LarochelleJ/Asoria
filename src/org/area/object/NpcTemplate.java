@@ -9,6 +9,7 @@ import org.area.common.World;
 import org.area.common.World.Couple;
 import org.area.event.Event;
 import org.area.object.Item.ObjTemplate;
+import org.area.quests.Quest;
 
 
 //import org.icore.common.ConditionParser;
@@ -29,6 +30,7 @@ public class NpcTemplate {
     private int _customArtWork;
     private HashMap<Integer, Integer> _initQuestions = new HashMap<Integer, Integer>(); // Réutilisation du même NPC mais sur plusieurs maps différente avec questions différentes
     private ArrayList<ObjTemplate> _ventes = new ArrayList<ObjTemplate>();
+    private Quest quest;
 
     //TODO:Baskwo
     private ArrayList<NPC_Exchange> exchange;
@@ -324,6 +326,14 @@ public class NpcTemplate {
         return _id;
     }
 
+    public Quest getQuest() {
+        return quest;
+    }
+
+    public void setQuest(Quest quest) {
+        this.quest = quest;
+    }
+
     public int get_bonusValue() {
         return _bonusValue;
     }
@@ -362,6 +372,10 @@ public class NpcTemplate {
 
     public int get_extraClip() {
         return _extraClip;
+    }
+
+    public void set_extraClip(int clip) {
+        _extraClip = clip;
     }
 
     public int get_customArtWork() {

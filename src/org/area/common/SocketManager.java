@@ -2643,10 +2643,10 @@ public class SocketManager {
     }
 
     public static void SEND_QUESTS_LIST_PACKET(Player P) {
-        //String packet = "QL|209;0;1|92;1;1";
-        String packet = P.parseQuestsList();
-        if (packet.isEmpty()) return;
-
+        /*
+		 * Explication packet : QL + QuestID ; Finish ? 1 : 0 ;
+		 */
+        String packet = "QL" + P.getQuestGmPacket();
         send(P, packet);
     }
 
