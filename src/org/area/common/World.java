@@ -2984,14 +2984,6 @@ public class World {
     //quests
     public static NPC_question getNPCQuestion(int guid, Player perso) {
         NPC_question baseQuestion = NPCQuestions.get(guid);
-
-        Entry<Integer, Map<String, String>> questObjective = getObjectiveByOptQuestion(guid);
-        if (questObjective != null && perso.hasObjective(questObjective.getKey())) // Il y a un objectif de quete avec cette question
-        {
-            NPC_question questQuestion = new NPC_question(guid, questObjective.getValue().get("optAnswer"), "", "", 0);
-            return questQuestion;
-        }
-
         return baseQuestion;
     }
 

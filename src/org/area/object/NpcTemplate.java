@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import org.area.client.Player;
+import org.area.common.ConditionParser;
 import org.area.common.SQLManager;
 import org.area.common.World;
 import org.area.common.World.Couple;
@@ -70,11 +71,15 @@ public class NpcTemplate {
         private int _id;
         private String _reponses;
         private String _args;
+        private String _cond;
+        private String falseQuestion;
 
-        public NPC_question(int _id, String _reponses, String _args, String _cond, int falseQuestion) {
+        public NPC_question(int _id, String _reponses, String _args, String _cond, String falseQuestion) {
             this._id = _id;
             this._reponses = _reponses;
             this._args = _args;
+            this._cond = _cond;
+            this.falseQuestion = falseQuestion;
         }
 
         public int get_id() {
@@ -82,6 +87,15 @@ public class NpcTemplate {
         }
 
         public String parseToDQPacket(Player perso) {
+            if (!_cond.equals("")) {
+                if (!ConditionParser.validConditions(perso, _cond)) {
+                    if (this.falseQuestion.contains("|")) {
+                        return World.getNPCQuestion(Integer.parseInt(this.falseQuestion.split("|")[0])).parseToDQPacket(perso);
+                    } else {
+                        return World.getNPCQuestion(Integer.parseInt(this.falseQuestion)).parseToDQPacket(perso);
+                    }
+                }
+            }
             boolean mariage = false;
             boolean maried = false;
             if (_id == 50030 && //Si prêtre

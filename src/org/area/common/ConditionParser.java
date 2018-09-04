@@ -27,8 +27,10 @@ public class ConditionParser
 			req = havePO(req, perso);
 		if(req.contains("PN"))
 			req = canPN(req, perso);
-		if(req.contains("Qa") || req.contains("QE") || req.contains("QT"))
+		if(req.contains("Qa") || req.contains("QT"))
 			return haveQa(req, perso);
+		if(req.contains("QE"))
+			return haveQE(req, perso);
 		if (req.contains("QEt"))
 			return haveQEt(req, perso);
 	 	//TODO : Gérer PJ Pj
@@ -311,6 +313,19 @@ public class ConditionParser
 
 		return !qp.isFinish() || (!req.contains("=="));
 
+	}
+
+	// Quête non complétée ==, != complété
+	private static boolean haveQE(String req, Player player) {
+		if (player == null)
+			return false;
+		int id = Integer.parseInt((req.contains("==") ? req.split("==")[1] : req.split("!=")[1]));
+		QuestPlayer qp = player.getQuestPersoByQuestId(id);
+		if (req.contains("==")) {
+			return qp != null && !qp.isFinish();
+		} else {
+			return qp == null || qp.isFinish();
+		}
 	}
 
 	// L'étape en cours de la quête doit être : id

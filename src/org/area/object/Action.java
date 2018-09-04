@@ -682,8 +682,8 @@ public class Action {
                     quest0.applyQuest(perso);
                 break;
             case 41: // Confirm objective
-                String[] splitArgs = args.split("\\|");
-                perso.confirmObjective(Integer.parseInt(splitArgs[0]), splitArgs[1], null);
+                /*String[] splitArgs = args.split("\\|");
+                perso.confirmObjective(Integer.parseInt(splitArgs[0]), splitArgs[1], null);*/
                 break;
             case 42: // Monte prochaine étape quete ou termine
                 int quest = Integer.parseInt(args);

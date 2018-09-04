@@ -871,7 +871,7 @@ public class SQLManager {
                 perso.addQuestPerso(new QuestPlayer(RS.getInt("id"), RS.getInt("quest"), RS.getInt("finish") == 1, RS.getInt("player"), RS.getString("stepsValidation")));
             }
             closeResultSet(RS);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             GameServer.addToLog("SQL ERROR: " + e.getMessage());
             e.printStackTrace();
         }
@@ -2039,7 +2039,7 @@ public class SQLManager {
                                                 RS.getString("responses"),
                                                 RS.getString("params"),
                                                 RS.getString("cond"),
-                                                RS.getInt("ifFalse")
+                                                RS.getString("ifFalse")
                                         )
                         );
             }

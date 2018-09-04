@@ -272,7 +272,7 @@ public class Quest {
             boolean isTalkingWithNpc = perso.get_isTalkingWith() > 0 && perso.get_isTalkingWith() == qEtape.getNpc().get_id();
             switch (qEtape.getType()) {
 
-                case 3://Donner item
+                case 3://Donner item au pnj
                     if (isTalkingWithNpc) {
                         for (Map.Entry<Integer, Integer> entry : qEtape.getItemNecessaryList().entrySet()) {
                             if (perso.hasItemTemplate(entry.getKey(), entry.getValue())) { //Il a l'item et la quantité
