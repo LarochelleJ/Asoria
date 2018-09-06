@@ -12,6 +12,7 @@ import org.area.object.NpcTemplate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class Quest {
 
@@ -37,8 +38,10 @@ public class Quest {
                 if (split != null && split.length > 0) {
                     for (String qEtape : split) {
                         Quest_Step q_Etape = Quest_Step.getQuestEtapeById(Integer.parseInt(qEtape));
-                        q_Etape.setQuestData(this);
-                        questEtapeList.add(q_Etape);
+                        if (q_Etape != null) {
+                            q_Etape.setQuestData(this);
+                            questEtapeList.add(q_Etape);
+                        }
                     }
                 }
             }
@@ -240,7 +243,8 @@ public class Quest {
         }
         perso.addQuestPerso(qPerso);
         SocketManager.GAME_SEND_Im_PACKET(perso, "054;" + id);
-        SocketManager.GAME_SEND_MAP_NPCS_GMS_PACKETS(perso.getAccount().getGameThread().getOut(), perso.getMap());
+        SocketManager.GAME_CLEAR_NPC_EXTRACLIP(perso, qPerso.getQuest().getNpc_Tmpl().get_id());
+
 
         if (!actions.isEmpty()) {
             for (Action aAction : actions) {

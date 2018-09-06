@@ -6220,7 +6220,7 @@ public class GameThread implements Runnable {
                             .getAccount().getGameThread().getOut(),
                     this.player.getMap(), player);
             // debug++;
-            SocketManager.GAME_SEND_MAP_NPCS_GMS_PACKETS(this.out,
+            SocketManager.GAME_SEND_MAP_NPCS_GMS_PACKETS(this.player,
                     this.player.getMap());
             // debug++;
             SocketManager.GAME_SEND_MAP_PERCO_GMS_PACKETS(this.out,

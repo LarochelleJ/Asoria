@@ -31,6 +31,10 @@ public class ConditionParser
 			return haveQa(req, perso);
 		if(req.contains("QE"))
 			return haveQE(req, perso);
+		if (req.contains("QO"))
+			return haveQO(req, perso);
+		if (req.contains("QF"))
+			return haveQF(req, perso);
 		if (req.contains("QEt"))
 			return haveQEt(req, perso);
 	 	//TODO : Gérer PJ Pj
@@ -327,6 +331,33 @@ public class ConditionParser
 			return qp == null || qp.isFinish();
 		}
 	}
+
+	// Possède la quête
+	private static boolean haveQO(String req, Player player) {
+		if (player == null)
+			return false;
+		int id = Integer.parseInt((req.contains("==") ? req.split("==")[1] : req.split("!=")[1]));
+		QuestPlayer qp = player.getQuestPersoByQuestId(id);
+		if (req.contains("==") && qp != null) {
+			return true;
+		} else {
+			return qp == null;
+		}
+	}
+
+	// Quête terminée
+	private static boolean haveQF(String req, Player player) {
+		if (player == null)
+			return false;
+		int id = Integer.parseInt((req.contains("==") ? req.split("==")[1] : req.split("!=")[1]));
+		QuestPlayer qp = player.getQuestPersoByQuestId(id);
+		if (req.contains("==") && qp != null) {
+			return qp.isFinish();
+		} else { // Pas teminée
+			return qp == null || !qp.isFinish();
+		}
+	}
+
 
 	// L'étape en cours de la quête doit être : id
 	private static boolean haveQEt(String req, Player player) {

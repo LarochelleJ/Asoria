@@ -252,7 +252,7 @@ public class SQLManager {
             p.setLong(3, compte.getBankKamas());
             p.execute();
             closePreparedStatement(p);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -278,7 +278,7 @@ public class SQLManager {
     }
 
     public static void LOAD_PORTES() {
-        try{
+        try {
             PreparedStatement p = newTransact("SELECT * FROM portes;", Connection(false));
             ResultSet RS = p.executeQuery();
             while (RS.next()) {
@@ -868,7 +868,7 @@ public class SQLManager {
             ResultSet RS = ps.executeQuery();
 
             while (RS.next()) {
-                perso.addQuestPerso(new QuestPlayer(RS.getInt("id"), RS.getInt("quest"), RS.getInt("finish") == 1, RS.getInt("player"), RS.getString("stepsValidation")));
+                perso.addQuestPerso(new QuestPlayer(RS.getInt("id"), RS.getInt("quest"), RS.getInt("finish") == 1, perso, RS.getString("stepsValidation")));
             }
             closeResultSet(RS);
         } catch (Exception e) {
@@ -884,7 +884,7 @@ public class SQLManager {
             ResultSet RS = ps.executeQuery();
 
             while (RS.next()) {
-                Quest quest = new  Quest(RS.getInt("id"), RS.getString("etapes"), RS.getString("objectif"), RS.getInt("npc"), RS.getString("action"), RS.getString("args"), (RS.getInt("deleteFinish") == 1), RS.getString("condition"));
+                Quest quest = new Quest(RS.getInt("id"), RS.getString("etapes"), RS.getString("objectif"), RS.getInt("npc"), RS.getString("action"), RS.getString("args"), (RS.getInt("deleteFinish") == 1), RS.getString("condition"));
                 if (quest.getNpc_Tmpl() != null) {
                     quest.getNpc_Tmpl().setQuest(quest);
                     quest.getNpc_Tmpl().set_extraClip(4);
@@ -916,10 +916,10 @@ public class SQLManager {
         }
         try {
             String query = "SELECT * FROM personnages WHERE account = ? AND deleted = 0;";
-                java.sql.PreparedStatement ps = newTransact(query, Connection(false));
-                ps.setInt(1, accID);
-                ResultSet RS = ps.executeQuery();
-                while (RS.next()) {
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
+            ps.setInt(1, accID);
+            ResultSet RS = ps.executeQuery();
+            while (RS.next()) {
                 if (RS.getInt("server") != GameServer.id)
                     continue;
                 Player p = World.getPlayer(RS.getInt("guid"));
@@ -1003,6 +1003,8 @@ public class SQLManager {
                 );
                 //Vérifications pré-connexion
                 perso.VerifAndChangeItemPlace();
+                // Chargement de la progression des quêtes du joueur
+                SQLManager.LOAD_PLAYER_QUESTS(perso);
                 World.addPersonnage(perso);
                 int guildId = isPersoInGuild(RS.getInt("guid"));
                 if (guildId >= 0) {
@@ -1718,7 +1720,7 @@ public class SQLManager {
             boolean endTurn = stat[19].trim().equalsIgnoreCase("true");
             List<Integer> etatRequis = new ArrayList<Integer>(), etatInterdit = new ArrayList<Integer>();
             try {
-                String data = stat[16].replaceAll("\\s+","");
+                String data = stat[16].replaceAll("\\s+", "");
                 if (data.contains(";")) {
                     String[] d1 = data.split(";");
                     for (String s : d1) {
@@ -1737,7 +1739,7 @@ public class SQLManager {
 
             }
             try {
-                String data = stat[17].replaceAll("\\s+","");
+                String data = stat[17].replaceAll("\\s+", "");
                 if (data.contains(";")) {
                     String[] d2 = data.split(";");
                     for (String s : d2) {
@@ -1996,7 +1998,8 @@ public class SQLManager {
 
             p.setInt(1, mapID);
             p.setInt(2, cellID);
-            p.setString(3, groupData);;
+            p.setString(3, groupData);
+            ;
 
             p.execute();
             closePreparedStatement(p);
@@ -2015,7 +2018,8 @@ public class SQLManager {
 
             p.setInt(1, ellap);
             p.setInt(2, mapID);
-            p.setString(3, groupData);;
+            p.setString(3, groupData);
+            ;
 
             p.execute();
             closePreparedStatement(p);
@@ -2473,6 +2477,8 @@ public class SQLManager {
                 );
                 //Vérifications pré-connexion
                 player.VerifAndChangeItemPlace();
+                // Chargement de la progression des quêtes du joueur
+                SQLManager.LOAD_PLAYER_QUESTS(player);
                 World.addPersonnage(player);
                 int guildId = isPersoInGuild(RS.getInt("guid"));
                 if (guildId >= 0) {
@@ -2581,6 +2587,8 @@ public class SQLManager {
                 );
                 //Vérifications pré-connexion
                 player.VerifAndChangeItemPlace();
+                // Chargement de la progression des quêtes du joueur
+                SQLManager.LOAD_PLAYER_QUESTS(player);
                 World.addPersonnage(player);
                 int guildId = isPersoInGuild(RS.getInt("guid"));
                 if (guildId >= 0) {

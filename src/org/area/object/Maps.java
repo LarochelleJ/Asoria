@@ -1438,6 +1438,17 @@ public class Maps {
         return _npcs.get(id);
     }
 
+    public NPC getNpcByTemplate(int template) {
+        NPC n = null;
+        for (NPC c : _npcs.values()) {
+            if (c.get_template().get_id() == template) {
+                n = c;
+                break;
+            }
+        }
+        return n;
+    }
+
     public NPC RemoveNPC(int id) {
         return _npcs.remove(id);
     }
@@ -1581,14 +1592,14 @@ public class Maps {
         return prisme;
     }
 
-    public String getNpcsGMsPackets() {
+    public String getNpcsGMsPackets(Player p) {
         if (_npcs.isEmpty()) return "";
 
         StringBuilder packet = new StringBuilder();
         packet.append("GM|");
         boolean isFirst = true;
         for (Entry<Integer, NPC> entry : _npcs.entrySet()) {
-            String GM = entry.getValue().parseGM();
+            String GM = entry.getValue().parseGM(p);
             if (GM.equals("")) continue;
 
             if (!isFirst)

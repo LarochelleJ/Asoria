@@ -107,7 +107,9 @@ public class NpcTemplate {
             str.append(_id);
             if (!_args.equals(""))
                 str.append(";").append(parseArguments(_args, perso));
-            str.append("|").append(_reponses);
+            if (!_reponses.equalsIgnoreCase("")) {
+                str.append("|").append(_reponses);
+            }
             if (mariage) str.append(";518");
             if (maried) str.append(";2582");
             return str.toString();
@@ -194,6 +196,38 @@ public class NpcTemplate {
             sock = sock + (_template.get_color3() != -1 ? Integer.toHexString(_template.get_color3()) : "-1") + ";";
             sock = sock + _template.get_acces() + ";";
             sock = sock + (_template.get_extraClip() != -1 ? Integer.valueOf(_template.get_extraClip()) : "") + ";";
+            sock = sock + _template.get_customArtWork();
+            return sock;
+        }
+
+        public String parseGM(Player p) {
+            String sock = "";
+            sock = sock + "+";
+            sock = sock + _cellID + ";";
+            sock = sock + _orientation + ";";
+            sock = sock + "0;";
+            sock = sock + _guid + ";";
+            sock = sock + _template.get_id() + ";";
+            sock = sock + "-4;";
+            String taille = "";
+            int extraClip = _template.get_extraClip();
+            if (extraClip == 4) {
+                if (p.getQuestPersoByQuest(_template.getQuest()) != null) {
+                    extraClip = -1;
+                }
+            }
+            if (_template.get_scaleX() == _template.get_scaleY()) {
+                taille = "" + _template.get_scaleY();
+            } else {
+                taille = _template.get_scaleX() + "x" + _template.get_scaleY();
+            }
+            sock = sock + _template.get_gfxID() + "^" + taille + ";";
+            sock = sock + _template.get_sex() + ";";
+            sock = sock + (_template.get_color1() != -1 ? Integer.toHexString(_template.get_color1()) : "-1") + ";";
+            sock = sock + (_template.get_color2() != -1 ? Integer.toHexString(_template.get_color2()) : "-1") + ";";
+            sock = sock + (_template.get_color3() != -1 ? Integer.toHexString(_template.get_color3()) : "-1") + ";";
+            sock = sock + _template.get_acces() + ";";
+            sock = sock + (extraClip != -1 ? extraClip : "") + ";";
             sock = sock + _template.get_customArtWork();
             return sock;
         }

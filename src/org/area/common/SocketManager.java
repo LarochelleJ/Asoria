@@ -493,11 +493,11 @@ public class SocketManager {
             GameServer.addToSockLog("Game: Send>>" + packet);
     }
 
-    public static void GAME_SEND_MAP_NPCS_GMS_PACKETS(GameSendThread _out, Maps carte) {
-        String packet = carte.getNpcsGMsPackets();
+    public static void GAME_SEND_MAP_NPCS_GMS_PACKETS(Player p, Maps carte) {
+        String packet = carte.getNpcsGMsPackets(p);
         if (packet.equals("") && packet.length() < 4)
             return;
-        send(_out, packet);
+        send(p, packet);
         if (Config.DEBUG)
             Logs.addToDebug((new StringBuilder("Game: Send>>")).append(packet).toString());
     }
@@ -732,6 +732,13 @@ public class SocketManager {
 
     public static void GAME_SEND_MAP_GMS_PACKETS(Maps map, Player _perso) {
         map.sendGMsPackets(_perso);
+    }
+
+    public static void GAME_CLEAR_NPC_EXTRACLIP(Player p, int template) {
+        NPC npc = p.getMap().getNpcByTemplate(template);
+        if (npc != null) {
+            send(p, "GX-|" + npc.get_guid());
+        }
     }
 
     public static void GAME_SEND_MAP_GMS_PACKETS(Player _perso, String packet) {

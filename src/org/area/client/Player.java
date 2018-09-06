@@ -870,9 +870,6 @@ public class Player {
             SQLManager.LOAD_ITEMS(stuff.replace("|", ","));
         }
 
-        // Chargement de la progression des quêtes du joueur
-        SQLManager.LOAD_PLAYER_QUESTS(this);
-
         for (String checkP : checkpoints.split("\\|")) {
             if (checkP.equals("")) continue;
             synchronized (World.checkpoints) {

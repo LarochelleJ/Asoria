@@ -35,11 +35,11 @@ public class QuestPlayer {
         this.id = SQLManager.INSERT_NEW_QUEST_PLAYER(this);
     }
 
-    public QuestPlayer(int aId, int qId, boolean aFinish, int pId, String qEtapeV) {
+    public QuestPlayer(int aId, int qId, boolean aFinish, Player p, String qEtapeV) {
         this.id = aId;
         this.quest = Quest.getQuestById(qId);
         this.finish = aFinish;
-        this.player = World.getPlayer(pId);
+        this.player = p;
         try {
             String[] split = qEtapeV.split(";");
             if (split != null && split.length > 0) {
