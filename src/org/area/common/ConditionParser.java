@@ -246,12 +246,20 @@ public class ConditionParser
 						continue;
 					}
 					if(cur.contains("!=")) continue;
-					if(perso.hasItemTemplate(Integer.parseInt(cur), 1))
+					int qty = 1;
+					int item;
+					if (cur.contains(";")) { // quantité spécifié
+						item = Integer.valueOf(cur.split(";")[0]);
+						qty = Integer.valueOf(cur.split(";")[1]);
+					} else {
+						item = Integer.valueOf(cur);
+					}
+					if(perso.hasItemTemplate(item, qty))
 					{
-						copyCond += Integer.parseInt(cur)+"=="+Integer.parseInt(cur);
+						copyCond += item+"=="+item;
 					}else
 					{
-						copyCond += Integer.parseInt(cur)+"=="+0;
+						copyCond += item+"=="+0;
 					}
 				}
 			}
@@ -264,12 +272,20 @@ public class ConditionParser
 						continue;
 					}
 					if(cur.contains("==")) continue;
-					if(perso.hasItemTemplate(Integer.parseInt(cur), 1))
+					int qty = 1;
+					int item;
+					if (cur.contains(";")) { // quantité spécifié
+						item = Integer.valueOf(cur.split(";")[0]);
+						qty = Integer.valueOf(cur.split(";")[1]);
+					} else {
+						item = Integer.valueOf(cur);
+					}
+					if(perso.hasItemTemplate(item, qty))
 					{
-						copyCond += Integer.parseInt(cur)+"!="+Integer.parseInt(cur);
+						copyCond += item+"!="+item;
 					}else
 					{
-						copyCond += Integer.parseInt(cur)+"!="+0;
+						copyCond += item+"!="+0;
 					}
 				}
 			}

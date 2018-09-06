@@ -273,7 +273,11 @@ public class Quest {
 
             if (validation)
                 refresh = true;
-            boolean isTalkingWithNpc = perso.get_isTalkingWith() > 0 && perso.get_isTalkingWith() == qEtape.getNpc().get_id();
+            int npcID = -1;
+            if (perso.get_isTalkingWith() != 0) {
+                npcID = perso.getMap().getNPC(perso.get_isTalkingWith()).get_template().get_id();
+            }
+            boolean isTalkingWithNpc = (npcID == qEtape.getNpc().get_id());
             switch (qEtape.getType()) {
 
                 case 3://Donner item au pnj
