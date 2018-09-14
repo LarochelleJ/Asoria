@@ -19,6 +19,7 @@ import org.area.common.World;
 import org.area.common.World.Area;
 import org.area.common.World.SubArea;
 import org.area.common.World.Exchange.NpcExchange;
+import org.area.fight.object.Monster;
 import org.area.fight.object.Prism;
 import org.area.fight.object.Monster.MobGroup;
 import org.area.game.GameServer;
@@ -950,6 +951,32 @@ public class Action {
                 perso.goUpto(levelWant);
                 break;*/
 
+            case 983:
+                try {
+                    Quest q = Quest.getQuestById(193);
+                    if (q == null)
+                        return;
+                    Maps curMap = perso.getMap();
+                    if (curMap.get_id() != (short) 10332)
+                        return;
+                    if (perso.getQuestPersoByQuest(q) == null)
+                        q.applyQuest(perso);
+                    else if (q.getQuestEtapeCurrent(perso.getQuestPersoByQuest(q)).getId() != 793)
+                        return;
+
+                    Monster petitChef = World.getMonstre(984);
+                    if (petitChef == null)
+                        return;
+                    Monster.MobGrade mg = petitChef.getGradeByLevel(10);
+                    if (mg == null)
+                        return;
+                    Monster.MobGroup _mg = new Monster.MobGroup(perso.getMap().get_nextObjectID(), perso.getCurCell().getID(), petitChef.getID() + "," + mg.getLevel() + "," + mg.getLevel() + ";", 0, 0, 0);
+                    perso.getMap().startFigthVersusMonstres(perso, _mg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
             case 984:
                 try {
                     int xp = Integer.parseInt(args.split(",")[0]);
@@ -974,6 +1001,8 @@ public class Action {
                     e.printStackTrace();
                 }
                 break;
+
+
 
             case 212121://Changement apparence Dofus 2 @Flow
                 if (perso.getFight() != null) break;

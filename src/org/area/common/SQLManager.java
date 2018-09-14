@@ -1287,7 +1287,7 @@ public class SQLManager {
     public static void LOAD_GMCOMMANDS() {
         try {
             String query = "SELECT * from gmcommands;";
-            ResultSet RS = executeQuery(query, true);
+            ResultSet RS = executeQuery(query, false);
             if (!GmCommand.gmCommands.isEmpty()) {
                 GmCommand.gmCommands.clear();
             }

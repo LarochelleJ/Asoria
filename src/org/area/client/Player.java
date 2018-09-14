@@ -2826,9 +2826,12 @@ public class Player {
         _spellPts++;
         _PDVMAX += 5;
         _PDV = _PDVMAX;
-        Fighter f = getFight().getFighterByPerso(this);
-        if (f != null) {
-            f.levelUp = true;
+        Fight fight = getFight();
+        if (fight != null) {
+            Fighter f = fight.getFighterByPerso(this);
+            if (f != null) {
+                f.levelUp = true;
+            }
         }
         if (_lvl == 100)
             _baseStats.addOneStat(Constant.STATS_ADD_PA, 1);

@@ -6391,8 +6391,6 @@ public class GameThread implements Runnable {
         QuestPlayer qp = this.player.getQuestPersoByQuest(quete);
         if (qp == null)
             quete.applyQuest(this.player); // S'il n'a pas la qu�te
-        else
-            SocketManager.GAME_SEND_POPUP(this.player, "Vous avez déjà appris la quête.");
     }
 
     private void Game_attaque_prisme(String packet) {
