@@ -164,14 +164,14 @@ public class Trunk {
 		{
 			OpenTrunk(P, "-", true);
 		}
-		else if(P.get_guild() == null && h.canDo(Constant.C_OCANTOPEN))//si on compare par id ça bug (guild null)
+		else if(P.get_guild() == null && h.canDo(Constant.C_OCANTOPEN))//si on compare par id Ã§a bug (guild null)
 		{
-			SocketManager.GAME_SEND_MESSAGE(P, "Ce coffre ne peut être ouvert que par les membres de la guilde !", Config.CONFIG_MOTD_COLOR);
+			SocketManager.GAME_SEND_MESSAGE(P, "Ce coffre ne peut Ãªtre ouvert que par les membres de la guilde !", Config.CONFIG_MOTD_COLOR);
 		return;
 		}
-		else if(t.get_owner_id() > 0)//Une personne autre le possède, il faut le code pour rentrer
+		else if(t.get_owner_id() > 0)//Une personne autre le possÃ¨de, il faut le code pour rentrer
 		{
-			SocketManager.GAME_SEND_KODE(P, "CK0|8");//8 étant le nombre de chiffre du code
+			SocketManager.GAME_SEND_KODE(P, "CK0|8");//8 Ã©tant le nombre de chiffre du code
 		}
 		else if(t.get_owner_id() == 0)//Coffre a personne
 		{
@@ -243,7 +243,7 @@ public class Trunk {
 		
 		if(_object.size() >= 80) // Le plus grand c'est pour si un admin ajoute des objets via la bdd...
 		{
-			SocketManager.GAME_SEND_MESSAGE(P, "Le nombre d'objets maximal de ce coffre à été atteint !", Config.CONFIG_MOTD_COLOR);
+			SocketManager.GAME_SEND_MESSAGE(P, "Le nombre d'objets maximal de ce coffre Ã  Ã©tÃ© atteint !", Config.CONFIG_MOTD_COLOR);
 			return;
 		}
 		
@@ -257,14 +257,14 @@ public class Trunk {
 		}
 		if (P.getItems().get(guid).getQuantity() < qua)
 		{
-			GameServer.addToLog("Le joueur "+P.getName()+" a tenté d'ajouter une quantité d'objet en banque dont il ne possédait pas.");
-			SocketManager.GAME_SEND_MESSAGE(P, "Alors petit rigolo, ça marche plus ?", Config.CONFIG_MOTD_COLOR);
+			GameServer.addToLog("Le joueur "+P.getName()+" a tentÃ© d'ajouter une quantitÃ© d'objet en banque dont il ne possÃ©dait pas.");
+			SocketManager.GAME_SEND_MESSAGE(P, "Alors petit rigolo, Ã§a marche plus ?", Config.CONFIG_MOTD_COLOR);
 			return;
 		}
 		
 		String str = "";
 		
-		//Si c'est un item équipé ...
+		//Si c'est un item Ã©quipÃ© ...
 		if(PersoObj.getPosition() != Constant.ITEM_POS_NO_EQUIPED)return;
 		
 		Item TrunkObj = getSimilarTrunkItem(PersoObj);
@@ -276,7 +276,7 @@ public class Trunk {
 			{
 				//On enleve l'objet du sac du joueur
 				P.removeItem(PersoObj.getGuid());
-				//On met l'objet du sac dans le coffre, avec la meme quantité
+				//On met l'objet du sac dans le coffre, avec la meme quantitÃ©
 				_object.put(PersoObj.getGuid() ,PersoObj);
 				str = "O+"+PersoObj.getGuid()+"|"+PersoObj.getQuantity()+"|"+PersoObj.getTemplate(false).getID()+"|"+PersoObj.parseStatsString();
 				SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(P, guid);
@@ -284,7 +284,7 @@ public class Trunk {
 			}
 			else//S'il reste des objets au joueur
 			{
-				//on modifie la quantité d'item du sac
+				//on modifie la quantitÃ© d'item du sac
 				PersoObj.setQuantity(newQua);
 				//On ajoute l'objet au coffre et au monde
 				TrunkObj = Item.getCloneObjet(PersoObj, qua);
@@ -305,7 +305,7 @@ public class Trunk {
 				P.removeItem(PersoObj.getGuid());
 				//On enleve l'objet du monde
 				World.removeItem(PersoObj.getGuid());
-				//On ajoute la quantité a l'objet dans le coffre
+				//On ajoute la quantitÃ© a l'objet dans le coffre
 				TrunkObj.setQuantity(TrunkObj.getQuantity() + PersoObj.getQuantity());
 				//on envoie l'ajout au coffre de l'objet
 			    str = "O+"+TrunkObj.getGuid()+"|"+TrunkObj.getQuantity()+"|"+TrunkObj.getTemplate(false).getID()+"|"+TrunkObj.parseStatsString();
@@ -314,7 +314,7 @@ public class Trunk {
 				
 			}else //S'il restait des objets
 			{
-				//on modifie la quantité d'item du sac
+				//on modifie la quantitÃ© d'item du sac
 				PersoObj.setQuantity(newQua);
 				TrunkObj.setQuantity(TrunkObj.getQuantity() + qua);
 				str = "O+"+TrunkObj.getGuid()+"|"+TrunkObj.getQuantity()+"|"+TrunkObj.getTemplate(false).getID()+"|"+TrunkObj.parseStatsString();
@@ -349,8 +349,8 @@ public class Trunk {
 		}
 		if (P.getItems().get(guid).getQuantity() < qua)
 		{
-			GameServer.addToLog("Le joueur "+P.getName()+" a tenté d'ajouter une quantité d'objet en banque dont il ne possédait pas.");
-			SocketManager.GAME_SEND_MESSAGE(P, "Alors petit rigolo, ça marche plus ?", Config.CONFIG_MOTD_COLOR);
+			GameServer.addToLog("Le joueur "+P.getName()+" a tentÃ© d'ajouter une quantitÃ© d'objet en banque dont il ne possÃ©dait pas.");
+			SocketManager.GAME_SEND_MESSAGE(P, "Alors petit rigolo, Ã§a marche plus ?", Config.CONFIG_MOTD_COLOR);
 			return;
 		}
 		Item PersoObj = P.getSimilarItem(TrunkObj);
@@ -375,7 +375,7 @@ public class Trunk {
 				
 			}else //S'il reste des objets dans le coffre
 			{
-				//On crée une copy de l'item dans le coffre
+				//On crÃ©e une copy de l'item dans le coffre
 				PersoObj = Item.getCloneObjet(TrunkObj, qua);
 				//On l'ajoute au monde
 				World.addObjet(PersoObj, true);
@@ -398,7 +398,7 @@ public class Trunk {
 				//On retire l'item du coffre
 				_object.remove(TrunkObj.getGuid());
 				World.removeItem(TrunkObj.getGuid());
-				//On Modifie la quantité de l'item du sac du joueur
+				//On Modifie la quantitÃ© de l'item du sac du joueur
 				PersoObj.setQuantity(PersoObj.getQuantity() + TrunkObj.getQuantity());
 				
 				//On envoie les packets

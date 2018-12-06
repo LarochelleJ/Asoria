@@ -2612,6 +2612,9 @@ public class Player {
     }
 
     public boolean addObjet(Item newObj, boolean stackIfSimilar) {
+        if (newObj.isNewInDatabase()) {
+            SQLManager.ASSIGN_OWNER_TO_ITEM(newObj, _GUID);
+        }
         if (stackIfSimilar) {
             synchronized (_items) {
                 for (Item obj : _items.values()) {
@@ -3440,6 +3443,7 @@ public class Player {
 
                 }
             }
+            SQLManager.INSERT_ITEM_HISTORY(getGuid(), -2, getAccount().getCurIp(), "localhost", PersoObj, qua);
             SocketManager.GAME_SEND_Ow_PACKET(this);
             SQLManager.UPDATE_ACCOUNT_DATA(_compte);
         }
@@ -3533,6 +3537,7 @@ public class Player {
 
                 }
             }
+            SQLManager.INSERT_ITEM_HISTORY(-2, getGuid(), "localhost", getAccount().getCurIp(), BankObj, qua);
             SocketManager.GAME_SEND_Ow_PACKET(this);
             SQLManager.UPDATE_ACCOUNT_DATA(_compte);
         }

@@ -436,6 +436,7 @@ public class Item {
     protected int prestige = 0;
     protected int position = Constant.ITEM_POS_NO_EQUIPED;
     protected int guid;
+    protected boolean newInDatabase = false;
     protected int obvijevan;
     protected int obvijevanLook;
     protected int obviID; //Return :)
@@ -592,6 +593,7 @@ public class Item {
         }*/
         if (Guid == -1 || World.getObjets().containsKey(Guid)) { // Clonage item ou création d'un nouvel item
             this.guid = SQLManager.INSERT_NEW_ITEM(this);
+            this.newInDatabase = true;
         } else { // Item existant
             this.guid = Guid;
         }
@@ -646,6 +648,14 @@ public class Item {
 
     public int getGuid() {
         return guid;
+    }
+
+    public boolean isNewInDatabase() {
+        return newInDatabase;
+    }
+
+    public void setNewInDatabase(boolean n) {
+        newInDatabase = n;
     }
 
     public String parseItem() {
@@ -902,7 +912,9 @@ public class Item {
     public String getObvijevanStatsOnly() {
         Item obj = getCloneObjet(this, 1);
         obj.removeAll_ExepteObvijevanStats();
-        return obj.parseStatsStringSansUserObvi(true);
+        String stats = obj.parseStatsStringSansUserObvi(true);
+        SQLManager.DELETE_ITEM(obj.getGuid());
+        return stats;
     }
 	
 	/*public String parseToSave()

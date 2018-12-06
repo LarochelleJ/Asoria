@@ -1882,7 +1882,7 @@ public class SQLManager {
 
     public static void SAVE_NEW_ITEM(Item item) {
         try {
-            String baseQuery = "REPLACE INTO `items` VALUES(?,?,?,?,?,?);";
+            String baseQuery = "REPLACE INTO items(guid, template, qua, pos, stats, server) VALUES(?,?,?,?,?,?);";
 
             PreparedStatement p = newTransact(baseQuery, Connection(false));
 
@@ -1931,6 +1931,19 @@ public class SQLManager {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public static void ASSIGN_OWNER_TO_ITEM(Item item, int player) {
+        String baseQuery = "UPDATE items SET owner = ? WHERE guid = ?;";
+        try {
+            PreparedStatement p = newTransact(baseQuery, Connection(false));
+            p.setInt(1, player);
+            p.setInt(2, item.getGuid());
+            p.executeUpdate();
+            item.setNewInDatabase(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static int INSERT_NEW_QUEST_PLAYER(QuestPlayer questPlayer) {
@@ -5070,13 +5083,33 @@ public class SQLManager {
     }
 
     public static void INSERT_PB_TRANSACT(String nomPerso, String description, int points) {
-        HashMap<Integer, Integer> toReturn = new HashMap<Integer, Integer>();
         try {
             String query = "INSERT INTO `achatsPB` (`date`, `nomPerso`, `description`, `points`) VALUES (now(), ?, ?, ?);";
             java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setString(1, nomPerso);
             ps.setString(2, description);
             ps.setInt(3, points);
+            ps.execute();
+        } catch (SQLException e) {
+            GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param receiver > 0 = id d'un joueur, -1 = HDV, -2 = Banque, -3 = Sol, -4 = Item supprimé, -5 = commande gm
+     */
+    public static void INSERT_ITEM_HISTORY(int sender, int receiver, String ip1, String ip2, Item i, int qua) {
+        try {
+            String query = "INSERT INTO `historique_items` (`date`, `item`, `template`, `sender`, `receiver`, `ip1`, `ip2`, `qua`) VALUES (now(), ?, ?, ?, ?, ?, ?, ?);";
+            java.sql.PreparedStatement ps = newTransact(query, Connection(false));
+            ps.setInt(1, i.getGuid());
+            ps.setInt(2, i.getTemplate(true).getID());
+            ps.setInt(3, sender);
+            ps.setInt(4, receiver);
+            ps.setString(5, ip1);
+            ps.setString(6, ip2);
+            ps.setInt(7, qua);
             ps.execute();
         } catch (SQLException e) {
             GameServer.addToLog("Game: SQL ERROR: " + e.getMessage());

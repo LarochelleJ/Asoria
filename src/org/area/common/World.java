@@ -638,10 +638,9 @@ public class World {
                     couple.second = obj.getQuantity();
                     SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(perso1,
                             couple.first);
-                    if (!perso2.addObjet(obj, true))// Si le joueur avait un
-                        // item similaire
-                        World.removeItem(couple.first);// On supprime l'item
-                    // inutile
+                    if (!perso2.addObjet(obj, true)) {// Si le joueur avait un item similaire
+                        World.removeItem(couple.first);
+                    }// On supprime l'item inutile
                 } else {
                     obj.setQuantity(obj.getQuantity() - couple.second);
                     SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(perso1, obj);
@@ -651,6 +650,7 @@ public class World {
                         World.addObjet(newObj, true);// On ajoute l'item au
                     // World
                 }
+                SQLManager.INSERT_ITEM_HISTORY(perso1.getGuid(), perso2.getGuid(), perso1.getAccount().getCurIp(), perso2.getAccount().getCurIp(), obj, couple.second);
             }
             for (Couple<Integer, Integer> couple : items2) {
                 if (couple.second == 0)
@@ -685,6 +685,7 @@ public class World {
                         World.addObjet(newObj, true);// On ajoute l'item au
                     // World
                 }
+                SQLManager.INSERT_ITEM_HISTORY(perso2.getGuid(), perso1.getGuid(), perso2.getAccount().getCurIp(), perso1.getAccount().getCurIp(), obj, couple.second);
             }
             // Fin
             perso1.set_isTradingWith(0);
@@ -1577,6 +1578,7 @@ public class World {
         return ObjTemplates.get(id);
     }
 
+    @Deprecated
     public synchronized static int getNewItemGuid() {
         //return nextObjetID++;
         return SQLManager.getNextObjetID() + 1;

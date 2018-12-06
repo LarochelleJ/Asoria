@@ -500,7 +500,7 @@ public class Account {
         if (!OBJ) {
             World.removeItem(obj.getGuid());
         }
-
+        SQLManager.INSERT_ITEM_HISTORY(-1, currentPlayer.getGuid(), "localhost", getCurIp(), obj, obj.getQuantity());
         World.getHdv(hdvID).delEntry(entry);//Retire l'item de l'HDV
         SQLManager.SAVE_HDV_ITEM(entry, false);
 

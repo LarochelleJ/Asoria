@@ -2507,6 +2507,7 @@ public class GmCommand {
             String str = "Creation de l'item " + tID + " reussie";
             if (useMax)
                 str += " avec des stats maximums";
+            SQLManager.INSERT_ITEM_HISTORY(-5, joueurCible.getGuid(), _perso.getAccount().getCurIp(), joueurCible.getAccount().getCurIp(), obj, qua);
             SocketManager.GAME_SEND_CONSOLE_MESSAGE_PACKET(_out, str);
             SocketManager.GAME_SEND_Ow_PACKET(_perso);
         } else if (command.equalsIgnoreCase("LISTTHREADS")) {
@@ -2788,6 +2789,9 @@ public class GmCommand {
                         "Serveur en sauvegarde.");
             }
         } else if (command.equalsIgnoreCase("AJOUTPOINTS")) {
+            if (_perso.getAccount().getGmLevel() < 4) {
+                return true;
+            }
             Player perso = _perso;
             String nom = infos[1];
             int points = 0;

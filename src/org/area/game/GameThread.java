@@ -771,6 +771,7 @@ public class GameThread implements Runnable {
                     //ObjTemplate OM2 = World.getObjTemplate(skinItem);
                     //player.removeByTemplateID(baseItem, 1);
                     player.removeItem(skinItem, 1, true, true);
+                    player.removeItem(baseItem, 1, true, true);
                     Item obj = Item.createNewMorphItem(itemSkinVerif.getID(), targetItem.getID(), statsObj.parseStatsString());
 
                     obj.getStats().setOneStat(9000, 1);//Non echangeable = 9000 @Flow
@@ -2450,7 +2451,7 @@ public class GameThread implements Runnable {
                     || obj.getPosition() == Constant.ITEM_POS_NO_EQUIPED)
                 SocketManager.GAME_SEND_ON_EQUIP_ITEM(player.getMap(), player);
         }
-        if (qua >= obj.getQuantity()) {
+        if (qua >= obj.getQuantity()) { // on jette tout
             player.removeItem(guid);
             player.getMap()
                     .getCase(player.get_curCell().getID() + cellPosition)
@@ -2772,7 +2773,7 @@ public class GameThread implements Runnable {
                         && t != 8637 && t != 8660 && t != 8657 && t != 8658
                         && t != 8651 && t != 8652 && t != 8656 && t != 8659
                         && t != 8662 && t != 8654 && t != 8653 && t != 8661
-                        && t != 8655) {
+                        && t != 8655) { // Pas un item de classe
                     cibleNewStats
                             .append(obj.parseStatsStringSansUserObvi(true))
                             .append(",")
@@ -3010,6 +3011,7 @@ public class GameThread implements Runnable {
                 obj.setQuantity(newQua);
                 SocketManager.GAME_SEND_OBJECT_QUANTITY_PACKET(player, obj);
             }
+            SQLManager.INSERT_ITEM_HISTORY(player.getGuid(), -4, player.getAccount().getCurIp(), "localhost", obj, qua);
             SocketManager.GAME_SEND_STATS_PACKET(player);
             SocketManager.GAME_SEND_Ow_PACKET(player);
         } catch (Exception e) {
@@ -4217,8 +4219,7 @@ public class GameThread implements Runnable {
                         int rAmount = (int) (Math.pow(10, amount) / 10);
                         int newQua = (obj.getQuantity() - rAmount);
 
-                        if (newQua <= 0) { // Si c'est plusieurs objets ensemble enleve
-                            // seulement la quantité de mise en vente
+                        if (newQua <= 0) { //  Si on vends tout
                             player.removeItem(itmID);// Enlève l'item de l'inventaire du
                             // personnage
                             SocketManager.GAME_SEND_REMOVE_ITEM_PACKET(player, itmID);// Envoie
@@ -4249,6 +4250,7 @@ public class GameThread implements Runnable {
                             player.addKamas((long) taxes);
                             player.sendText("Une erreur s'est produite en tentant de mettre à vente l'objet suivant : " + obj.getTemplate(false).getName() + " ! Contactez un administrateur si l'erreur persiste");
                         } else { // Autrement c'est bon
+                            SQLManager.INSERT_ITEM_HISTORY(player.getGuid(), -1, player.getAccount().getCurIp(), "localhost", obj, rAmount);
                             SQLManager.SAVE_HDV_ITEM(toAdd, true);
 
                             SocketManager.GAME_SEND_EXCHANGE_OTHER_MOVE_OK(out, '+', "",
@@ -4788,14 +4790,14 @@ public class GameThread implements Runnable {
                     seller.getStoreItems().remove(itemStore.getGuid());
                     player.addObjet(itemStore, true);
                 } else {
-                    seller.getStoreItems().remove(itemStore.getGuid());
+                    //seller.getStoreItems().remove(itemStore.getGuid());
                     itemStore.setQuantity(itemStore.getQuantity() - qua);
                     SQLManager.SAVE_ITEM(itemStore);
                     seller.addStoreItem(itemStore.getGuid(), price);
 
                     Item clone = Item.getCloneObjet(itemStore, qua);
                     World.addObjet(clone, true);
-                    SQLManager.SAVE_NEW_ITEM(clone);
+                    //SQLManager.SAVE_NEW_ITEM(clone);
                     player.addObjet(clone, true);
                 }
 
@@ -7093,7 +7095,12 @@ public class GameThread implements Runnable {
                 String[] split = packet.substring(2).split("\\|");
                 int GUID = Integer.parseInt(split[0]);
                 String reponse = split.length > 1 ? split[1] : "";
-
+                // Décoder réponse UTF-8
+                try {
+                    reponse = java.net.URLDecoder.decode(reponse, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 if (account.getPlayers().containsKey(GUID)) {
                     boolean askQuestion = account.getPlayers().get(GUID).getLevel() >= 20;
                     if ((askQuestion && reponse.equalsIgnoreCase(account.getAnwser())) || !askQuestion) {
