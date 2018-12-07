@@ -2934,7 +2934,7 @@ public class Fight {
                         continue;
                     totalGainXp += c.getValue().get_gainXp();
                 }
-     	    	   /*totalGainXp += _mobGroup.get_bonusValue(); // on ajoute le bonus en étoiles*/
+                /*totalGainXp += _mobGroup.get_bonusValue(); // on ajoute le bonus en étoiles*/
                 totalXP *= 100L + totalGainXp; //on multiplie par la somme des boost chal
                 totalXP /= 100L;
 
@@ -3020,9 +3020,9 @@ public class Fight {
             }
         }
         //Fin Capture
-	        /* Testons Configtenant de  l'apprivoisement des DD
-	         * comme le système de capture ^^"
-	         */
+        /* Testons Configtenant de  l'apprivoisement des DD
+         * comme le système de capture ^^"
+         */
         boolean mobCanAppri = true;
 
         for (Fighter F : TEAM2) {
@@ -4410,11 +4410,11 @@ public class Fight {
             SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
             return;
         }*/
-        if (this._type != Constant.FIGHT_TYPE_PVM) {
+        /*if (this._type != Constant.FIGHT_TYPE_PVM) {
             perso.sendText("L'utilisation des armes est autorisée uniquement en PvM.");
             SocketManager.GAME_SEND_GA_CLEAR_PACKET_TO_FIGHT(perso.getFight(), 7);
             return;
-        }
+        }*/
         if (_ordreJeu.get(_curPlayer).getGUID() != caster.getGUID())//Si ce n'est pas a lui de jouer
             return;
         // Pour les challenges, vérif sur CaC
@@ -4458,7 +4458,7 @@ public class Fight {
 
             if (target != null) {
                 int dmg = Formulas.getRandomJet("1d5+0");
-                int finalDommage = Formulas.calculFinalDommage(this, caster, target, Constant.ELEMENT_NEUTRE, dmg, false, true, -1, false);
+                int finalDommage = Formulas.calculFinalDommage(this, caster, target, Constant.ELEMENT_NEUTRE, dmg, false, false, -1, false);
                 finalDommage = SpellEffect.applyOnHitBuffs(finalDommage, target, caster, this, false);//S'il y a des buffs spéciaux
 
                 if (finalDommage > target.getPDV())
@@ -4575,6 +4575,7 @@ public class Fight {
                 verifIfTeamAllDead();
             }
         }
+
     }
 
     public Fighter getFighterByPerso(Player perso) {
