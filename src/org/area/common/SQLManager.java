@@ -1250,10 +1250,20 @@ public class SQLManager {
                         RS.getByte("groupmaxsize")
                 );
                 World.addCarte(carte);
-                carte.portes = World.portes.get(carte.get_id());
-                if (carte.portes != null) {
-                    Console.println("Portes ajoutées !", Color.YELLOW);
+                // Chargement des mobgroups sauvegardé
+                String requete = "SELECT cellid, data FROM mobgroups_save WHERE mapid = ?;";
+                PreparedStatement p = newTransact(requete, Connection(false));
+                p.setInt(1, carte.get_id());
+                ResultSet mobgroups = p.executeQuery();
+                while (mobgroups.next()) {
+                    carte.mobgroups_save.put(mobgroups.getInt("cellid"), mobgroups.getString("data"));
+                    carte.addSavedGroup(mobgroups.getInt("cellid"));
                 }
+                carte.spawnGroupInit();
+                closeResultSet(mobgroups);
+
+                // Ajouts des portes interactives
+                carte.portes = World.portes.get(carte.get_id());
             }
             //if(i == 0) //Console.print("\r-maps loaded : " + i, Color.GREEN);
             SQLManager.closeResultSet(RS);
@@ -1275,12 +1285,44 @@ public class SQLManager {
                 } else {
                     spawnTimeMin = Integer.valueOf(args);
                 }
-                c.addStaticGroup(RS.getInt("cellid"), RS.getString("groupData"), spawnTimeMin, spawnTimeMax, ellap);
+                int cellid = RS.getInt("cellid");
+                if (!c.mobgroups_save.containsKey(cellid)) { // N'a pas été spawn
+                    c.addStaticGroup(cellid, RS.getString("groupData"), spawnTimeMin, spawnTimeMax, ellap);
+                }
             }
             SQLManager.closeResultSet(RS);
         } catch (SQLException e) {
             Console.println("Game: SQL ERROR: " + e.getMessage(), Color.RED);
             Reboot.reboot();
+        }
+    }
+
+    public static void SAVE_MOBGROUP(Monster.MobGroup MG) {
+        try {
+            String query = "INSERT INTO mobgroups_save(`mapid`, `cellid`, `data`) VALUES(?, ?, ?);";
+            PreparedStatement p = newTransact(query, Connection(false));
+            p.setInt(1, MG.getMap().get_id());
+            p.setInt(2, MG.getOriginCellID());
+            p.setString(3, MG.getDataString());
+            p.execute();
+            closePreparedStatement(p);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e);
+            e.printStackTrace();
+        }
+    }
+
+    public static void DELETE_SAVED_MOBGROUP(int mapid, int cellid) {
+        try {
+            String query = "DELETE FROM mobgroups_save WHERE mapid = ? AND cellid = ?;";
+            PreparedStatement p = newTransact(query, Connection(false));
+            p.setInt(1, mapid);
+            p.setInt(2, cellid);
+            p.execute();
+            closePreparedStatement(p);
+        } catch (SQLException e) {
+            GameServer.addToLog("SQL ERROR: " + e);
+            e.printStackTrace();
         }
     }
 

@@ -105,8 +105,16 @@ public class NpcTemplate {
                 maried = true;
             StringBuilder str = new StringBuilder();
             str.append(_id);
-            if (!_args.equals(""))
-                str.append(";").append(parseArguments(_args, perso));
+            if (!_args.equals("")) {
+                // arguments dynamique
+                String arg = "";
+                if (_args.equals("[name]")) {
+                    arg = perso.getName();
+                } else {
+                    arg = _args;
+                }
+                str.append(";").append(parseArguments(arg, perso));
+            }
             if (!_reponses.equalsIgnoreCase("")) {
                 str.append("|").append(_reponses);
             }

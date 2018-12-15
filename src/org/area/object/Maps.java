@@ -68,6 +68,9 @@ public class Maps {
     private long _tempsPourPosePercepteur;
     public List<Porte> portes = null;
 
+    // Sauvegarde des groupes après un reboot
+    public HashMap<Integer, String> mobgroups_save = new HashMap<Integer, String>();
+
     public static class MountPark {
         private int _owner;
         private InteractiveObject _door;
@@ -1273,12 +1276,16 @@ public class Maps {
             _mobPossibles.add(World.getMonstre(id).getGradeByLevel(lvl));
         }
         if (_cases.isEmpty()) return;
+    }
 
-        if (Config.CONFIG_USE_MOBS) {
-            if (_maxGroup == 0) return;
-            spawnGroup(Constant.ALIGNEMENT_NEUTRE, _maxGroup, false, -1);//Spawn des groupes d'alignement neutre
-            spawnGroup(Constant.ALIGNEMENT_BONTARIEN, 1, false, -1);//Spawn du groupe de gardes bontarien s'il y a
-            spawnGroup(Constant.ALIGNEMENT_BRAKMARIEN, 1, false, -1);//Spawn du groupe de gardes brakmarien s'il y a
+    public void spawnGroupInit() {
+        if (mobgroups_save.isEmpty()) {
+            if (Config.CONFIG_USE_MOBS && !_mobPossibles.isEmpty()) {
+                if (_maxGroup == 0) return;
+                spawnGroup(Constant.ALIGNEMENT_NEUTRE, _maxGroup, false, -1);//Spawn des groupes d'alignement neutre
+                spawnGroup(Constant.ALIGNEMENT_BONTARIEN, 1, false, -1);//Spawn du groupe de gardes bontarien s'il y a
+                spawnGroup(Constant.ALIGNEMENT_BRAKMARIEN, 1, false, -1);//Spawn du groupe de gardes brakmarien s'il y a
+            }
         }
     }
 
@@ -1369,6 +1376,8 @@ public class Maps {
         if (_mobGroups.size() - _fixMobGroups.size() >= _maxGroup) return;
         for (int a = 1; a <= nbr; a++) {
             MobGroup group = new MobGroup(nextObjectID, align, _mobPossibles, this, cellID, this._maxSize);
+            group.setMap(this);
+            SQLManager.SAVE_MOBGROUP(group);
             if (group.getMobs().isEmpty()) continue;
             _mobGroups.put(nextObjectID, group);
             if (log) {
@@ -1382,6 +1391,8 @@ public class Maps {
     public void spawnNewGroup(boolean timer, int cellID, String groupData, String condition) {
         MobGroup group = new MobGroup(nextObjectID, cellID, groupData, 0, 0, 0);
         if (group.getMobs().isEmpty()) return;
+        group.setMap(this);
+        SQLManager.SAVE_MOBGROUP(group);
         _mobGroups.put(nextObjectID, group);
         group.setCondition(condition);
         group.setIsFix(false);
@@ -1398,6 +1409,8 @@ public class Maps {
     public MobGroup spawnGroupOnCommand(int cellID, String groupData) {
         MobGroup group = new MobGroup(nextObjectID, cellID, groupData, 0, 0, 0);
         if (group.getMobs().isEmpty()) return null;
+        group.setMap(this);
+        SQLManager.SAVE_MOBGROUP(group);
         _mobGroups.put(nextObjectID, group);
         group.setIsFix(false);
 
@@ -1411,6 +1424,21 @@ public class Maps {
 
     public void addStaticGroup(int cellID, String groupData, int minSpawnTime, int maxSpawnTime, int ellap) {
         MobGroup group = new MobGroup(nextObjectID, cellID, groupData, minSpawnTime, maxSpawnTime, ellap);
+        if (group.getMobs().isEmpty()) return;
+        group.setMap(this);
+        SQLManager.SAVE_MOBGROUP(group);
+        if (group.haveSpawnTime()) {
+            World.variableMobGroup.add(group);
+            return;
+        }
+        _mobGroups.put(nextObjectID, group);
+        nextObjectID--;
+        _fixMobGroups.put(-1000 + nextObjectID, group);
+        SocketManager.GAME_SEND_MAP_MOBS_GM_PACKET(this, group);
+    }
+
+    public void addSavedGroup(int cellID) {
+        MobGroup group = new MobGroup(nextObjectID, cellID, mobgroups_save.get(cellID));
         if (group.getMobs().isEmpty()) return;
         group.setMap(this);
         if (group.haveSpawnTime()) {
@@ -1847,7 +1875,11 @@ public class Maps {
         int id = 1;
         if (!_fights.isEmpty())
             id = ((Integer) (_fights.keySet().toArray()[_fights.size() - 1])) + 1;
-        if (!group.isFix()) _mobGroups.remove(group.getID());
+        if (!group.isFix()) {
+            _mobGroups.remove(group.getID());
+            mobgroups_save.remove(group.getOriginCellID());
+            SQLManager.DELETE_SAVED_MOBGROUP(get_id(), group.getOriginCellID());
+        }
         else SocketManager.GAME_SEND_MAP_MOBS_GMS_PACKETS_TO_MAP(this);
         _fights.put(id, new Fight(id, this, perso, group));
         SocketManager.GAME_SEND_MAP_FIGHT_COUNT_TO_MAP(this);
