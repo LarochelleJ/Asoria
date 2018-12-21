@@ -1,10 +1,12 @@
 package org.area.kernel;
 
 import java.io.Console;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
+import org.area.client.Encryption;
 import org.area.client.Player;
 import org.area.common.*;
 import org.area.exchange.ExchangeClient;
@@ -156,13 +158,36 @@ public class ConsoleInputAnalyzer implements Runnable {
                 sendEcho(mess);
             }
 
-        } else if (fct.equals("DECRYPT")) {
-            try {
-                String toDecrypt = command.substring(8);
-                sendEcho("Chaine decryptée: " + CryptManager.decryptPacket(toDecrypt));
-            } catch (Exception e) {
-                sendEcho("Impossible de décrypter ceci.");
+        } else if (fct.equals("KEY")) {
+            Player perso = World.getPersoByName(command.substring(4));
+            if (perso != null) {
+                if (perso.getAccount().KEY == "0") {
+                    perso.getAccount().KEY = "81101551411541181547344";
+                    sendEcho("Cryptage activé pour : " + perso.getName());
+                } else {
+                    perso.getAccount().KEY = "0";
+                    sendEcho("Cryptage désactivé pour : " + perso.getName());
+                }
+            } else {
+                Config.USE_KEY = !Config.USE_KEY;
+                String s = Config.USE_KEY ? "Cryptage activé pour tous !" : "Cryptage désactivé pour tous !";
+                sendEcho(s);
             }
+        } else if (fct.equals("ENCRYPT")) {
+            String toEncrypt = command.substring(8);
+            Encryption e = new Encryption("81101551411541181547344");
+            sendEcho(e.prepareData(toEncrypt));
+
+        } else if (fct.equals("DECRYPT")) {
+            String toEncrypt = command.substring(8);
+            Encryption en = new Encryption("81101551411541181547344");
+            String s = "";
+            try {
+                s = java.net.URLDecoder.decode(en.unprepareData(toEncrypt), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            sendEcho(s);
 
         } else if (fct.equals("RELOADSERV")) {
             sendEcho("Rechargement de la configuration");

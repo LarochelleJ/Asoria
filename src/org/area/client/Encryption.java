@@ -1,6 +1,7 @@
 package org.area.client;
 
 import org.area.common.CryptManager;
+import org.area.kernel.Config;
 import org.area.kernel.Console;
 
 import java.io.UnsupportedEncodingException;
@@ -27,10 +28,10 @@ public class Encryption {
     public String myKey = "";
     private String HEX_CHARS[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 
-    public Encryption() {
+    public Encryption(String key) {
         /*if (packet.substring(0, 2).compareTo("AK") == 0) this.onKey(packet.substring(2));
         if (packet.substring(0, 2).compareTo("AT") == 0) this.onKey(packet.substring(3));*/
-        myKey = generateHashKey();
+        myKey = Config.USE_KEY ? key : "0";
         this.onKey(myKey);
     }
 
@@ -40,13 +41,13 @@ public class Encryption {
     }
 
     private String generateHashKey() {
-        /*String key = "8";
-        for (int i = 0; i < 16; i++) {
+        String key = "88";
+        for (int i = 0; i < 15; i++) {
             key += r.nextInt(HEX_CHARS.length);
         }
-        return key;*/
+        return key;
         //return "81101551411541181547344";
-        return "0";
+        //return "0";
     }
 
     private void onKey(String data) {
@@ -99,7 +100,7 @@ public class Encryption {
     }*/
 
     private String preEscape(String s) {
-        String result = "";
+        /*String result = "";
 
         for (int i = 0; i < s.length(); i++) {
             String ope = String.valueOf(s.charAt(i));
@@ -114,7 +115,13 @@ public class Encryption {
                 result += ope;
             }
         }
-        return result;
+        return result;*/
+        try {
+            s = URLEncoder.encode(s, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+        }
+
+        return s;
     }
 
     private String escape(String param) {

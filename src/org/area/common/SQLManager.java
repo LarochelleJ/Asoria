@@ -5142,13 +5142,26 @@ public class SQLManager {
      * @param receiver > 0 = id d'un joueur, -1 = HDV, -2 = Banque, -3 = Sol, -4 = Item supprimé, -5 = commande gm
      */
     public static void INSERT_ITEM_HISTORY(int sender, int receiver, String ip1, String ip2, Item i, int qua) {
+        int a1 = 0, a2 = 0;
+        if (sender > 0) { // Personnage
+            Player p = World.getPlayer(sender);
+            if (p != null) {
+                a1 = p.getAccID();
+            }
+        }
+        if (receiver > 0) { // Personnage
+            Player p = World.getPlayer(receiver);
+            if (p != null) {
+                a2 = p.getAccID();
+            }
+        }
         try {
             String query = "INSERT INTO `historique_items` (`date`, `item`, `template`, `sender`, `receiver`, `ip1`, `ip2`, `qua`) VALUES (now(), ?, ?, ?, ?, ?, ?, ?);";
             java.sql.PreparedStatement ps = newTransact(query, Connection(false));
             ps.setInt(1, i.getGuid());
             ps.setInt(2, i.getTemplate(true).getID());
-            ps.setInt(3, sender);
-            ps.setInt(4, receiver);
+            ps.setString(3, sender + ";" + a1);
+            ps.setString(4, receiver + ";" + a2);
             ps.setString(5, ip1);
             ps.setString(6, ip2);
             ps.setInt(7, qua);

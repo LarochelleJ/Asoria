@@ -58,6 +58,7 @@ public class Account {
     private boolean isAFlooder = false;
     private int floodGrade = 0;
     private int _vote;
+    public String KEY = "81101551411541181547344";
 
     byte state;
 

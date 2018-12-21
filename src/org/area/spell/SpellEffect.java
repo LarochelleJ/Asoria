@@ -2134,12 +2134,13 @@ public class SpellEffect {
         F.setTeam(caster.getTeam());
         F.setInvocator(caster);
         Player perso = caster.getPersonnage();
-        if (perso != null) {
+        // Temporairement désactivé sur Asoria
+        /*if (perso != null) {
             if (Constant.mobControllable.contains(mobID)  && (true || perso.getAccount().getGmLevel() > 0 || perso.getAccount().getVip() > 0 || Constant.accountAllowed.contains(perso.getAccID()))) { // Invocation controllable, activé temporairement pour tout le monde
                 F.setInvocationControler(true);
                 perso.controleUneInvocation = true;
             }
-        }
+        }*/
         fight.get_map().getCase(cell).addFighter(F);
         F.set_fightCell(fight.get_map().getCase(cell));
         fight.get_ordreJeu().add((fight.get_ordreJeu().indexOf(caster) + 1), F);

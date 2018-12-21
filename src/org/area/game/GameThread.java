@@ -158,6 +158,11 @@ public class GameThread implements Runnable {
                         _s.close();*/
                     /*if (encrypt != null && !packet.substring(0, 2).equalsIgnoreCase("Ak")) { // Décryptage
                         packet = encrypt.unprepareData(packet);
+                    }
+                    try {
+                        packet = java.net.URLDecoder.decode(packet, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }*/
                     GameServer.addToSockLog("Game: Recu << " + packet);
                     //ParseTool.parsePacket(packet, player);
@@ -7165,7 +7170,7 @@ public class GameThread implements Runnable {
                 }
 
                 account = World.getCompte(guid);
-                encrypt = new Encryption();
+                encrypt = new Encryption(account.KEY);
                 out.encrypt = encrypt;
 
                 if (account != null) {

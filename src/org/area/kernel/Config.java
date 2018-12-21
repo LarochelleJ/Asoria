@@ -126,6 +126,9 @@ public class Config {
 	
 	/** Traques **/
 	public static int CONFIG_TRAQUE_DIFFERENCE = 15;
+
+	/** Cryptage packet **/
+	public static boolean USE_KEY = true;
 	
 	/** ShopSocket System **/
 	public static String WEB_IP = "176.31.46.218";
