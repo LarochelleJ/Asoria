@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.area.client.Account;
 import org.area.client.Player;
@@ -20,7 +19,6 @@ import org.area.fight.object.Monster.MobGroup;
 import org.area.fight.object.Prism;
 import org.area.game.GameSendThread;
 import org.area.game.GameServer;
-import org.area.game.GameThread;
 import org.area.kernel.*;
 import org.area.object.AuctionHouse;
 import org.area.object.AuctionHouse.HdvEntry;
@@ -45,7 +43,7 @@ public class SocketManager {
         if (p.getAccount().getGameThread() == null) return;
         GameSendThread out = p.getAccount().getGameThread().getOut();
         if (out != null) {
-            if (out.encrypt != null) {
+            if (out.encrypt.isActive()) {
                 packet = out.encrypt.prepareData(packet);
             }
             //packet = SlowBase64.encode(packet);
@@ -56,7 +54,7 @@ public class SocketManager {
 
     public static void send(GameSendThread out, String packet) {
         if (out != null) {
-            if (out.encrypt != null) {
+            if (out.encrypt.isActive()) {
                 packet = out.encrypt.prepareData(packet);
             }
             //packet = CryptManager.toUtf(packet);
@@ -101,7 +99,9 @@ public class SocketManager {
 
     public static void GAME_SEND_ATTRIBUTE_SUCCESS(GameSendThread out) {
         String packet = "ATK";
-        packet += out.encrypt.myKey;
+        if (out.encrypt.isActive()){
+            packet += "1" + out.encrypt.key;
+        }
         send(out, packet, true);
         if (Config.DEBUG)
             GameServer.addToSockLog("Game: Send>>" + packet);

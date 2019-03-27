@@ -18,7 +18,7 @@ public class GameSendThread implements Runnable
 	@SuppressWarnings("unused")
 	private Socket _s;
 	private ArrayList<String> _packets = new ArrayList<String>();
-	public Encryption encrypt = null;
+	public Encryption encrypt = new Encryption("8fd8ad4a38cdd0432248a76f8f148ceb");
 	
 	public GameSendThread(GameThread g, Socket s, PrintWriter out)
 	{

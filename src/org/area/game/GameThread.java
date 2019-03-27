@@ -80,7 +80,6 @@ public class GameThread implements Runnable {
     private GameSendThread out;
     private Socket socket;
     private Account account;
-    private Encryption encrypt;
     private Player player;
     private Map<Integer, GameAction> actions = new TreeMap<Integer, GameAction>();
     private long _timeLastTradeMsg = 0, _timeLastRecrutmentMsg = 0,
@@ -153,17 +152,11 @@ public class GameThread implements Runnable {
                 if (charCur[0] != '\u0000' && charCur[0] != '\n' && charCur[0] != '\r') {
                     packet += charCur[0];
                 } else if (!packet.isEmpty()) {
-                    packet = CryptManager.toUnicode(packet);
-                    /*if(!IpCheck.onGamePacket(_s.getInetAddress().getHostAddress(), packet))
-                        _s.close();*/
-                    /*if (encrypt != null && !packet.substring(0, 2).equalsIgnoreCase("Ak")) { // Décryptage
-                        packet = encrypt.unprepareData(packet);
+                    if (out.encrypt.isActive() && !packet.substring(0, 2).equalsIgnoreCase("Ak") && !packet.substring(0, 2).equalsIgnoreCase("AT")) { // Décryptage
+                        packet = out.encrypt.unprepareData(packet);
+                    } else {
+                        packet = CryptManager.toUnicode(packet);
                     }
-                    try {
-                        packet = java.net.URLDecoder.decode(packet, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }*/
                     GameServer.addToSockLog("Game: Recu << " + packet);
                     //ParseTool.parsePacket(packet, player);
                     parsePacket(packet);
@@ -7170,8 +7163,6 @@ public class GameThread implements Runnable {
                 }
 
                 account = World.getCompte(guid);
-                encrypt = new Encryption(account.KEY);
-                out.encrypt = encrypt;
 
                 if (account != null) {
                     String ip = socket.getInetAddress().getHostAddress();

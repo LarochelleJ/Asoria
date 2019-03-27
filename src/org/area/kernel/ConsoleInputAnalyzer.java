@@ -10,6 +10,7 @@ import org.area.client.Encryption;
 import org.area.client.Player;
 import org.area.common.*;
 import org.area.exchange.ExchangeClient;
+import org.area.game.GameSendThread;
 import org.area.game.GameServer.SaveThread;
 import org.area.game.GameThread;
 import org.area.kernel.Config;
@@ -159,35 +160,18 @@ public class ConsoleInputAnalyzer implements Runnable {
             }
 
         } else if (fct.equals("KEY")) {
-            Player perso = World.getPersoByName(command.substring(4));
-            if (perso != null) {
-                if (perso.getAccount().KEY == "0") {
-                    perso.getAccount().KEY = "81101551411541181547344";
-                    sendEcho("Cryptage activé pour : " + perso.getName());
-                } else {
-                    perso.getAccount().KEY = "0";
-                    sendEcho("Cryptage désactivé pour : " + perso.getName());
-                }
-            } else {
                 Config.USE_KEY = !Config.USE_KEY;
-                String s = Config.USE_KEY ? "Cryptage activé pour tous !" : "Cryptage désactivé pour tous !";
+                String s = Config.USE_KEY ? "Cryptage activé" : "Cryptage désactivé";
                 sendEcho(s);
-            }
         } else if (fct.equals("ENCRYPT")) {
             String toEncrypt = command.substring(8);
-            Encryption e = new Encryption("81101551411541181547344");
+            Encryption e = new Encryption("8fd8ad4a38cdd0432248a76f8f148ceb");
             sendEcho(e.prepareData(toEncrypt));
 
         } else if (fct.equals("DECRYPT")) {
-            String toEncrypt = command.substring(8);
-            Encryption en = new Encryption("81101551411541181547344");
-            String s = "";
-            try {
-                s = java.net.URLDecoder.decode(en.unprepareData(toEncrypt), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            sendEcho(s);
+            String toDecrypt = command.substring(8);
+            Encryption en = new Encryption("8fd8ad4a38cdd0432248a76f8f148ceb");
+            sendEcho(en.unprepareData(toDecrypt));
 
         } else if (fct.equals("RELOADSERV")) {
             sendEcho("Rechargement de la configuration");
